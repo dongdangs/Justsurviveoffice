@@ -25,6 +25,11 @@ repositories {
 }
 
 dependencies {
+//	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
