@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+#mycontainer	{ padding:20px; }
+#myheader		{ display: flex; min-height:100px; position: relative; top: 60px;}
+#myheader .navbarTop { padding:0 1.5%;}
+#myheader .navbarTop #searchID { border-radius: 30px;border: 1px solid #ddd;padding: 3px 15px;position:relative;}
+#myheader .navbarTop #searchFrm .fa-search {position:absolute;right:20px;top:7px;}
+#myheader .navbarTop #searchFrm .btnSubmit {background-color: transparent;border: 0;position: absolute;right: 13px;top: 4px;width: 50px;height: 21px;}
+#myheader .navbarTop .logins {border-radius:30px;border:1px solid #ddd;padding:3px 15px;}
+#myheader .navbar-nav {align-items:center;}
+
+#mycontent		{ min-height:900px; position: relative; top:60px; padding-top: 40px; background-color:#F5F5F5;}
+#myfooter		{ display: flex; min-height:120px; position: relative; top:60px; background-color:#555555; margin-bottom: 70px;}
+	
+#myheader a {text-decoration:none;}
