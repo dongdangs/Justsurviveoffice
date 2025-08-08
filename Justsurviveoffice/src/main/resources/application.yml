@@ -96,7 +96,7 @@ logging: #로그 지정
 server:
   tomcat:
     max-part-count: 30 
-  port: 9091
+  port: 9089
   servlet:
     context-path: /myspring  # Spring Framework 에서는 WAS 톰캣서버를 더블클릭하여 context Path 를 수정하였으나 Spring Boot 에서는 여기에서 한다. context-path: 를 주석처리하면 context Path 가 없는 것이다.
                                     # context-path 를 /myspring 으로 주었으므로 Boot Dashboard 에 가서 myspring 에 마우스 우측클릭 Show Properties 에 클릭하여 General 에서 Path: 란에 myspring 을 입력해준다.  
