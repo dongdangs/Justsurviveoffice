@@ -5,6 +5,7 @@
     
     <!-- domain(DTO) package -->
     <typeAliases>
+    	<typeAlias type="com.spring.app.begin.domain.BeginDTO" alias="BeginDTO" />
    	</typeAliases>
 
 </configuration>
