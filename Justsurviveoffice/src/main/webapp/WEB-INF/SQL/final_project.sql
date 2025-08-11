@@ -1,20 +1,125 @@
--- 오라클 계정 생성을 위해서는 SYS 또는 SYSTEM 으로 연결하여 작업을 해야 합니다. [SYS 시작] --
-show user;
--- USER이(가) "SYS"입니다.
+------------------------------------------------------
+-- 1. Users (회원목록)
+CREATE TABLE Users (
 
--- 오라클 계정 생성시 계정명 앞에 c## 붙이지 않고 생성하도록 하겠습니다.
-alter session set "_ORACLE_SCRIPT"=true;
--- Session이(가) 변경되었습니다.
+id VARCHAR2(50),
+name VARCHAR2(30) NOT NULL,
+password VARCHAR2(50) NOT NULL,
+email VARCHAR2(50) NOT NULL,
+mobile VARCHAR2(40) NOT NULL,
+point NUMBER DEFAULT 0,
+fk_categoryNo NUMBER, -- 추후에 추가되는 카테고리 number
+registerday DATE DEFAULT SYSDATE,
+passwordChanged DATE DEFAULT SYSDATE,
+isDormant NUMBER(1) DEFAULT 0 NOT NULL,
+isDeleted NUMBER(1) DEFAULT 0 NOT NULL,
 
--- 오라클 계정명은 semi_orauser2 이고 암호는 seven 인 사용자 계정을 생성합니다.
-create user final_orauser2 identified by seven default tablespace users;
--- User SEMI_ORAUSER2이(가) 생성되었습니다.
+constraint pk_Users 
+           primary key (id),
+constraint fk_User_Category foreign key (fk_categoryNo) 
+           references Category(categoryNo) on delete CASCADE,
+constraint ck_Users_isDormant 
+           CHECK (isDormant in (1, 0)),
+constraint ck_Users_isDeleted 
+           CHECK (isDeleted in (1, 0))
+);
+select *from users;
+commit;
+// fk_category 없이 회원가입 시 실행.
+insert into users(id, name, password, email, mobile)
+       values('admin', '관리자', 'qwer1234$', 'shindonghee2@naver.com', '01064396718');
+      
+// 테스트를 한 후, 회원가입을 진행하였을 시, fk_category 세팅.
+insert into users(id, name, password, email, mobile
+                  ,fk_category)
+       values(admin, '관리자', 'qwer1234$', 'shindonghee2@naver.com', '01064396718', '1');
+                        
 
--- 위에서 생성되어진 semi_orauser2 이라는 오라클 일반사용자 계정에게 오라클 서버에 접속이 되어지고,
--- 테이블 생성 등등을 할 수 있도록 여러가지 권한을 부여해주겠습니다.
-grant connect, resource, create view, unlimited tablespace to final_orauser2;
--- Grant을(를) 성공했습니다.
+-- 2. LoginHistory (로그인 기록)
+CREATE TABLE login_history (
+
+loginHistoryNo NUMBER,
+fk_id VARCHAR2(50) NOT NULL,
+lastLogin DATE DEFAULT SYSDATE NOT NULL,
+ip VARCHAR2(45) NOT NULL,
+
+constraint pk_LoginHistory 
+           primary key (loginHistoryNo),
+constraint fk_LoginHistory_Id 
+           foreign key (fk_id) references Users(id) on delete CASCADE
+);
+
+CREATE SEQUENCE login_history_seq START WITH 1 INCREMENT BY 1 NOCYCLE NOCACHE;
+
+
+-- 3. Question (질문)
+
+CREATE TABLE Question (
+
+questionNo NUMBER NOT NULL,
+questionContent VARCHAR2(255) NOT NULL,
+
+constraint PK_Question primary key (questionNo)
+);
+
+CREATE SEQUENCE question_seq START WITH 1 INCREMENT BY 1 NOCYCLE NOCACHE;
+
+-- 4. Options (답변)
+CREATE TABLE Options (
+
+optionNo NUMBER NOT NULL,
+fk_questionNo NUMBER NOT NULL,
+optionText VARCHAR2(200),
+fk_categoryNo NUMBER,
+
+constraint pk_Option 
+           primary key (optionNo),
+constraint fk_Option_Question
+           foreign key (fk_questionNo) references Question(questionNo) on delete CASCADE,
+constraint fk_Option_Category 
+           foreign key (fk_categoryNo) references Category(categoryNo)
+);
+
+CREATE SEQUENCE options_seq START WITH 1 INCREMENT BY 1 NOCYCLE NOCACHE;
+
+
+-- 5. Category (카테고리)
+
+CREATE TABLE Category (
+
+categoryNo NUMBER NOT NULL,
+categoryName VARCHAR2(50) NOT NULL,
+categoryDescribe VARCHAR2(200),
+categoryImagePath VARCHAR2(255),
+
+constraint pK_Category 
+           primary key (categoryNo)
+);
+--insert into category values(category_seq.nextval, '리더형', '', '');
+--delete from category where categoryNo = 1;
+
+CREATE SEQUENCE category_seq START WITH 1 INCREMENT BY 1 NOCYCLE NOCACHE;
+drop sequence category_seq;
+
+--- 6. Tag (태그)
+CREATE TABLE Tag (
+
+tagNo NUMBER NOT NULL,
+fk_categoryNo NUMBER NOT NULL,
+tagName VARCHAR2(50),
+
+constraint pk_Tag
+           primary key (tagNo),
+constraint fk_Tag_category 
+           foreign key (fk_categoryNo) references Category(categoryNo) on delete CASCADE
+
+);
+
+CREATE SEQUENCE tag_seq START WITH 1 INCREMENT BY 1 NOCYCLE NOCACHE;
 
 
 select * from tab;
+
+select *
+from users;
 

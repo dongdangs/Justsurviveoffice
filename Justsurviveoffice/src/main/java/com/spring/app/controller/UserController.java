@@ -9,13 +9,13 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/user/")
 @RequiredArgsConstructor
-public class MemberController {
+public class UserController {
 	
 	@GetMapping("register")
 	public String index() {
 		return "user/register";
-		//     /WEB-INF/views/user/register.jsp 파일을 만들어야 한다.
 	}
+	
 	
 	
 

@@ -47,8 +47,8 @@
         
         body {
 		    font-family: 'Noto Sans KR', sans-serif;
-		    background-color: #f5f3ff; /* 라이트 퍼플 */
-		    background-image: url('https://img.freepik.com/free-vector/hand-painted-watercolor-floral-pattern_23-2148931052.jpg');
+		    background-color: #9da6ae; /* 라이트 퍼플 */
+		    background-image: url("<%= ctxPath%>/images/background.png");
 		    background-size: cover;
 		    background-position: center;
 		    background-attachment: fixed;
