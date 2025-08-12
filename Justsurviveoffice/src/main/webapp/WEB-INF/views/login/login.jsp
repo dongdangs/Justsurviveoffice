@@ -1,7 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-        <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ <%
+   String ctxPath = request.getContextPath();
+%>
+<%--  <jsp:include page="./../header/header1.jsp" /> --%>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" type="text/css" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css">
+
+<script type="text/javascript" src="<%= ctxPath%>/js/jquery-3.7.1.min.js"></script>
+<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
+
+ <script src="https://cdn.tailwindcss.com"></script>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
  <style>
         .kakao-bg {
             background-color: #FEE500;
@@ -39,6 +50,45 @@
         }
     </style>
 </head>
+
+<script>
+
+   $(function(){
+      
+      $(document).on("click", "button[name='loginSubmit']", function () {
+         func_Login();
+       });
+      
+   });
+
+    function func_Login() {
+        
+        const Id = $("input#id").val(); 
+        const Pwd = $("input#password").val(); 
+      
+        if(Id.trim()=="") {
+           alert("아이디를 입력하세요!!");
+          $("input#id").val(""); 
+          $("input#id").focus();
+          return; // 종료 
+        }
+      
+        if(Pwd.trim()=="") {
+          alert("비밀번호를 입력하세요!!");
+          $("input#password").val(""); 
+          $("input#password").focus();
+          return; // 종료 
+        }
+        
+        const frm = document.loginFrm;
+        
+        frm.action = "<%= ctxPath%>/login/loginEnd";
+        frm.method = "POST";
+        frm.submit();
+        
+     }// end of function func_Login()------------------------
+</script>
+
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
     <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full max-w-md">
         <!--  헤더 섹션 -->
@@ -49,15 +99,15 @@
         
         <!-- 로그인 폼 -->
         <div class="p-8">
-            <form class="space-y-6">
+            <form class="space-y-6 loginFrm" id="loginFrm" name="loginFrm">
                 <div>
                     <label for="id" class="block text-sm font-medium text-gray-700 mb-1">아이디</label>
-                    <input type="id" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition input-focus" placeholder="example@example.com">
+                    <input type="id" name="id" id="id" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition input-focus" placeholder="example@example.com">
                 </div>
                 
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-1">비밀번호</label>
-                    <input type="password" id="password" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition input-focus" placeholder="••••••••">
+                    <input type="password" name="password" id="password" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition input-focus" placeholder="••••••••">
                 </div>
                 
                 <div class="flex items-center justify-between">
@@ -67,11 +117,11 @@
                     </div>
                     
                     <div class="text-sm">
-                        <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">비밀번호 찾기</a>
+                        <a href="<%= ctxPath%>/login/pwdFind" class="font-medium text-indigo-600 hover:text-indigo-500">비밀번호 찾기</a>
                     </div>
                 </div>
                 
-                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">
+                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition loginSubmit" id="loginSubmit" name="loginSubmit" onclick=""> 
                     로그인
                 </button>
             </form>
@@ -100,7 +150,7 @@
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">
                     아직 회원이 아니신가요?
-                    <a href="" class="font-medium text-indigo-600 hover:text-indigo-500">회원가입</a>
+                    <a href="<%= ctxPath%>/user/register" class="font-medium text-indigo-600 hover:text-indigo-500">회원가입</a>
                 </p>
             </div>
         </div>
@@ -113,7 +163,7 @@
             alert('카카오 로그인이 진행됩니다.');
             // 실제 구현 시에는 카카오 SDK를 사용한 로그인 프로세스 구현
         });
-
+		
         // 네이버 로그인 버튼 클릭 시
         document.querySelector('.naver-bg').addEventListener('click', function(e) {
             e.preventDefault();

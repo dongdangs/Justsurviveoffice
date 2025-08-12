@@ -123,3 +123,4 @@ select * from tab;
 select *
 from users;
 
+desc users;

@@ -1,116 +1,109 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+    
 <%
 	String ctxPath = request.getContextPath();
-%>    
+%>       
     
 <!DOCTYPE html>
 <html>
+<head>
+
 <!-- Required meta tags -->
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
- 
+
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" > 
 
 <!-- Font Awesome 6 Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
 
-<!-- 직접 만든 CSS -->
-<%-- <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/css/template.css" />
- --%>
 <!-- Optional JavaScript -->
 <script type="text/javascript" src="<%= ctxPath%>/js/jquery-3.7.1.min.js"></script>
-<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script> 
+<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
 
 <%-- jQueryUI CSS 및 JS --%>
 <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.css" />
 <script type="text/javascript" src="<%= ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.js"></script>
 
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<%-- user폴더 내부의 js --%>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script> var ctxPath = '<%= request.getContextPath() %>'; </script>
+
 <script type="text/javascript" src="<%= ctxPath%>/js/user/register.js"></script>
 
-<%-- css 주기 --%>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원가입</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
-        
-        body {
-		    font-family: 'Noto Sans KR', sans-serif;
-		    background-color: #9da6ae; /* 라이트 퍼플 */
-		    background-image: url("<%= ctxPath%>/images/background.png");
-		    background-size: cover;
-		    background-position: center;
-		    background-attachment: fixed;
-		    background-blend-mode: overlay;
-		}
+<style type="text/css">
 
+	@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
         
-        .error {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-        
-        .backdrop-blur {
-            backdrop-filter: blur(8px);
-        }
-        
-        .btn-red {
-		    background-color: #7e22ce;
-		    transition: all 0.3s;
-		}
-		
-		.btn-red:hover {
-		    background-color: #6b21a8;
-		    transform: translateY(-2px);
-		}
-		
-		.btn-check {
-		    background-color: #c084fc;  /* purple-400 */
-		    transition: all 0.3s;
-		}
-		
-		.btn-check:hover {
-		    background-color: #c084fc;  /* purple-400 */
-		}
-		
-		input:focus {
-		    outline: none;
-		    border-color: #9333ea;  /* purple-600 */
-		    box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.2);
-		}
+    body {
+  		font-family: 'Noto Sans KR', sans-serif;
+  		background-image: url("<%= ctxPath%>/images/background.png");
+    	background-size: cover;
+    	background-position: center;
+    	background-attachment: fixed;
+    	background-blend-mode: overlay;
+	}
 
+    .error {
+   		color: #ef4444;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+   	}
         
+    .backdrop-blur {
+        backdrop-filter: blur(8px);
+    }
+        
+    .btn-red {
+    	background-color: #7e22ce;
+    	transition: all 0.3s;
+	}
+		
+	.btn-red:hover {
+    	background-color: #6b21a8;
+	    transform: translateY(-2px);
+	}
+		
+	.btn-check {
+    	background-color: #4f46e5;  /* indigo-600 */
+	    transition: all 0.3s;
+	}
+		
+	.btn-check:hover {
+    	background-color: #4f46e5;  /* indigo-600 */
+	}
+		
+	input:focus {
+    	outline: none;
+    	border-color: #3730A3; /* indigo-800 */
+    	box-shadow: 0 0 0 2px rgba(55, 48, 163, 0.2);
+	}
+
+    .form-container {
+        animation: fadeIn 0.5s ease-out;
+    }
+        
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+        
+    @media (max-width: 768px) {
         .form-container {
-            animation: fadeIn 0.5s ease-out;
+            width: 90% !important;
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @media (max-width: 768px) {
-            .form-container {
-                width: 90% !important;
-            }
-        }
-    </style>
+	}
+	
+</style>
+
 </head>
+
 <body class="min-h-screen flex items-center justify-center p-4">
-    <div class="form-container w-full max-w-3xl bg-white rounded-xl shadow-xl overflow-hidden backdrop-blur">
-        <div class="bg-purple-400 py-4 px-6">
+	
+	<div class="form-container w-full max-w-3xl bg-white rounded-xl shadow-xl overflow-hidden backdrop-blur">
+        <div class="bg-indigo-600 py-4 px-6">
             <h1 class="text-2xl font-bold text-white" style="text-align: center;font-family: italic">
             Justsurvieoffice 에 오신 걸 환영합니다 </h1>
         </div>
@@ -210,7 +203,7 @@
             </table>
 
             <div class="mt-8 flex justify-center gap-4">
-                <button type="button" onclick="register()" class="bg-purple-400 text-white px-8 py-3 rounded-lg font-bold hover:shadow-lg">가입하기</button>
+                <button type="button" onclick="register()" class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold hover:shadow-lg">가입하기</button>
                 <!-- <button type="reset" class="bg-gray-300 text-gray-700 px-8 py-3 rounded-lg font-bold hover:bg-gray-400">취소</button> -->
 				<button type="button" id="btnCancel" class="bg-gray-300 text-gray-700 px-8 py-3 rounded-lg font-bold hover:bg-gray-400">
 				    뒤로가기
@@ -218,5 +211,7 @@
             </div>
         </form>
     </div>
+	
 </body>
 </html>
+

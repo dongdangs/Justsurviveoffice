@@ -1,16 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+    
 <% 
   String ctxPath = request.getContextPath(); 
 %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    
+<!DOCTYPE html>
+<html>
+<head>
 
 <!-- Required meta tags -->
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
- 
+
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" > 
 
@@ -19,79 +23,30 @@
 
 <!-- Optional JavaScript -->
 <script type="text/javascript" src="<%= ctxPath%>/js/jquery-3.7.1.min.js"></script>
-<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script> 
+<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
 
 <%-- jQueryUI CSS 및 JS --%>
 <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.css" />
 <script type="text/javascript" src="<%= ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.js"></script>
 
-<%-- <jsp:include page="../header.jsp" /> --%>
+<script src="https://cdn.tailwindcss.com"></script>
 
 <style type="text/css">
 
-	body {
-		background-color: #9da6ae;;
-		background-image: url("<%= ctxPath%>/images/background.png");
-		background-size: cover;
-		background-position: center;
-		background-attachment: fixed;
-		background-blend-mode: overlay;
-		background-repeat:no-repeat;
-	}
-
-	.headerNav {
-		position:relative;
+	@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
+    body {
+  		font-family: 'Noto Sans KR', sans-serif;
+  		background-image: url("<%= ctxPath%>/images/background.png");
+    	background-size: cover;
+    	background-position: center;
+    	background-attachment: fixed;
+    	background-blend-mode: overlay;
 	}
 	
-	.pwFindWrap {
-		margin:7% auto;
-		max-width:500px;
-		width:100%;
-	}
-	
-	.pwFindWrap .pwContain {
-		text-align: center;
-		padding: 4% 0;
-		background: #bf83fb;
-		color: #fff;
-		border-top-left-radius: 10px;
-		border-top-right-radius: 10px;
-		margin-bottom: 1%;
-		font-weight: 600;
-		font-size: 15pt;
-	}
-	
-	.pwFindWrap > #pwFindFrm {
-		border:1px solid #ddd;
-		border-radius:10px;
-		background-color:#fff;
-	}
-	
-	.pwFindWrap > #pwFindFrm > .pwBox {
-		display:flex;
-		align-items:center;
-		padding:0 25px;
-	}
-	
-	.pwFindWrap > #pwFindFrm > .pwBox input {
-		width:100%;
-		margin:15px 0;
-	}
-	
-	.pwFindWrap > #pwFindFrm > .pwBox p {
-		max-width:150px;
-		width:100%;
-	}
-	
-	.submitBtn {
-		text-align:center;
-	}
-	
-	.btn.btn-success {
-		width: 30%;
-		margin: 10px auto 25px;
-		text-align: center;
-	}
+    .backdrop-blur {
+        backdrop-filter: blur(8px);
+    }
 	
 </style>
 
@@ -154,7 +109,7 @@
 	
 		// 다 올바른 경우
 		const frm = document.pwFindFrm;
-		frm.action = "<%=ctxPath%>/login/passwordFind.do";
+		frm.action = "<%=ctxPath%>/login/passwordFind";
 		frm.method = "POST";
 		frm.submit();
 	  	}
@@ -185,45 +140,74 @@
 
 </script>
 
-<div class="pwFindWrap" id="pwFindWrap">
- 	<form id="pwFindFrm" name="pwFindFrm">
-		<p class="pwContain" style="text-align:center;">비밀번호 찾기</p>
-		<div class="pwBox">
-			<p>아이디</p>
-			<input type="text" id="id" name="id">
-		</div>
-		
-		<div class="pwBox">
-			<p>이메일</p>
-			<input type="text" id="email" name="email">
-		</div>
-			
-		<div class="submitBtn">
-			<button type="button" class="btn btn-success" onclick="pwFind()" style="background-color:#c084fc !important;border:0px solid #fff !important;">찾기</button>
-		</div>
-			
-		<%-- <div id="div_findResult">${requestScope.n}</div> --%>
-		<c:if test="${requestScope.n == 1}">
-			<div style="text-align:center;">
-				<p style="text-align:center;line-height:22px;">인증코드가 ${requestScope.email} 로 발송되었습니다.<br> 인증코드를 입력해주세요</p>
-				<input type="text" name="input_confirmCode" style="margin-top:15px;" />
-				<br><br>
-				<button type="button" class="btn btn-info finder">인증하기</button>
-			</div>
-		</c:if>
-		<c:if test="${requestScope.n == 0}">
-			<p style="text-align:center;line-height:22px;margin:10px 0 25px;font-size:16pt;">없습니다.</p>
-		</c:if>
-   </form> 
-</div>
 
-<%-- 인증하기 form --%>
-<form name="verifyCertificationFrm">
-	<input type="hidden" name ="userCertificationCode" />
-	<input type="hidden" name ="id" />
-</form>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+	
+	<div class="form-container w-full max-w-3xl bg-white rounded-xl shadow-xl overflow-hidden backdrop-blur">
+        <div class="bg-indigo-600 py-4 px-6">
+            <h1 class="text-2xl font-bold text-white" style="text-align: center;font-family: italic">
+            비밀번호 찾기</h1>
+        </div>
+        
+        <form id="pwFindFrm" name="pwFindFrm" class="p-6 md:p-8">
+        	<table name="pwFindTbl" class="w-full">
+        		 
+        		 <!-- 아이디 -->
+        		 <tr class="mb-4 flex flex-col md:flex-row">
+        		 	<td class="w-full md:w-1/4 font-medium text-gray-700 mb-1 md:mb-0 md:pr-4">
+        		 		<label for="name">아이디</label>
+        		 	</td>
+        		 	<td class="w-full md:w-3/4">
+                        <div class="pwBox">
+                            <input type="text" id="id" name="id" class="requiredInfo w-full px-4 py-2 border rounded-lg focus:border-red-500 transition-all" placeholder="아이디를 입력하세요">
+                        </div>
+                    </td>
+        		 </tr>
+        		 
+        		 <!-- 이메일 -->
+        		 <tr class="mb-4 flex flex-col md:flex-row">
+        		 	<td class="w-full md:w-1/4 font-medium text-gray-700 mb-1 md:mb-0 md:pr-4">
+        		 		<label for="name">이메일</label>
+        		 	</td>
+        		 	<td class="w-full md:w-3/4">
+                        <div class="pwBox">
+                            <input type="text" id="email" name="email" class="requiredInfo w-full px-4 py-2 border rounded-lg focus:border-red-500 transition-all" placeholder="이메일을 입력하세요">
+                        </div>
+                    </td>
+        		 </tr>
+        		 
+        	</table>
+        	
+        	<div class="submitBtn mt-8 flex justify-center gap-4">
+                <button type="button" onclick="pwFind()" class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold hover:shadow-lg">찾기</button>
+            </div>
+            
+			<%-- <div id="div_findResult">${requestScope.n}</div> --%>
+			<c:if test="${requestScope.n == 1}">
+				<div style="text-align:center;">
+					<p style="text-align:center;line-height:22px;">인증코드가 ${requestScope.email} 로 발송되었습니다.<br> 인증코드를 입력해주세요</p>
+					<input type="text" name="input_confirmCode" style="margin-top:15px;" />
+					<br><br>
+					<button type="button" class="btn btn-info finder">인증하기</button>
+				</div>
+			</c:if>
+			<c:if test="${requestScope.n == 0}">
+				<p style="text-align:center;line-height:22px;margin:10px 0 25px;font-size:16pt;">없습니다.</p>
+			</c:if>
+	   </form> 
+	</div>
+
+	<%-- 인증하기 form --%>
+	<form name="verifyCertificationFrm">
+		<input type="hidden" name ="userCertificationCode" />
+		<input type="hidden" name ="id" />
+	</form>
 	
 
 </div>
-<%-- <jsp:include page="../footer.jsp" /> --%>
-
+	
+	
+</body>
+</html>

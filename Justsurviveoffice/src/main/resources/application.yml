@@ -1,15 +1,15 @@
-spring: # 주의할 점은 내용작성시 들여쓰기 내어쓰기시 공백개수를 반드시 꼭 지켜야 한다.
+spring:
   application:
     name: Justsurviveoffice
- 
-  profiles: #실행환경(dev(개발),test(테스트),local(로컬),prod(운영))
-    active: local 
-    
+
+  profiles:
+    active: local
+
   mvc:
-    view: #뷰 리졸버. view 경로 및 확장자 지정하기. JSP를 뷰로 사용한다.  
+    view:
       prefix: /WEB-INF/views/
       suffix: .jsp
-
+        
 # datasource: #DB 접속이 1개만 있을 경우
 #   driver-class-name: oracle.jdbc.OracleDriver
 #  #url: jdbc:oracle:thin:@127.0.0.1:1521:xe
@@ -30,7 +30,7 @@ spring: # 주의할 점은 내용작성시 들여쓰기 내어쓰기시 공백�
     driver-class-name: oracle.jdbc.OracleDriver
    #url: jdbc:oracle:thin:@127.0.0.1:1521:xe
    #url: jdbc:oracle:thin:@//127.0.0.1:1521/xe  # oracle 12c 이후부터는 이렇게 하라고 함.
-    url: jdbc:oracle:thin:@211.63.89.70:1521/xe # 2개의 datasource 를 설정하려면 기본 스프링 부트 datasource 설정과는 다르게 url 로 되어있던 부분을 jdbcUrl 로 변경해야 한다. JavaConfig 를 통해 사용자가 직접 지정하여 데이터 소스를 구성할 경우 url 이 아닌 jdbcUrl 을 사용하기 때문이다.    
+    url: jdbc:oracle:thin:@211.63.89.70/xe # 2개의 datasource 를 설정하려면 기본 스프링 부트 datasource 설정과는 다르게 url 로 되어있던 부분을 jdbcUrl 로 변경해야 한다. JavaConfig 를 통해 사용자가 직접 지정하여 데이터 소스를 구성할 경우 url 이 아닌 jdbcUrl 을 사용하기 때문이다.    
     username: final_orauser2
     password: seven
     type: com.zaxxer.hikari.HikariDataSource
@@ -103,7 +103,7 @@ server:
     max-part-count: 30 
   port: 9089
   servlet:
-    #context-path: /Justsurviveoffice  # Spring Framework 에서는 WAS 톰캣서버를 더블클릭하여 context Path 를 수정하였으나 Spring Boot 에서는 여기에서 한다. context-path: 를 주석처리하면 context Path 가 없는 것이다.
+    context-path: /justsurviveoffice  # Spring Framework 에서는 WAS 톰캣서버를 더블클릭하여 context Path 를 수정하였으나 Spring Boot 에서는 여기에서 한다. context-path: 를 주석처리하면 context Path 가 없는 것이다.
                                     # context-path 를 /myspring 으로 주었으므로 Boot Dashboard 에 가서 myspring 에 마우스 우측클릭 Show Properties 에 클릭하여 General 에서 Path: 란에 myspring 을 입력해준다.  
     encoding:
       charset: UTF-8
