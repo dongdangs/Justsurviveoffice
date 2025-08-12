@@ -9,8 +9,7 @@ import com.spring.app.entity.Board;
 public interface BoardRepository extends JpaRepository<Board, Long> { 
 	
 	//내가 쓴 글
-    List<Board> findByFkIdOrderByCreatedAtBoardDesc(String fkId);
-
+	List<Board> findByUsers_IdOrderByCreatedAtBoardDesc(String id);
   
 
 

@@ -5,13 +5,17 @@ import com.spring.app.service.BoardService;
 import com.spring.app.service.UserService;
 import com.spring.app.users.domain.UsersDTO;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.spring.app.domain.BoardDTO;
 import com.spring.app.domain.BookMarkDTO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -63,22 +67,51 @@ public class MyPageController {
 
     // 회원 수정 
     @PostMapping("/update")
-    public String update(@ModelAttribute UsersDTO dto, HttpSession session) {
-        Users updated = userService.updateUser(dto);   
-        session.setAttribute("loginUser", updated);    
-        return "redirect:/mypage/info?updated=1";
+    public Map<String, Users> update(UsersDTO userDto) {
+        
+    	Users users = Users.builder()
+    			.name(userDto.getName())
+    			.email(userDto.getEmail())
+    			.mobile(userDto.getMobile())
+    			.password(userDto.getPassword())
+    			.build();
+    	
+    	Users user = userService.updateUser(users);
+    	
+    	Map<String, Users> map = new HashMap<>();
+    	map.put("users", user);
+    	
+    	return map;
     }
 
-    // 이메일 중복확인 (AJAX)
-//    @GetMapping("/email-dup")
-//    @ResponseBody
-//    public boolean emailDup(@RequestParam String email, HttpSession session) {
-//        // 로그인 체크 주석 처리
-////        Users me = (Users) session.getAttribute("loginUser");
-////        String myId = (me == null ? null : me.getId());
-//        
-//        String myId = "testUser"; // 임시 ID
-//        return userService.isEmailDuplicated(email, myId);
-//    }
+    
+    
+	// 회원탈퇴
+    @PostMapping("quit")
+    @ResponseBody
+    public Map<String, Integer> delete(@RequestParam(name="id") String id) {
+		int n = userService.delete(id);
+		
+		Map<String, Integer> map = new HashMap<>();
+		map.put("n", n);
+		
+		return map;
+	}
+    
+    // 이메일 중복확인
+    @GetMapping("/email-dup")
+    @ResponseBody
+    public Map<String, Object> emailDup(@RequestParam(name="email") String email,
+			    					                          HttpSession session){
+        Users loginUser = (Users) session.getAttribute("loginUser");
+        String myId = (loginUser != null ? loginUser.getId() : null);
+
+        boolean duplicated = userService.isEmailDuplicated(email);
+        return Map.of("duplicated", duplicated); // true면 중복, false면 사용가능
+    	
+    }
+    
+    
+    
     
 }

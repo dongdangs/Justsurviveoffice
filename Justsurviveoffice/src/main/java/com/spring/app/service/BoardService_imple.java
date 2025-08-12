@@ -23,24 +23,26 @@ public class BoardService_imple implements BoardService {
     
     // 내가 작성한 폼
     @Override
-    public List<BoardDTO> getBoardsByWriterId(String id) {
-        List<Board> board = boardRepository.findByFkIdOrderByCreatedAtBoardDesc(id);
-        return board.stream()
-                     .map(Board::toDTO)
-                     .toList();
+    public List<BoardDTO> getBoardsByWriterId(String fk_id) {
+        return boardRepository.findByUsers_IdOrderByCreatedAtBoardDesc(fk_id)
+                              .stream()
+                              .map(Board::toDTO)
+                              .toList();
     }
     
     
     // 북마크
 	@Override
-	public List<BookMarkDTO> getBookmarksById(String id) {
-		List<Bookmark> bookmark = bookMarkRepository.findByUsers_Id(id);
+	public List<BookMarkDTO> getBookmarksById(String fk_id) {
+		List<Bookmark> bookmark = bookMarkRepository.findByUsers_Id(fk_id);
 		
 
 		return bookmark.stream()
 				        .map(Bookmark::toDTO) // 엔티티 → DTO 변환
 				        .toList();
 	}
+
+	
 
     
     

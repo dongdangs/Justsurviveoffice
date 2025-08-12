@@ -42,25 +42,106 @@
         padding: 24px;
         box-shadow: 0 8px 24px rgba(0,0,0,.06);
     }
+    
+    .row{
+    	display:flex;
+    	align-items: stretch;
+   	}
+   	
+   	.sidebar,
+   	.content {
+   		height : 100% ;
+   	}
+   	
+   	
 </style>
 
 <script>
 $(function () {
-    // 로그아웃
-    $("#btnLogout").on("click", function(e) {
-        e.preventDefault();
-        if (confirm("정말 로그아웃 하시겠습니까?")) {
-            $("#logoutForm").submit();
-        }
-    });
+	// 로그아웃
+	$("#btnLogout").click(function(e){
+    e.preventDefault();
+    if(confirm("정말 로그아웃 하시겠습니까?")) {
+        $("#logoutForm").submit();
+    }
+	});
 
     // 회원탈퇴
     $("#btnQuit").on("click", function(e) {
         e.preventDefault();
-        if (confirm("정말 탈퇴를 진행하시겠습니까? (복구 불가)")) {
-            $("#quitForm").submit();
+        if(confirm("정말로 탈퇴하시겠습니까?")) {
+            $.ajax({
+                url: "<%= ctxPath%>/mypage/quit",
+                type: "post",
+                data: { "id": "${sessionScope.loginUser.id}" },
+                dataType: "json",
+                success: function(json) {
+                    if(json.n == 1) {
+                        alert("탈퇴되었습니다.");
+                        location.href = "<%= ctxPath%>/main";
+                    } else {
+                        alert("탈퇴실패");
+                    }
+                },
+                error: function(request, status, error) {
+                    alert("code: "+request.status+"\nmessage: "+request.responseText+"\nerror: "+error);
+                }
+            });
         }
     });
+
+    // 회원정보 수정
+    $("#btnUpdate").on("click", function(e) {
+        e.preventDefault();
+
+        // 비밀번호 체크
+        if($("#password").val() != $("#passwordCheck").val()) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return;
+        }
+
+        if(confirm("회원정보를 수정하시겠습니까?")) {
+            $("#editForm").submit();
+        }
+    });
+
+    // 비밀번호 일치 여부 체크
+    $("#password, #passwordCheck").on("keyup", function(){
+        let pw = $("#password").val();
+        let pwCheck = $("#passwordCheck").val();
+        if(pw && pwCheck) {
+            if(pw === pwCheck) {
+                $("#pwMatchMsg").text("비밀번호가 일치합니다.").css("color", "green");
+            } else {
+                $("#pwMatchMsg").text("비밀번호가 일치하지 않습니다.").css("color", "red");
+            }
+        } else {
+            $("#pwMatchMsg").text("");
+        }
+    });
+    
+    $("#btnEmailDup").on("click", function () {
+    	  const email = $("#email").val().trim();
+    	  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    	  if (!re.test(email)) {
+    	    alert("올바른 이메일 형식이 아닙니다.");
+    	    $("#email").focus();
+    	    return;
+    	  }
+
+    	  $.get("<%=ctxPath%>/mypage/email-dup", { email: email }, function (res) {
+    	    if (res.duplicated) {
+    	      emailOk = false;
+    	      alert("이미 사용 중인 이메일입니다.");
+    	    } else {
+    	      emailOk = true;
+    	      alert("사용 가능한 이메일입니다.");
+    	    }
+    	  }).fail(function () {
+    	    alert("중복확인 실패");
+    	  });
+    	});
+    
 });
 </script>
 </head>
@@ -69,14 +150,14 @@ $(function () {
     <div class="row">
 
         <!-- 사이드바 -->
-        <div class="col-lg-3 mb-4">
+        <div class="col-lg-3 mb-3">
             <h3 class="mb-1">MYPAGE</h3>
             <div class="sidebar text-center">
                 <img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
                 <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
                 <div class="mb-3">
                 	<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                    포인트 : <b>${sessionScope.loginUser.point}  point </b>
+                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
                 </div>
                 <hr>
                 <div class="sidebar-menu text-left">
@@ -145,13 +226,13 @@ $(function () {
                     </div>
 
                     <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-primary px-4">수정하기</button>
+                        <button type="submit" class="btn btn-primary px-4" id="btnUpdate">수정하기</button>
                     </div>
                 </form>
 
                 <!-- 숨은 폼: 로그아웃 & 탈퇴 POST 요청 -->
-                <form id="logoutForm" action="<%= ctxPath%>/logout" method="post" style="display:none;"></form>
-                <form id="quitForm" action="<%= ctxPath%>/quit" method="post" style="display:none;"></form>
+				<form id="logoutForm" action="<%=ctxPath%>/logout" method="post" style="display:none;"></form>
+                <form id="quitForm"  onclick="goDelte()"  method="post" style="display:none;"></form>
 
             </div>
         </div>

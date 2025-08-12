@@ -34,19 +34,41 @@ body { background: #f7f7fb; }
 </head>
 
 <script>
-$(function(){
-    $("#btnLogout").click(function(e){
-        e.preventDefault();
-        if(confirm("정말 로그아웃 하시겠습니까?")) {
-            location.href = "<%= ctxPath %>/logout";
+$(function () {
+  // 로그아웃
+  $("#btnLogout").on("click", function (e) {
+    e.preventDefault();
+    if (confirm("정말 로그아웃 하시겠습니까?")) {
+      $("#logoutForm").submit(); // POST 로그아웃
+    }
+  });
+
+  // 회원탈퇴
+  $("#btnQuit").on("click", function (e) {
+    e.preventDefault();
+    if (!confirm("정말로 탈퇴하시겠습니까?")) return;
+
+
+    $.ajax({
+      url: "<%= ctxPath %>/mypage/quit",
+      type: "post",
+      data: { id: "${sessionScope.loginUser.id}" },
+      dataType: "json",
+      success: function (json) {
+        if (json.n == 1) {
+          alert("탈퇴되었습니다.");
+          location.href = "<%= ctxPath %>/main";
+        } else {
+          alert("탈퇴 실패");
+          $btn.prop("disabled", false);
         }
+      },
+      error: function (request, status, error) {
+        alert("code: " + request.status + "\nmessage: " + request.responseText + "\nerror: " + error);
+        $btn.prop("disabled", false);
+      }
     });
-    $("#btnQuit").click(function(e){
-        e.preventDefault();
-        if(confirm("정말 탈퇴하시겠습니까? (복구 불가)")) {
-            location.href = "<%= ctxPath %>/quit";
-        }
-    });
+  });
 });
 </script>
 
@@ -60,7 +82,7 @@ $(function(){
                 <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
                 <div class="mb-3">
                		<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                    포인트 : <b>${sessionScope.loginUser.point}  point </b>
+                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
                 </div>
                 <hr>
                 <div class="sidebar-menu text-left">
@@ -106,8 +128,8 @@ $(function(){
                                             <fmt:formatDate value="${bm.createdAtBoard}" pattern="yyyy-MM-dd HH:mm" />
                                         </td>
                                         <td>
-                                            <a href="<%=ctxPath%>/board/view/${bm.boardNo}" class="btn btn-sm btn-outline-primary">바로가기</a>
-                                        </td>
+										  <a href="<%=ctxPath%>/board/view/${bm.boardNo}">${bm.boardName}</a>
+										</td>
                                     </tr>
                                 </c:forEach>
                             </tbody>
@@ -119,5 +141,9 @@ $(function(){
         </div>
     </div>
 </div>
+
+ 	<!-- 숨은 폼: 로그아웃  -->
+	<form id="logoutForm" action="<%=ctxPath%>/logout" method="post" style="display:none;"></form>
+
 </body>
 </html>
