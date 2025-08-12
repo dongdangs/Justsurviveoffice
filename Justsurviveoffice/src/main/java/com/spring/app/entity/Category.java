@@ -22,9 +22,8 @@ import lombok.ToString;
 public class Category {
 
 	@Id
-	@Column(name = "categoryNo", nullable = false)
+	@Column(name = "categoryno", nullable = false)
 	private int categoryNo;
 
-	
 	
 }

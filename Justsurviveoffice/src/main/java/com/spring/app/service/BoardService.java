@@ -2,8 +2,7 @@ package com.spring.app.service;
 
 import java.util.List;
 
-import com.spring.app.domain.BoardDTO;
-import com.spring.app.domain.BookMarkDTO;
+import com.spring.app.users.domain.*;
 
 public interface BoardService {
 	

@@ -3,19 +3,18 @@ package com.spring.app.controller;
 import com.spring.app.entity.Users;
 import com.spring.app.service.BoardService;
 import com.spring.app.service.UserService;
+import com.spring.app.users.domain.BoardDTO;
+import com.spring.app.users.domain.BookMarkDTO;
 import com.spring.app.users.domain.UsersDTO;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.spring.app.domain.BoardDTO;
-import com.spring.app.domain.BookMarkDTO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -84,8 +83,6 @@ public class MyPageController {
     	return map;
     }
 
-    
-    
 	// 회원탈퇴
     @PostMapping("quit")
     @ResponseBody

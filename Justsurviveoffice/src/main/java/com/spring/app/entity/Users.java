@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,21 +53,25 @@ public class Users {
   		    insertable = false, updatable = false)  
 	private LocalDateTime registerday;
 	
-	@Column(nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",
+	@Column(name = "passwordchanged",
+			nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",
 			insertable = false)
 	private LocalDateTime passwordChanged;
 	
-	@Column(nullable = false, columnDefinition = "NUMBER DEFAULT 0",
+	@Column(name = "isdormant",
+			nullable = false, columnDefinition = "NUMBER DEFAULT 0",
 			insertable = false)
 	private int isDormant;
 			
-	@Column(nullable = false, columnDefinition = "NUMBER DEFAULT 0",
+	@Column(name = "isdeleted",
+			nullable = false, columnDefinition = "NUMBER DEFAULT 0",
 			insertable = false)
 	private int isDeleted;
 	
 	@ManyToOne // 외래키 제약을 걸고 싶을 때 추가!
-	@JoinColumn(name = "fk_categoryNo", referencedColumnName = "categoryNo", nullable = true)
+	@JoinColumn(name = "FK_CATEGORYNO", referencedColumnName = "CATEGORYNO", nullable = true)
 	private Category category;
+
 	
 	
 	public UsersDTO toDTO() {

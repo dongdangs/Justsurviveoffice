@@ -2,7 +2,7 @@ package com.spring.app.entity;
 
 import java.time.LocalDateTime;
 
-import com.spring.app.domain.BoardDTO;
+import com.spring.app.users.domain.BoardDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

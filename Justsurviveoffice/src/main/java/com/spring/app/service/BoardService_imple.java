@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.spring.app.domain.BoardDTO;
-import com.spring.app.domain.BookMarkDTO;
+import com.spring.app.users.domain.BoardDTO;
+import com.spring.app.users.domain.BookMarkDTO;
 import com.spring.app.entity.Board;
 import com.spring.app.entity.Bookmark;
 import com.spring.app.model.BoardRepository;

@@ -77,10 +77,10 @@ $(function () {
                 dataType: "json",
                 success: function(json) {
                     if(json.n == 1) {
-                        alert("탈퇴되었습니다.");
+                        alert("탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다. ");
                         location.href = "<%= ctxPath%>/main";
                     } else {
-                        alert("탈퇴실패");
+                        alert("탈퇴에 실패하였습니다. ");
                     }
                 },
                 error: function(request, status, error) {
@@ -151,7 +151,7 @@ $(function () {
 
         <!-- 사이드바 -->
         <div class="col-lg-3 mb-3">
-            <h3 class="mb-1">MYPAGE</h3>
+            <!-- <h3 class="mb-2">MYPAGE</h3> -->
             <div class="sidebar text-center">
                 <img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
                 <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
@@ -171,7 +171,7 @@ $(function () {
         <!-- 메인 내용 -->
         <div class="col-lg-9">
             <div class="content">
-
+				
                 <!-- 탭 메뉴 -->
                 <ul class="nav nav-tabs mb-3">
                     <li class="nav-item">

@@ -28,10 +28,11 @@ import lombok.ToString;
 public class LoginHistory {
 
 	@Id
-	@Column(name = "loginHistoryNo", nullable = false)
+	@Column(name = "loginHistoryno", nullable = false)
 	private int loginHistoryNo;
 
-	@Column(nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",
+	@Column(name = "lastlogin",
+			nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",
 			insertable = false)
 	private LocalDateTime lastLogin;
 
