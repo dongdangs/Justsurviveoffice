@@ -1,11 +1,12 @@
 package com.spring.app.controller;
 
-import com.spring.app.domain.UsersDTO;
 import com.spring.app.entity.Users;
 import com.spring.app.service.BoardService;
 import com.spring.app.service.UserService;
+import com.spring.app.users.domain.UsersDTO;
 
 import java.util.List;
+
 import com.spring.app.domain.BoardDTO;
 import com.spring.app.domain.BookMarkDTO;
 

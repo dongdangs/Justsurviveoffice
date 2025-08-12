@@ -5,9 +5,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.spring.app.domain.UsersDTO;
 import com.spring.app.entity.Users;
 import com.spring.app.model.UsersRepository;
+import com.spring.app.users.domain.UsersDTO;
 
 import lombok.RequiredArgsConstructor;
 

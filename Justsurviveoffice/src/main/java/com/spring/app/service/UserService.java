@@ -1,7 +1,7 @@
 package com.spring.app.service;
 
-import com.spring.app.domain.UsersDTO;
 import com.spring.app.entity.Users;
+import com.spring.app.users.domain.UsersDTO;
 
 public interface UserService {
 
