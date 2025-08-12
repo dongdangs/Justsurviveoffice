@@ -1,5 +1,6 @@
 package com.spring.app.main.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.app.main.service.MainService;
@@ -46,8 +49,8 @@ public class MainController {
 		
 		/*
 		 * [{"questionNo": 1,"questionContent": "팀 프로젝트에서 당신의 역할은?", "options": [{
-		 * "optionNo": 10, "optionText": "리더가 좋다", "categoryNo": 1} ,{ "optionNo": 11,
-		 * "optionText": "서포터가 편하다", "categoryNo": 2} ] }]
+		 * "optionNo": 10, "optionText": "리더가 좋다"} ,{ "optionNo": 11,
+		 * "optionText": "서포터가 편하다"} ] }]
 		 */
 		JSONArray jsonArr = new JSONArray();	// [] 최종 리스트
 		JSONArray options = null;
@@ -77,7 +80,6 @@ public class MainController {
 			JSONObject option = new JSONObject();	// options에 넣을 {}
 			option.put("optionNo", surveyList.get(i).get("optionNo"));
 			option.put("optionText", surveyList.get(i).get("optionText"));
-			option.put("fk_categoryNo", surveyList.get(i).get("fk_categoryNo"));
 			
 			options.put(option);
 		}// end of for-----------------------
@@ -94,5 +96,31 @@ public class MainController {
 		return jsonArr.toString();
 	}
 	
+	
+	@PostMapping("submit")
+	@ResponseBody
+	public String submit(@RequestParam("answer_arr") List<Integer> answerArr) {
+		
+	//	System.out.println(answerArr);
+		
+		// ["categoryName":"MZ", "categoryImagePath ":"mz.png", "tags":["에어팟필수", "칼퇴", "딴생각장인", "지각러버"]]
+		
+		// 결과 계산은 나중에 만들겠습니다.
+		// 현재로서는 내용물 보여지게 여기에만 따로 작성 합니다.
+		JSONObject jsonObj = new JSONObject();	// {} 최종 오브젝트
+		
+		jsonObj.put("categoryName", "MZ");
+		jsonObj.put("categoryImagePath", "mz.png");
+		
+		JSONArray tagArr = new JSONArray();
+		tagArr.put("에어팟필수");
+		tagArr.put("칼퇴");
+		tagArr.put("딴생각장인");
+		tagArr.put("지각러버");
+		
+		jsonObj.put("tags", tagArr);
+		
+		return jsonObj.toString();
+	}
 	
 }

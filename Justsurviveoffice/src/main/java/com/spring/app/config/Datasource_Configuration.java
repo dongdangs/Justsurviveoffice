@@ -70,10 +70,11 @@ public class Datasource_Configuration {
     
 
 	// ====================== com.spring.app.config에 저희 mybatis 랑 JPA 프로젝트마다 2개의 클래스가 있는데 한개가 겹쳐서 해결법 찾는데 이렇게 추가하랍니다.(gpt)
-	@Bean(name = "transactionManager")
-	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
-		return new JpaTransactionManager(emf); 
-	}
+	/*
+	 * @Bean(name = "transactionManager") public PlatformTransactionManager
+	 * transactionManager(EntityManagerFactory emf) { return new
+	 * JpaTransactionManager(emf); }
+	 */
 	
     
 	
