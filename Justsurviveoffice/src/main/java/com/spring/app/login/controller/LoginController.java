@@ -14,7 +14,9 @@ import com.spring.app.mail.controller.GoogleMail;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -32,12 +34,13 @@ public class LoginController {
 	}
 	
 	@PostMapping("login")
-	public String loginEnd(@RequestParam(name="id") String Id, // form 태그의 name 속성값과 같은것이 매핑되어짐
+	public String loginEnd(@RequestParam(name="id") String id, // form 태그의 name 속성값과 같은것이 매핑되어짐
 						   @RequestParam(name="password") String Pwd, // form 태그의 name 속성값과 같은것이 매핑되어짐
-						   @RequestParam(name="remember-id") String rememberId,
-						   HttpServletRequest request) {
+						   @RequestParam(name="remember-id", defaultValue = "") String rememberId,
+						   HttpServletRequest request,
+						   HttpServletResponse response) {
 		
-		UsersDTO usersDto = userService.getUser(Id);
+		UsersDTO usersDto = userService.getUser(id);
 		
 		if(usersDto == null || !Pwd.equals(usersDto.getPassword()) ) {
 			
@@ -50,10 +53,23 @@ public class LoginController {
 		}
 		
 		// 세션에 로그인 사용자 정보 저장
-		if(rememberId != null) {
-			HttpSession session = request.getSession();
-			session.setAttribute("loginUser", usersDto);
-		}
+		HttpSession session = request.getSession();
+		session.setAttribute("loginUser", usersDto);
+		
+		// id 저장을 눌렀을 경우에만 쿠키세션에 저장하기.
+	    if(!rememberId.isEmpty()) {
+	        // ID를 쿠키에 저장 (7일간 유지)
+	        Cookie cookie = new Cookie("rememberId", id);
+	        cookie.setMaxAge(60 * 60 * 24 * 7); // 7일
+	        cookie.setPath("/"); // 전체 경로에서 사용 가능
+	        response.addCookie(cookie);
+	    } 
+	    else { // id 저장을 해제한 경우 기존 쿠키 삭제
+	        Cookie cookie = new Cookie("rememberId", "");
+	        cookie.setMaxAge(0); // 즉시 만료
+	        cookie.setPath("/");
+	        response.addCookie(cookie);
+	    }
 		
 		return "index"; // 인덱스 페이지로 이동
 	}
