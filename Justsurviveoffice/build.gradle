@@ -40,16 +40,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	
-<<<<<<< HEAD
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.1'
-	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
-    implementation 'javax.servlet:jstl' // JSTL 사용할 경우
-=======
 	// mongodb 관련
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
 	//implementation 'org.mongodb:mongodb-driver-sync'
 //	implementation 'org.mongodb:mongodb-driver-sync:5.2.1'
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 	
 	// == JSTL 관련 추가 시작 ==
 	// https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api
@@ -256,4 +250,3 @@ tasks.clean {
   다시 build 하거나 clean 할 때 (프로젝트 초기화를 위해 bash 사용시 ./gradlew clean 을 하면 build 디렉토리가 삭제됨) 
   위에서 생성한 QClass 생성경로 설정 폴더도 삭제함으로 QClass 파일들을 삭제함으로 깔끔하게 초기화 시켜줌
 */
-

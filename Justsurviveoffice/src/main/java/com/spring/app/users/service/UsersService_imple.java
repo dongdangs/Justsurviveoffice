@@ -5,8 +5,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.spring.app.entity.LoginHistory;
 import com.spring.app.entity.Users;
+import com.spring.app.model.HistoryRepository;
 import com.spring.app.model.UsersRepository;
+import com.spring.app.users.domain.LoginHistoryDTO;
 import com.spring.app.users.domain.UsersDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 public class UsersService_imple implements UsersService {
 
 	private final UsersRepository usersRepository;
+	private final HistoryRepository historyRepository;
+
 		
 	@Override
 	public UsersDTO getUser(String id) {
@@ -59,5 +64,32 @@ public class UsersService_imple implements UsersService {
 		usersRepository.save(user);  // JPA가 DB에 저장해줌
 	}
 
+
+	@Override
+	public Users toEntity(UsersDTO userDto) {
+	    return Users.builder()
+	            .id(userDto.getId())
+	            .password(userDto.getPassword())
+	            .build();
+	}
+
+	 @Override
+	 public void saveLoginHistory(LoginHistoryDTO loginHistoryDTO) {
+	        LoginHistory loginHistory = LoginHistory.builder()
+						                .lastLogin(loginHistoryDTO.getLastLogin())
+						                .ip(loginHistoryDTO.getIp())
+						                .users(loginHistoryDTO.getUsers())
+						                .build();
+
+	        historyRepository.save(loginHistory);
+	   }
+
+
+	  @Override
+	  public UsersDTO getIdFind(String name, String email) {
+	        return usersRepository.findByNameAndEmail(name.trim(), email.trim())
+	                .map(Users::toDTO) // Users 엔티티에 toDTO() 있다고 가정
+	                .orElse(null);
+	 }
 
 }

@@ -27,4 +27,11 @@ public class IndexController {
 		return "index";
 	}
 	
+	@GetMapping("users/list")
+	public String memberList() {
+		return "users/list";
+		//	/WEB-INF/views/users/list.jsp 파일을 만들어야 한다.
+	}
+	
+	
 }

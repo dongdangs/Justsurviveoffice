@@ -1,11 +1,15 @@
 package com.spring.app.login.controller;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.spring.app.users.domain.LoginHistoryDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -28,7 +32,7 @@ public class LoginController {
 	@PostMapping("login")
 	public String loginEnd(@RequestParam(name="id") String Id, // form 태그의 name 속성값과 같은것이 매핑되어짐
 						   @RequestParam(name="password") String Pwd, // form 태그의 name 속성값과 같은것이 매핑되어짐
-						   @RequestParam(name="remember-id") String rememberId,
+						   @RequestParam(name="remember-id", defaultValue ="") String rememberId,
 						   HttpServletRequest request) {
 		
 		UsersDTO usersDto = userService.getUser(Id);
@@ -44,10 +48,20 @@ public class LoginController {
 		}
 		
 		// 세션에 로그인 사용자 정보 저장
-		if(rememberId != null) {
-			HttpSession session = request.getSession();
-			session.setAttribute("loginUser", usersDto);
-		}
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("loginUser", usersDto);
+			
+		 // 로그인 기록 저장
+	    LoginHistoryDTO loginHistoryDTO = LoginHistoryDTO.builder()
+	                					.lastLogin(LocalDateTime.now())  // 현재 로그인 시간
+	                					.ip(request.getRemoteAddr())     // 접속 IP
+	                					.users(userService.toEntity(usersDto)) // DTO -> 엔티티 변환 메서드 필요
+	                					.build();
+
+	    userService.saveLoginHistory(loginHistoryDTO);
+
+		
 		
 		return "index"; // 인덱스 페이지로 이동
 	}
@@ -74,6 +88,24 @@ public class LoginController {
 	@GetMapping("idFind")
 	public String idFind() {
 		return "login/idFind";
+	}
+	
+	@PostMapping("idFind")
+	public String idFind(@RequestParam(name="name") String name, // form 태그의 name 속성값과 같은것이 매핑되어짐
+			   			 @RequestParam(name="email") String email,
+			   			 Model model,
+			   			 HttpServletRequest request) {
+//		
+	    UsersDTO usersDTO = userService.getIdFind(name, email);
+
+		String message = "없습니다 되었습니다.";
+		String loc = request.getContextPath()+"/";  // 시작 페이지로 이동
+	    
+	    if (usersDTO != null) {
+	        model.addAttribute("usersDTO", usersDTO.getId());
+	    } 
+
+	    return "login/idFind"; // 기존 뷰
 	}
 	
 	@GetMapping("pwdFind")

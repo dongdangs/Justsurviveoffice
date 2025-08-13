@@ -6,9 +6,12 @@ import com.spring.app.users.domain.LoginHistoryDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,10 +31,16 @@ import lombok.ToString;
 public class LoginHistory {
 
 	@Id
-	@Column(name = "loginHistoryno", nullable = false)
-	private int loginHistoryNo;
+	@SequenceGenerator(
+	  name = "SEQ_LOGIN_HISTORY_GENERATOR",
+	  sequenceName = "LOGIN_HISTORY_SEQ",
+	  allocationSize = 1
+	)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_LOGIN_HISTORY_GENERATOR")
+	@Column(name = "LOGINHISTORYNO", updatable = false, nullable = false)
+	private Long loginHistoryNo;
 
-	@Column(name = "lastlogin",
+	@Column(name = "LASTLOGIN",
 			nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",
 			insertable = false)
 	private LocalDateTime lastLogin;
@@ -40,7 +49,7 @@ public class LoginHistory {
 	private String ip;
 	
 	@ManyToOne // 외래키 제약을 걸고 싶을 때 추가!
-	@JoinColumn(name = "fk_id", referencedColumnName = "id", nullable = true)
+	@JoinColumn(name = "FK_ID", referencedColumnName = "id", nullable = true)
 	private Users users;
 
 	public LoginHistoryDTO toDTO() {

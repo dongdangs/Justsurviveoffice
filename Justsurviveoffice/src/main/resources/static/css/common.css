@@ -83,6 +83,7 @@ header {background: cadetblue;padding: 20px;display: flex;align-items: center;ju
     margin: 0;
     padding: 0;
     display: flex;
+    align-items:center;
   }
 
    #mainNav ul li {
@@ -102,6 +103,7 @@ header {background: cadetblue;padding: 20px;display: flex;align-items: center;ju
   }
   
   .mainUl {display:flex;align-items:center;}
+  .menuBox {display:flex;align-items:center;justify-content:space-between;}
 
   #searchFrm #searchID {position:relative;border-radius:30px;border:1px solid #ddd;text-indent:13px;}
   #searchFrm #searchID::placeholder {text-indent:13px;font-size:11pt;}
