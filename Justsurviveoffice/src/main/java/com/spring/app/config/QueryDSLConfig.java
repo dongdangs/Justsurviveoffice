@@ -47,3 +47,4 @@ public class QueryDSLConfig {
 		return new JpaTransactionManager(emf_dsl);
 	}
 }
+
