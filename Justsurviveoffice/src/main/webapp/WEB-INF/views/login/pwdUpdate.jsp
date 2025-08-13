@@ -35,7 +35,7 @@ body {background-color: #f5f3ff;background-image: url(https://img.freepik.com/fr
             value: pwd2
         }).appendTo(frm);
 
-        frm.action = "<%=ctxPath%>/login/passwordUpdate.do";
+        frm.action = "<%=ctxPath%>/login/passwordUpdate";
         frm.method = "POST";
         frm.submit();
     });
