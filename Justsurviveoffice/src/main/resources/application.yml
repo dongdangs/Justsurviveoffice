@@ -1,15 +1,27 @@
-spring:
+spring: # 주의할 점은 내용작성시 들여쓰기 내어쓰기시 공백개수를 반드시 꼭 지켜야 한다.
   application:
     name: Justsurviveoffice
 
-  profiles:
-    active: local
+  mail:
+    host: smtp.gmail.com
+    port: 9089
+    username: jangym@gmail.com
+    password: jym010321@
+    properties:
+      mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true  
+ 
+  profiles: #실행환경(dev(개발),test(테스트),local(로컬),prod(운영))
+    active: local 
 
   mvc:
-    view:
+    view: #뷰 리졸버. view 경로 및 확장자 지정하기. JSP를 뷰로 사용한다.  
       prefix: /WEB-INF/views/
       suffix: .jsp
-        
+
 # datasource: #DB 접속이 1개만 있을 경우
 #   driver-class-name: oracle.jdbc.OracleDriver
 #  #url: jdbc:oracle:thin:@127.0.0.1:1521:xe
@@ -26,45 +38,34 @@ spring:
 #     maximum-pool-size : 10 #최대 커넥션 개수 설정
 #     max-lifetime: 1800000  #커넥션 풀에서 살아있을 수 있는 커넥션의 최대 수명시간 1,800초(30분)    
 
-  datasource: #첫번째 DB 접속. 2개의 datasource 를 설정할때 이름을 다르게 해서 쓰되 _ 가 들어가면 작동안됨.
+  datasource-finalorauser2:
     driver-class-name: oracle.jdbc.OracleDriver
-   #url: jdbc:oracle:thin:@127.0.0.1:1521:xe
-   #url: jdbc:oracle:thin:@//127.0.0.1:1521/xe  # oracle 12c 이후부터는 이렇게 하라고 함.
-    url: jdbc:oracle:thin:@211.63.89.70/xe # 2개의 datasource 를 설정하려면 기본 스프링 부트 datasource 설정과는 다르게 url 로 되어있던 부분을 jdbcUrl 로 변경해야 한다. JavaConfig 를 통해 사용자가 직접 지정하여 데이터 소스를 구성할 경우 url 이 아닌 jdbcUrl 을 사용하기 때문이다.    
+    jdbc-url: jdbc:oracle:thin:@211.63.89.70:1521/xe
     username: final_orauser2
     password: seven
     type: com.zaxxer.hikari.HikariDataSource
-    hikari: #커넥션풀 
-      #driver-class-name: oracle.jdbc.OracleDriver
-      #jdbc-url: jdbc:oracle:thin:@127.0.0.1:1521:xe
-      #username: mymvc_user
-      #password: cclass
-      minimum-idle: 5        # 최소 유휴(쓰지 않고 놀리는 것) 커넥션 (5개)
-      maximum-pool-size: 10  # 최대 커넥션 개수 설정 (10개). pool 의 커넥션 수가 옵션 값(10개)에 도달하게 되면 idle 인 상태는 존재하지 않게 된다.  
-      idle-timeout: 30000    # 30초 후 연결 실패시 예외 발생 
-      max-lifetime: 1800000  # 커넥션 풀에서 살아있을 수 있는 커넥션의 최대 수명시간 1,800초(30분). 30분 이상 유지된 커넥션은 제거  
-      connection-timeout: 30000 # 클라이언트가 pool에 connection을 요청하는데 기다리는 최대시간을 설정 30초
-      
-      
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
 
-  datasource-hr: #두번째 DB 접속. 2개의 datasource 를 설정할때 이름을 다르게 해서 쓰되 _ 가 들어가면 작동안됨. 
-    driver-class-name: oracle.jdbc.OracleDriver
-   #url: jdbc:oracle:thin:@127.0.0.1:1521:xe
-   #url: jdbc:oracle:thin:@//127.0.0.1:1521/xe  # oracle 12c 이후부터는 이렇게 하라고 함.
-    jdbcUrl: jdbc:oracle:thin:@127.0.0.1:1521/xepdb1 # 2개의 datasource 를 설정하려면 기본 스프링 부트 datasource 설정과는 다르게 url 로 되어있던 부분을 jdbcUrl 로 변경해야 한다. JavaConfig 를 통해 사용자가 직접 지정하여 데이터 소스를 구성할 경우 url 이 아닌 jdbcUrl 을 사용하기 때문이다.    
-    username: hr
-    password: 1111
-    type: com.zaxxer.hikari.HikariDataSource
-    hikari: #커넥션풀 
-      #driver-class-name: oracle.jdbc.OracleDriver
-      #jdbc-url: jdbc:oracle:thin:@127.0.0.1:1521:xe
-      #username: hr
-      #password: cclass
-      minimum-idle: 5        # 최소 유휴(쓰지 않고 놀리는 것) 커넥션 (5개)
-      maximum-pool-size: 10  # 최대 커넥션 개수 설정 (10개). pool 의 커넥션 수가 옵션 값(10개)에 도달하게 되면 idle 인 상태는 존재하지 않게 된다.  
-      idle-timeout: 30000    # 30초 후 연결 실패시 예외 발생 
-      max-lifetime: 1800000  # 커넥션 풀에서 살아있을 수 있는 커넥션의 최대 수명시간 1,800초(30분). 30분 이상 유지된 커넥션은 제거  
-      connection-timeout: 30000 # 클라이언트가 pool에 connection을 요청하는데 기다리는 최대시간을 설정 30초
+      
+  jpa:
+    database-platform: org.hibernate.dialect.OracleDialect      # Spring Boot 3.2.1 버전 이후 부터는 JPA Provider가 적절한 Dialect 를 찾아내게 해주므로, 즉 설정을 명시하지 않아도 Oracle을 자동 인식해주므로 이를 명시적으로 지정하게 되면 오류가 발생하게 된다.  
+
+    hibernate:
+      ddl-auto: none
+
+    properties:
+      hibernate:
+        '[show_sql]': true         
+        '[format_sql]': true
+        '[use_sql_comments]': true
+
+    open-in-view: false
+
 
   #data: #=== (몽고DB) === 
     #mongodb:
@@ -103,9 +104,11 @@ server:
     max-part-count: 30 
   port: 9089
   servlet:
-    context-path: /justsurviveoffice  # Spring Framework 에서는 WAS 톰캣서버를 더블클릭하여 context Path 를 수정하였으나 Spring Boot 에서는 여기에서 한다. context-path: 를 주석처리하면 context Path 가 없는 것이다.
+    context-path: /justsurviveoffice # Spring Framework 에서는 WAS 톰캣서버를 더블클릭하여 context Path 를 수정하였으나 Spring Boot 에서는 여기에서 한다. context-path: 를 주석처리하면 context Path 가 없는 것이다.
                                     # context-path 를 /myspring 으로 주었으므로 Boot Dashboard 에 가서 myspring 에 마우스 우측클릭 Show Properties 에 클릭하여 General 에서 Path: 란에 myspring 을 입력해준다.  
     encoding:
       charset: UTF-8
       enabled: true #http 인코딩 지원을 활성화할지 여부
       force: true #post 방식으로 전송했을때 한글데이터가 안깨지도록 함. # Spring Framework 에서는 web.xml 파일에서 filter 태그를 등록시켜 주었음.
+      
+ 

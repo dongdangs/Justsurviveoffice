@@ -31,24 +31,6 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 
-<style type="text/css">
-
-	@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
-        
-    body {
-  		font-family: 'Noto Sans KR', sans-serif;
-  		background-image: url("<%= ctxPath%>/images/background.png");
-    	background-size: cover;
-    	background-position: center;
-    	background-attachment: fixed;
-    	background-blend-mode: overlay;
-	}
-	
-    .backdrop-blur {
-        backdrop-filter: blur(8px);
-    }
-	
-</style>
 
 <script type="text/javascript">
 
@@ -112,7 +94,7 @@
 		frm.action = "<%=ctxPath%>/login/passwordFind";
 		frm.method = "POST";
 		frm.submit();
-	  	}
+	  }
 
 		function form_reset_empty() {
 			document.querySelector('form[name="pwFindFrm"]').reset();
@@ -133,13 +115,28 @@
 	    frm.userCertificationCode.value = input_confirmCode;
 	    frm.id.value = $('form[name="pwFindFrm"] input[name="id"]').val();
 	
-	    frm.action = "<%= ctxPath%>/login/verifyCertification.do";
+	    frm.action = "<%= ctxPath%>/login/verifyCertification";
 	    frm.method = "post";
 	    frm.submit();
 	});
 
 </script>
 
+<style type="text/css">
+        
+    body {
+  		background-image: url("<%= ctxPath%>/images/background.png");
+    	background-size: cover;
+    	background-position: center;
+    	background-attachment: fixed;
+    	background-blend-mode: overlay;
+	}
+	
+    .backdrop-blur {
+        backdrop-filter: blur(8px);
+    } 
+	
+</style>
 
 </head>
 

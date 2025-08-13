@@ -124,3 +124,8 @@ select *
 from users;
 
 desc users;
+
+
+update users set email='dbals010321@naver.com' where id='jangym';
+
+commit;
