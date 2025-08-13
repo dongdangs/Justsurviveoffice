@@ -23,7 +23,7 @@ public class Category {
 
 	@Id
 	@Column(name = "categoryno", nullable = false)
-	private int categoryNo;
+	private Long categoryNo;
 
 	
 }

@@ -42,7 +42,7 @@
         <li><a href="<%=ctxPath%>/login/loginForm">로그인</a></li>
       </c:if>
       <c:if test="${not empty sessionScope.loginUser && sessionScope.loginUser.id == 'admin'}">
-        <li><a href="<%=ctxPath%>/admin">관리자 페이지</a></li>
+        <li><a href="<%=ctxPath%>/admin/usersList">관리자 페이지</a></li>
         <li><a href="<%=ctxPath%>/login/logout">로그아웃</a></li>
       </c:if>
       <c:if test="${not empty sessionScope.loginUser && sessionScope.loginUser.id != 'admin'}">
