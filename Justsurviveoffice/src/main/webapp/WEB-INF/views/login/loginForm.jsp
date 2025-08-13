@@ -48,6 +48,14 @@
 
 	$(function(){
 		
+		// 로그인 저장 아이디 복원
+	    const loginid = localStorage.getItem('saveid');
+	    if (loginid != null) {
+	        $('input#id').val(loginid);
+	        $('#saveid').prop("checked", true);
+	    }
+	    
+	    
 		$(document).on("click", "button[name='loginSubmit']", function (){
 			func_Login();
 		 });
@@ -103,6 +111,12 @@
 			 return; // 종료 
 		  }
 		  
+	   	  if($('input#saveid').prop('checked')) {
+			 // 아이디 저장을 체크했다면,
+			 localStorage.setItem('saveid', $("input#id").val());
+	  	  } 	// 로컬스토리지에 해당 값을 남기겠다는 것.
+		  else localStorage.removeItem('saveid'); // 해제 시 삭제.
+	  
 		  const frm = document.loginFrm;
 		  
 		  frm.action = "<%= ctxPath%>/login/login";
@@ -135,8 +149,8 @@
                 
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <input id="remember-id" name="remember-id" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                        <label for="remember-id" class="ml-2 block text-sm text-gray-700">아이디 저장</label>
+                        <input id="saveid" name="saveid" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <label for="saveid" class="ml-2 block text-sm text-gray-700">아이디 저장</label>
                     </div>
                     
                     <div class="text-sm">
