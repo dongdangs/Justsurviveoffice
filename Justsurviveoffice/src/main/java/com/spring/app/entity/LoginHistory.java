@@ -29,7 +29,7 @@ public class LoginHistory {
 
 	@Id
 	@Column(name = "loginHistoryno", nullable = false)
-	private Long loginHistoryNo;
+	private int loginHistoryNo;
 
 	@Column(name = "lastlogin",
 			nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",

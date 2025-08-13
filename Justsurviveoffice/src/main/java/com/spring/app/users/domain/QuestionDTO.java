@@ -17,7 +17,7 @@ import lombok.Setter;
 @Builder
 public class QuestionDTO {
 
-	private int questionNo;
+	private Long questionNo;
 
 	private String questionContent;
 

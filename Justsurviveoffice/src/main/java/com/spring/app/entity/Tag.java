@@ -33,7 +33,7 @@ public class Tag {
 	@Column(name="tagNo", columnDefinition = "NUMBER") 
 	@SequenceGenerator(name="Tag_SEQ_GENERATOR", sequenceName = "tag_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Tag_SEQ_GENERATOR")
-	private int tagNo;
+	private Long tagNo;
 
 	@Column(name="tagName", nullable = false, length = 50, updatable = false)
 	private String tagName;
