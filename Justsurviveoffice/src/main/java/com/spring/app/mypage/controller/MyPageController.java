@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor // final 인스턴스 생성자 처리해주기
 @Controller
 @RequestMapping("mypage/")
-public class MyinfoController {
+public class MypageController {
 
 	private final UsersService service;
 	
