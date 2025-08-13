@@ -33,7 +33,7 @@ import lombok.ToString;
 public class Board {
 	
 	@Id
-	@Column(name="boardNo", columnDefinition = "NUMBER") 
+	@Column(name="boardno", columnDefinition = "NUMBER") 
 	@SequenceGenerator(name="BOARD_SEQ_GENERATOR", sequenceName = "board_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOARD_SEQ_GENERATOR")
 	private long boardNo;
@@ -42,19 +42,19 @@ public class Board {
     @JoinColumn(name = "fk_categoryNo", referencedColumnName = "categoryNo", nullable = false)
     private Category category; // Category 엔티티와 연결
 	
-	@Column(name="boardName", nullable = false, length = 255, updatable = false)
+	@Column(name="boardname", nullable = false, length = 255, updatable = false)
 	private String boardName;
 	
-	@Column(name="boardContent", nullable = false, length = 1000, updatable = false)
+	@Column(name="boardcontent", nullable = false, length = 1000, updatable = false)
 	private String boardContent;
 	
-	@Column(name="CREATEDATBOARD", nullable = false, updatable = false) // 이 필드는 UPDATE 는 할 수 없도록 제외시킴. 즉, 한번 데이터 입력 후 reg_date 컬럼의 값은 수정 불가라는 뜻이다.
+	@Column(name="createdatboard", nullable = false, updatable = false) // 이 필드는 UPDATE 는 할 수 없도록 제외시킴. 즉, 한번 데이터 입력 후 reg_date 컬럼의 값은 수정 불가라는 뜻이다.
 	private LocalDateTime createdAtBoard;
 	
-	@Column(name = "UPDATEDATBOARD", nullable = false)
+	@Column(name = "updatedatboard", nullable = false)
 	private LocalDateTime updatedAtBoard;
 	
-	@Column(name = "READCOUNT" ,nullable = false, columnDefinition = "NUMBER DEFAULT 0", insertable = false, updatable = false) // 이 필드는 columnDefinition = "NUMBER DEFAULT 0" 으로 되어 있어서 INSERT 시 제외시켜도 괜찮음. 또한 UPDATE 도 할 수 없도록 제외시킴.
+	@Column(name = "readcount" ,nullable = false, columnDefinition = "NUMBER DEFAULT 0", insertable = false, updatable = false) // 이 필드는 columnDefinition = "NUMBER DEFAULT 0" 으로 되어 있어서 INSERT 시 제외시켜도 괜찮음. 또한 UPDATE 도 할 수 없도록 제외시킴.
 	private int readCount;
 	
 
@@ -62,13 +62,13 @@ public class Board {
 	private String fkId;
 	
 
-	@Column(nullable = false, length = 500)
+	@Column(name="boardfilename" ,nullable = false, length = 500)
 	private String boardFileName;
 	
-	@Column(nullable = false, length = 500)
+	@Column(name="boardfileoriginname",nullable = false, length = 500)
 	private String boardFileOriginName;
 
-	@Column(nullable = false, columnDefinition = "NUMBER DEFAULT 0", insertable = false, updatable = false) // 이 필드는 columnDefinition = "NUMBER DEFAULT 0" 으로 되어 있어서 INSERT 시 제외시켜도 괜찮음. 또한 UPDATE 도 할 수 없도록 제외시킴.
+	@Column(name="boarddeleted",nullable = false, columnDefinition = "NUMBER DEFAULT 0", insertable = false, updatable = false) // 이 필드는 columnDefinition = "NUMBER DEFAULT 0" 으로 되어 있어서 INSERT 시 제외시켜도 괜찮음. 또한 UPDATE 도 할 수 없도록 제외시킴.
 	private int boardDeleted;
 	
 	

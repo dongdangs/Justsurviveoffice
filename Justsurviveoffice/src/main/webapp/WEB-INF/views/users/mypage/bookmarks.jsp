@@ -82,7 +82,7 @@ $(function () {
                 <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
                 <div class="mb-3">
                		<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
+                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/></b>
                 </div>
                 <hr>
                 <div class="sidebar-menu text-left">

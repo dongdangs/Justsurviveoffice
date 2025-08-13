@@ -29,12 +29,12 @@ import lombok.ToString;
 public class Options {
 	
 	@Id
-	@Column(name="optionNo", columnDefinition = "NUMBER") 
+	@Column(name="optionno", columnDefinition = "NUMBER") 
 	@SequenceGenerator(name="Option_SEQ_GENERATOR", sequenceName = "options_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Option_SEQ_GENERATOR")
 	private int optionNo;
 	
-	@Column(name="optionText", nullable = false, length = 200, updatable = false)
+	@Column(name="optiontext", nullable = false, length = 200, updatable = false)
 	private String optionText;
 	
   @ManyToOne

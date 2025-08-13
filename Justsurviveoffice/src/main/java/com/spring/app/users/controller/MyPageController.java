@@ -1,4 +1,4 @@
-package com.spring.app.controller;
+package com.spring.app.users.controller;
 
 import com.spring.app.entity.Users;
 import com.spring.app.service.BoardService;
@@ -31,38 +31,35 @@ public class MyPageController {
 
     @GetMapping("info")
     public String info() {
-    	return "/mypage/info";
+		return "users/mypage/info";
     }
 
     // 작성한 폼 
     @GetMapping("forms")    
     public String myBoardList(HttpSession session, Model model) {
         // 로그인 체크 주석 처리
-//        Users loginUser = (Users) session.getAttribute("loginUser");
-//        if (loginUser == null) {
-//            return "redirect:/login";
-//        }
+        Users loginUser = (Users) session.getAttribute("loginUser");
+        if (loginUser == null) {
+    		return "login/loginForm";
+        }
 
-        // 임시 테스트용 데이터 (나중에 로그인 완성되면 삭제)
-        String testUserId = "testUser";  
-        List<BoardDTO> myBoardList = boardService.getBoardsByWriterId(testUserId);
+        List<BoardDTO> myBoardList = boardService.getBoardsByWriterId(loginUser.getId());
         model.addAttribute("myBoards", myBoardList);
-        return "mypage/forms";
+        return "users/mypage/forms";
     }
 
     // 북마크
     @GetMapping("bookmarks")
     public String myBookmarks(HttpSession session, Model model) {
         // 로그인 체크 주석 처리
-//        Users loginUser = (Users) session.getAttribute("loginUser");
-//        if (loginUser == null) {
-//            return "redirect:/login";
-//        }
+        Users loginUser = (Users) session.getAttribute("loginUser");
+        if (loginUser == null) {
+    		return "login/loginForm";
+        }
 
-        String testUserId = "testUser";  
-        List<BookMarkDTO> bookmarks = boardService.getBookmarksById(testUserId);
+        List<BookMarkDTO> bookmarks = boardService.getBookmarksById(loginUser.getId());
         model.addAttribute("myBookmarks", bookmarks);
-        return "mypage/bookmarks";
+        return "users/mypage/bookmarks";
     }
 
     // 회원 수정 
@@ -97,7 +94,7 @@ public class MyPageController {
 	}
     
     // 이메일 중복확인
-    @GetMapping("/email-dup")
+    @GetMapping("/emailDuplicate")
     @ResponseBody
     public Map<String, Object> emailDup(@RequestParam(name="email") String email,
 			    					                          HttpSession session){

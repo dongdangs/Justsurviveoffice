@@ -2,6 +2,7 @@ package com.spring.app.service;
 
 import java.util.List;
 
+import com.spring.app.entity.Users;
 import com.spring.app.users.domain.*;
 
 public interface BoardService {
@@ -11,6 +12,7 @@ public interface BoardService {
 
 	//북마크
 	List<BookMarkDTO> getBookmarksById(String fk_id);
+
 
 
 	

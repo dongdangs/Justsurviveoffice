@@ -33,29 +33,29 @@ import lombok.ToString;
 public class Comment {
 
 	@Id
-	@Column(name="commentNo", columnDefinition = "NUMBER") 
+	@Column(name="commentno", columnDefinition = "NUMBER") 
 	@SequenceGenerator(name="Comment_SEQ_GENERATOR", sequenceName = "comment_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Comment_SEQ_GENERATOR")
 	private int commentNo;
 
-	@Column(nullable = false, length = 1000)
+	@Column(name="content",nullable = false, length = 1000)
 	private String content;
 	
-	@Column(nullable = false) // int형은 자동으로 0이 디폴트값임!!
+	@Column(name="parentno" ,nullable = false) // int형은 자동으로 0이 디폴트값임!!
 	private int parentNo;
 	
-	@Column(name = "createdAtComment",
+	@Column(name = "createdatcomment",
 			nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",
 			insertable = false)
 	private LocalDateTime createdAtComment;
 	
 	
-	@Column(name = "updateAtComment",
+	@Column(name = "updateatcomment",
 			nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",
 			insertable = false)
 	private LocalDateTime updateAtComment;
 	
-	@Column(nullable = false, length = 30)
+	@Column(name="fk_name",nullable = false, length = 30)
 	private String fk_name;
 	
 	@ManyToOne // 외래키 제약을 걸고 싶을 때 추가!

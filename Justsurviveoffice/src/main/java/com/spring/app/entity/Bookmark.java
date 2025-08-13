@@ -32,7 +32,7 @@ import lombok.ToString;
 public class Bookmark {
 
 	  	@Id
-		@Column(name="bookmarkNo", columnDefinition = "NUMBER") 
+		@Column(name="bookmarkno", columnDefinition = "NUMBER") 
 		@SequenceGenerator(name="BOOKMARK_SEQ_GENERATOR", sequenceName = "bookmark_seq", allocationSize = 1)
 		@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOOKMARK_SEQ_GENERATOR")
 	  	private int bookmarkNo;
@@ -41,10 +41,10 @@ public class Bookmark {
 		private String fk_id;
 		
 
-		@Column(name="fk_boardNo", columnDefinition = "NUMBER") 
+		@Column(name="fk_boardno", columnDefinition = "NUMBER") 
 		private int fk_boardNo;
 		
-		@Column(name="createAtMark", nullable = false, updatable = false)
+		@Column(name="createatmark", nullable = false, updatable = false)
 		private LocalDateTime createdAtMark;	
 	    
 	 // 연관관계 정의
@@ -53,7 +53,7 @@ public class Bookmark {
 		private Users users; 
 		
 		@ManyToOne
-		@JoinColumn(name = "fk_boardNo", referencedColumnName = "boardNo", insertable=false, updatable=false) 
+		@JoinColumn(name = "fk_boardno", referencedColumnName = "boardNo", insertable=false, updatable=false) 
 		private Board board; 
 		
 		
