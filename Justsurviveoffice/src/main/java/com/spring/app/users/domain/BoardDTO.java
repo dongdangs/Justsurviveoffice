@@ -19,7 +19,7 @@ public class BoardDTO {
 
 	private Long boardNo;
 
-	private int fk_categoryNo;
+	private Long fk_categoryNo;
 
 	private String boardName;
 

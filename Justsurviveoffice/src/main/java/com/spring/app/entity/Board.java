@@ -36,10 +36,10 @@ public class Board {
 	@Column(name="boardno", columnDefinition = "NUMBER") 
 	@SequenceGenerator(name="BOARD_SEQ_GENERATOR", sequenceName = "board_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOARD_SEQ_GENERATOR")
-	private long boardNo;
+	private Long boardNo;
 	
-	 @ManyToOne
-    @JoinColumn(name = "fk_categoryNo", referencedColumnName = "categoryNo", nullable = false)
+	@ManyToOne
+    @JoinColumn(name = "fk_categoryno", referencedColumnName = "categoryNo", nullable = false)
     private Category category; // Category 엔티티와 연결
 	
 	@Column(name="boardname", nullable = false, length = 255, updatable = false)

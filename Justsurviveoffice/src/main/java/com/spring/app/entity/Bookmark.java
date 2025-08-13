@@ -35,14 +35,14 @@ public class Bookmark {
 		@Column(name="bookmarkno", columnDefinition = "NUMBER") 
 		@SequenceGenerator(name="BOOKMARK_SEQ_GENERATOR", sequenceName = "bookmark_seq", allocationSize = 1)
 		@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOOKMARK_SEQ_GENERATOR")
-	  	private int bookmarkNo;
+	  	private Long bookmarkNo;
 	  	
 		@Column(name="fk_id", nullable = false, length = 50, updatable = false)
 		private String fk_id;
 		
 
 		@Column(name="fk_boardno", columnDefinition = "NUMBER") 
-		private int fk_boardNo;
+		private Long fk_boardNo;
 		
 		@Column(name="createatmark", nullable = false, updatable = false)
 		private LocalDateTime createdAtMark;	

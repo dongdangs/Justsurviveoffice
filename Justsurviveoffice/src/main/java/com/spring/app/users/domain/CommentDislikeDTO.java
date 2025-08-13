@@ -16,6 +16,6 @@ public class CommentDislikeDTO {
 	
 	private String fk_id;
 
-	private int fk_commentNo;
+	private Long fk_commentNo;
 
 }

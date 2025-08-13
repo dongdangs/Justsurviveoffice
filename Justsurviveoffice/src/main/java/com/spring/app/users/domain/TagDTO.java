@@ -17,11 +17,11 @@ import lombok.Setter;
 @Builder
 public class TagDTO {
 
-	private int tagNo;
+	private Long tagNo;
 
 	private String tagName;
 	
-	private int fk_categoryNo;
+	private Long fk_categoryNo;
 
 
 	private Category category;

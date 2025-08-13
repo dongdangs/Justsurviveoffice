@@ -32,7 +32,7 @@ public class Options {
 	@Column(name="optionno", columnDefinition = "NUMBER") 
 	@SequenceGenerator(name="Option_SEQ_GENERATOR", sequenceName = "options_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Option_SEQ_GENERATOR")
-	private int optionNo;
+	private Long optionNo;
 	
 	@Column(name="optiontext", nullable = false, length = 200, updatable = false)
 	private String optionText;

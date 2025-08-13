@@ -31,7 +31,7 @@ public class Question {
 	@Column(name="questionNo", columnDefinition = "NUMBER") 
 	@SequenceGenerator(name="Question_SEQ_GENERATOR", sequenceName = "question_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Question_SEQ_GENERATOR")
-	private int questionNo;
+	private Long questionNo;
 	
 	@Column(nullable = false, length = 255)
 	private String questionContent;

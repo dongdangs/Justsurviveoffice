@@ -15,11 +15,11 @@ import lombok.Setter;
 @Builder
 public class BookMarkDTO {
 
-	private int bookmarkNo;
+  	private Long bookmarkNo;
 
 	private String fk_id;
 
-	private int fk_boardNo;
+	private Long fk_boardNo;
 
 	private LocalDateTime createdAtMark;
 	

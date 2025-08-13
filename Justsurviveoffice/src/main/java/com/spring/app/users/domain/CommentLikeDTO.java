@@ -19,6 +19,6 @@ public class CommentLikeDTO {
 	
 	private String fk_id;
 
-	private int fk_commentNo;
+	private Long fk_commentNo;
 
 }

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -38,8 +38,8 @@ public class MyPageController {
     @GetMapping("forms")    
     public String myBoardList(HttpSession session, Model model) {
         // 로그인 체크 주석 처리
-        Users loginUser = (Users) session.getAttribute("loginUser");
-        if (loginUser == null) {
+    	UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+    	if (loginUser == null) {
     		return "login/loginForm";
         }
 
@@ -52,7 +52,7 @@ public class MyPageController {
     @GetMapping("bookmarks")
     public String myBookmarks(HttpSession session, Model model) {
         // 로그인 체크 주석 처리
-        Users loginUser = (Users) session.getAttribute("loginUser");
+    	UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         if (loginUser == null) {
     		return "login/loginForm";
         }
@@ -106,7 +106,7 @@ public class MyPageController {
     	
     }
     
-    
+   
     
     
 }

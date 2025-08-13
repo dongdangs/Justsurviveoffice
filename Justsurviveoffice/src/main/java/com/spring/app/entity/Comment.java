@@ -36,7 +36,7 @@ public class Comment {
 	@Column(name="commentno", columnDefinition = "NUMBER") 
 	@SequenceGenerator(name="Comment_SEQ_GENERATOR", sequenceName = "comment_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Comment_SEQ_GENERATOR")
-	private int commentNo;
+	private Long commentNo;
 
 	@Column(name="content",nullable = false, length = 1000)
 	private String content;

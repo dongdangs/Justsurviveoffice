@@ -18,7 +18,7 @@ import lombok.Setter;
 @Builder
 public class CommentDTO {
 	
-	private int commentNo;
+	private Long commentNo;
 
 	private String fk_id;
 
@@ -30,7 +30,7 @@ public class CommentDTO {
 
 	private  LocalDateTime updateAtComment;
 
-	private int fk_boardNo;
+	private Long fk_boardNo;
 
 	private int parentNo;
 	

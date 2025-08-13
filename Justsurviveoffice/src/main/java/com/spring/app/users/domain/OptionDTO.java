@@ -19,13 +19,13 @@ import lombok.Setter;
 public class OptionDTO {
 
 	
-	private int optionNo;
+	private Long optionNo;
 
-	private int fk_questionNo;
+	private Long fk_questionNo;
 
 	private String optionText;
 
-	private int fk_categoryNo;
+	private Long fk_categoryNo;
 	
 	private Question question;
 	
