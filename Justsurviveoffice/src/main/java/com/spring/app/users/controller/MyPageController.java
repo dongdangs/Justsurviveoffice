@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -63,7 +62,7 @@ public class MyPageController {
     }
 
     // 회원 수정 
-    @PostMapping("/update")
+    @PostMapping("update")
     public Map<String, Users> update(UsersDTO userDto) {
         
     	Users users = Users.builder()
@@ -84,21 +83,21 @@ public class MyPageController {
 	// 회원탈퇴
     @PostMapping("quit")
     @ResponseBody
-    public Map<String, Integer> delete(@RequestParam(name="id") String id) {
-		int n = userService.delete(id);
-		
-		Map<String, Integer> map = new HashMap<>();
-		map.put("n", n);
-		
-		return map;
-	}
+    public Map<String, Integer> delete(@RequestParam(name="id") String id, HttpSession session) {
+        int n = userService.delete(id);
+        if (n == 1) {
+            session.invalidate(); // 로그아웃 처리
+        }
+        return Map.of("n", n);
+    }
+    
     
     // 이메일 중복확인
-    @GetMapping("/emailDuplicate")
+    @GetMapping("emailDuplicate")
     @ResponseBody
     public Map<String, Object> emailDup(@RequestParam(name="email") String email,
 			    					                          HttpSession session){
-        Users loginUser = (Users) session.getAttribute("loginUser");
+    	UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         String myId = (loginUser != null ? loginUser.getId() : null);
 
         boolean duplicated = userService.isEmailDuplicated(email);
