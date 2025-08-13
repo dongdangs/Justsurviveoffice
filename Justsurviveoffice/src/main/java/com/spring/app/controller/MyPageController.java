@@ -21,20 +21,21 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/mypage/")
+@RequestMapping("mypage/")
 public class MyPageController {
 
     private final UserService userService;
     private final BoardService boardService; 
 
     // 내정보 화면 (필요시)
+
     @GetMapping("info")
     public String info() {
-    	return "mypage/mypage";
+    	return "/mypage/info";
     }
 
     // 작성한 폼 
-    @GetMapping("/forms")    
+    @GetMapping("forms")    
     public String myBoardList(HttpSession session, Model model) {
         // 로그인 체크 주석 처리
 //        Users loginUser = (Users) session.getAttribute("loginUser");
@@ -50,7 +51,7 @@ public class MyPageController {
     }
 
     // 북마크
-    @GetMapping("/bookmarks")
+    @GetMapping("bookmarks")
     public String myBookmarks(HttpSession session, Model model) {
         // 로그인 체크 주석 처리
 //        Users loginUser = (Users) session.getAttribute("loginUser");

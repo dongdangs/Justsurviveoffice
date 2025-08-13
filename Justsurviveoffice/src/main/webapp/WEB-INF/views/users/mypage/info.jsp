@@ -71,16 +71,16 @@ $(function () {
         e.preventDefault();
         if(confirm("정말로 탈퇴하시겠습니까?")) {
             $.ajax({
-                url: "<%= ctxPath%>/mypage/quit",
+                url: "<%= ctxPath%>/mypage/usersDelete",
                 type: "post",
                 data: { "id": "${sessionScope.loginUser.id}" },
                 dataType: "json",
                 success: function(json) {
                     if(json.n == 1) {
-                        alert("탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다. ");
+                        alert("탈퇴되었습니다.");
                         location.href = "<%= ctxPath%>/main";
                     } else {
-                        alert("탈퇴에 실패하였습니다. ");
+                        alert("탈퇴실패");
                     }
                 },
                 error: function(request, status, error) {
@@ -129,7 +129,7 @@ $(function () {
     	    return;
     	  }
 
-    	  $.get("<%=ctxPath%>/mypage/email-dup", { email: email }, function (res) {
+    	  $.get("<%=ctxPath%>/mypage/emailDuplicate", { email: email }, function (res) {
     	    if (res.duplicated) {
     	      emailOk = false;
     	      alert("이미 사용 중인 이메일입니다.");
@@ -151,13 +151,13 @@ $(function () {
 
         <!-- 사이드바 -->
         <div class="col-lg-3 mb-3">
-            <!-- <h3 class="mb-2">MYPAGE</h3> -->
+            <h3 class="mb-1">MYPAGE</h3>
             <div class="sidebar text-center">
                 <img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
                 <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
                 <div class="mb-3">
                 	<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/></b>
+                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
                 </div>
                 <hr>
                 <div class="sidebar-menu text-left">
@@ -171,11 +171,11 @@ $(function () {
         <!-- 메인 내용 -->
         <div class="col-lg-9">
             <div class="content">
-				
+
                 <!-- 탭 메뉴 -->
                 <ul class="nav nav-tabs mb-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="<%= ctxPath%>/users/mypage/info">내 정보</a>
+                        <a class="nav-link active" href="<%= ctxPath%>/mypage/info">내 정보</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<%= ctxPath%>/mypage/forms">작성한 폼</a>
