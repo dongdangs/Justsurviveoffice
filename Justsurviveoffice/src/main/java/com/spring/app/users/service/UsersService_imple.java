@@ -44,9 +44,9 @@ public class UsersService_imple implements UsersService {
 			
 				try {
 					usersDto = users.toDTO();
+					System.out.println(usersDto.getId());
 					System.out.println(Sha256.encrypt(Pwd));
 					// usersDto.setPassword(Sha256.encrypt(Pwd));
-					
 				} catch (Exception e) {	
 					e.printStackTrace();
 				}
