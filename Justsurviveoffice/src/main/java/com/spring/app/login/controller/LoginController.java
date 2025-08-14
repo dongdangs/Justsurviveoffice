@@ -50,22 +50,7 @@ public class LoginController {
 		HttpSession session = request.getSession();
 		session.setAttribute("loginUser", usersDto);
 		
-		// id 저장을 눌렀을 경우에만 쿠키세션에 저장하기.
-	    if(!rememberId.isEmpty()) {
-	        // ID를 쿠키에 저장 (7일간 유지)
-	        Cookie cookie = new Cookie("rememberId", id);
-	        cookie.setMaxAge(60 * 60 * 24 * 7); // 7일
-	        cookie.setPath("/"); // 전체 경로에서 사용 가능
-	        response.addCookie(cookie);
-	    } 
-	    else { // id 저장을 해제한 경우 기존 쿠키 삭제
-	        Cookie cookie = new Cookie("rememberId", "");
-	        cookie.setMaxAge(0); // 즉시 만료
-	        cookie.setPath("/");
-	        response.addCookie(cookie);
-	    }
-		
-		return "index"; // 인덱스 페이지로 이동
+		return "redirect:/index"; // 인덱스 페이지로 이동
 	}
 	
 	@GetMapping("logout")
