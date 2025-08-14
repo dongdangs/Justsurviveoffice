@@ -1,3 +1,4 @@
+
 package com.spring.app.config;
 
 import org.springframework.context.annotation.Bean;
@@ -47,3 +48,4 @@ public class QueryDSLConfig {
 		return new JpaTransactionManager(emf_dsl);
 	}
 }
+
