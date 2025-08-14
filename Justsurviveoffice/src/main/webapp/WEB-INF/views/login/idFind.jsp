@@ -105,7 +105,7 @@
 	  	width: 30%;
 	  	margin: 10px auto 25px;
 	  	text-align: center;
-	  	background-color: #c084fc !important;
+	  	background-color: #4f46e5; !important;
 	  	border: 0px solid #fff !important;
 	  	padding: 8px 0;
 	  	font-weight: 600;

@@ -3,8 +3,10 @@ package com.spring.app.users.service;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.spring.app.common.Sha256;
 import com.spring.app.entity.LoginHistory;
 import com.spring.app.entity.Users;
 import com.spring.app.model.HistoryRepository;
@@ -20,7 +22,6 @@ public class UsersService_imple implements UsersService {
 
 	private final UsersRepository usersRepository;
 	private final HistoryRepository historyRepository;
-
 		
 	@Override
 	public UsersDTO getUser(String id) {
@@ -65,31 +66,79 @@ public class UsersService_imple implements UsersService {
 	}
 
 
+	// 유저 존재 여부 확인
 	@Override
-	public Users toEntity(UsersDTO userDto) {
-	    return Users.builder()
-	            .id(userDto.getId())
-	            .password(userDto.getPassword())
-	            .build();
+	public Users findByIdAndEmail(String id, String email) {
+		return usersRepository.findByIdAndEmail(id, email);
 	}
 
-	 @Override
-	 public void saveLoginHistory(LoginHistoryDTO loginHistoryDTO) {
-	        LoginHistory loginHistory = LoginHistory.builder()
-						                .lastLogin(loginHistoryDTO.getLastLogin())
-						                .ip(loginHistoryDTO.getIp())
-						                .users(loginHistoryDTO.getUsers())
-						                .build();
 
-	        historyRepository.save(loginHistory);
-	   }
+	// 비밀번호 업데이트
+	@Override
+	public void updatePassword(String id, String newPassword) {
+		
+		Users user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+		user.setPassword(Sha256.encrypt(newPassword));
+		usersRepository.save(user);
+	}
+
+	//회원 수정하기
+		@Override
+		public Users updateUser(Users users) {
+			Users user = usersRepository.save(users);
+			return user;
+			
+		}
+
+		//이메일 중복확인
+		@Override
+		public boolean isEmailDuplicated(String email) {
+	        return usersRepository.existsByEmail(email);
+		}
+
+		//회원탈퇴하기
+		@Override
+		public int delete(String id) {
+			
+			int n = 0;
+			
+			try {
+				usersRepository.deleteById(id);
+				
+				n = 1;
+			} catch (EmptyResultDataAccessException e) {
+				
+			}
+				
+			return n;
+		}
+		
+		@Override
+		public Users toEntity(UsersDTO userDto) {
+		    return Users.builder()
+		            .id(userDto.getId())
+		            .password(userDto.getPassword())
+		            .build();
+		}
+
+		 @Override
+		 public void saveLoginHistory(LoginHistoryDTO loginHistoryDTO) {
+		        LoginHistory loginHistory = LoginHistory.builder()
+							                .lastLogin(loginHistoryDTO.getLastLogin())
+							                .ip(loginHistoryDTO.getIp())
+							                .users(loginHistoryDTO.getUsers())
+							                .build();
+
+		        historyRepository.save(loginHistory);
+		   }
 
 
-	  @Override
-	  public UsersDTO getIdFind(String name, String email) {
-	        return usersRepository.findByNameAndEmail(name.trim(), email.trim())
-	                .map(Users::toDTO) // Users 엔티티에 toDTO() 있다고 가정
-	                .orElse(null);
-	 }
+		  @Override
+		  public UsersDTO getIdFind(String name, String email) {
+		        return usersRepository.findByNameAndEmail(name.trim(), email.trim())
+		                .map(Users::toDTO) // Users 엔티티에 toDTO() 있다고 가정
+		                .orElse(null);
+		 }
 
+	
 }

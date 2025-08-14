@@ -44,7 +44,7 @@ public class UsersController {
 
 	    usersService.registerUser(user);
 
-	    return "login/login";
+	    return "login/loginForm";
 	}
 	
 	

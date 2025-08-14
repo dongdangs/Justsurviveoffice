@@ -1,4 +1,4 @@
-package com.spring.app.board.domain;
+package com.spring.app.users.domain;
 
 import java.time.LocalDateTime;
 
@@ -17,5 +17,13 @@ import lombok.Setter;
 @Builder              // 생성자 대신, 필요한 값만 선택해서 체이닝 방식으로 객체를 만들 수 있게 해주는 것.
 public class CategoryDTO {
 	
-	private Long CategoryNo;
+
+	private Long categoryNo;
+	
+	private String categoryName;
+
+	private String categoryDescribe;
+
+	private String categoryImagePath;
+
 }
