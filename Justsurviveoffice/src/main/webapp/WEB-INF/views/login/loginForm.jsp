@@ -41,6 +41,7 @@
             border-color: #6366F1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
+        
     </style>
 </head>
 
@@ -155,9 +156,7 @@
                     
                     <div class="text-sm">
                     	<a href="<%=ctxPath %>/login/idFind" class="font-medium text-indigo-600 hover:text-indigo-500">아이디 찾기</a>
-                        <a href="<%=ctxPath %>/login/pwdFind" class="font-medium text-indigo-600 hover:text-indigo-500">비밀번호 찾기</a>
-                        <a href="<%=ctxPath %>/login/pwdFindForm" class="font-medium text-indigo-600 hover:text-indigo-500">
-                        비밀번호 찾기</a>
+                        <a href="<%=ctxPath %>/login/pwdFindForm" class="font-medium text-indigo-600 hover:text-indigo-500">비밀번호 찾기</a>
                     </div>
                 </div>
                 

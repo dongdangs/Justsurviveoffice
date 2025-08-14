@@ -7,7 +7,7 @@ import com.spring.app.users.domain.UsersDTO;
 public interface UsersService {
 
 	// 로그인
-		UsersDTO getUser(String id);
+		UsersDTO getUser(String id, String Pwd);
 
 		// 아이디 중복 체크
 		boolean isIdExists(String id);

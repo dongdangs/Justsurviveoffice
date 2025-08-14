@@ -1,11 +1,15 @@
 package com.spring.app.users.service;
 
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.spring.app.common.AES256;
 import com.spring.app.common.Sha256;
 import com.spring.app.entity.LoginHistory;
 import com.spring.app.entity.Users;
@@ -22,9 +26,10 @@ public class UsersService_imple implements UsersService {
 
 	private final UsersRepository usersRepository;
 	private final HistoryRepository historyRepository;
+	private AES256 aes256;
 		
 	@Override
-	public UsersDTO getUser(String id) {
+	public UsersDTO getUser(String id, String Pwd) {
 		
 		UsersDTO usersDto = null;
 		
@@ -36,7 +41,15 @@ public class UsersService_imple implements UsersService {
 			Users users = user.get();
 			// java.util.Optional.get() 은 값이 존재하면 값을 리턴시켜주고, 값이 없으면 NoSuchElementException 을 유발시켜준다.
 			
-			usersDto = users.toDTO();
+			
+				try {
+					usersDto = users.toDTO();
+					System.out.println(Sha256.encrypt(Pwd));
+					// usersDto.setPassword(Sha256.encrypt(Pwd));
+					
+				} catch (Exception e) {	
+					e.printStackTrace();
+				}
 			
 		} catch(NoSuchElementException e) {
 			// member.get() 에서 데이터가 존재하지 않는 경우

@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%
+    String ctxPath = request.getContextPath();
+	%>    
         <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
  <style>
@@ -37,6 +40,8 @@
             border-color: #6366F1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
+        
+
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">

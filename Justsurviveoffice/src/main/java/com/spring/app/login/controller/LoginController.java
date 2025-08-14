@@ -44,7 +44,7 @@ public class LoginController {
 						   HttpServletRequest request,
 						   HttpServletResponse response) {
 		
-		UsersDTO usersDto = usersService.getUser(id);
+		UsersDTO usersDto = usersService.getUser(id,Pwd);
 		
 		if(usersDto == null || !Pwd.equals(usersDto.getPassword()) ) {
 			

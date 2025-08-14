@@ -1,7 +1,11 @@
 package com.spring.app.entity;
 
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
+import com.spring.app.common.AES256;
 import com.spring.app.users.domain.UsersDTO;
 
 import jakarta.persistence.Column;
