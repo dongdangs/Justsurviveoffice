@@ -1,5 +1,7 @@
 package com.spring.app.login.controller;
 
+import java.time.LocalDateTime;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+
+import com.spring.app.users.domain.LoginHistoryDTO;
 import com.spring.app.entity.Users;
 import com.spring.app.mail.controller.GoogleMail;
 import com.spring.app.users.domain.UsersDTO;
@@ -46,7 +50,7 @@ public class LoginController {
 			
 			String message = "로그인 실패!!";
 			String loc = request.getContextPath()+"/login/loginForm"; // 로그인 페이지로 이동
-	                   
+
 			request.setAttribute("message", message);
 			request.setAttribute("loc", loc);
 			return "msg";
@@ -55,8 +59,21 @@ public class LoginController {
 		// 세션에 로그인 사용자 정보 저장
 		HttpSession session = request.getSession();
 		session.setAttribute("loginUser", usersDto);
+
+			
+		 // 로그인 기록 저장
+	    LoginHistoryDTO loginHistoryDTO = LoginHistoryDTO.builder()
+	                					.lastLogin(LocalDateTime.now())  // 현재 로그인 시간
+	                					.ip(request.getRemoteAddr())     // 접속 IP
+	                					.users(usersService.toEntity(usersDto)) // DTO -> 엔티티 변환 메서드 필요
+	                					.build();
+
+	    usersService.saveLoginHistory(loginHistoryDTO);
+
 		
-		return "redirect:/index"; // 인덱스 페이지로 이동
+		
+	    return "redirect:/index"; // 인덱스 페이지로 이동
+
 	}
 	
 	@GetMapping("logout")
@@ -83,6 +100,24 @@ public class LoginController {
 		return "login/idFind";
 	}
 	
+
+	@PostMapping("idFind")
+	public String idFind(@RequestParam(name="name") String name, // form 태그의 name 속성값과 같은것이 매핑되어짐
+			   			 @RequestParam(name="email") String email,
+			   			 Model model,
+			   			 HttpServletRequest request) {
+
+	    UsersDTO usersDTO = usersService.getIdFind(name, email);
+
+		String message = "없습니다 되었습니다.";
+		String loc = request.getContextPath()+"/";  // 시작 페이지로 이동
+	    
+	    if (usersDTO != null) {
+	        model.addAttribute("usersDTO", usersDTO.getId());
+	    } 
+
+	    return "login/idFind"; // 기존 뷰
+	}
 	
 	@GetMapping("pwdFindForm")
 	public String pwdFind(HttpSession session, HttpServletRequest request) {
@@ -181,44 +216,21 @@ public class LoginController {
 	
 	
 	@PostMapping("pwdUpdate")
-	public String pwdUpdate(@RequestParam(name="id") String id
-						  , @RequestParam("newPassword2") String newPassword
-						  , Model model) {
-		
-		usersService.updatePassword(id, newPassword);
-		
-		model.addAttribute("message", "비밀번호가 변경되었습니다.");
-		model.addAttribute("loc", "login/loginForm");
-		
-		return "msg";
-	}
+	   public String pwdUpdate(@RequestParam(name="id") String id
+	                    , @RequestParam("newPassword2") String newPassword
+	                    , HttpServletRequest request) {
+	      
+	      usersService.updatePassword(id, newPassword);
+	      
+	      String message = "비밀번호가 변경되었습니다.";
+	      String loc = request.getContextPath() + "/login/loginForm";
+	      
+	      request.setAttribute("message", message);
+	      request.setAttribute("loc", loc);
+	      
+	      return "msg";
+	   }
 	
-	
-//	
-//	@PostMapping("loginEnd")
-//	public String loginEnd(@RequestParam(name="userId") String userId,   // form 태그의 name 속성값과 같은것이 매핑되어짐
-//			               @RequestParam(name="userPwd") String userPwd, // form 태그의 name 속성값과 같은것이 매핑되어짐 
-//			               HttpServletRequest request) {
-//		
-//		UsersService mbrDto = memberService.getMember(userId);
-//		
-//		if(mbrDto == null || !userPwd.equals(mbrDto.getUserPwd()) ) {
-//			
-//			String message = "로그인 실패!!";
-//		 	String loc = request.getContextPath()+"/login/loginStart"; // 로그인 페이지로 이동
-//		 	   	   
-//		 	request.setAttribute("message", message);
-//		 	request.setAttribute("loc", loc);
-//		 	return "msg";
-//		}
-//		
-//		// 세션에 로그인 사용자 정보 저장
-//		HttpSession session = request.getSession();
-//		session.setAttribute("loginuser", mbrDto);
-//		
-//		return "redirect:"+request.getContextPath()+"/index"; // 인덱스 페이지로 이동 
-//	}
-//	
 	
 }
 

@@ -30,7 +30,7 @@
 <style type="text/css">
 	
 	body {
-	  	background-color: #9da6ae;;
+	  	background-color: #9da6ae;
 	  	background-image: url("<%= ctxPath%>/images/background.png");
 	  	background-size: cover;
 	  	background-position: center;
@@ -68,7 +68,7 @@
 	  	border: 1px solid #ddd;
 	  	border-radius: 10px;
 	  	background-color: #fff;
-	  	padding-bottom: 20px;
+	  	padding-bottom: 10px;
 	}
 	
 	/* 라인별 입력 영역 */
@@ -112,6 +112,7 @@
 	  	color: white;
 	}
 	
+	#div_findResult {padding:20px 0 0;text-align:center;}
 </style>
 
 <script type="text/javascript" >
@@ -164,7 +165,7 @@
    
    		// 다 올바른 경우
    		const frm = document.idFindFrm;
-   		frm.action = "<%= ctxPath%>/login/idFind.do";
+   		frm.action = "<%= ctxPath%>/login/idFind";
    		frm.method = "POST";
    		frm.submit();
 	}
@@ -178,7 +179,8 @@
 </script>
 
 <div id="idFindWrap">
-  	<form id="idFindFrm" name="idFindFrm">
+  	<form id="idFindFrm" name="idFindFrm" style="position:relative;">
+  		<p style="background-image:url('<%= ctxPath%>/images/backIco.png');position:absolute;top:21px;left:10px;width:30px;height:30px;z-index:10;background-size:cover;cursor:pointer;" onclick="location.href='http://localhost:9089/justsurviveoffice/'"></p>
     	<p id="idTitle">아이디 찾기</p>
 
 	    <div class="inputRow">
@@ -195,14 +197,14 @@
 	      	<button type="button" class="btn btn-success" onclick="goFind()" style="background-color:#c084fc !important;border:0px solid #fff !important;width:30%;">찾기</button>
 	   	</div>
 
-	    <div id="div_findResult">
-	      	<c:if test="${not empty requestScope.id}">
-	        	<p style="margin:15pt 0;text-align:center; ">아이디는 <strong style="color:#000; font-size: 16pt; ">${requestScope.id}</strong> 입니다.</p>
-	      	</c:if>
-	      	<c:if test="${requestScope.n == 0}">
-	        	<p>입력하신 정보와 일치하는 아이디가 없습니다.</p>
-	      	</c:if>
-    	</div>
+	   <div id="div_findResult">
+		  <c:if test="${not empty requestScope.usersDTO}">
+		    아이디는 <strong style="color:#000; font-size:16pt;">${requestScope.usersDTO}</strong> 입니다.
+		  </c:if>
+		  <c:if test="${empty requestScope.usersDTO}">
+		    <p>입력하신 정보와 일치하는 아이디가 없습니다.</p>
+		  </c:if>
+		</div>
   	</form>
 </div>
 

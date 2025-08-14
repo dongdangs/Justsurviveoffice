@@ -235,7 +235,7 @@ $(function(){
 			return;
 		} // 만약 아이디를 입력하지 않았다면, 경고 후 함수종료시키기.
 		 $.ajax({
-			url: ctxPath + "/user/checkIdDuplicate",
+			url: ctxPath + "/users/checkIdDuplicate",
 			data:{"id":$('input#id').val().trim()},  
 			// data 속성은 http://localhost:9090/SemiProject/user/userRegister.do 로 
 			// 전송해야할 데이터를 말한다.   
@@ -285,7 +285,7 @@ $(function(){
 			return;
 		} // 만약 이메일을 입력하지 않았다면, 경고 후 함수종료시키기.
 		$.ajax({
-			url:ctxPath + "/user/checkEmailDuplicate",
+			url:ctxPath + "/users/checkEmailDuplicate",
 			data:{"email":$('input#email').val().trim()},
 			type:"post",
 			async:true, 
@@ -373,7 +373,7 @@ function register() {
 	
 	const form = document.registerForm;
 	form.method = "post";
- 	form.action =  ctxPath + "/user/registerUser";
+ 	form.action =  ctxPath + "/users/registerUser";
     form.submit();
 	
 }// end of function register()-----------------------------
