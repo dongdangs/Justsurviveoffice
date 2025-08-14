@@ -1,6 +1,7 @@
 package com.spring.app.users.service;
 
 import com.spring.app.entity.Users;
+import com.spring.app.users.domain.LoginHistoryDTO;
 import com.spring.app.users.domain.UsersDTO;
 
 public interface UsersService {
@@ -32,10 +33,17 @@ public interface UsersService {
 	// 회원 탈퇴하기
 	public int delete(String id);
 
+
+	// 로그인 기록 (엔티티 변환)
+	Users toEntity(UsersDTO userDto);
+
+	// 로그인 기록 남기기
+	void saveLoginHistory(LoginHistoryDTO loginHistoryDTO);
+
+	UsersDTO getIdFind(String name, String email);
+
+
 	//휴면상태로 업데이트 (비밀번호 변경대상)
 	boolean updateDormantStatus(String id);
-	
-
-	
 
 }
