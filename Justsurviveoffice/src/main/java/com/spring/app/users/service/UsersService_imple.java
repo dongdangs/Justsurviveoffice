@@ -1,8 +1,10 @@
 package com.spring.app.users.service;
 
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.spring.app.common.Sha256;
@@ -77,5 +79,63 @@ public class UsersService_imple implements UsersService {
 		usersRepository.save(user);
 	}
 
+	//회원 수정하기
+		@Override
+		public Users updateUser(Users users) {
+			Users user = usersRepository.save(users);
+			return user;
+			
+		}
 
+		//이메일 중복확인
+		@Override
+		public boolean isEmailDuplicated(String email) {
+	        return usersRepository.existsByEmail(email);
+		}
+
+		//회원탈퇴하기
+		@Override
+		public int delete(String id) {
+			
+			int n = 0;
+			
+			try {
+				usersRepository.deleteById(id);
+				
+				n = 1;
+			} catch (EmptyResultDataAccessException e) {
+				
+			}
+				
+			return n;
+		}
+
+
+	//휴면처리하기 ( 비밀번호변경대상 )
+	@Override
+	public boolean updateDormantStatus(String id) {
+			
+	    Users users = usersRepository.findById(id).orElse(null);
+	    //orElse는 객체꺼내기를 시도할때 값이 없으면 null을 반환하라는 뜻 !
+		
+		LocalDateTime now = LocalDateTime.now();
+		
+		if(users.getPasswordChanged() == null || 
+			users.getPasswordChanged().isBefore(now.minusYears(1))) {
+				
+			users.setIsDormant(1);
+			usersRepository.save(users);
+			
+			return true;
+			
+		}
+		
+		return false;
+	}
+
+		
+
+		
+
+	
 }

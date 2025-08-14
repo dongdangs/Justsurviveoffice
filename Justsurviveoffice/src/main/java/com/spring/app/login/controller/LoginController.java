@@ -1,7 +1,7 @@
 package com.spring.app.login.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +15,6 @@ import com.spring.app.mail.controller.GoogleMail;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -52,11 +51,19 @@ public class LoginController {
 			return "msg";
 		}
 		
-		// 세션에 로그인 사용자 정보 저장
-		HttpSession session = request.getSession();
-		session.setAttribute("loginUser", usersDto);
+	    boolean isDormant = usersService.updateDormantStatus(id);
+
+	    if (isDormant || usersDto.getIsDormant() == 1) {
+	        // 휴면이면 비번 변경으로 보냄
+	    	return "login/pwdUpdate";
+	    }
 		
-		return "redirect:/index"; // 인덱스 페이지로 이동
+			// 세션에 로그인 사용자 정보 저장
+			HttpSession session = request.getSession();
+			session.setAttribute("loginUser", usersDto);
+			
+			return "redirect:/index"; // 인덱스 페이지로 이동
+		
 	}
 	
 	@GetMapping("logout")

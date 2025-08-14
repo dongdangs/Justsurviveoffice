@@ -23,4 +23,19 @@ public interface UsersService {
 	// 비밀번호 업데이트
 	void updatePassword(String id, String newPassword);
 
+	//  회원 수정 하기
+	public Users updateUser(Users users);
+	
+	//이메일 중복
+	public boolean isEmailDuplicated(String email);
+
+	// 회원 탈퇴하기
+	public int delete(String id);
+
+	//휴면상태로 업데이트 (비밀번호 변경대상)
+	boolean updateDormantStatus(String id);
+	
+
+	
+
 }

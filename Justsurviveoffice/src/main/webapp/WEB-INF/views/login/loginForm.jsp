@@ -43,7 +43,7 @@
         }
     </style>
 </head>
-
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 
 	$(function(){
@@ -90,6 +90,8 @@
 			    `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`
 			);
 		});
+        
+        //휴면 
 	});
 
 	 function func_Login() {

@@ -33,5 +33,7 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 	// 비밀번호 찾기
 	Users findByIdAndEmail(String id, String email);
 	
+	
+	
 }
 
