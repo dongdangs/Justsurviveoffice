@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.spring.app.common.Sha256;
 import com.spring.app.entity.Users;
 import com.spring.app.model.UsersRepository;
 import com.spring.app.users.domain.UsersDTO;
@@ -64,6 +65,16 @@ public class UsersService_imple implements UsersService {
 	@Override
 	public Users findByIdAndEmail(String id, String email) {
 		return usersRepository.findByIdAndEmail(id, email);
+	}
+
+
+	// 비밀번호 업데이트
+	@Override
+	public void updatePassword(String id, String newPassword) {
+		
+		Users user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+		user.setPassword(Sha256.encrypt(newPassword));
+		usersRepository.save(user);
 	}
 
 

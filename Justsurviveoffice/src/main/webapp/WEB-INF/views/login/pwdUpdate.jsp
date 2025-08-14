@@ -5,42 +5,97 @@
     String ctxPath = request.getContextPath();
 %>
 
-<style>
+<!DOCTYPE html>
+<html>
+<head>
 
-body {background-color: #f5f3ff;background-image: url(https://img.freepik.com/free-vector/hand-painted-watercolor-floral-pattern_23-2148931052.jpg);background-size: cover;background-position: center;background-attachment: fixed;background-blend-mode: overlay;}
-.formBox {margin:0 auto;max-width:500px;margin:8% auto;border-radius:20px;background-color:#fff;text-align:center;}
-.pwdCheck {width: 100%;margin: 25px 0;display: flex;justify-content: space-between; align-items: center;padding: 0 25px;}
-@media screen and (max-width:950px){
-	.formBox {margin:15vh auto;}
-} 
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" type="text/css" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" > 
+
+<!-- Font Awesome 6 Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+
+<!-- Optional JavaScript -->
+<script type="text/javascript" src="<%= ctxPath%>/js/jquery-3.7.1.min.js"></script>
+<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
+
+<%-- jQueryUI CSS 및 JS --%>
+<link rel="stylesheet" type="text/css" href="<%= ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.css" />
+<script type="text/javascript" src="<%= ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.js"></script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style type="text/css">
+
+	body {
+		background-color: #f5f3ff;
+		background-image: url(https://img.freepik.com/free-vector/hand-painted-watercolor-floral-pattern_23-2148931052.jpg);
+		background-size: cover;
+		background-position: center;
+		background-attachment: fixed;
+		background-blend-mode: overlay;
+	}
+	
+	.formBox {
+		margin:0 auto;
+		max-width:500px;
+		margin:8% auto;
+		border-radius:20px;
+		background-color:#fff;
+		text-align:center;
+	}
+	
+	.pwdCheck {
+		width: 100%;
+		margin: 25px 0;
+		display: flex;
+		justify-content: space-between; 
+		align-items: center;
+		padding: 0 25px;
+	}
+	
+	@media screen and (max-width:950px){
+		.formBox {margin:15vh auto;}
+	} 
+	
 </style>
 
 <script type="text/javascript">
-  $(function(){
-    $(".passwordUp").on("click", function(){
-        const frm = document.passwordUp;
+
+  	$(function(){
+  		
+    	$(".passwordUp").on("click", function(){
+        	const frm = document.passwordUp;
         
-        const pwd1 = $("#newPassword1").val();
-        const pwd2 = $("#newPassword2").val();
+        	const pwd1 = $("#newPassword1").val();
+        	const pwd2 = $("#newPassword2").val();
 
-        if (pwd1 !== pwd2) {
-            alert("비밀번호가 일치하지 않습니다.");
-            return;
-        }
+        	if (pwd1 !== pwd2) {
+            	alert("비밀번호가 일치하지 않습니다.");
+            	return;
+        	}
 
-        // 비밀번호 값 hidden 처리해서 전송할 수 있음
-        $("<input>").attr({
-            type: "hidden",
-            name: "newPassword2",
-            value: pwd2
-        }).appendTo(frm);
+        	// 비밀번호 값 hidden 처리해서 전송할 수 있음
+        	$("<input>").attr({
+            	type: "hidden",
+            	name: "newPassword2",
+            	value: pwd2
+        	}).appendTo(frm);
 
-        frm.action = "<%=ctxPath%>/login/passwordUpdate";
-        frm.method = "POST";
-        frm.submit();
-    });
-  });
+        	frm.action = "<%=ctxPath%>/login/pwdUpdate";
+        	frm.method = "POST";
+        	frm.submit();
+    	});
+  	});
 </script>
+
+</head>
+
+<body>
 	
 	<div style="margin:150px auto 0;">
 		<form name="passwordUp" class="formBox">
@@ -56,4 +111,5 @@ body {background-color: #f5f3ff;background-image: url(https://img.freepik.com/fr
 		</form>
 	</div>
 
-</div>
+</body>
+</html>

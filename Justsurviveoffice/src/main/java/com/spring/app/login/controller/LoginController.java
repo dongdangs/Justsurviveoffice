@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor  //Lombok이 제공하는 기능으로,final이나 @NonNull이 붙은 필드를 대상으로 생성자를 자동 생성
 public class LoginController {
 
-	private final UsersService userService; //@RequiredArgsConstructor를 선언해야만 자동으로 fianl 생성자 생성.
+	private final UsersService usersService; //@RequiredArgsConstructor를 선언해야만 자동으로 fianl 생성자 생성.
 	private final GoogleMail mail;
 	
 	@GetMapping("loginForm")
@@ -40,7 +41,7 @@ public class LoginController {
 						   HttpServletRequest request,
 						   HttpServletResponse response) {
 		
-		UsersDTO usersDto = userService.getUser(id);
+		UsersDTO usersDto = usersService.getUser(id);
 		
 		if(usersDto == null || !Pwd.equals(usersDto.getPassword()) ) {
 			
@@ -100,7 +101,15 @@ public class LoginController {
 	
 	
 	@GetMapping("pwdFindForm")
-	public String pwdFind() {
+	public String pwdFind(HttpSession session, HttpServletRequest request) {
+		
+		// 세션에 값이 있으면 jsp 에 전달, 없으면 빈 값
+		String id = (String) session.getAttribute("pwdFindId");
+		String email = (String) session.getAttribute("pwdFindEmail");
+		
+		request.setAttribute("id", id != null ? id : "");
+	    request.setAttribute("email", email != null ? email : "");
+		
 		return "login/pwdFind";
 	}
 	
@@ -108,27 +117,26 @@ public class LoginController {
 	@PostMapping("passwordFind")
 	public String passwordFind(@RequestParam(name="id") String id,
 							   @RequestParam(name="email") String email,
-							   HttpServletRequest request,
-							   HttpSession session) {
+							   HttpServletRequest request, HttpSession session) {
 		
 		// 1. 유저 존재 여부 확인
-        Users users = userService.findByIdAndEmail(id, email);
+        Users users = usersService.findByIdAndEmail(id, email);
 
         if(users == null) {
         	request.setAttribute("n", 0);
             request.setAttribute("method", "POST");
-            return "user/passwordFind"; 
+            return "login/pwdFind"; 
         }
         
         // 2. 인증코드 생성 (6자리 랜덤 숫자)
-        String code = String.valueOf((int)(Math.random() * 900000) + 100000);
+        String certification_code = String.valueOf((int)(Math.random() * 900000) + 100000);
 
         // 3. 세션에 저장 
-        session.setAttribute("certificationCode", code);
+        session.setAttribute("certification_code", certification_code);
         
         // 4. 메일 전송
         try {
-        	mail.send_certification_code(email, code);
+        	mail.send_certification_code(email, certification_code);
         	
 			request.setAttribute("n", 1); 
         	
@@ -152,9 +160,53 @@ public class LoginController {
             						  HttpSession session,
             						  HttpServletRequest request) {
 		
+		String certification_code = (String) session.getAttribute("certification_code");
 		
+		String message = "";
+		String loc = "";
 		
+		if(certification_code != null && certification_code.equals(userCertificationCode)) {
+			
+			message = "인증이 성공되었습니다.";
+			loc = request.getContextPath() + "/login/pwdUpdate?id=" + id;
+			
+		}
+		else {
+			
+			message = "발급된 인증코드가 아닙니다. 인증코드를 다시 발급받으세요.";
+			loc = request.getContextPath() + "/login/pwdFindForm";
+			
+		}
+		
+		request.setAttribute("id", id);
+		request.setAttribute("message", message);
+		request.setAttribute("loc", loc);
+
+		session.removeAttribute("certification_code");
+		
+		return "msg";
+	}
+	
+	
+	@GetMapping("pwdUpdate")
+	public String pwdUpdateForm(@RequestParam(name="id") String id
+			      			  , Model model) {
+		model.addAttribute("id", id);
 		return "login/pwdUpdate";
+	}
+	
+	
+	@PostMapping("pwdUpdate")
+	public String pwdUpdate(@RequestParam(name="id") String id
+						  , @RequestParam("newPassword2") String newPassword
+						  , Model model) {
+		
+		usersService.updatePassword(id, newPassword);
+		
+		model.addAttribute("message", "비밀번호가 변경되었습니다.");
+		model.addAttribute("loc", "login/loginForm");
+		
+		return "msg";
 	}
 	
 	

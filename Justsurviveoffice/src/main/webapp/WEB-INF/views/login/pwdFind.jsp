@@ -103,7 +103,7 @@
 		}
 	
 		// === 인증하기 버튼 클릭 시 이벤트 첳리해주기 시작 == //
-		$(document).on('click', 'button.btn-info', function() {
+		$(document).on('click', 'button.finder', function() {
 	    const input_confirmCode = $('input:text[name="input_confirmCode"]').val().trim();
 	
 	    if (input_confirmCode == "") {
@@ -174,20 +174,19 @@
                         </div>
                     </td>
         		 </tr>
-        		 
         	</table>
         	
         	<div class="submitBtn mt-8 flex justify-center gap-4">
-                <button type="button" onclick="pwFind()" class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold hover:shadow-lg">찾기</button>
+                <button type="button" onclick="pwFind()" class="bg-indigo-600 text-white  px-8 py-3 rounded-lg font-bold hover:shadow-lg">찾기</button>
             </div>
             
 			<%-- <div id="div_findResult">${requestScope.n}</div> --%>
 			<c:if test="${requestScope.n == 1}">
 				<div style="text-align:center;">
-					<p style="text-align:center;line-height:22px;">인증코드가 ${requestScope.email} 로 발송되었습니다.<br> 인증코드를 입력해주세요</p>
-					<input type="text" name="input_confirmCode" style="margin-top:15px;" />
+					<p style="text-align:center;line-height:22px;margin-top:15px;">인증코드가 ${requestScope.email} 로 발송되었습니다.<br> 인증코드를 입력해주세요</p>
+					<input type="text" name="input_confirmCode" style="margin-top:15px;" class="border" />
 					<br><br>
-					<button type="button" class="btn btn-info finder">인증하기</button>
+					<button type="button" class="finder bg-indigo-600 text-white  px-8 py-3 rounded-lg font-bold hover:shadow-lg">인증하기</button>
 				</div>
 			</c:if>
 			<c:if test="${requestScope.n == 0}">
