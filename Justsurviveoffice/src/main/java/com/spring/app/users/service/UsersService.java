@@ -17,4 +17,10 @@ public interface UsersService {
 	// 회원가입
 	void registerUser(Users user);
 
+	// 유저 존재 여부 확인
+	Users findByIdAndEmail(String id, String email);
+
+	// 비밀번호 업데이트
+	void updatePassword(String id, String newPassword);
+
 }

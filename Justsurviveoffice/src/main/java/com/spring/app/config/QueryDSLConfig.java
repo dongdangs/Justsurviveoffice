@@ -47,5 +47,6 @@ public class QueryDSLConfig {
 	public PlatformTransactionManager jpaTransactionManager() {
 		return new JpaTransactionManager(emf_dsl);
 	}
+
 }
 

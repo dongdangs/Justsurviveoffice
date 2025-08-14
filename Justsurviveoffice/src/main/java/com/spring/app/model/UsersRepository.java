@@ -1,10 +1,6 @@
 package com.spring.app.model;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import com.spring.app.entity.Users;
 
@@ -33,6 +29,9 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 
 	// 이메일 중복 체크
 	boolean existsByEmail(String email);
+
+	// 비밀번호 찾기
+	Users findByIdAndEmail(String id, String email);
 	
 }
 

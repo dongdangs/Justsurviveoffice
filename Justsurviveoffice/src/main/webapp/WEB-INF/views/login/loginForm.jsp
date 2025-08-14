@@ -154,7 +154,7 @@
                     </div>
                     
                     <div class="text-sm">
-                        <a href="<%=ctxPath %>/login/pwdFind" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        <a href="<%=ctxPath %>/login/pwdFindForm" class="font-medium text-indigo-600 hover:text-indigo-500">
                         	비밀번호 찾기</a>
                     </div>
                 </div>
