@@ -65,6 +65,7 @@ public class UsersService_imple implements UsersService {
 	public boolean isEmailExists(String email) {
 		return usersRepository.existsByEmail(email);
 	}
+	
 
 
 	// 회원가입
