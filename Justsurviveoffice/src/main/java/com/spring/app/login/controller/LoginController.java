@@ -2,8 +2,6 @@ package com.spring.app.login.controller;
 
 import java.time.LocalDateTime;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +17,6 @@ import com.spring.app.mail.controller.GoogleMail;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -58,8 +55,14 @@ public class LoginController {
 		boolean isDormant = usersService.updateDormantStatus(id);
 
 	    if (isDormant || usersDto.getIsDormant() == 1) {
-	        // 휴면이면 비번 변경으로 보냄
-	    	return "login/pwdUpdate";
+	    	String message = "비밀번호 변경이 1년이 지나 휴면 처리되었습니다. 비밀번호를 변경해주세요. ";
+			request.setAttribute("message", message);
+			String loc = request.getContextPath() + "/login/pwdUpdate?id=" + id; // 변경 페이지로 이동할 링크
+
+		    request.setAttribute("message", message);
+		    request.setAttribute("loc", loc);
+
+		    return "msg";
 	    }
 		
 		// 세션에 로그인 사용자 정보 저장
@@ -222,21 +225,20 @@ public class LoginController {
 	
 	
 	@PostMapping("pwdUpdate")
-	public String pwdUpdate(@RequestParam(name="id") String id
-						  , @RequestParam("newPassword2") String newPassword
-						  , HttpServletRequest request) {
-		
-		usersService.updatePassword(id, newPassword);
-		
-		String message = "비밀번호가 변경되었습니다.";
-		String loc = request.getContextPath() + "/login/loginForm";
-		
-		request.setAttribute("message", message);
-		request.setAttribute("loc", loc);
-		
-		return "msg";
-	}
-
+   public String pwdUpdate(@RequestParam(name="id") String id
+	                    , @RequestParam("newPassword2") String newPassword
+	                    , HttpServletRequest request) {
+	      
+	      usersService.updatePassword(id, newPassword);
+	      
+	      String message = "비밀번호가 변경되었습니다.";
+	      String loc = request.getContextPath() + "/login/loginForm";
+	      
+	      request.setAttribute("message", message);
+	      request.setAttribute("loc", loc);
+	      
+	      return "msg";
+	   }
 	
 	
 }

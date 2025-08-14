@@ -1,5 +1,18 @@
 package com.spring.app.users.controller;
 
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.spring.app.board.service.BoardService;
 import com.spring.app.entity.Users;
 import com.spring.app.users.domain.BoardDTO;
@@ -7,16 +20,9 @@ import com.spring.app.users.domain.BookMarkDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -63,21 +69,17 @@ public class MyPageController {
 
     // 회원 수정 
     @PostMapping("update")
-    public Map<String, Users> update(UsersDTO userDto) {
-        
-    	Users users = Users.builder()
-    			.name(userDto.getName())
-    			.email(userDto.getEmail())
-    			.mobile(userDto.getMobile())
-    			.password(userDto.getPassword())
-    			.build();
-    	
-    	Users user = usersService.updateUser(users);
-    	
-    	Map<String, Users> map = new HashMap<>();
-    	map.put("users", user);
-    	
-    	return map;
+    public String update(UsersDTO userDto, HttpServletRequest request) {
+
+        Users user = usersService.updateUser(userDto);
+
+        String message = "정보가 변경되었습니다.";
+        String loc = request.getContextPath() + "/mypage/info"; // 수정 후 이동할 페이지
+
+        request.setAttribute("message", message);
+        request.setAttribute("loc", loc);
+
+        return "msg";
     }
 
 	// 회원탈퇴
