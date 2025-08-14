@@ -1,4 +1,4 @@
-package com.spring.app.controller;
+package com.spring.app.admin.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.spring.app.common.MyUtil;
 import com.spring.app.entity.Users;
-import com.spring.app.service.AdminService;
+import com.spring.app.admin.service.AdminService;
 import com.spring.app.users.domain.UsersDTO;
 
 import jakarta.servlet.http.Cookie;

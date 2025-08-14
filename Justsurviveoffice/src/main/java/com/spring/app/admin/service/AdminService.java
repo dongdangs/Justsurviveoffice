@@ -1,4 +1,4 @@
-package com.spring.app.service;
+package com.spring.app.admin.service;
 
 import org.springframework.data.domain.Page;
 

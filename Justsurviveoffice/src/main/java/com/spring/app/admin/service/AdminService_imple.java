@@ -1,4 +1,4 @@
-package com.spring.app.service;
+package com.spring.app.admin.service;
 
 import static com.spring.app.entity.QCategory.category;
 import static com.spring.app.entity.QUsers.users;
@@ -18,7 +18,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.app.entity.Users;
-import com.spring.app.model.AdminRepository;
+import com.spring.app.admin.model.AdminRepository;
 import com.spring.app.users.domain.UsersDTO;
 
 import lombok.RequiredArgsConstructor;
