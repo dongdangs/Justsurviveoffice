@@ -25,6 +25,19 @@
 <script type="text/javascript" src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
 <script type="text/javascript" src="<%=ctxPath%>/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 
+<style type="text/css">
+	
+	.pagination .page-item.active .page-link {
+		background-color: #5f5fff;
+		border-color: #5f5fff;
+	}
+	
+	table > tbody > tr {
+		cursor: pointer;
+	}
+	
+</style>
+
 <script type="text/javascript">
 	
 	$(function(){
@@ -42,6 +55,19 @@
 			}
 		});
 		
+		
+		// === 멤버 클릭시 상세 페이지 이동 === //
+		$('table > tbody > tr').on('click', function(){
+			
+			const id = $(this).find('td.id').text().trim();
+		//	alert(id);
+			
+			const frm = document.userDetail_frm
+			frm.id.value = id;
+			frm.action = "<%= ctxPath%>/admin/usersDetail";
+			frm.submit();
+		});
+		
 	});// end of $(function(){})-----------------------------
 	
 	
@@ -49,7 +75,7 @@
 	function goSearch() {
 		const frm = document.user_search_frm;
 		frm.method = "GET";
-		frm.action = "<%= ctxPath%>/rdg7203Work/userlist";
+		frm.action = "<%= ctxPath%>/admin/usersList";
 		frm.submit();
 	}// end of function goSearch()--------------------
 	
@@ -68,7 +94,7 @@
 					<option value="name">회원명</option>
 					<option value="id">아이디</option>
 					<option value="email">이메일</option>
-					<option value="categoryNo">카테고리번호</option>
+					<option value="categoryName">카테고리명</option>
 				</select>
 				
 				<input type="text" name="searchWord" placeholder="검색어를 입력하세요" class="form-control mr-2 search-input" style="max-width: initial;">
@@ -99,7 +125,7 @@
 							<th>아이디</th>
 							<th>이름</th>
 							<th>이메일</th>
-							<th>카테고리번호</th>
+							<th>카테고리명</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -112,7 +138,7 @@
 									<td class="id">${users.id}</td>
 									<td>${users.name}</td>
 									<td>${users.email}</td>
-									<td>${users.category.categoryNo}</td>
+									<td>${users.category.categoryName}</td>
 								</tr>
 							</c:forEach>
 						</c:if>

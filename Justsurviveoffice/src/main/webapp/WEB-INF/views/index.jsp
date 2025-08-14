@@ -148,7 +148,7 @@
 				<div class="row" style="width: 80%; margin: 5%">
 				<!-- 테스트 카드 (고정) -->
 				<div class="col-md-4 mt-4">
-					<a href="<%= ctxPath%>/rdg7203Work/survey" class="card text-decoration-none h-75" style="height: 80%;">
+					<a href="<%= ctxPath%>/categoryTest/survey" class="card text-decoration-none h-75" style="height: 80%;">
 						<div style="margin: auto 5%; border: solid 1px green;">
 							<img src="<%= ctxPath%>/images/mz.png" class="card-img-top" alt="테스트">
 						</div>
