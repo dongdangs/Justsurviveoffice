@@ -3,7 +3,7 @@ package com.spring.app.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.spring.app.service.BoardService;
+import com.spring.app.board.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
 

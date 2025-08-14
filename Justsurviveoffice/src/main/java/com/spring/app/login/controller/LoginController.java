@@ -183,12 +183,15 @@ public class LoginController {
 	@PostMapping("pwdUpdate")
 	public String pwdUpdate(@RequestParam(name="id") String id
 						  , @RequestParam("newPassword2") String newPassword
-						  , Model model) {
+						  , HttpServletRequest request) {
 		
 		usersService.updatePassword(id, newPassword);
 		
-		model.addAttribute("message", "비밀번호가 변경되었습니다.");
-		model.addAttribute("loc", "login/loginForm");
+		String message = "비밀번호가 변경되었습니다.";
+		String loc = request.getContextPath() + "/login/loginForm";
+		
+		request.setAttribute("message", message);
+		request.setAttribute("loc", loc);
 		
 		return "msg";
 	}
