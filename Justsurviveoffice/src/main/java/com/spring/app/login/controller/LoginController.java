@@ -30,7 +30,6 @@ public class LoginController {
 	@PostMapping("login")
 	public String loginEnd(@RequestParam(name="id") String id, // form 태그의 name 속성값과 같은것이 매핑되어짐
 						   @RequestParam(name="password") String Pwd, // form 태그의 name 속성값과 같은것이 매핑되어짐
-						   @RequestParam(name="remember-id", defaultValue = "") String rememberId,
 						   HttpServletRequest request,
 						   HttpServletResponse response) {
 		
