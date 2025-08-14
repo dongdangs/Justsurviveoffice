@@ -35,13 +35,7 @@ body { background: #f7f7fb; }
 
 <script>
 $(function () {
-  // 로그아웃
-  $("#btnLogout").on("click", function (e) {
-    e.preventDefault();
-    if (confirm("정말 로그아웃 하시겠습니까?")) {
-      $("#logoutForm").submit(); // POST 로그아웃
-    }
-  });
+ 
 
   // 회원탈퇴
   $("#btnQuit").on("click", function (e) {
@@ -57,7 +51,7 @@ $(function () {
       success: function (json) {
         if (json.n == 1) {
           alert("탈퇴되었습니다.");
-          location.href = "<%= ctxPath %>/main";
+          location.href = "<%= ctxPath %>/index";
         } else {
           alert("탈퇴 실패");
           $btn.prop("disabled", false);
@@ -82,11 +76,11 @@ $(function () {
                 <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
                 <div class="mb-3">
                		<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
+                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/>p</b>
                 </div>
                 <hr>
                 <div class="sidebar-menu text-left">
-                    <a href="#" id="btnLogout">로그아웃</a>
+               	    <a href="<%=ctxPath%>/login/logout">로그아웃</a>
                     <a href="#" id="btnQuit">탈퇴하기</a>
                     <a href="javascript:history.back()">이전 페이지</a>
                 </div>

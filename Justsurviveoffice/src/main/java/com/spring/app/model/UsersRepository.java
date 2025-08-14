@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import com.spring.app.entity.Users;
 
@@ -36,5 +34,10 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 	boolean existsByEmail(String email);
 
 	Optional<Users> findByNameAndEmail(String name, String email);
+
+	// 비밀번호 찾기
+	Users findByIdAndEmail(String id, String email);
+
 	
 }
+
