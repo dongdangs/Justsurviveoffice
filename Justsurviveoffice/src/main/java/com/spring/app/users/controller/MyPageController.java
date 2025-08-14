@@ -1,29 +1,33 @@
 package com.spring.app.users.controller;
 
-import com.spring.app.entity.Users;
-import com.spring.app.service.BoardService;
-import com.spring.app.service.UserService;
-import com.spring.app.users.domain.BoardDTO;
-import com.spring.app.users.domain.BookMarkDTO;
-import com.spring.app.users.domain.UsersDTO;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.spring.app.board.service.BoardService;
+import com.spring.app.entity.Users;
+import com.spring.app.users.domain.BoardDTO;
+import com.spring.app.users.domain.BookMarkDTO;
+import com.spring.app.users.domain.UsersDTO;
+import com.spring.app.users.service.UsersService;
+
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("mypage/")
 public class MyPageController {
 
-    private final UserService userService;
+    private final UsersService usersService;
     private final BoardService boardService; 
 
     // 내정보 화면 (필요시)
@@ -72,7 +76,7 @@ public class MyPageController {
     			.password(userDto.getPassword())
     			.build();
     	
-    	Users user = userService.updateUser(users);
+    	Users user = usersService.updateUser(users);
     	
     	Map<String, Users> map = new HashMap<>();
     	map.put("users", user);
@@ -84,7 +88,7 @@ public class MyPageController {
     @PostMapping("quit")
     @ResponseBody
     public Map<String, Integer> delete(@RequestParam(name="id") String id, HttpSession session) {
-        int n = userService.delete(id);
+        int n = usersService.delete(id);
         if (n == 1) {
             session.invalidate(); // 로그아웃 처리
         }
@@ -100,7 +104,7 @@ public class MyPageController {
     	UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         String myId = (loginUser != null ? loginUser.getId() : null);
 
-        boolean duplicated = userService.isEmailDuplicated(email);
+        boolean duplicated = usersService.isEmailDuplicated(email);
         return Map.of("duplicated", duplicated); // true면 중복, false면 사용가능
     	
     }

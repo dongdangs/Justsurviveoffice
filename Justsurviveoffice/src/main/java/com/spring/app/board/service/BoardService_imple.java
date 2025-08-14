@@ -1,4 +1,4 @@
-package com.spring.app.service;
+package com.spring.app.board.service;
 
 import java.util.List;
 
