@@ -14,6 +14,7 @@ import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -30,27 +31,27 @@ public class LoginController {
 	}
 	
 	@PostMapping("login")
-	public String loginEnd(@RequestParam(name="id") String Id, // form 태그의 name 속성값과 같은것이 매핑되어짐
+	public String loginEnd(@RequestParam(name="id") String id, // form 태그의 name 속성값과 같은것이 매핑되어짐
 						   @RequestParam(name="password") String Pwd, // form 태그의 name 속성값과 같은것이 매핑되어짐
-						   @RequestParam(name="remember-id", defaultValue ="") String rememberId,
-						   HttpServletRequest request) {
+						   HttpServletRequest request,
+						   HttpServletResponse response) {
 		
-		UsersDTO usersDto = userService.getUser(Id);
+		UsersDTO usersDto = userService.getUser(id);
 		
 		if(usersDto == null || !Pwd.equals(usersDto.getPassword()) ) {
 			
 			String message = "로그인 실패!!";
 			String loc = request.getContextPath()+"/login/loginForm"; // 로그인 페이지로 이동
-	                   
+
 			request.setAttribute("message", message);
 			request.setAttribute("loc", loc);
 			return "msg";
 		}
 		
 		// 세션에 로그인 사용자 정보 저장
-		
 		HttpSession session = request.getSession();
 		session.setAttribute("loginUser", usersDto);
+
 			
 		 // 로그인 기록 저장
 	    LoginHistoryDTO loginHistoryDTO = LoginHistoryDTO.builder()
@@ -63,7 +64,8 @@ public class LoginController {
 
 		
 		
-		return "index"; // 인덱스 페이지로 이동
+	    return "redirect:/index"; // 인덱스 페이지로 이동
+
 	}
 	
 	@GetMapping("logout")

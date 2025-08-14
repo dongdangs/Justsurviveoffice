@@ -137,3 +137,7 @@ on B.id = H.fk_id
 where B.id = 'chosw';
 
 select * from users where id = 'chosw';
+
+delete from login_history where LOGINHISTORYNO = 0;
+
+commit;
