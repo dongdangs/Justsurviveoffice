@@ -109,6 +109,7 @@ public class UsersController {
 	public String register() {
 		return "users/register";
 	}
+	
 	@PostMapping("registerUser")
     public String registerUser(@RequestParam("hp1") String hp1,
                         @RequestParam("hp2") String hp2,
@@ -160,6 +161,8 @@ public class UsersController {
 	    if (usersDTO != null) {
 	        model.addAttribute("usersDTO", usersDTO.getId());
 	    } 
+	    
+	    request.setAttribute("method", "POST");
 
 	    return "login/idFind"; // 기존 뷰
 	}

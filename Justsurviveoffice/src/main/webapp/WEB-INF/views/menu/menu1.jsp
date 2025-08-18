@@ -12,13 +12,13 @@
 </style>
 
 <script>
-  const menuToggle = document.getElementById('menuToggle');
+  /* const menuToggle = document.getElementById('menuToggle');
   const mainNav = document.getElementById('mainNav');
 
   menuToggle.addEventListener('click', () => {
     const isShown = mainNav.classList.toggle('show');
     menuToggle.setAttribute('aria-expanded', isShown);
-  });
+  }); */
 </script>
 
 <header>
