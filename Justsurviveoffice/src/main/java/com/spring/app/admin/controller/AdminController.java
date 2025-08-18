@@ -85,10 +85,10 @@ public class AdminController {
          String url = request.getContextPath() + "/admin/usersList";
          
          // === [맨처음][이전] 만들기 === //
-         pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&pageno=1'>⏪</a></li>";
+         pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+ "&sizePerPage=" + sizePerPage + "&pageno=1'>⏪</a></li>";
          
          if(pageno != 1) {
-            pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&pageno="+(pageno-1)+"'>◀️</a></li>"; 
+            pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+ "&sizePerPage=" + sizePerPage + "&pageno="+(pageno-1)+"'>◀️</a></li>"; 
          }
          
          while( !(loop > blockSize || pageno > totalPage) ) {
@@ -97,7 +97,7 @@ public class AdminController {
                pageBar += "<li class='page-item active'><a class='page-link' href='#'>"+pageno+"</a></li>";
             }
             else {
-               pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&pageno="+pageno+"'>"+pageno+"</a></li>"; 
+               pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+ "&sizePerPage=" + sizePerPage + "&pageno="+pageno+"'>"+pageno+"</a></li>"; 
             }
             
             loop++;
@@ -106,10 +106,10 @@ public class AdminController {
          
          // === [다음][마지막] 만들기 === //
          if(pageno <= totalPage) {
-            pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&pageno="+pageno+"'>▶️</a></li>";
+            pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+ "&sizePerPage=" + sizePerPage + "&pageno="+pageno+"'>▶️</a></li>";
          }
          
-         pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&pageno="+totalPage+"'>⏩</a></li>"; 
+         pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+ "&sizePerPage=" + sizePerPage + "&pageno="+totalPage+"'>⏩</a></li>"; 
          
          model.addAttribute("pageBar", pageBar);
          
@@ -152,6 +152,5 @@ public class AdminController {
       
       return "admin/usersDetail";
    }
-   
    
 }

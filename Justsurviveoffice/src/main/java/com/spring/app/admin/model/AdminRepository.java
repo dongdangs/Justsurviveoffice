@@ -11,3 +11,4 @@ import com.spring.app.entity.Users;
 public interface AdminRepository extends JpaRepository<Users, String> {
 	
 }
+
