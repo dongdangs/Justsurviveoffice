@@ -1,4 +1,4 @@
-package com.spring.app.users.controller;
+package com.spring.app.mypage.controller;
 
 
 import java.util.HashMap;

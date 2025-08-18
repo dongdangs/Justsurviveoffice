@@ -91,7 +91,7 @@
 	
 		// 다 올바른 경우
 		const frm = document.pwFindFrm;
-		frm.action = "<%=ctxPath%>/login/passwordFind";
+		frm.action = "<%=ctxPath%>/users/passwordFind";
 		frm.method = "POST";
 		frm.submit();
 	  }
@@ -115,7 +115,7 @@
 	    frm.userCertificationCode.value = input_confirmCode;
 	    frm.id.value = $('form[name="pwFindFrm"] input[name="id"]').val();
 	
-	    frm.action = "<%= ctxPath%>/login/verifyCertification";
+	    frm.action = "<%= ctxPath%>/users/verifyCertification";
 	    frm.method = "post";
 	    frm.submit();
 	});

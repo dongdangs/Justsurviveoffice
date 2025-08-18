@@ -165,7 +165,7 @@
    
    		// 다 올바른 경우
    		const frm = document.idFindFrm;
-   		frm.action = "<%= ctxPath%>/login/idFind";
+   		frm.action = "<%= ctxPath%>/users/idFind";
    		frm.method = "POST";
    		frm.submit();
 	}

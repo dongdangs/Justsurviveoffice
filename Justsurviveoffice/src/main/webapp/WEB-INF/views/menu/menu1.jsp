@@ -39,15 +39,15 @@
 		 </div>
 	  </li>
       <c:if test="${empty sessionScope.loginUser}">
-        <li><a href="<%=ctxPath%>/login/loginForm">로그인</a></li>
+        <li><a href="<%=ctxPath%>/users/loginForm">로그인</a></li>
       </c:if>
       <c:if test="${not empty sessionScope.loginUser && sessionScope.loginUser.id == 'admin'}">
         <li><a href="<%=ctxPath%>/admin/usersList">관리자 페이지</a></li>
-        <li><a href="<%=ctxPath%>/login/logout">로그아웃</a></li>
+        <li><a href="<%=ctxPath%>/users/logout">로그아웃</a></li>
       </c:if>
       <c:if test="${not empty sessionScope.loginUser && sessionScope.loginUser.id != 'admin'}">
         <li><a href="<%=ctxPath%>/mypage/info">내정보보기</a></li>
-        <li><a href="<%=ctxPath%>/login/logout">로그아웃</a></li>
+        <li><a href="<%=ctxPath%>/users/logout">로그아웃</a></li>
         <li><a class="navBookmk" href="<%=ctxPath%>/mypage/bookmarks"" id="bookmarks">북마크</a></li>
       </c:if>
       <c:if test="${not empty sessionScope.loginUser}">

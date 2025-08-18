@@ -48,16 +48,15 @@ public class UsersService_imple implements UsersService {
 			Users users = user.get();
 			// java.util.Optional.get() 은 값이 존재하면 값을 리턴시켜주고, 값이 없으면 NoSuchElementException 을 유발시켜준다.
 			
-			
-				try {
-					usersDto = users.toDTO();
-					System.out.println(usersDto.getId());
-					System.out.println(Sha256.encrypt(Pwd));
-					// usersDto.setPassword(Sha256.encrypt(Pwd));
-				} catch (Exception e) {	
-					e.printStackTrace();
-				}
-			
+			try {
+				usersDto = users.toDTO();
+				System.out.println(usersDto.getId());
+				System.out.println(Sha256.encrypt(Pwd));
+				// usersDto.setPassword(Sha256.encrypt(Pwd));
+			} catch (Exception e) {	
+				e.printStackTrace();
+			}
+		
 		} catch(NoSuchElementException e) {
 			// member.get() 에서 데이터가 존재하지 않는 경우
 		}

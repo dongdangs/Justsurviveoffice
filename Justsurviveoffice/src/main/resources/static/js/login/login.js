@@ -70,7 +70,7 @@ function goLogin_LocalStorage(){
 function goLogOut(ctx_Path){
 	
 	// 로그아웃을 처리해주는 페이지로 이동 <%= = %> 밖으로 뺸 jsp라서 못 쓴다.
-	location.href=`${ctx_Path}/login/logout.up`;
+	location.href=`${ctx_Path}/users/logout.up`;
 	
 } // end of function goLogOut(){} ========================
 
@@ -131,7 +131,7 @@ function goCoinUpdate(ctxPath, userid, coinmoney) {
 	// 입력받은 값을 가지고 db에 가서 업데이트 시켜줌.
 	// 스크립트 내에서 자바를 불러올 땐, $ajax를 쓰면된다. 
 	$.ajax({
-		url:`${ctxPath}/member/coinUpdateLoginUser.up`,
+		url:`${ctxPath}/users/coinUpdateLoginUser.up`,
 		data:{"userid" : userid,
 			  "coinmoney" : coinmoney},
 		type:"post",

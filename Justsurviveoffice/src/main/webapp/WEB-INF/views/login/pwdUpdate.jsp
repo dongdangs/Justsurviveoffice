@@ -86,7 +86,7 @@
             	value: pwd2
         	}).appendTo(frm);
 
-        	frm.action = "<%=ctxPath%>/login/pwdUpdate";
+        	frm.action = "<%=ctxPath%>/users/pwdUpdate";
         	frm.method = "POST";
         	frm.submit();
     	});
