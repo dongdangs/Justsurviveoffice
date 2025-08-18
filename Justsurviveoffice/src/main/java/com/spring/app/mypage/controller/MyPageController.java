@@ -69,18 +69,22 @@ public class MyPageController {
 
     // 회원 수정 
     @PostMapping("update")
-    public String update(UsersDTO userDto, HttpServletRequest request) {
+    public String update(UsersDTO userDto, HttpServletRequest request, HttpSession session) {
 
-        Users user = usersService.updateUser(userDto);
+        UsersDTO updatedUser = usersService.updateUser(userDto);
+
+        // 세션 갱신 (중요!)
+        session.setAttribute("loginUser", updatedUser);
 
         String message = "정보가 변경되었습니다.";
-        String loc = request.getContextPath() + "/mypage/info"; // 수정 후 이동할 페이지
+        String loc = request.getContextPath() + "/mypage/info";
 
         request.setAttribute("message", message);
         request.setAttribute("loc", loc);
 
         return "msg";
     }
+    
 
 	// 회원탈퇴
     @PostMapping("quit")

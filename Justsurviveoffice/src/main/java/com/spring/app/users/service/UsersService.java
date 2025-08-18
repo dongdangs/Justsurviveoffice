@@ -30,7 +30,7 @@ public interface UsersService {
 
 
 	//  회원 수정 하기
-	public Users updateUser(UsersDTO userDto);
+	public UsersDTO updateUser(UsersDTO userDto);
 
 	// 회원 탈퇴하기
 	public int delete(String id);
