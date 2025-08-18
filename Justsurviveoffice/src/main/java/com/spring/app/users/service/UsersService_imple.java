@@ -134,6 +134,7 @@ public class UsersService_imple implements UsersService {
 		            .build();
 		}
 
+		 /* 250818 GIT 김예준 오후 14:00 git 업데이트 전 시작 v1*/
 		 @Override
 		 public void saveLoginHistory(LoginHistoryDTO loginHistoryDTO) {
 		        LoginHistory loginHistory = LoginHistory.builder()
@@ -144,7 +145,7 @@ public class UsersService_imple implements UsersService {
 
 		        historyRepository.save(loginHistory);
 		   }
-
+		  /* 250818 GIT 김예준 오후 14:00 git 업데이트 전 끝 v1*/
 
 		  @Override
 		  public UsersDTO getIdFind(String name, String email) {

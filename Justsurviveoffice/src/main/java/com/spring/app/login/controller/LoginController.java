@@ -44,7 +44,7 @@ public class LoginController {
 	                       @RequestParam(name="password") String Pwd,
 	                       HttpServletRequest request,
 	                       HttpServletResponse response) {
-
+		/* 250818 GIT 김예준 오후 14:00 git 업데이트 전 시작 v1*/
 	    UsersDTO usersDto = usersService.getUser(id, Pwd); 
 
 	    String enPwd;
@@ -62,7 +62,7 @@ public class LoginController {
 	        return "msg";
 	    }
 
-	   
+	    /* 250818 GIT 김예준 오후 14:00 git 업데이트 전 중간 v1*/
 	    usersDto.setPassword(null);
 
 	    HttpSession session = request.getSession();
@@ -74,7 +74,7 @@ public class LoginController {
 							            .users(usersService.toEntity(usersDto))
 							            .build();
 	    usersService.saveLoginHistory(loginHistoryDTO);
-
+	    /* 250818 GIT 김예준 오후 14:00 git 업데이트 전 끝 v1*/
 	    return "redirect:/index";
 	}
 	
