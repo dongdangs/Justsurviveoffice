@@ -206,9 +206,9 @@ public class UsersService_imple implements UsersService {
 
 	  @Override
 	  public UsersDTO getIdFind(String name, String email) {
-	        return usersRepository.findByNameAndEmail(name.trim(), email.trim())
-	                .map(Users::toDTO) // Users 엔티티에 toDTO() 있다고 가정
-	                .orElse(null);
+		return null;
+		  
+					              
 	 }
 
 	

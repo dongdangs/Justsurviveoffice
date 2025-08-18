@@ -158,6 +158,15 @@ public class LoginController {
 			   			 HttpServletRequest request) {
 
 	    UsersDTO usersDTO = usersService.getIdFind(name, email);
+	
+	    String enEmail;
+	    try {
+	    	enEmail = Sha256.encrypt(email);
+	    } catch (Exception e) {
+	        request.setAttribute("message", "로그인 실패!!");
+	        request.setAttribute("loc", request.getContextPath()+"/login/loginForm");
+	        return "msg";
+	    }
 
 		String message = "없습니다 되었습니다.";
 		String loc = request.getContextPath()+"/";  // 시작 페이지로 이동
