@@ -152,7 +152,7 @@ public class AdminController {
 		UsersDTO udto = adminService.getUsers(id);
 		model.addAttribute("udto", udto);
 		
-		return "admin/usersDetail";
+		return "admin/usersDetail";	// 250818 14:29 브랜치 만들었으니 테스트
 	}
 	
 	
