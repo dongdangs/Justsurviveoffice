@@ -98,6 +98,7 @@ public class MyPageController {
     }
     
     
+    
     // 이메일 중복확인
     @GetMapping("emailDuplicate")
     @ResponseBody
