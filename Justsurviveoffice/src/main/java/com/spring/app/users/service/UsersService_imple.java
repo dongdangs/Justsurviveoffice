@@ -3,6 +3,8 @@ package com.spring.app.users.service;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
+
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -28,6 +30,7 @@ public class UsersService_imple implements UsersService {
 	private final UsersRepository usersRepository;
 	private final HistoryRepository historyRepository;
 	private AES256 aes;
+
 		
 	@Override
 	public UsersDTO getUser(String id) {
@@ -63,6 +66,7 @@ public class UsersService_imple implements UsersService {
 	public boolean isEmailExists(String email) {
 		return usersRepository.existsByEmail(email);
 	}
+	
 
 
 	// 회원가입
@@ -95,17 +99,40 @@ public class UsersService_imple implements UsersService {
 		
 		Users user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 		user.setPassword(Sha256.encrypt(newPassword));
+	   
+		user.setPasswordChanged(LocalDateTime.now());   // 변경일 갱신
+	    user.setIsDormant(0);                           // 휴면 해제
+
 		usersRepository.save(user);
 	}
 
 	//회원 수정하기
-		@Override
-		public Users updateUser(Users users) {
-			Users user = usersRepository.save(users);
-			return user;
-			
+	@Override
+	public Users updateUser(UsersDTO userDto) {
+		Users user = usersRepository.findById(userDto.getId())
+		        .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
+
+		    try {
+		        aes = new AES256(SecretMyKey.KEY);
+		        user.setName(userDto.getName());
+		        user.setEmail(aes.encrypt(userDto.getEmail()));
+		        user.setMobile(aes.encrypt(userDto.getMobile()));
+
+		        // 비밀번호가 입력된 경우에만 변경
+		        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+		        	user.setPassword(Sha256.encrypt(userDto.getPassword()));
+		        	user.setPasswordChanged(LocalDateTime.now());
+		        }
+
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+
+		    return usersRepository.save(user);
 		}
 
+		
+		
 		//이메일 중복확인
 		@Override
 		public boolean isEmailDuplicated(String email) {
@@ -155,6 +182,35 @@ public class UsersService_imple implements UsersService {
 		                .map(Users::toDTO) // Users 엔티티에 toDTO() 있다고 가정
 		                .orElse(null);
 		 }
+
+	
+
+	//휴면처리하기 ( 비밀번호변경대상 )
+	@Override
+	public boolean updateDormantStatus(String id) {
+			
+	    Users users = usersRepository.findById(id).orElse(null);
+	    //orElse는 객체꺼내기를 시도할때 값이 없으면 null을 반환하라는 뜻 !
+		
+		LocalDateTime now = LocalDateTime.now();
+		
+		if(users.getPasswordChanged() == null || 
+			users.getPasswordChanged().isBefore(now.minusYears(1))) {
+				
+			users.setIsDormant(1);
+			usersRepository.save(users);
+			
+			return true;
+			
+		}
+		
+		return false;
+	}
+
+
+		
+
+		
 
 	
 }
