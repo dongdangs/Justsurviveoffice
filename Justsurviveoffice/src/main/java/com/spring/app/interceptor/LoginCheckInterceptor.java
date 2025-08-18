@@ -23,7 +23,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 		if(session.getAttribute("loginUser") == null) {
 			
 			String message = "로그인이 필요한 서비스입니다";
-			String loc = request.getContextPath()+"/login/loginForm";
+			String loc = request.getContextPath()+"/users/loginForm";
 			
 			request.setAttribute("message", message);
 			request.setAttribute("loc", loc);

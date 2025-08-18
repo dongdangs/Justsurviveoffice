@@ -12,9 +12,12 @@ public interface UsersService {
 	// 아이디 중복 체크
 	boolean isIdExists(String id);
 
-	// 이메일 중복 체크
+	// 이메일 존재 여부
 	boolean isEmailExists(String email);
-
+	
+	//이메일 중복
+	public boolean isEmailDuplicated(String email);
+	
 	// 회원가입
 	void registerUser(Users user);
 
@@ -24,8 +27,7 @@ public interface UsersService {
 	// 비밀번호 업데이트
 	void updatePassword(String id, String newPassword);
 	
-	//이메일 중복
-	public boolean isEmailDuplicated(String email);
+
 
 	//  회원 수정 하기
 	public Users updateUser(UsersDTO userDto);
@@ -40,7 +42,6 @@ public interface UsersService {
 	void saveLoginHistory(LoginHistoryDTO loginHistoryDTO);
 
 	UsersDTO getIdFind(String name, String email);
-
 
 	//휴면상태로 업데이트 (비밀번호 변경대상)
 	boolean updateDormantStatus(String id);

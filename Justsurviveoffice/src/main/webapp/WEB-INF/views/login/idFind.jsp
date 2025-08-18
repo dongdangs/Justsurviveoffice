@@ -118,7 +118,7 @@
 <script type="text/javascript" >
 
 	$(function(){
-
+		
    		const method = "${requestScope.method}";
 
    		if(method == "GET") {
@@ -146,7 +146,6 @@
 	
 	
  	function goFind() {
-   
    		const name = $('input:text[name="name"]').val().trim();
    		if (name == ""){
       		alert('성명을 입력하십시오.');

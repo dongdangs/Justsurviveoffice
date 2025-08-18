@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("mypage/")
 public class MyPageController {
-
+ 
     private final UsersService usersService;
     private final BoardService boardService; 
 
