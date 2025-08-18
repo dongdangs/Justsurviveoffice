@@ -2,9 +2,6 @@ package com.spring.app.login.controller;
 
 import java.time.LocalDateTime;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.spring.app.users.domain.LoginHistoryDTO;
 import com.spring.app.common.Sha256;
+
 import com.spring.app.entity.Users;
 import com.spring.app.mail.controller.GoogleMail;
+import com.spring.app.users.domain.LoginHistoryDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -218,20 +216,21 @@ public class LoginController {
 	
 	
 	@PostMapping("pwdUpdate")
-	   public String pwdUpdate(@RequestParam(name="id") String id
-	                    , @RequestParam("newPassword2") String newPassword
-	                    , HttpServletRequest request) {
-	      
-	      usersService.updatePassword(id, newPassword);
-	      
-	      String message = "비밀번호가 변경되었습니다.";
-	      String loc = request.getContextPath() + "/login/loginForm";
-	      
-	      request.setAttribute("message", message);
-	      request.setAttribute("loc", loc);
-	      
-	      return "msg";
-	   }
+	public String pwdUpdate(@RequestParam(name="id") String id
+						  , @RequestParam("newPassword2") String newPassword
+						  , HttpServletRequest request) {
+		
+		usersService.updatePassword(id, newPassword);
+		
+		String message = "비밀번호가 변경되었습니다.";
+		String loc = request.getContextPath() + "/login/loginForm";
+		
+		request.setAttribute("message", message);
+		request.setAttribute("loc", loc);
+		
+		return "msg";
+	}
+
 	
 	
 }

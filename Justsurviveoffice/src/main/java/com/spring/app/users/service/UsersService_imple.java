@@ -10,6 +10,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.spring.app.common.AES256;
+
+import com.spring.app.common.SecretMyKey;
+
 import com.spring.app.common.Sha256;
 import com.spring.app.entity.LoginHistory;
 import com.spring.app.entity.Users;
@@ -26,7 +29,9 @@ public class UsersService_imple implements UsersService {
 
 	private final UsersRepository usersRepository;
 	private final HistoryRepository historyRepository;
-	private AES256 aes256;
+
+	private AES256 aes;
+
 		
 	@Override
 	public UsersDTO getUser(String id, String Pwd) {
@@ -75,6 +80,16 @@ public class UsersService_imple implements UsersService {
 	// 회원가입
 	@Override
 	public void registerUser(Users user) {
+		try {
+			
+			aes = new AES256(SecretMyKey.KEY);
+			user.setMobile(aes.encrypt(user.getMobile()));
+			user.setEmail(aes.encrypt(user.getEmail()));
+			user.setPassword(Sha256.encrypt(user.getPassword()));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		usersRepository.save(user);  // JPA가 DB에 저장해줌
 	}
 

@@ -39,7 +39,7 @@ public class Users {
 	@Column(nullable = false, length = 30)
 	private String name;
 	
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 255)
 	private String password;
 	
 	@Column(nullable = false, length = 50)
