@@ -1,4 +1,4 @@
-package com.spring.app.controller;
+package com.spring.app.begin.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,5 +24,12 @@ public class IndexController {
 	public String index() {
 		return "index";
 	}
+	
+	@GetMapping("users/list")
+	public String memberList() {
+		return "users/list";
+		//	/WEB-INF/views/users/list.jsp 파일을 만들어야 한다.
+	}
+	
 	
 }

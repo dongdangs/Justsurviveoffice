@@ -5,6 +5,7 @@
     
     <!-- domain(DTO) package -->
     <typeAliases>
+    
    	</typeAliases>
 
 </configuration>
