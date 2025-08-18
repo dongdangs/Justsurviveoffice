@@ -1,7 +1,6 @@
 package com.spring.app.login.controller;
 
 import java.time.LocalDateTime;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,15 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.app.users.domain.LoginHistoryDTO;
+import com.spring.app.common.Sha256;
 import com.spring.app.entity.Users;
 import com.spring.app.mail.controller.GoogleMail;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -44,8 +43,17 @@ public class LoginController {
 						   HttpServletRequest request,
 						   HttpServletResponse response) {
 		
-		UsersDTO usersDto = usersService.getUser(id);
+	    UsersDTO usersDto = usersService.getUser(id, Pwd); 
 		
+	    String enPwd;
+	    try {
+	    	enPwd = Sha256.encrypt(Pwd);
+	    } catch (Exception e) {
+	        request.setAttribute("message", "로그인 실패!!");
+	        request.setAttribute("loc", request.getContextPath()+"/login/loginForm");
+	        return "msg";
+	    }
+	    
 		if(usersDto == null || !Pwd.equals(usersDto.getPassword()) ) {
 			
 			String message = "로그인 실패!!";
@@ -55,11 +63,22 @@ public class LoginController {
 			request.setAttribute("loc", loc);
 			return "msg";
 		}
-		
+		boolean isDormant = usersService.updateDormantStatus(id);
+
+	    if (isDormant || usersDto.getIsDormant() == 1) {
+	    	String message = "비밀번호 변경이 1년이 지나 휴면 처리되었습니다. 비밀번호를 변경해주세요. ";
+			request.setAttribute("message", message);
+			String loc = request.getContextPath() + "/login/pwdUpdate?id=" + id; // 변경 페이지로 이동할 링크
+
+		    request.setAttribute("message", message);
+		    request.setAttribute("loc", loc);
+
+		    return "msg";
+	    }
+	    
 		// 세션에 로그인 사용자 정보 저장
 		HttpSession session = request.getSession();
 		session.setAttribute("loginUser", usersDto);
-
 			
 		 // 로그인 기록 저장
 	    LoginHistoryDTO loginHistoryDTO = LoginHistoryDTO.builder()
@@ -69,12 +88,11 @@ public class LoginController {
 	                					.build();
 
 	    usersService.saveLoginHistory(loginHistoryDTO);
-
-		
 		
 	    return "redirect:/index"; // 인덱스 페이지로 이동
 
 	}
+	
 	
 	@GetMapping("logout")
 	public String loginout(HttpServletRequest request) {
@@ -94,6 +112,38 @@ public class LoginController {
 	public String register() {
 		return "login/register";
 	}
+    @PostMapping("registerUser")
+    public String registerUser(@RequestParam("hp1") String hp1,
+                        @RequestParam("hp2") String hp2,
+                        @RequestParam("hp3") String hp3,
+                        Users user, 
+                        HttpServletRequest request, HttpSession session) {
+      
+       // 연락처 합치기
+       String mobile = hp1 + hp2 + hp3;
+       user.setMobile(mobile);
+
+       try {
+          // 회원가입
+          usersService.registerUser(user);
+          
+          // 세션에 로그인 정보 저장
+          session.setAttribute("loginUser", user);
+          
+          return "redirect:/index";
+          
+       } catch (Exception e) {
+          
+          String message = "회원가입 실패!!";
+          String loc = request.getContextPath()+"/login/register"; // 로그인 페이지로 이동
+
+          request.setAttribute("message", message);
+          request.setAttribute("loc", loc);
+          return "msg";
+       }
+       
+    }
+	
 	
 	@GetMapping("idFind")
 	public String idFind() {
@@ -119,7 +169,8 @@ public class LoginController {
 	    return "login/idFind"; // 기존 뷰
 	}
 	
-	@GetMapping("pwdFindForm")
+	// 아이디와 이메일 검증.
+	@GetMapping("pwdFind")
 	public String pwdFind(HttpSession session, HttpServletRequest request) {
 		
 		// 세션에 값이 있으면 jsp 에 전달, 없으면 빈 값
@@ -132,7 +183,7 @@ public class LoginController {
 		return "login/pwdFind";
 	}
 	
-	
+	// 아이디와 이메일 검증 후 인증번호 검증.
 	@PostMapping("passwordFind")
 	public String passwordFind(@RequestParam(name="id") String id,
 							   @RequestParam(name="email") String email,
@@ -172,7 +223,7 @@ public class LoginController {
         return "login/pwdFind";
 	}
 	
-	
+	// 인증 확인용
 	@PostMapping("verifyCertification")
 	public String verifyCertification(@RequestParam("userCertificationCode") String userCertificationCode,
             						  @RequestParam("id") String id,
@@ -206,7 +257,7 @@ public class LoginController {
 		return "msg";
 	}
 	
-	
+	// 인증 확인 후, 비밀번호 변경 폼으로 전환
 	@GetMapping("pwdUpdate")
 	public String pwdUpdateForm(@RequestParam(name="id") String id
 			      			  , Model model) {
@@ -214,9 +265,9 @@ public class LoginController {
 		return "login/pwdUpdate";
 	}
 	
-	
+	// 비밀번호 변경 폼에서 비밀번호 업데이트 시키기.
 	@PostMapping("pwdUpdate")
-	   public String pwdUpdate(@RequestParam(name="id") String id
+    public String pwdUpdate(@RequestParam(name="id") String id
 	                    , @RequestParam("newPassword2") String newPassword
 	                    , HttpServletRequest request) {
 	      
@@ -229,10 +280,40 @@ public class LoginController {
 	      request.setAttribute("loc", loc);
 	      
 	      return "msg";
+	 }
+	 
+	
+	 @PostMapping("checkIdDuplicate")
+	   @ResponseBody
+	   public Map<String, Boolean> checkIdDuplicate(@RequestParam("id") String id) {
+	      
+		   System.out.println("12321");
+	       boolean isExists = usersService.isIdExists(id);
+
+	       Map<String, Boolean> map = new HashMap<>();
+	       map.put("isExists", isExists);
+	       
+	       return map;
 	   }
+	   
+	   
+	   @PostMapping("checkEmailDuplicate")
+	   @ResponseBody
+	   public Map<String, Boolean> checkEmailDuplicate(@RequestParam("email") String email) {
+	      
+	       boolean isExists = usersService.isEmailExists(email);
+
+	       Map<String, Boolean> map = new HashMap<>();
+	       map.put("isExists", isExists);
+
+	       return map;
+	   }
+
+
 	
 	
 }
+
 
 
 

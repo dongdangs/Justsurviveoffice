@@ -41,9 +41,10 @@
             border-color: #6366F1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
+        
     </style>
 </head>
-
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 
 	$(function(){
@@ -69,7 +70,7 @@
 		    const top = (window.screen.height / 2) - (height / 2);
 
 		    window.open(
-		        "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=ea6395f090f8882e15d65f5eb26cce78&redirect_uri=http://localhost:9089/auth/login/kakao",
+		        "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=ea6395f090f8882e15d65f5eb26cce78&redirect_uri=http://localhost:9089/auth/users/kakao",
 		        "kakaoLoginPopup",
 		        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`
 		    );
@@ -85,11 +86,13 @@
 
 			
 		    window.open(
-			    "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=9F1h5_QLLo9PHMh8EJyP&state=STATE_STRING&redirect_uri=http://localhost:8080/user/login/naver",
+			    "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=9F1h5_QLLo9PHMh8EJyP&state=STATE_STRING&redirect_uri=http://localhost:8080/user/users/naver",
 			    "NaverLoginPopup",
 			    `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`
 			);
 		});
+        
+        //휴면 
 	});
 
 	 function func_Login() {
@@ -119,7 +122,7 @@
 	  
 		  const frm = document.loginFrm;
 		  
-		  frm.action = "<%= ctxPath%>/login/login";
+		  frm.action = "<%= ctxPath%>/users/login";
 		  frm.method = "POST";
 		  frm.submit();
 		  
@@ -154,10 +157,8 @@
                     </div>
                     
                     <div class="text-sm">
-                    	<a href="<%=ctxPath %>/login/idFind" class="font-medium text-indigo-600 hover:text-indigo-500">아이디 찾기</a>
-                        <a href="<%=ctxPath %>/login/pwdFind" class="font-medium text-indigo-600 hover:text-indigo-500">비밀번호 찾기</a>
-                        <a href="<%=ctxPath %>/login/pwdFindForm" class="font-medium text-indigo-600 hover:text-indigo-500">
-                        비밀번호 찾기</a>
+                    	<a href="<%=ctxPath %>/users/idFind" class="font-medium text-indigo-600 hover:text-indigo-500">아이디 찾기</a>
+                        <a href="<%=ctxPath %>/users/pwdFindForm" class="font-medium text-indigo-600 hover:text-indigo-500">비밀번호 찾기</a>
                     </div>
                 </div>
                 
@@ -191,7 +192,7 @@
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">
                     아직 회원이 아니신가요?
-                    <a href="<%=ctxPath %>/login/register" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    <a href="<%=ctxPath %>/users/register" class="font-medium text-indigo-600 hover:text-indigo-500">
                     	회원가입</a>
                 </p>
             </div>

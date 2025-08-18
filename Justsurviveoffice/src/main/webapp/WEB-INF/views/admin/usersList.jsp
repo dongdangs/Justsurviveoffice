@@ -46,6 +46,7 @@
 		if( ${requestScope.searchType != "" && requestScope.searchWord != ""} ) {
 			$('select[name="searchType"]').val("${requestScope.searchType}");
 			$('input[name="searchWord"]').val("${requestScope.searchWord}");
+			$('select[name="sizePerPage"]').val("${requestScope.sizePerPage}");
 		}
 		
 		$("input#searchWord").keyup(function(e){

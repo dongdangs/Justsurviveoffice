@@ -82,7 +82,7 @@
             <!-- User Details Section -->
             <div class="max-w-4xl mx-auto">
                 <!-- Empty User Case -->
-                <c:if test="${empty requestScope.udto}">
+                <c:if test="${empty requestScope.usersDto}">
                     <div class="bg-white rounded-lg shadow-lg p-6 text-center">
                         <i class="fas fa-user-slash text-6xl text-gray-400 mb-4"></i>
                         <h2 class="text-2xl font-bold text-gray-700 mb-2">User Not Found</h2>
@@ -94,19 +94,19 @@
                 </c:if>
 
                 <!-- User Details -->
-                <c:if test="${not empty requestScope.udto}">
+                <c:if test="${not empty requestScope.usersDto}">
                     <div class="bg-white rounded-xl card-shadow overflow-hidden mb-8">
                         <!-- User Header -->
                         <div class="gradient-bg text-white p-6">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <h1 class="text-2xl md:text-3xl font-bold">
-                                        <i class="fas fa-user-circle mr-3"></i>${requestScope.udto.name}'s Profile
+                                        <i class="fas fa-user-circle mr-3"></i>${requestScope.usersDto.name}'s Profile
                                     </h1>
-                                    <p class="text-blue-100 mt-1">User since ${fn:substring(requestScope.udto.registerday, 0, 10)}</p>
+                                    <p class="text-blue-100 mt-1">User since ${fn:substring(requestScope.usersDto.registerday, 0, 10)}</p>
                                 </div>
                                 <div class="hidden md:block bg-white text-blue-600 px-4 py-2 rounded-full font-bold">
-                                    ${requestScope.udto.category.categoryName}
+                                    ${requestScope.usersDto.category.categoryName}
                                 </div>
                             </div>
                         </div>
@@ -119,25 +119,25 @@
                                         <div class="w-1/3 font-semibold text-gray-600 flex items-center">
                                             <i class="fas fa-id-card mr-2"></i> ID
                                         </div>
-                                        <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">${requestScope.udto.id}</div>
+                                        <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">${requestScope.usersDto.id}</div>
                                     </div>
                                     <div class="flex items-start">
                                         <div class="w-1/3 font-semibold text-gray-600 flex items-center">
                                             <i class="fas fa-user mr-2"></i> Name
                                         </div>
-                                        <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">${requestScope.udto.name}</div>
+                                        <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">${requestScope.usersDto.name}</div>
                                     </div>
                                     <div class="flex items-start">
                                         <div class="w-1/3 font-semibold text-gray-600 flex items-center">
                                             <i class="fas fa-envelope mr-2"></i> Email
                                         </div>
-                                        <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">${requestScope.udto.email}</div>
+                                        <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">${requestScope.usersDto.email}</div>
                                     </div>
                                     <div class="flex items-start">
                                         <div class="w-1/3 font-semibold text-gray-600 flex items-center">
                                             <i class="fas fa-mobile-alt mr-2"></i> Phone
                                         </div>
-                                        <c:set var="mobile" value="${requestScope.udto.mobile}" />
+                                        <c:set var="mobile" value="${requestScope.usersDto.mobile}" />
                                         <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">
                                             ${fn:substring(mobile, 0, 3)}-${fn:substring(mobile, 3, 7)}-${fn:substring(mobile, 7, 11)}
                                         </div>
@@ -149,7 +149,9 @@
                                             <i class="fas fa-image mr-2"></i> Category
                                         </div>
                                         <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">
-                                        	<img src="<%= ctxPath%>/images/${requestScope.udto.category.categoryImagePath}" alt="카테고리이미지패스" style="width: 150px; height: 150px;">
+                                        	<c:if test="${not empty requestScope.usersDto.category.categoryImagePath}">
+                                        		<img src="<%= ctxPath%>/images/${requestScope.usersDto.category.categoryImagePath}" alt="카테고리이미지패스" style="width: 150px; height: 150px;">
+                                        	</c:if>
                                         </div>
                                     </div>
                                     <div class="flex items-start">
@@ -157,14 +159,14 @@
                                             <i class="fas fa-coins mr-2"></i> Points
                                         </div>
                                         <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">
-                                            <fmt:formatNumber value="${requestScope.udto.point}" pattern="###,###" /> POINT
+                                            <fmt:formatNumber value="${requestScope.usersDto.point}" pattern="###,###" /> POINT
                                         </div>
                                     </div>
                                     <div class="flex items-start">
                                         <div class="w-1/3 font-semibold text-gray-600 flex items-center">
                                             <i class="fas fa-calendar-alt mr-2"></i> Join Date
                                         </div>
-                                        <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">${fn:substring(requestScope.udto.registerday, 0, 10)}</div>
+                                        <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">${fn:substring(requestScope.usersDto.registerday, 0, 10)}</div>
                                     </div>
                                 </div>
                             </div>

@@ -1,7 +1,11 @@
 package com.spring.app.entity;
 
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
+import com.spring.app.common.AES256;
 import com.spring.app.users.domain.UsersDTO;
 
 import jakarta.persistence.Column;
@@ -35,7 +39,7 @@ public class Users {
 	@Column(nullable = false, length = 30)
 	private String name;
 	
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 255)
 	private String password;
 	
 	@Column(nullable = false, length = 50)
