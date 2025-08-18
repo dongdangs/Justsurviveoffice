@@ -12,7 +12,7 @@
 	<%-- Required meta tags --%>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>SPRING BOOT 1</title>
+	<title>대사살 (대충사무실에서살아남기)</title>
 
     <%-- Bootstrap CSS --%>
     <link rel="stylesheet" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" type="text/css">
@@ -32,7 +32,7 @@
 	<%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
     <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.css" />
     <script type="text/javascript" src="<%=ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.js"></script>
-
+	
 </head>
 <body>
 	<div id="mycontainer">

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 import com.spring.app.users.domain.LoginHistoryDTO;
+import com.spring.app.common.Sha256;
 import com.spring.app.entity.Users;
 import com.spring.app.mail.controller.GoogleMail;
 import com.spring.app.users.domain.UsersDTO;
@@ -39,41 +40,42 @@ public class LoginController {
 	}
 	
 	@PostMapping("login")
-	public String loginEnd(@RequestParam(name="id") String id, // form 태그의 name 속성값과 같은것이 매핑되어짐
-						   @RequestParam(name="password") String Pwd, // form 태그의 name 속성값과 같은것이 매핑되어짐
-						   HttpServletRequest request,
-						   HttpServletResponse response) {
-		
-		UsersDTO usersDto = usersService.getUser(id,Pwd);
-		
-		if(usersDto == null || !Pwd.equals(usersDto.getPassword()) ) {
-			
-			String message = "로그인 실패!!";
-			String loc = request.getContextPath()+"/login/loginForm"; // 로그인 페이지로 이동
+	public String loginEnd(@RequestParam(name="id") String id,
+	                       @RequestParam(name="password") String Pwd,
+	                       HttpServletRequest request,
+	                       HttpServletResponse response) {
 
-			request.setAttribute("message", message);
-			request.setAttribute("loc", loc);
-			return "msg";
-		}
-		
-		// 세션에 로그인 사용자 정보 저장
-		HttpSession session = request.getSession();
-		session.setAttribute("loginUser", usersDto);
+	    UsersDTO usersDto = usersService.getUser(id, Pwd); 
 
-			
-		 // 로그인 기록 저장
+	    String enPwd;
+	    try {
+	    	enPwd = Sha256.encrypt(Pwd);
+	    } catch (Exception e) {
+	        request.setAttribute("message", "로그인 실패!!");
+	        request.setAttribute("loc", request.getContextPath()+"/login/loginForm");
+	        return "msg";
+	    }
+
+	    if (usersDto == null || !enPwd.equalsIgnoreCase(usersDto.getPassword())) {
+	        request.setAttribute("message", "로그인 실패!!");
+	        request.setAttribute("loc", request.getContextPath()+"/login/loginForm");
+	        return "msg";
+	    }
+
+	   
+	    usersDto.setPassword(null);
+
+	    HttpSession session = request.getSession();
+	    session.setAttribute("loginUser", usersDto);
+
 	    LoginHistoryDTO loginHistoryDTO = LoginHistoryDTO.builder()
-	                					.lastLogin(LocalDateTime.now())  // 현재 로그인 시간
-	                					.ip(request.getRemoteAddr())     // 접속 IP
-	                					.users(usersService.toEntity(usersDto)) // DTO -> 엔티티 변환 메서드 필요
-	                					.build();
-
+							            .lastLogin(LocalDateTime.now())
+							            .ip(request.getRemoteAddr())
+							            .users(usersService.toEntity(usersDto))
+							            .build();
 	    usersService.saveLoginHistory(loginHistoryDTO);
 
-		
-		
-	    return "redirect:/index"; // 인덱스 페이지로 이동
-
+	    return "redirect:/index";
 	}
 	
 	@GetMapping("logout")
