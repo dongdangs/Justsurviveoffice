@@ -115,22 +115,22 @@
 	#div_findResult {padding:20px 0 0;text-align:center;}
 </style>
 
-<script type="text/javascript" >
+<script type="text/javascript">
 
 	$(function(){
 		
-   		const method = "${requestScope.method}";
-
-   		if(method == "GET") {
-      		$('div#div_findResult').prop('hidden', true);
-   		} 
-   		
-   		else {
-      		$('div#div_findResult').prop('hidden', false);
-      		$('input:text[name="name"]').val("${requestScope.name}");
-      		$('input:text[name="email"]').val("${requestScope.email}");
-      		<%-- idfind class파일에서 setAttribute에서 name과 email을 넘겨줘서 여기서 쓸 수 있었다.--%>
-   		} 
+		const method = "${requestScope.method}";
+		
+		if(method != "POST") {
+			$('div#div_findResult').prop('hidden', true);
+			
+		} 
+		else {
+			$('div#div_findResult').prop('hidden', false);
+			$('input:text[name="id"]').val("${requestScope.id}");
+			$('input:text[name="email"]').val("${requestScope.email}");
+			<%-- idfind class파일에서 setAttribute에서 name과 email을 넘겨줘서 여기서 쓸 수 있었다.--%>
+		} 
 
 	   	$('button.btn-success').click(function(){
 	      	goFind();
@@ -146,6 +146,7 @@
 	
 	
  	function goFind() {
+ 		
    		const name = $('input:text[name="name"]').val().trim();
    		if (name == ""){
       		alert('성명을 입력하십시오.');
