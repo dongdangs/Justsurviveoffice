@@ -37,12 +37,12 @@ public class LoginController {
 		return "login/loginForm";
 	}
 	
-	@PostMapping("login")
+	@PostMapping("login")	
 	public String loginEnd(@RequestParam(name="id") String id,
 	                       @RequestParam(name="password") String Pwd,
 	                       HttpServletRequest request,
 	                       HttpServletResponse response) {
-		/* 250818 GIT 김예준 오후 14:00 git 업데이트 전 시작 v1*/
+
 	    UsersDTO usersDto = usersService.getUser(id, Pwd); 
 
 	    String enPwd;
@@ -60,8 +60,21 @@ public class LoginController {
 	        return "msg";
 	    }
 
-	    /* 250818 GIT 김예준 오후 14:00 git 업데이트 전 중간 v1*/
+	   
 	    usersDto.setPassword(null);
+	    
+	    boolean isDormant = usersService.updateDormantStatus(id);
+
+	    if (isDormant || usersDto.getIsDormant() == 1) {
+	    	String message = "비밀번호 변경이 1년이 지나 휴면 처리되었습니다. 비밀번호를 변경해주세요. ";
+			request.setAttribute("message", message);
+			String loc = request.getContextPath() + "/login/pwdUpdate?id=" + id; // 변경 페이지로 이동할 링크
+
+		    request.setAttribute("message", message);
+		    request.setAttribute("loc", loc);
+
+		    return "msg";
+	    }
 
 	    HttpSession session = request.getSession();
 	    session.setAttribute("loginUser", usersDto);
@@ -72,7 +85,7 @@ public class LoginController {
 							            .users(usersService.toEntity(usersDto))
 							            .build();
 	    usersService.saveLoginHistory(loginHistoryDTO);
-	    /* 250818 GIT 김예준 오후 14:00 git 업데이트 전 끝 v1*/
+
 	    return "redirect:/index";
 	}
 	
@@ -231,8 +244,6 @@ public class LoginController {
 		return "msg";
 	}
 
-	
-	
 }
 
 
