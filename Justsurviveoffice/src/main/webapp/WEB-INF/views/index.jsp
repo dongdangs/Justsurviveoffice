@@ -38,7 +38,9 @@
 		<div class="row">
 			
 			<div class="col-md-3 d-flex flex-column align-items-center justify-content-start" style="border:solid 2px red;">
-				<div>
+				
+				<c:if test="${not empty sessionScope.loginUser}">
+					<div>
 					<img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
                 <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
                 <div class="mb-3">
@@ -46,6 +48,8 @@
                     포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
                 </div>
 				</div>
+				</c:if>
+
 				<div style="width: 70%; margin-top:30%; border: solid 1px green;">
 					<h6 style="font-weight: bolder;">대사살 Hot! 게시글</h6>
 					<table class="table table-sm table-borderless">
