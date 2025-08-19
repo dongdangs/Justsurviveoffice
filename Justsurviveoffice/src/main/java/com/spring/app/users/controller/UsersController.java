@@ -109,13 +109,13 @@ public class UsersController {
 	public String register() {
 		return "users/register";
 	}
+	
 	@PostMapping("registerUser")
     public String registerUser(@RequestParam("hp1") String hp1,
                         @RequestParam("hp2") String hp2,
                         @RequestParam("hp3") String hp3,
                         Users user, 
                         HttpServletRequest request, HttpSession session) {
-      
       // 연락처 합치기
        String mobile = hp1 + hp2 + hp3;
        user.setMobile(mobile);
@@ -138,7 +138,6 @@ public class UsersController {
           request.setAttribute("loc", loc);
           return "msg";
        }
-       
     }
 
 	@GetMapping("idFind")
@@ -160,6 +159,8 @@ public class UsersController {
 	    if (usersDTO != null) {
 	        model.addAttribute("usersDTO", usersDTO.getId());
 	    } 
+	    
+	    request.setAttribute("method", "POST");
 
 	    return "login/idFind"; // 기존 뷰
 	}

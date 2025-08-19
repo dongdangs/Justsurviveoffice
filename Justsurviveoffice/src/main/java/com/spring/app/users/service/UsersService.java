@@ -30,12 +30,12 @@ public interface UsersService {
 
 
 	//  회원 수정 하기
-	public Users updateUser(UsersDTO userDto);
+	public UsersDTO updateUser(UsersDTO userDto);
 
 	// 회원 탈퇴하기
 	public int delete(String id);
 	
-	// 로그인 기록 (엔티티 변환)
+	// loginHistory의 user엔티티 생성용 메소드
 	Users toEntity(UsersDTO userDto);
 
 	// 로그인 기록 남기기
