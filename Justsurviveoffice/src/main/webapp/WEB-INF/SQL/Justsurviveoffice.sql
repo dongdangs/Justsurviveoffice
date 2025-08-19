@@ -137,3 +137,26 @@ on B.id = H.fk_id
 where B.id = 'chosw';
 
 select * from users where id = 'chosw';
+
+
+select * from board;
+
+desc board;
+
+
+select * from category;
+
+
+select fk_categoryno, boardname, boardcontent
+from board
+where FK_CATEGORYNO=2;
+
+
+
+
+SELECT boardname, boardcontent, name, fk_categoryno
+FROM board B JOIN users U
+ON B.fk_id = U.id;
+
+
+

@@ -5,7 +5,8 @@
     
     <!-- domain(DTO) package -->
     <typeAliases>
-    
+    	<typeAlias type="com.spring.app.users.domain.BoardDTO" alias="BoardDTO"/>
+    	<typeAlias type="com.spring.app.users.domain.UsersDTO" alias="UsersDTO"/>
    	</typeAliases>
 
 </configuration>

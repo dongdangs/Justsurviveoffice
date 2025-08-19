@@ -185,7 +185,7 @@
 				</div>
 				
 				<div class="col-md-4 mb-4">
-					<a href="#" class="card text-decoration-none h-100" style="background-color: navy;">
+					<a href="<%= ctxPath%>/board/nointerList" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/nointer.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>
