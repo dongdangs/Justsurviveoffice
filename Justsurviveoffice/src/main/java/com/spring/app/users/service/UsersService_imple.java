@@ -157,7 +157,6 @@ public class UsersService_imple implements UsersService {
            return null;
        }
    }
-   
       
    //이메일 중복확인
    @Override
@@ -180,16 +179,13 @@ public class UsersService_imple implements UsersService {
       
       try {
          usersRepository.deleteById(id);
-         
          n = 1;
       } catch (EmptyResultDataAccessException e) {
-         
       }
-         
       return n;
    }
    
-   
+   // loginHistory의 user엔티티 생성용 메소드
    @Override
    public Users toEntity(UsersDTO userDto) {
        return Users.builder()
@@ -200,13 +196,12 @@ public class UsersService_imple implements UsersService {
 
    @Override
    public void saveLoginHistory(LoginHistoryDTO loginHistoryDTO) {
-           LoginHistory loginHistory = LoginHistory.builder()
+	   LoginHistory loginHistory = LoginHistory.builder()
                                   .lastLogin(loginHistoryDTO.getLastLogin())
                                   .ip(loginHistoryDTO.getIp())
                                   .users(loginHistoryDTO.getUsers())
                                   .build();
-
-           historyRepository.save(loginHistory);
+	   historyRepository.save(loginHistory);
     }
 
 
@@ -256,9 +251,7 @@ public class UsersService_imple implements UsersService {
           usersRepository.save(users);
          
           return true;
-         
        }
-      
        return false;
     }
 

@@ -116,7 +116,6 @@ public class UsersController {
                         @RequestParam("hp3") String hp3,
                         Users user, 
                         HttpServletRequest request, HttpSession session) {
-      
       // 연락처 합치기
        String mobile = hp1 + hp2 + hp3;
        user.setMobile(mobile);
@@ -139,7 +138,6 @@ public class UsersController {
           request.setAttribute("loc", loc);
           return "msg";
        }
-       
     }
 
 	@GetMapping("idFind")
