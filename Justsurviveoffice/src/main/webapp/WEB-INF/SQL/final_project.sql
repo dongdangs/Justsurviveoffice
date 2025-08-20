@@ -125,6 +125,11 @@ from users;
 
 desc users;
 
+desc board;
+
+select * from board B join users c 
+on B.fk_id = C.id;
+
 
 update users set email='dbals010321@naver.com' where id='jangym';
 

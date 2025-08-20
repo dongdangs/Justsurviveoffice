@@ -112,6 +112,16 @@ constraint pK_Category
 CREATE SEQUENCE category_seq START WITH 1 INCREMENT BY 1 NOCYCLE NOCACHE;
 drop sequence category_seq;
 
+select * from category;
+
+select * from board;
+
+select * from board;
+
+desc board;
+
+insert into board values(1,2,'KYJTEST250819','김예준 25년8월19일 오후 3:16분경 테스트입니다.',sysdate, sysdate, 1,'sai05005', null, null, 0);
+
 --- 6. Tag (태그)
 CREATE TABLE Tag (
 
@@ -128,7 +138,9 @@ constraint fk_Tag_category
 
 CREATE SEQUENCE tag_seq START WITH 1 INCREMENT BY 1 NOCYCLE NOCACHE;
 
-select * from users;
+select * from board;
+
+commit;
 
 select * from login_history;
 
@@ -137,3 +149,7 @@ on B.id = H.fk_id
 where B.id = 'chosw';
 
 select * from users where id = 'chosw';
+
+select boardname, boardcontent,fk_categoryno
+from board B join C users
+on B.fk;

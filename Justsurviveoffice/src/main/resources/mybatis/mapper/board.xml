@@ -4,10 +4,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!-- ==== 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<!-- 패키지에 있는 인터페이스명 -->
+<mapper namespace="board">
 
-<mapper namespace="member">
-
-  
+    <resultMap type="HashMap" id="getBoardMap">
+        <result property="boardName" 			column="boardName"  			javaType="String" />
+        <result property="boardContent" 		column="boardContent"  			javaType="String" />
+        <result property="name" 				column="name"  					javaType="String" />
+        <result property="readCount" 			column="readCount"  			javaType="String" />
+        <result property="boardNo" 				column="boardNo"  				javaType="String" />
+   </resultMap>
+	<select id="getBoardList" resultMap="getBoardMap">
+		select boardName, boardContent, readCount, B.fk_categoryNo, name, boardNo
+		from board B join users C
+		on B.fk_id = C.id
+	</select>
+	
+	<select id="getView" parameterType="HashMap" resultType="boardDTO" >
+		select boardName, boardContent, readCount, B.fk_categoryNo, name, boardNo
+		from board B join users C
+		on B.fk_id = C.id
+		where boardNo = #{boardNo}
+	</select>
 </mapper>
 
 

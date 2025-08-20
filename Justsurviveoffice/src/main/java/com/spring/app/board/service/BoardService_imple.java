@@ -1,12 +1,14 @@
 package com.spring.app.board.service;
 
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import com.spring.app.users.domain.BoardDTO;
 import com.spring.app.users.domain.BookMarkDTO;
+import com.spring.app.board.model.BoardDAO;
 import com.spring.app.entity.Board;
 import com.spring.app.entity.Bookmark;
 import com.spring.app.model.BoardRepository;
@@ -20,6 +22,7 @@ public class BoardService_imple implements BoardService {
 
     private final BoardRepository boardRepository;
     private final BookMarkRepository bookMarkRepository;
+    private final BoardDAO dao;
     
     // 내가 작성한 폼
     @Override
@@ -42,17 +45,35 @@ public class BoardService_imple implements BoardService {
 				        .toList();
 	}
 
-	
+ 
+	@Override
+	public List<Map<String, String>> BoardList() {
+		List<Map<String, String>> mapList = dao.getBoardList();
+		return mapList;
+		
+	}
 
-    
-    
 
-    
-    
-	
+	@Override
+	public BoardDTO getView(Map<String, String> paraMap) {
+		
+		BoardDTO boardDTO = dao.getView(paraMap);	// 글 1개 조회하기
+		
+		String login_userid = paraMap.get("login_userid");
+		String boardNo = paraMap.get("boardNo");
+		
+		//if(!boardDTO.getFk_id().equals("login_userid")) { //  로그인한 사용자랑 작성자가 다른경우 //
+		//	int n = dao.increaseReadCount(paraMap.get("seq"));
+			
+		//	if(n==1) {
+		//		boardDTO.setReadCount( String.valueOf((Integer.parseInt(boardDTO.getReadCount()) + 1)) );	  
+		//	}
+		// }
+		
+		return boardDTO;
+		
+	}
 
-    
-    
 	
 }
 
