@@ -212,7 +212,7 @@
 											<div class="meta-left">
 												<span>${dto.fk_id}</span>
 												<span class="dot">·</span>
-												<span>${dto.createdAtBoard}</span>
+												<span>${dto.createdAtBoard}</span>	<!-- 서비스에서 구현방식 생각중 -->
 											</div>
 											
 											<div class="stats">
