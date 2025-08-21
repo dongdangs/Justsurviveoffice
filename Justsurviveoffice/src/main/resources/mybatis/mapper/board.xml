@@ -18,15 +18,46 @@
 		select boardName, boardContent, readCount, B.fk_categoryNo, name, boardNo
 		from board B join users C
 		on B.fk_id = C.id
+		order by boardNo desc
 	</select>
 	
-	<select id="getView" parameterType="HashMap" resultType="boardDTO" >
+	<!-- <select id="getView" parameterType="HashMap" resultType="boardDTO" >
 		select boardName, boardContent, readCount, B.fk_categoryNo, name, boardNo
 		from board B join users C
 		on B.fk_id = C.id
 		where boardNo = #{boardNo}
 	</select>
+	 -->
+	 
+	<select id="getView" parameterType="HashMap" resultType="boardDTO">
+		select 
+		A.*
+		from
+		(
+		select lead(boardNo) over(order by boardNo desc) as preNo
+			   ,lead(boardName) over(order by boardNo desc) as preName
+		       , lag(boardNo) over(order by boardNo desc) as nextNo
+		       , lag(boardName) over(order by boardNo desc) as nextName
+		       ,boardNo, boardName, boardContent, fk_id
+		       from board
+		) A
+		where A.boardno = #{boardNo}
+	</select>
+	
+	<select id="PaginationList" resultMap="getBoardMap">
+		select *
+			from (
+				  select rownum, A.*
+				  from
+				      (
+				       select *
+				       from board
+				       ) A
+				  ) 
+		where rownum &gt; 0 and rownum &lt; 5
+	</select>
 </mapper>
+
 
 
 

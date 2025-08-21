@@ -154,9 +154,11 @@ function goView(boardNo){
 			</div>
 			<p>
 			<div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png'); border: solid 2px blue;">
-					<c:forEach var="boardDTO" items="${mapList}">
+					<%-- <c:forEach var="boardDTO" items="${mapList}"> --%>
+					<c:forEach var="boardDTO" items="${pagination}">
 							<div onclick="goView('${boardDTO.boardNo}')">
 								<div class="boardTab" style="background-color:#fff;">
+								  <p class="boardNo">${boardDTO.boardNo}번</p>
 								  <p class="boardName">${boardDTO.boardName}</p>
 								  <p class="boardCont">${boardDTO.boardContent}</p>
 								  <p class="boardWritt" style="padding-bottom:10px;">${boardDTO.name}</p>

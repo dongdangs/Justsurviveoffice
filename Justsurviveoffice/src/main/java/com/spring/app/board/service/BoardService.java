@@ -19,6 +19,8 @@ public interface BoardService {
 	// 글 1개 조회
 	BoardDTO getView(Map<String, String> paraMap);
 
+	// 페이지내이션 만들기
+	List<Map<String, String>> PaginationList();
 
 
 }

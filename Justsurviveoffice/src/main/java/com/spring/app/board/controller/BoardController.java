@@ -38,6 +38,11 @@ public class BoardController {
 		List<Map<String, String>> mapList = boardService.BoardList();
 		model.addAttribute("mapList",mapList);
 		
+		List<Map<String,String>> pagination = boardService.PaginationList();
+		model.addAttribute("pagination", pagination);
+		
+		System.out.println("페이지 : " + pagination);
+		
 		return "board/list";
 	}
 	
@@ -62,6 +67,7 @@ public class BoardController {
 		paraMap.put("boardNo", boardNo);
 		paraMap.put("login_userid", login_userid);
 		
+		
 		// paraMap.put("",);
 	 	
 		//  ==== !!! 중요 !!! ==== 
@@ -78,6 +84,13 @@ public class BoardController {
 		boardDTO = boardService.getView(paraMap);
 		mav.addObject(boardDTO);
 		mav.addObject(paraMap);
+		System.out.println("테스트 번호 : " + boardDTO.getPreNo());
+		if(boardDTO.getPreNo() == null ) {
+			boardDTO.setPreNo("0");
+		}
+		else if(boardDTO.getNextNo() == null ) {
+			boardDTO.setNextNo("0");
+		}
 		
 		mav.setViewName("board/view");
 		

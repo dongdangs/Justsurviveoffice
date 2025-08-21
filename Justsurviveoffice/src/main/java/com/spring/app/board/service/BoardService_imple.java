@@ -74,6 +74,13 @@ public class BoardService_imple implements BoardService {
 		
 	}
 
+
+	@Override
+	public List<Map<String, String>> PaginationList() {
+		List<Map<String, String>> PaginationList = dao.PaginationList();
+		return PaginationList;
+	}
+
 	
 }
 

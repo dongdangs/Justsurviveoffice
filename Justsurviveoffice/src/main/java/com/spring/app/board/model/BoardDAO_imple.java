@@ -31,6 +31,12 @@ public class BoardDAO_imple implements BoardDAO {
 		BoardDTO boardDTO = sql.selectOne("board.getView", paraMap);
 		return boardDTO;
 	}
+
+	@Override
+	public List<Map<String, String>> PaginationList() {
+		List<Map<String, String>> mapList = sql.selectList("board.PaginationList");
+		return mapList;
+	}
 		
 		
 	

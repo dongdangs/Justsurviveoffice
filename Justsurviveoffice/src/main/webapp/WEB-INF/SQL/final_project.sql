@@ -127,6 +127,8 @@ desc users;
 
 desc board;
 
+select * from tab;
+
 select * from board B join users c 
 on B.fk_id = C.id;
 
@@ -134,3 +136,63 @@ on B.fk_id = C.id;
 update users set email='dbals010321@naver.com' where id='jangym';
 
 commit;
+
+select * from board order by boardno desc
+;
+
+select 
+A.*
+from
+(
+select lead(boardno) over(order by boardno desc) as preNo
+       , lag(boardno) over(order by boardno desc) as nextNo
+       , boardno, boardname, boardcontent
+       from board
+       order by boardno desc
+) A
+where rownum > 0 and rownum <= 5;
+
+select *
+from (
+    select rownum as rn, A.*
+    from
+        (
+        select *
+        from board
+        ) a
+     ) 
+where rn > 11 and rn <= 20;
+
+select *
+from (
+     select rownum as rn, A.*
+     from
+        (
+         select *
+         from board
+        ) a
+     ) 
+where rn > 11 and rn <= 20;
+
+select * from board;
+select * from category;
+select 
+A.*
+from
+(
+select lead(boardno) over(order by boardno desc) as preNo
+       , lag(boardno) over(order by boardno desc) as nextNo
+       , boardno as currentNo, boardname, boardcontent
+       from board
+) A
+where A.currentNo = 1;
+
+
+select lag(BOARDNO) over(order by BOARDNO desc) AS previousseq
+      , lag(BOARDNAME) over(order by BOARDNAME desc) AS previoussubject
+from board
+
+select lead(boardno) over(order by boardno desc) 
+       , lag(boardno) over(order by boardno desc) 
+       , boardno, boardname, boardcontent
+       from board
