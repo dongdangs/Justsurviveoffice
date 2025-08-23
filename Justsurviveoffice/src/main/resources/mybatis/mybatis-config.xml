@@ -7,6 +7,8 @@
     <typeAliases>
     	<typeAlias type="com.spring.app.users.domain.BoardDTO" alias="BoardDTO"/>
     	<typeAlias type="com.spring.app.users.domain.UsersDTO" alias="UsersDTO"/>
+    	<typeAlias type="com.spring.app.users.domain.CommentDTO" alias="CommentDTO"/>
+    	<typeAlias type="com.spring.app.users.domain.CategoryDTO" alias="CategoryDTO"/>
    	</typeAliases>
 
 </configuration>

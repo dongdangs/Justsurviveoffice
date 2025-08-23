@@ -154,9 +154,19 @@ where FK_CATEGORYNO=2;
 
 
 
-SELECT boardname, boardcontent, name, fk_categoryno
+SELECT boardno, B.fk_categoryno, boardname, boardcontent, name, READCOUNT
 FROM board B JOIN users U
-ON B.fk_id = U.id;
+ON B.fk_id = U.id
+WHERE B.fk_categoryno=5;
 
 
 
+
+SELECT boardNo, boardName, boardContent, fk_id, readCount,
+       to_char(createdatboard, 'yyyy-mm-dd') as createdatboard
+FROM board
+ORDER BY boardNo;
+
+
+insert into board(boardNo, fk_categoryNo, boardName, boardContent, createdatboard, updatedatboard, readcount, fk_id, boardfilename, boardfileoriginname, boarddeleted)
+values(board_seq.nextval);

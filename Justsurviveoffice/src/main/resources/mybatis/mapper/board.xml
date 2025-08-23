@@ -7,17 +7,73 @@
 
 <mapper namespace="board">
 
-	<!-- === '금쪽이' 게시판 리스트 === -->
-	<resultMap type="HashMap" id="nointerList_map">
-		<result property="boardName" column="boardName" javaType="String" />
-		<result property="boardContent" column="boardContent" javaType="String" />
-		<result property="name" column="name" javaType="String" />
-	</resultMap>
-	<select id="nointerList" parameterType="String" resultMap="nointerList_map">
-		SELECT boardName, boardContent, name
-		FROM board B JOIN users U
-		ON B.fk_id = U.id
+	<!-- === 인덱스 페이지 카테고리 리스트 === -->
+	<select id="categoryList" parameterType="HashMap" resultType="CategoryDTO">
+		SELECT categoryNo, categoryName, categoryDescribe, categoryImagePath
+		FROM category
+		WHERE categoryNo &lt; 6
+		ORDER BY categoryNo
 	</select>
+	
+	
+	<!-- 글 목록 -->
+	<select id="pagingboardList" parameterType="int" resultType="BoardDTO">
+		SELECT boardNo, boardName, boardContent, fk_id, readCount, createdAtBoard
+		FROM board
+		WHERE fk_categoryNo = #{categoryNo, jdbcType=INTEGER}
+	</select>
+	
+	
+	<!-- === 글 1개 조회하기 === -->
+	<select id="getnointerDetail" parameterType="HashMap" resultType="BoardDTO">
+		SELECT boardNo, boardName, boardContent, fk_id, readCount, createdAtBoard
+		FROM board
+		WHERE boardNo = #{boardNo}
+	</select>
+	
+	
+	<!-- === 글 조회수 증가시키기 === -->
+	<update id="incease_readCount" parameterType="String">
+		update board set readCount = readCount + 1
+		where boardNo = #{boardNo}
+	</update>
+	
+	
+	<!-- 첨부파일이 없는 경우 글쓰기 -->
+	<insert id="write" parameterType="BoardDTO">
+		insert into board(boardNo, fk_categoryNo, boardName, boardContent, createdAtBoard, updatedAtBoard, readCount, fk_id, boardDeleted)
+    	values(board_seq.nextval, 3, #{boardName, jdbcType=VARCHAR}, #{boardContent, jdbcType=VARCHAR}, 
+           default, default, default, #{fk_id, jdbcType=VARCHAR}, default)
+	</insert>
+
+
+	<!-- 첨부파일이 있는 경우 글쓰기 -->
+	<insert id="writeFile" parameterType="BoardDTO">
+		insert into board(boardNo, fk_categoryNo, boardName, boardContent, createdAtBoard, updatedAtBoard, readCount, fk_id, boardFileName, boardFileOriginName, boardDeleted)
+		values(board_seq.nextval, 3, #{boardName}, #{boardContent}, #{createdAtBoard}, #{updatedAtBoard}, #{readCount}, #{fk_id}, #{boardFileName}, #{boardFileOriginName}, #{boardDeleted})
+	</insert>
+
+
+	<!-- 총 게시물 건수 -->
+	<select id="getTotalCount" parameterType="HashMap" resultType="int">
+		select count(*)
+		from board
+	</select>
+
+
+	<!-- 댓글 목록 -->
+	<select id="getCommentList" parameterType="HashMap" resultType="CommentDTO">
+		select commentNo, fk_id, fk_name, content, createdAtComment, updateAtComment, fk_boardNo, parentNo
+		from comments
+		where fk_boardNo = #{boardNo}
+	</select>
+	
+	
+	<!-- 댓글 쓰기 -->
+	<insert id="commentWrite" parameterType="CommentDTO">
+		insert into comments(commentNo, fk_id, fk_name, content, createdAtComment, updateAtComment, fk_boardNo)
+		values(comment_seq.nextval, #{fk_id}, #{fk_name}, #{content}, default, default, #{fk_boardNo})
+	</insert>
 
 </mapper>
 

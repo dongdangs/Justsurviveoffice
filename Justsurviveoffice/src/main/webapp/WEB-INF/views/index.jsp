@@ -39,11 +39,11 @@
 			<div class="col-md-3 d-flex flex-column align-items-center justify-content-start" style="border:solid 2px red;">
 				<div>
 					<img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-                <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
-                <div class="mb-3">
-                	<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
-                </div>
+                	<div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
+	                <div class="mb-3">
+	                	<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
+	                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
+	                </div>
 				</div>
 				<div style="width: 70%; margin-top:30%; border: solid 1px green;">
 					<h6 style="font-weight: bolder;">대사살 Hot! 게시글</h6>
@@ -160,7 +160,7 @@
 				</div>
 				
 				<!-- DB 카드 반복 -->
-				<div class="col-md-4 mb-4">
+				<%-- <div class="col-md-4 mb-4">
 					<a href="#" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/adult.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
@@ -185,7 +185,7 @@
 				</div>
 				
 				<div class="col-md-4 mb-4">
-					<a href="<%= ctxPath%>/board/nointerList" class="card text-decoration-none h-100" style="background-color: navy;">
+					<a href="<%= ctxPath%>/board/boardList" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/nointer.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>
@@ -218,7 +218,21 @@
 							<p class="card-text" style="color: white;">#에어팟필수 #칼퇴 #딴생각장인 #지각러버</p>
 						</div>
 					</a>
-				</div>
+				</div> --%>
+				
+				<c:forEach var="categoryDto" items="${categoryList}">
+					<div class="col-md-4 mb-4">
+						<a href="<%= ctxPath%>/board/boardList?categoryNo=${categoryDto.categoryNo}" class="card text-decoration-none h-100" style="background-color: navy;">
+							<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
+								<img src="<%= ctxPath%>/images/${categoryDto.categoryImagePath}" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
+							</div>
+							<div class="card-body">
+								<h4 class="card-title" style="font-weight: bold; color: #39FF14;">${categoryDto.categoryName}</h4>
+								<p class="card-text" style="color: white;">${categoryDto.categoryDescribe}</p>
+							</div>
+						</a>
+					</div>
+				</c:forEach>
 				
 			</div>
 			
