@@ -1,5 +1,7 @@
 package com.spring.app.users.service;
 
+import java.util.Map;
+
 import com.spring.app.entity.Users;
 import com.spring.app.users.domain.LoginHistoryDTO;
 import com.spring.app.users.domain.UsersDTO;
@@ -26,8 +28,6 @@ public interface UsersService {
 
 	// 비밀번호 업데이트
 	void updatePassword(String id, String newPassword);
-	
-
 
 	//  회원 수정 하기
 	public UsersDTO updateUser(UsersDTO userDto);
@@ -45,6 +45,10 @@ public interface UsersService {
 
 	//휴면상태로 업데이트 (비밀번호 변경대상)
 	boolean updateDormantStatus(String id);
+
+	// 저장된 id에게 저장된 point만큼 point를 증가시키는 메소드.
+	void getPoint(Map<String, String> paraMap); 
+	// 게시물 업로드시, 1000p, 좋아요 누를시 500p, 댓글 500p
 
 
 }

@@ -44,7 +44,10 @@ dependencies {
 	// mongodb 관련
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
 	//implementation 'org.mongodb:mongodb-driver-sync'
-//	implementation 'org.mongodb:mongodb-driver-sync:5.2.1'
+	implementation 'org.mongodb:mongodb-driver-sync:5.2.1'
+	// Redis 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    
 	
 	// == JSTL 관련 추가 시작 ==
 	// https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api

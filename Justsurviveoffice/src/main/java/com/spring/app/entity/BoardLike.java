@@ -1,7 +1,7 @@
 package com.spring.app.entity;
 
 
-import com.spring.app.users.domain.BoardLikeDTO;
+import com.spring.app.board.domain.BoardLikeDTO;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -1,10 +1,34 @@
 package com.spring.app.board.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
+import com.spring.app.board.service.RedisReadCountService;
+import com.spring.app.category.domain.CategoryDTO;
+import com.spring.app.common.FileManager;
+import com.spring.app.config.Datasource_final_orauser_Configuration;
+import com.spring.app.entity.Category;
+import com.spring.app.model.HistoryRepository;
+import com.spring.app.users.domain.UsersDTO;
+import com.spring.app.users.service.UsersService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -12,9 +36,291 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardController {
 
+    private final Datasource_final_orauser_Configuration datasource_final_orauser_Configuration;
+
+    private final HistoryRepository historyRepository;
+
 	// === 생성자 주입(Constructor Injection) === //
+	private final UsersService usersService;
 	private final BoardService boardService;
+	
+	private final RedisReadCountService redisService;
+	
+	private final FileManager fileManager;
+
+	@GetMapping("write")
+	public ModelAndView writeBoard(@RequestParam(name="category") String category,
+								   ModelAndView modelview) {
+		modelview.addObject("category", category); // 카테고리 번호가 게시판마다 따라가야함!
+		modelview.setViewName("board/write");
+		return modelview;
+	}
+	
+	// 게시글 업로드 메소드
+	@PostMapping("write")
+	public ModelAndView saveBoard(ModelAndView modelview,
+								  Map<String, String> paraMap,
+								  BoardDTO boardDto,
+								  HttpServletRequest request,
+								  HttpSession session) {
+		
+		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+		
+		MultipartFile attach = boardDto.getAttach();
+/*  	주요 메소드:	getOriginalFilename() → 원본 파일명
+					getSize() → 파일 크기
+					getBytes() → 파일 내용을 바이트 배열로
+					transferTo(File dest) → 실제 서버에 저장 */
+		
+		// 파일이 있는 경우 해당 파일을 저장해줄 부분.
+		
+		if(!attach.isEmpty()) { 
+			session = request.getSession(); // WAS(톰캣)의 절대경로 알아오기.
+			String root = session.getServletContext().getRealPath("/");
+			//System.out.println(root);
+// /Users/dong/git/Justsurviveoffice/Justsurviveoffice/bin/main/static/files
+			String path = "";
+			try {
+				path = new ClassPathResource("static/files")
+							.getFile().getAbsolutePath();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println(path);
+			
+			String boardFileName = ""; //WAS(톰캣)의 디스크에 저장될 파일명
+			
+			byte[] bytes = null; // 첨부파일의 내용물을 담는 예정.
+			
+			try {//boardFileName
+				bytes = attach.getBytes(); //첨부파일의 내용물을 읽기.
+				String boardFileOriginName = attach.getOriginalFilename();
+				
+				boardFileName = fileManager // 첨부되어진 파일은 고유이름으로 업로드
+							.doFileUpload(bytes, boardFileOriginName, path);
+				System.out.println(boardFileName);
+				boardDto.setBoardFileName(boardFileName);
+				boardDto.setBoardFileOriginName(boardFileOriginName);
+				// 게시물에서 첨부된 파일을 보여줄 때 기존명 노출.
+				// 사용자가 파일을 다운로드 할 때도 기존명 노출.
+				// 하지만 WAS에는 고유 파일 이름으로 저장해놔야만 선택 및 삭제 시 오류가 나지 않음.
+				// 찾을 때도 고유 파일 이름(newFileName == boardFileName)
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		int n = boardService.insertBoard(boardDto); // 게시판에 업로드!
+		
+		if(n==1) {
+			modelview.setViewName("redirect:list?category="
+									+boardDto.getFk_categoryNo());
+		}
+		else {
+			modelview.addObject("message", "오류: 현재 게시물 업로드가 불가능합니다.");
+			modelview.addObject("loc", "javascript:history.back()");
+			modelview.setViewName("msg");
+		}
+		try {
+			paraMap.put("id", boardDto.getFk_id());
+			paraMap.put("point", "1000");
+			
+			// paraMap에 저장한 해쉬맵정보는, users용이기 때문에... 레포지토리로 보내야함.
+			usersService.getPoint(paraMap); // 게시물 업로드는 1000 point
+			
+			loginUser.setPoint(loginUser.getPoint()+1000);
+			session.setAttribute("loginUser", loginUser);
+			
+			System.out.println(loginUser.getPoint());
+		} catch (Exception e) {
+			System.err.println("point업데이트 오류가 발생하였습니다");
+		}
+		
+		return modelview;
+	}
+	
+	
+ // 각 카테고리 게시판에 들어가기!
+	//또는 전체 게시물 검색!
+	@GetMapping("list")
+	public ModelAndView list(ModelAndView modelview, 
+							 HttpServletRequest request,
+							 HttpServletResponse response,
+	 @RequestParam(name="searchType", defaultValue="") String searchType,
+	 @RequestParam(name="searchWord", defaultValue="") String searchWord, 
+	 @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
+	 @RequestParam(name="category", defaultValue="") String category) {
+ // http://localhost:9089/justsurviveoffice/board/list?category=1
+		List<BoardDTO> boardList = null;
+		
+		// 추후 referer 는 spring security의 토큰 검사로 변경.
+		String referer = request.getHeader("Referer");
+		if(referer == null) { // url타고 get방식으로 접근 불가능하도록!
+			modelview.setViewName("redirect:/index");
+			return modelview;
+		}
+		 
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("searchType", searchType);
+		paraMap.put("searchWord", searchWord);
+		paraMap.put("category", category);
+		// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
+		int totalCount = 0;    // 총 게시물 건수
+		int sizePerPage = 10;  // 한 페이지당 보여줄 게시물 건수
+		int totalPage = 0;     // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
+		totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
+		
+		boardList = boardService.boardList(paraMap);
+		
+		System.out.println(category);
+
+		modelview.addObject("boardList", boardList);
+		modelview.addObject("searchType", searchType);
+		modelview.addObject("searchWord", searchWord);
+		modelview.addObject("category", category);
+		
+		modelview.setViewName("board/list");
+		
+		return modelview;
+	}
+	
+	// 조회수 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
+	@RequestMapping("view") //post,get 둘 다 받아올 것!
+	public ModelAndView view(ModelAndView modelview,
+							 HttpServletRequest request,
+			 @RequestParam(name="searchType", defaultValue="") String searchType,
+			 @RequestParam(name="searchWord", defaultValue="") String searchWord, 
+			 @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
+			 @RequestParam(name="category", defaultValue="") String category,
+			 				 BoardDTO boardDto) {
+
+		// 추후 referer 는 spring security의 토큰 검사로 변경.
+		String referer = request.getHeader("Referer");
+		if(referer == null) { // url타고 get방식으로 접근 불가능하도록!
+			modelview.setViewName("redirect:/index");
+			return modelview;
+		}
+		
+		Map<String, String> paraMap = new HashMap<>();
+		
+		paraMap.put("searchType", searchType); 
+		paraMap.put("searchWord", searchWord);
+		paraMap.put("currentShowPageNo", searchType);
+		
+		boardDto = boardService.selectView(boardDto.getBoardNo());
+		
+		if(boardDto != null) { // 뒤로가기 혹은 오류가 없는 정상 게시물인 경우 이동.
+			System.out.println(boardDto.getBoardNo());
+			System.out.println(boardDto.getFk_categoryNo());
+// 명심할 점!, 1. 완벽한 조회수 알고리즘은 존재하지 않는다.
+		//   2. 방법은 쿠키, 세션, (실무)DB로그, (실무)Redis 가 있다.
+		//	 3. 나는 내가 내가 배운 지식을 재활용하기 위해 세션방식을 선택했을 뿐,
+		//   4. 단점(세션이 만료되거나 로그아웃 시에는 소용이 없다)을 이해하고 구현한다.
+		
+		//		접속한 아이피 + 게시물번호가 세션에 없다면?
+		//		 >> 아이피 + 게시물번호의 수명을 30분으로 줌, 
+		//	  + loginUser.id 와 fk_id가 같아도 >> 조회수는 증가 안함.
+			HttpSession session = request.getSession();
+			
+			UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+			// 유저가 존재하고 그 유저의 id가 같은지 확인!
+			if( loginUser == null ? true : // 로그인유저 아니면 통과.
+				!loginUser.getId().equals(boardDto.getFk_id()) ? true : false ) 
+						/* 로그인된 유저면 아이디비교 */	 			{ 
+			
+				String clientIP = request.getRemoteAddr(); // 우리가 배웠던 AWS 로드밸런서 ip 가져오기.
+ 
+				String boardNo_ip = clientIP+"_"+boardDto.getBoardNo();
+				// 0:0:0:0:0:0:0:1_106
+				// 방금 접근한 ip가 세션에 저장되어있지 않다면 조회수를 증가!
+				if(session.getAttribute(boardNo_ip) == null
+					) {
+					// 조회수 증가.
+					int n = boardService.updateReadCount(boardDto.getBoardNo());
+//					if(n==1) System.out.println("조회수 증가 완료.");
+
+					boardDto.setReadCount(boardDto.getReadCount() + 1);
+					
+					// 조회수 증가 후, 세션에 30분 조회수 증가 limit 를 부여할 것!
+					session.setAttribute(boardNo_ip, System.currentTimeMillis());
+					session.setMaxInactiveInterval(1*60); // 30분 limit 부여!
+				} 
+				else {
+					long lastAccessTime = session.getLastAccessedTime();
+					int maxInactive = session.getMaxInactiveInterval(); // 초 단위
+					long currentTime = System.currentTimeMillis();
+
+					// 남은 시간 계산 (밀리초)
+					long remainingTime = (lastAccessTime + (maxInactive * 1000)) - currentTime;
+					long remainingMinutes = remainingTime / (1000);
+					System.out.println("세션 남은 시간: " + remainingMinutes + "초");
+					if(remainingMinutes <= 0) {
+						int n = boardService.updateReadCount(boardDto.getBoardNo());
+//						if(n==1) System.out.println("조회수 증가 완료.");
+
+						boardDto.setReadCount(boardDto.getReadCount() + 1);
+					}
+				}
+			} // 로그인된 유저가 자신의 게시물에 들어갔다면 if문 생략
+			else System.out.println("본인 게시물 아니세요?");
+			
+			modelview.addObject("boardDto", boardDto);
+			
+			modelview.setViewName("board/view");
+			return modelview;
+		}
+		else { // 뒤로가기 혹은 오류로 인한 삭제게시물을 클릭한 경우.
+			modelview.addObject("message", "현재 존재하지 않는 게시물입니다.");
+			modelview.addObject("loc", "list?category="
+										+category); // category = fk_categoryNo
+			modelview.setViewName("msg"); 
+			
+			return modelview;
+		}
+	}
+	
+	// 게시물 삭제하기 == boardDeleted = 0 으로 전환하기 == update
+	@PostMapping("delete")
+	public ModelAndView delete(ModelAndView modelview,
+							   BoardDTO boardDto,
+							   HttpSession session) {
+
+		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+		// 로그인된 유저의 id와 전송받은 id가 일치하다면
+		if(loginUser.getId().equals(boardDto.getFk_id())) {
+		// 해당 게시물 boardDeleted = 0 으로 전환.
+			int n = boardService.deleteBoard(boardDto.getBoardNo());
+			
+			if(n==1) { 
+				modelview.addObject("message", "글이 삭제되었습니다.");
+				modelview.addObject("loc", "list?category="
+										+boardDto.getFk_categoryNo());
+				modelview.setViewName("msg");
+			}
+			else {
+				modelview.addObject("message", "이미 삭제된 게시물입니다.");
+				modelview.addObject("loc", "list?category="
+										+boardDto.getFk_categoryNo());
+				modelview.setViewName("msg");
+			}
+		}
+		else {
+			modelview.addObject("message", "접근 불가능한 경로입니다.");
+			modelview.addObject("loc", "javascript:history.back()");
+			modelview.setViewName("msg");
+
+		}
+		return modelview;
+	}
+	
+	
+	
 	
 	
 	
 }
+
+
+
+

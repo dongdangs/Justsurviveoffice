@@ -32,12 +32,10 @@ public class FileManager {
 		if(bytes == null) {
 			return null;
 		}
-			
 		// 클라이언트가 업로드한 파일의 이름
 		if(originalFilename == null || "".equals(originalFilename)) {
 			return null;
 		}
-		
 		// 확장자(예:  강아지   또는   강아지.  또는   강아지.png   또는   강.아.지.png)
 		// 강아지.      ==>  originalFilename.lastIndexOf(".")  ==> 3
 		// 강아지.png   ==>  originalFilename.lastIndexOf(".")  ==> 3
@@ -46,7 +44,6 @@ public class FileManager {
 		if(fileExt == null || "".equals(fileExt) || ".".equals(fileExt)) {
 			return null;
 		}
-		
 		// 서버에 저장할 새로운 파일명을 만든다.
 	/*
 		// 서버에 저장할 새로운 파일명이 동일한 파일명이 되지 않고 고유한 파일명이 되도록 하기 위해
@@ -107,7 +104,6 @@ public class FileManager {
 		// 업로드 되어진 파일명(현재의 년월일시분초에다가 현재 나노세컨즈nanoseconds 값을 결합하여 확장자를 붙여서 만든것)을 알아온다. 
 		
 	}// end of public String doFileUpload(byte[] bytes, String originalFilename, String path) throws Exception-----------
-	
 	
 	
 	// == 파일 업로드 하기 두번째 방법(네이버 스마트 에디터를 사용한 사진첨부에 해당하는 것임) ==

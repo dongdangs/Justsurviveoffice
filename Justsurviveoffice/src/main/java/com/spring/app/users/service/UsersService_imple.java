@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -61,7 +61,7 @@ public class UsersService_imple implements UsersService {
  			 // 복호화해서 DTO에 담기
  	        usersDto.setEmail(aes.decrypt(users.getEmail()));
  	        usersDto.setMobile(aes.decrypt(users.getMobile()));
- 	        
+ 	        usersDto.setPoint((users.getPoint()));
            } catch (Exception e) {   
               e.printStackTrace();
            }
@@ -254,6 +254,23 @@ public class UsersService_imple implements UsersService {
        }
        return false;
     }
+
+
+	@Override
+	public void getPoint(Map<String, String> paraMap) {
+		String id = paraMap.get("id");
+		int point = Integer.parseInt(paraMap.get("point"));
+		
+		Users users = usersRepository.findById(id).orElse(null);
+		
+		if(users != null) {
+			users.setPoint( users.getPoint() + point ); 
+			// 기존 포인트에 더해줄것!
+			System.out.println(point+" 만큼 point 업로드 완료^^^");
+			usersRepository.save(users);
+		}
+		else System.out.println("유저를 찾지못함. 포인트업로드 오류!");
+	}
 
 
    

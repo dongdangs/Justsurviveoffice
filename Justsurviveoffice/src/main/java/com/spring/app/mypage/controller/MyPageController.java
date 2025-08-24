@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.entity.Users;
-import com.spring.app.users.domain.BoardDTO;
 import com.spring.app.users.domain.BookMarkDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
@@ -48,8 +48,8 @@ public class MyPageController {
     		return "login/loginForm";
         }
 
-        List<BoardDTO> myBoardList = boardService.getBoardsByWriterId(loginUser.getId());
-        model.addAttribute("myBoards", myBoardList);
+        //List<BoardDTO> myBoardList = boardService.getBoardsByWriterId(loginUser.getId());
+        //model.addAttribute("myBoards", myBoardList);
         return "users/mypage/forms";
     }
 
@@ -62,8 +62,8 @@ public class MyPageController {
     		return "login/loginForm";
         }
 
-        List<BookMarkDTO> bookmarks = boardService.getBookmarksById(loginUser.getId());
-        model.addAttribute("myBookmarks", bookmarks);
+        //List<BookMarkDTO> bookmarks = boardService.getBookmarksById(loginUser.getId());
+        //model.addAttribute("myBookmarks", bookmarks);
         return "users/mypage/bookmarks";
     }
 

@@ -1,6 +1,6 @@
 package com.spring.app.entity;
 
-import com.spring.app.users.domain.CategoryDTO;
+import com.spring.app.category.domain.CategoryDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

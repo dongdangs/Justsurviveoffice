@@ -24,7 +24,6 @@
 <%-- Optional JavaScript --%>
 <script type="text/javascript" src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
-<script type="text/javascript" src="<%=ctxPath%>/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 
 <%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
 <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.css" />
@@ -161,7 +160,7 @@
 				
 				<!-- DB 카드 반복 -->
 				<div class="col-md-4 mb-4">
-					<a href="#" class="card text-decoration-none h-100" style="background-color: navy;">
+					<a href="board/list?category=2" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/adult.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>
@@ -173,7 +172,7 @@
 				</div>
 				
 				<div class="col-md-4 mb-4">
-					<a href="#" class="card text-decoration-none h-100" style="background-color: navy;">
+					<a href="board/list?category=3" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/slave.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>
@@ -184,8 +183,8 @@
 					</a>
 				</div>
 				
-				<div class="col-md-4 mb-4">
-					<a href="#" class="card text-decoration-none h-100" style="background-color: navy;">
+				<div class="col-md-4 mb-3">
+					<a href="board/list?category=5" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/nointer.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>
@@ -197,7 +196,7 @@
 				</div>
 				
 				<div class="col-md-4 mb-4">
-					<a href="#" class="card text-decoration-none h-100" style="background-color: navy;">
+					<a href="board/list?category=4" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/myway.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>
@@ -209,7 +208,7 @@
 				</div>
 				
 				<div class="col-md-4 mb-4">
-					<a href="#" class="card text-decoration-none h-100" style="background-color: navy;">
+					<a href="board/list?category=1" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/mz.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>

@@ -48,33 +48,34 @@ public class LoginController {
 	    String enPwd;
 	    try {
 	    	enPwd = Sha256.encrypt(Pwd);
+	    	if(usersDto == null || !Pwd.equals(usersDto.getPassword()) ) {
+				
+				String message = "로그인 실패!!";
+				String loc = request.getContextPath()+"/login/loginForm"; // 로그인 페이지로 이동
+
+				request.setAttribute("message", message);
+				request.setAttribute("loc", loc);
+				return "msg";
+			}
+			boolean isDormant = usersService.updateDormantStatus(id);
+
+		    if (isDormant || usersDto.getIsDormant() == 1) {
+		    	String message = "비밀번호 변경이 1년이 지나 휴면 처리되었습니다. 비밀번호를 변경해주세요. ";
+				request.setAttribute("message", message);
+				String loc = request.getContextPath() + "/login/pwdUpdate?id=" + id; // 변경 페이지로 이동할 링크
+
+			    request.setAttribute("message", message);
+			    request.setAttribute("loc", loc);
+
+			    return "msg";
+		    }
+	    	
 	    } catch (Exception e) {
-	        request.setAttribute("message", "로그인 실패!!");
+	    	request.setAttribute("message", "로그인 오류!!");
 	        request.setAttribute("loc", request.getContextPath()+"/login/loginForm");
 	        return "msg";
 	    }
 	    
-		if(usersDto == null || !Pwd.equals(usersDto.getPassword()) ) {
-			
-			String message = "로그인 실패!!";
-			String loc = request.getContextPath()+"/login/loginForm"; // 로그인 페이지로 이동
-
-			request.setAttribute("message", message);
-			request.setAttribute("loc", loc);
-			return "msg";
-		}
-		boolean isDormant = usersService.updateDormantStatus(id);
-
-	    if (isDormant || usersDto.getIsDormant() == 1) {
-	    	String message = "비밀번호 변경이 1년이 지나 휴면 처리되었습니다. 비밀번호를 변경해주세요. ";
-			request.setAttribute("message", message);
-			String loc = request.getContextPath() + "/login/pwdUpdate?id=" + id; // 변경 페이지로 이동할 링크
-
-		    request.setAttribute("message", message);
-		    request.setAttribute("loc", loc);
-
-		    return "msg";
-	    }
 	    
 		// 세션에 로그인 사용자 정보 저장
 		HttpSession session = request.getSession();

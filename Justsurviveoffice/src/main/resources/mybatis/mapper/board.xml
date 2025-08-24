@@ -5,9 +5,94 @@
 
 <!-- ==== 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
 
-<mapper namespace="member">
+<mapper namespace="board">
 
-  
+	<!-- 파일첨부 안 된 게시물 업로드 -->
+	<insert id="insertBoard" parameterType="BoardDTO">
+		insert into Board(BOARDNO, FK_ID, FK_CATEGORYNO, BOARDNAME, BOARDCONTENT)
+               values(board_seq.nextval, #{fk_id}, #{fk_categoryNo}, #{boardName}, #{boardContent})
+	</insert>
+	
+  	<!-- 파일첨부 된 게시물 업로드 -->
+    <insert id="insertBoardWithFile" parameterType="BoardDTO">
+   		insert into Board(BOARDNO, FK_ID, FK_CATEGORYNO, BOARDNAME, BOARDCONTENT,
+                		  BOARDFILENAME, BOARDFILEORIGINNAME)
+               values(board_seq.nextval, #{fk_id}, #{fk_categoryNo}, #{boardName}, #{boardContent},
+               		  #{boardFileName}, #{boardFileOriginName}) 
+    </insert>
+    
+    <!-- 게시판 접근! -->
+    <select id="selectBoardList" parameterType="HashMap" resultType="BoardDTO">
+    	select boardNo, fk_id, 
+               case when length(boardName) &lt; 30 then boardName 
+            		else substr(boardName, 1, 28) || '...' end as boardName,
+     		   case when length(boardContent) &lt; 20 then boardContent 
+		            else substr(boardContent, 1, 20) || '...' end as boardContent,
+               BoardFileName, BoardFileOriginName, readcount, 
+               to_char(updatedAtBoard, 'yyyy-mm-dd hh24:mi:ss') as updatedAtBoard,
+               case
+		        when (sysdate - updatedAtBoard) * 24 * 60 &lt; 60 
+		            then trunc( (sysdate - updatedAtBoard) * 24 * 60) ||'분 전'
+		        when (sysdate - updatedAtBoard) * 24 &lt; 24
+		            then trunc( (sysdate - updatedAtBoard) * 24 )||'시간 전'
+		        when (sysdate - updatedAtBoard) &lt; 7
+		            then trunc(sysdate - updatedAtBoard)||'일 전'
+		        else to_char(updatedAtBoard, 'yyyy-mm-dd')
+		        end as formattedDate
+			   from board 
+			   where boardDeleted = 0
+			<if test='categoryNo != ""'>
+				and fk_categoryNo = to_number(#{category})
+			</if>
+		<choose>
+            <when test='searchType == "boardName" and searchWord != ""'>
+                and lower(boardName) like '%'||lower(#{searchWord})||'%'
+            </when>
+            <when test='searchType == "boardContent" and searchWord != ""'>
+                and lower(boardContent) like '%'||lower(#{searchWord})||'%'
+            </when>
+            <when test='searchType == "boardName_boardContent" and searchWord != ""'>
+                and ( lower(boardName) like '%'||lower(#{searchWord})
+               		||'%' or lower(boardContent) like '%'||lower(#{searchWord})||'%' ) 
+            </when>
+            <when test='searchType == "fk_id" and searchWord != ""'>
+            	and lower(fk_id) like '%'||lower(#{searchWord})||'%'
+            </when>
+		</choose>
+        order by boardNo desc
+    </select>
+
+  	<select id="selectView" parameterType="Long" resultType="BoardDTO">
+    	select boardNo, fk_id, fk_categoryNo,
+               boardName, 
+     		   boardContent, 
+               BoardFileName, BoardFileOriginName, readcount, 
+               to_char(updatedAtBoard, 'yyyy-mm-dd hh24:mi:ss') as updatedAtBoard,
+               case
+		        when (sysdate - updatedAtBoard) * 24 * 60 &lt; 60 
+		            then trunc( (sysdate - updatedAtBoard) * 24 * 60) ||'분 전'
+		        when (sysdate - updatedAtBoard) * 24 &lt; 24
+		            then trunc( (sysdate - updatedAtBoard) * 24 )||'시간 전'
+		        when (sysdate - updatedAtBoard) &lt; 7
+		            then trunc(sysdate - updatedAtBoard)||'일 전'
+		        else to_char(updatedAtBoard, 'yyyy-mm-dd')
+		        end as formattedDate
+				from board join category on fk_categoryNo = categoryNo
+				where boardNo = #{boardNo} and boardDeleted = 0
+  	</select>
+  	
+  	<update id="softDeleteBoard" parameterType="Long">
+  		update board 
+  		set boardDeleted = 1
+  		where boardNo = #{boardNo} and boardDeleted = 0	
+  	</update>
+
+	<update id="updateReadCount" parameterType="Long">
+		update board
+		set readCount = readCount + 1 
+		where boardNo = #{boardNo} and boardDeleted = 0
+	</update>
+  	
 </mapper>
 
 
