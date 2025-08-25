@@ -64,8 +64,10 @@ function goViewB(){
 </script>
 <div style="padding-top:100px;">
 	<p>제목 : ${boardDTO.boardName}</p>
+	<p>날짜 : ${boardDTO.createdAtBoard}
 	<p>글쓴이 :${boardDTO.fk_id}</p>
-	<p>내용: ${boardDTO.boardContent}</p>		
+	<p>내용: ${boardDTO.boardContent}</p>
+			
 	<div class="Boardpagination">
 			<div id="prevBtn" class="prevBtn" onclick="goViewA('${boardDTO.preNo}')" style="cursor:pointer;">이전글: ${boardDTO.preName}</div>
 			<div id="nextBtn" class="nextBtn" onclick="goViewB('${boardDTO.nextNo}')" style="cursor:pointer;">다음글: ${boardDTO.nextName}</div>

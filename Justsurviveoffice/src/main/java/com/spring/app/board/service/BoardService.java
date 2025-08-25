@@ -14,13 +14,17 @@ public interface BoardService {
 	//북마크
 	List<BookMarkDTO> getBookmarksById(String fk_id);
 
-	List<Map<String, String>> BoardList();
+	List<Map<String, String>> BoardList(String fk_categoryNo);
 
 	// 글 1개 조회
 	BoardDTO getView(Map<String, String> paraMap);
 
-	// 페이지내이션 만들기
-	List<Map<String, String>> PaginationList();
+	// 전체 수 조회
+	int getTotalCount(Map<String, String> paraMap);
+
+	// 인덱스 페이지 조회 
+	List<Map<String, String>> getIndexList(String fk_categoryNo);
+
 
 
 }

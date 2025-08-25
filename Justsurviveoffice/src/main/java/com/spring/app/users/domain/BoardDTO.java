@@ -41,6 +41,7 @@ public class BoardDTO {
 	
 	private Users users;
 	
+	private CategoryDTO categoryDTO;
 	
 	// select 용
 	private String preNo;     // 이전글번호

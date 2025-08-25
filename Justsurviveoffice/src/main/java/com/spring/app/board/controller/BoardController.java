@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -33,23 +35,29 @@ public class BoardController {
 	@GetMapping("list")
 	public String BoardList(HttpServletRequest request, 
 						   HttpServletResponse response,
-						   Model model){
+						   Model model,
+						   @RequestParam(value="fk_categoryNo", required = false) String fk_categoryNo,
+						   @RequestParam(name="searchType", defaultValue="") String searchType,
+						   @RequestParam(name="searchWord", defaultValue="") String searchWord,
+						   @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo){
 
-		List<Map<String, String>> mapList = boardService.BoardList();
+		List<Map<String, String>> mapList = boardService.BoardList(fk_categoryNo);
 		model.addAttribute("mapList",mapList);
+		model.addAttribute("fk_categoryNo", fk_categoryNo);
+		System.out.println("fk_categoryNo는 " +  fk_categoryNo);
 		
-		List<Map<String,String>> pagination = boardService.PaginationList();
-		model.addAttribute("pagination", pagination);
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("searchType",searchType);
+		paraMap.put("searchWord",searchWord);
 		
-		System.out.println("페이지 : " + pagination);
-		
+
 		return "board/list";
 	}
 	
 	@RequestMapping("view")
 	public ModelAndView BoardDetail(HttpServletRequest request, 
-							  HttpServletResponse response,
-							  ModelAndView mav){
+							  		HttpServletResponse response,
+							  		ModelAndView mav){
 		
 		// 2508 KYJ inputFlashMap 쓰는 이유는 주소창이 파라미터에 남는걸 숨기기위해서 사용
 		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
@@ -85,6 +93,7 @@ public class BoardController {
 		mav.addObject(boardDTO);
 		mav.addObject(paraMap);
 		System.out.println("테스트 번호 : " + boardDTO.getPreNo());
+		System.out.println("날짜 가져오기: " + boardDTO.getCreatedAtBoard());
 		if(boardDTO.getPreNo() == null ) {
 			boardDTO.setPreNo("0");
 		}

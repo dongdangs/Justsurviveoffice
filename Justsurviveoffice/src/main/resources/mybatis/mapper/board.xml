@@ -10,16 +10,24 @@
     <resultMap type="HashMap" id="getBoardMap">
         <result property="boardName" 			column="boardName"  			javaType="String" />
         <result property="boardContent" 		column="boardContent"  			javaType="String" />
-        <result property="name" 				column="name"  					javaType="String" />
         <result property="readCount" 			column="readCount"  			javaType="String" />
         <result property="boardNo" 				column="boardNo"  				javaType="String" />
+        <result property="createdAtBoard" 		column="createdAtBoard"  		javaType="String" />
+        <result property="fk_categoryNo" 		column="fk_categoryNo"  		javaType="String" />
    </resultMap>
-	<select id="getBoardList" resultMap="getBoardMap">
-		select boardName, boardContent, readCount, B.fk_categoryNo, name, boardNo
-		from board B join users C
-		on B.fk_id = C.id
-		order by boardNo desc
+	<select id="getBoardList" resultMap="getBoardMap" parameterType="String">
+		select boardName, boardContent, readCount, boardNo, fk_categoryNo, createdAtBoard
+		from board 
+		where fk_categoryNo = #{categoryNo}
 	</select>
+	
+	<!-- <select id="getBoardList" resultMap="getBoardMap">
+		select boardName, boardContent, readCount, B.fk_categoryNo, boardNo, createdAtBoard
+		from board B join category C
+		on B.fk_categoryNo = C.categoryNo
+		where B.fk_categoryNo = #{fk_categoryNo, jdbcType=VARVHAR}
+		order by boardNo desc
+	</select> -->
 	
 	<!-- <select id="getView" parameterType="HashMap" resultType="boardDTO" >
 		select boardName, boardContent, readCount, B.fk_categoryNo, name, boardNo
@@ -38,24 +46,36 @@
 			   ,lead(boardName) over(order by boardNo desc) as preName
 		       , lag(boardNo) over(order by boardNo desc) as nextNo
 		       , lag(boardName) over(order by boardNo desc) as nextName
-		       ,boardNo, boardName, boardContent, fk_id
+		       ,boardNo, boardName, boardContent, fk_id, createdAtBoard, fk_categoryNo
 		       from board
 		) A
 		where A.boardno = #{boardNo}
 	</select>
 	
-	<select id="PaginationList" resultMap="getBoardMap">
-		select *
-			from (
-				  select rownum, A.*
-				  from
-				      (
-				       select *
-				       from board
-				       ) A
-				  ) 
-		where rownum &gt; 0 and rownum &lt; 5
+	<select id="getTotalCount" resultType="int">
+		select count(*)
+		from board
 	</select>
+	
+	  <select id="getIndexList" parameterType="string" resultType="map">
+          select
+			    C.categoryNo         AS "categoryNo",
+			    C.categoryName       AS "categoryName",
+			    C.categoryDescribe   AS "categoryDescribe",
+			    C.categoryImagePath  AS "categoryImagePath",
+			    COUNT(B.boardNo)     AS "boardCount"
+			  from category C
+			  left join board B
+			  on B.fk_categoryNo = C.categoryNo
+			  <where>
+			    <if test="_parameter != null and _parameter != ''">
+			      C.categoryNo = #{_parameter}
+			    </if>
+			  </where>
+			  group by
+			    C.categoryNo, C.categoryName, C.categoryDescribe, C.categoryImagePath
+			  order by C.categoryNo
+    </select>
 </mapper>
 
 

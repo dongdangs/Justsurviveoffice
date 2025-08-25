@@ -21,8 +21,8 @@ public class BoardDAO_imple implements BoardDAO {
 	private final SqlSessionTemplate sql;
 
 	@Override
-	public List<Map<String, String>> getBoardList() {
-		List<Map<String, String>> mapList = sql.selectList("board.getBoardList");
+	public List<Map<String, String>> getBoardList(String fk_categoryNo) {
+		List<Map<String, String>> mapList = sql.selectList("board.getBoardList",fk_categoryNo);
 		return mapList;
 	}
 
@@ -33,11 +33,16 @@ public class BoardDAO_imple implements BoardDAO {
 	}
 
 	@Override
-	public List<Map<String, String>> PaginationList() {
-		List<Map<String, String>> mapList = sql.selectList("board.PaginationList");
-		return mapList;
+	public int getTotalCount(Map<String, String> paraMap) {
+		int totalCount = sql.selectOne("board.getTotalCount");
+		return totalCount;
 	}
-		
-		
+
+	@Override
+	public List<Map<String, String>> getIndexList(String fk_categoryNo) {
+		List<Map<String, String>> IndexList = sql.selectList("board.getIndexList");
+		return IndexList;
+	}
+	
 	
 }

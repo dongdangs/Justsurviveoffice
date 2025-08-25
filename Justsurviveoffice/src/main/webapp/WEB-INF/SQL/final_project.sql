@@ -196,3 +196,5 @@ select lead(boardno) over(order by boardno desc)
        , lag(boardno) over(order by boardno desc) 
        , boardno, boardname, boardcontent
        from board
+       
+select * from category C join Board B join C.fk_id = B_fk_id;

@@ -220,6 +220,22 @@
 					</a>
 				</div>
 				
+				<div class="row">
+					<c:forEach var="indexList" items="${IndexList}">
+					  <div class="col-md-4 mb-4">
+						<a href="<%= ctxPath%>/board/list?categoryNo=${indexList.categoryNo}" class="card text-decoration-none h-100" style="background-color: navy;">
+						  	<div style= "margin: 5% 5%; border: solid 1px red; height: 60%;">
+						  		<img src="${pageContext.request.contextPath}/images/${indexList.categoryImagePath}" alt="${indexList.categoryDTO.categoryName}" style="width:100%; height:100%; object-fit:cover;">
+						  	</div>
+						  	<div class="card-body">
+						      <h4 class="card-title" style="font-weight: bold; color: #39FF14;">${indexList.categoryName}</h4>
+						      <p class="card-text" style="color: white;">설명: ${indexList.categoryDescribe}</p>
+						    </div>
+						 </a>
+					  </div>
+					</c:forEach>
+				</div>
+				
 			</div>
 			
 		</div>

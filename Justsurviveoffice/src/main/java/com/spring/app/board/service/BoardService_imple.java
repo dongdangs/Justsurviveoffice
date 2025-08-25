@@ -47,8 +47,8 @@ public class BoardService_imple implements BoardService {
 
  
 	@Override
-	public List<Map<String, String>> BoardList() {
-		List<Map<String, String>> mapList = dao.getBoardList();
+	public List<Map<String, String>> BoardList(String fk_categoryNo) {
+		List<Map<String, String>> mapList = dao.getBoardList(fk_categoryNo);
 		return mapList;
 		
 	}
@@ -75,11 +75,24 @@ public class BoardService_imple implements BoardService {
 	}
 
 
+	// 총 개수 조회
 	@Override
-	public List<Map<String, String>> PaginationList() {
-		List<Map<String, String>> PaginationList = dao.PaginationList();
-		return PaginationList;
+	public int getTotalCount(Map<String, String> paraMap) {
+		int totalCount = dao.getTotalCount(paraMap);
+		return totalCount;
 	}
+
+
+	@Override
+	public List<Map<String, String>> getIndexList(String fk_categoryNo) {
+		List<Map<String, String>> IndexList = dao.getIndexList(fk_categoryNo);
+		return IndexList;
+	}
+
+
+
+
+
 
 	
 }
