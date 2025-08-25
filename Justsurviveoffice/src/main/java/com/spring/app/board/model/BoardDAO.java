@@ -13,28 +13,35 @@ public interface BoardDAO {
 	List<CategoryDTO> categoryList();
 
 	// 글 목록
-	List<BoardDTO> pagingboardList(int categoryNo);
+	List<BoardDTO> boardList(String categoryNo);
 
-	// 글 1개 조회하기
-	BoardDTO getnointerDetail(Map<String, String> paraMap);
+	// 조회수 증가 없이 글 조회
+	BoardDTO getboardDetail(Map<String, String> paraMap);
 
-	// 글 조회수 증가시키기
-	int incease_readCount(String boardNo);
-
-	// 첨부파일이 없는 경우 글쓰기
-	int write(BoardDTO boardDto);
-
-	// 첨부파일이 있는 경우 글쓰기
-	int writeFile(BoardDTO boardDto);
-
-	// 총 게시물 건수
-	int getTotalCount();
-
+	// 조회수 증가
+	void incrementReadCount(String boardNo);
+	
 	// 댓글 목록
 	List<CommentDTO> getCommentList(String boardNo);
 
 	// 댓글 쓰기
-	int commentWrite(CommentDTO commentDTO);
+	int commentWrite(CommentDTO commentDto);
+
+	// 댓글 쓴 후 포인트 점수 올리기
+	int updateUsersPoint(Map<String, String> paraMap);
+
+	////////////////////////////////////////////////////////////////////////////
+	
+	// 인기 게시글 리스트 (조회수 많은 순)
+	List<BoardDTO> getTopBoardsByViewCount();
+
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	List<BoardDTO> hotAll();
+
+	// 댓글 많은 게시글 리스트
+	List<BoardDTO> getTopBoardsByCommentCount();
+
+	
 
 	
 

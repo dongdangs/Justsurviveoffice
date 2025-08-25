@@ -20,13 +20,31 @@ public interface BoardService {
 	List<CategoryDTO> categoryList();
 	
 	// 글 목록
-	List<BoardDTO> pagingboardList(int categoryNo);
+	List<BoardDTO> boardList(String categoryNo);
 
-	// 조회수 증가와 함께 글 1개 조회
-	BoardDTO getnointerDetail(Map<String, String> paraMap);
+	// 조회수 증가와 상세조회
+	BoardDTO getboardDetail(Map<String, String> paraMap);
 
-	// 조회수 증가 없고, 글 1개 조회
-	BoardDTO getnointerDetail_no_increase(Map<String, String> paraMap);
+	// 조회수 증가 없이 상세조회
+	BoardDTO getboardDetailNoIncrease(Map<String, String> paraMap);
+	
+	// 댓글 목록
+	List<CommentDTO> getCommentList(String boardNo);
+
+	// 댓글 쓰기
+	int commentWrite(CommentDTO commentDto);
+
+	////////////////////////////////////////////////////////////////////////// 
+	
+	// 인기 게시글 리스트 (조회수 많은 순)
+	List<BoardDTO> getTopBoardsByViewCount();
+
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	List<BoardDTO> hotAll();
+
+	// 댓글 많은 게시글 리스트
+	List<BoardDTO> getTopBoardsByCommentCount();
+	
  
 
 	

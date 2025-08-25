@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.spring.app.board.service.BoardService;
+import com.spring.app.users.domain.BoardDTO;
 import com.spring.app.users.domain.CategoryDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -29,9 +30,17 @@ public class IndexController {
 	@GetMapping("index")
 	public String index(Model model) {
 		
+		// 카테고리 리스트
 		List<CategoryDTO> categoryList = boardService.categoryList();
-		
 		model.addAttribute("categoryList", categoryList);
+		
+		// Hot 게시글 리스트 (조회수 많은 순)
+		List<BoardDTO> hotReadList = boardService.getTopBoardsByViewCount();
+		model.addAttribute("hotReadList", hotReadList);
+		
+		// 댓글 많은 게시글 리스트
+		List<BoardDTO> hotCommentList = boardService.getTopBoardsByCommentCount();
+		model.addAttribute("hotCommentList", hotCommentList);
 		
 		return "index";
 	}

@@ -17,63 +17,93 @@
 	
 	
 	<!-- 글 목록 -->
-	<select id="pagingboardList" parameterType="int" resultType="BoardDTO">
-		SELECT boardNo, boardName, boardContent, fk_id, readCount, createdAtBoard
+	<select id="boardList" parameterType="String" resultType="BoardDTO">
+		SELECT boardNo, boardName, boardContent, fk_id, readCount, createdAtBoard, fk_categoryNo
 		FROM board
-		WHERE fk_categoryNo = #{categoryNo, jdbcType=INTEGER}
+		WHERE fk_categoryNo = #{categoryNo}
 	</select>
 	
 	
-	<!-- === 글 1개 조회하기 === -->
-	<select id="getnointerDetail" parameterType="HashMap" resultType="BoardDTO">
-		SELECT boardNo, boardName, boardContent, fk_id, readCount, createdAtBoard
+	<!-- 글 상세 조회 -->
+	<select id="getboardDetail" parameterType="HashMap" resultType="BoardDTO">
+		SELECT 	boardNo, boardName, boardContent, fk_id, readCount, createdAtBoard, fk_categoryNo
 		FROM board
 		WHERE boardNo = #{boardNo}
 	</select>
 	
 	
-	<!-- === 글 조회수 증가시키기 === -->
-	<update id="incease_readCount" parameterType="String">
-		update board set readCount = readCount + 1
-		where boardNo = #{boardNo}
+	<!-- 조회수 증가 -->
+	<update id="incrementReadCount" parameterType="String">
+		UPDATE board SET readCount = readCount + 1
+		WHERE boardNo = #{boardNo}
 	</update>
 	
 	
-	<!-- 첨부파일이 없는 경우 글쓰기 -->
-	<insert id="write" parameterType="BoardDTO">
-		insert into board(boardNo, fk_categoryNo, boardName, boardContent, createdAtBoard, updatedAtBoard, readCount, fk_id, boardDeleted)
-    	values(board_seq.nextval, 3, #{boardName, jdbcType=VARCHAR}, #{boardContent, jdbcType=VARCHAR}, 
-           default, default, default, #{fk_id, jdbcType=VARCHAR}, default)
-	</insert>
-
-
-	<!-- 첨부파일이 있는 경우 글쓰기 -->
-	<insert id="writeFile" parameterType="BoardDTO">
-		insert into board(boardNo, fk_categoryNo, boardName, boardContent, createdAtBoard, updatedAtBoard, readCount, fk_id, boardFileName, boardFileOriginName, boardDeleted)
-		values(board_seq.nextval, 3, #{boardName}, #{boardContent}, #{createdAtBoard}, #{updatedAtBoard}, #{readCount}, #{fk_id}, #{boardFileName}, #{boardFileOriginName}, #{boardDeleted})
-	</insert>
-
-
-	<!-- 총 게시물 건수 -->
-	<select id="getTotalCount" parameterType="HashMap" resultType="int">
-		select count(*)
-		from board
+	<!-- ========================================================================================== -->
+	
+	
+	<!-- 인기 게시글 리스트 (조회수 많은 순) -->
+	<select id="getTopBoardsByViewCount" resultType="BoardDTO">
+	    SELECT *
+	    FROM (
+	        SELECT 
+	            ROWNUM AS rank,
+	            boardNo,
+	            boardName,
+	            fk_categoryNo,
+	            readCount
+	        FROM (
+	            SELECT 
+	                boardNo,
+	                boardName,
+	                fk_categoryNo,
+	                readCount
+	            FROM board
+	            WHERE createdAtBoard &gt;= ADD_MONTHS(SYSDATE, -1)
+	            ORDER BY readCount DESC
+	        )
+	    )
+	    WHERE rank &lt;= 5
 	</select>
-
-
-	<!-- 댓글 목록 -->
-	<select id="getCommentList" parameterType="HashMap" resultType="CommentDTO">
-		select commentNo, fk_id, fk_name, content, createdAtComment, updateAtComment, fk_boardNo, parentNo
-		from comments
-		where fk_boardNo = #{boardNo}
+	    
+	
+	<!-- Hot 게시글 전체 리스트 (조회수 많은 순) -->
+	<select id="hotAll" resultType="BoardDTO">
+		SELECT boardNo, boardName, boardContent, fk_id, readCount, createdAtBoard, fk_categoryNo
+		FROM board
 	</select>
 	
 	
-	<!-- 댓글 쓰기 -->
-	<insert id="commentWrite" parameterType="CommentDTO">
-		insert into comments(commentNo, fk_id, fk_name, content, createdAtComment, updateAtComment, fk_boardNo)
-		values(comment_seq.nextval, #{fk_id}, #{fk_name}, #{content}, default, default, #{fk_boardNo})
-	</insert>
+	<!-- 댓글 많은 게시글 리스트 -->
+	<select id="getTopBoardsByCommentCount" resultType="BoardDTO">
+		SELECT *
+		FROM (
+		    SELECT 
+		        ROWNUM AS rank,
+		        boardNo,
+		        boardName,
+		        fk_categoryNo,
+		        readCount,
+		        NVL(commentCount, 0) AS commentCount
+		    FROM (
+		        SELECT 
+		            boardNo,
+		            boardName,
+		            fk_categoryNo,
+		            readCount
+		        FROM board
+		        WHERE createdAtBoard &gt;= ADD_MONTHS(SYSDATE, -1)
+		    ) b
+		    LEFT JOIN (
+		        SELECT fk_boardNo, COUNT(*) AS commentCount
+		        FROM comments
+		        GROUP BY fk_boardNo
+		    ) c ON b.boardNo = c.fk_boardNo
+		    ORDER BY c.commentCount DESC NULLS LAST
+		)
+		WHERE rank &lt;= 5
+	</select>
+	
 
 </mapper>
 

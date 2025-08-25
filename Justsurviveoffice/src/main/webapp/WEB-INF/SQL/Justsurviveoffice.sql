@@ -170,3 +170,8 @@ ORDER BY boardNo;
 
 insert into board(boardNo, fk_categoryNo, boardName, boardContent, createdatboard, updatedatboard, readcount, fk_id, boardfilename, boardfileoriginname, boarddeleted)
 values(board_seq.nextval);
+
+
+
+
+desc board;

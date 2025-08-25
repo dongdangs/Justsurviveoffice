@@ -80,7 +80,7 @@
 			// form 전송
 			const form = document.writeForm;
 			form.method = "post";
-			form.action = "<%= ctxPath%>/board/write";
+			form.action = "<%= ctxPath%>/board/boardWrite";
 			form.submit();
 		});
 		

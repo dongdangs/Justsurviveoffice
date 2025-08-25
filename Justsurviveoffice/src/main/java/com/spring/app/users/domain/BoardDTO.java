@@ -53,4 +53,8 @@ public class BoardDTO {
     	/myspring/src/main/webapp/WEB-INF/views/mycontent1/board/add.jsp 파일에서 input type="file" 인 name 의 이름(attach) 과 
      	동일해야만 파일첨부가 가능해진다.!!!!           
 	*/
+	
+	private int rank; // Hot, 댓글 많은 게시글 순위를 위한 select 용
+	private int commentCount; // 댓글 많은 게시글 댓글 수 알아오기 위한 select 용
+	
 }

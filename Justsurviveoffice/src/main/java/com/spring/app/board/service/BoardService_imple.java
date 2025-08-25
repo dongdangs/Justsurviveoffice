@@ -1,5 +1,6 @@
 package com.spring.app.board.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,43 +58,80 @@ public class BoardService_imple implements BoardService {
 
 	// 글 목록
 	@Override
-	public List<BoardDTO> pagingboardList(int categoryNo) {
-		List<BoardDTO> boardList = boardDao.pagingboardList(categoryNo);
+	public List<BoardDTO> boardList(String categoryNo) {
+		List<BoardDTO> boardList = boardDao.boardList(categoryNo);
 		return boardList;
 	}
 
 
-	// 조회수 증가와 함께 글 1개 조회
+	// 조회수 증가와 상세조회
 	@Override
-	public BoardDTO getnointerDetail(Map<String, String> paraMap) {
+	public BoardDTO getboardDetail(Map<String, String> paraMap) {
+		boardDao.incrementReadCount(paraMap.get("boardNo"));  // 조회수증가
+		BoardDTO boardDto = boardDao.getboardDetail(paraMap); // 조회수 증가 없이 글 조회
+		return boardDto;
+	}
+
+
+	// 조회수 증가 없이 상세조회
+	@Override
+	public BoardDTO getboardDetailNoIncrease(Map<String, String> paraMap) {
+		BoardDTO boardDto = boardDao.getboardDetail(paraMap); // 조회수 증가 없이 글 조회
+		return boardDto;
+	}
+	
+	
+	// 댓글 목록
+	@Override
+	public List<CommentDTO> getCommentList(String boardNo) {
+		List<CommentDTO> commentList = boardDao.getCommentList(boardNo);
+		return commentList;
+	}
+
+	// 댓글 쓰기
+	@Override
+	public int commentWrite(CommentDTO commentDto) {
 		
-		BoardDTO boardDto = boardDao.getnointerDetail(paraMap); // 글 1개 조회하기
+		int n = boardDao.commentWrite(commentDto);
 		
-		String loginUserid = paraMap.get("loginUserid");
-		// paraMap.get("loginUserid") 은 로그인을 한 상태이라면 로그인한 사용자의 userid 이고,
-		// 로그인을 하지 않은 상태이라면  paraMap.get("loginUserid") 은 null 이다.
-		
-		if(loginUserid != null &&
-		   !loginUserid.equals(boardDto.getFk_id())) {
-			// 글조회수 증가는 로그인을 한 상태에서 다른 사람의 글을 읽을때만 증가
+		if(n==1) {
+			Map<String, String> paraMap = new HashMap<>();
+			paraMap.put("id", commentDto.getFk_id());
+			paraMap.put("point", "50");
 			
-			int n = boardDao.incease_readCount(paraMap.get("boardNo")); // 글 조회수 증가시키기
-			
-			if(n==1) {
-				boardDto.setReadCount(boardDto.getReadCount() + 1);
-			}
+			n = boardDao.updateUsersPoint(paraMap);
 		}
 		
-		return boardDto;
+		return n;
 	}
 
+	////////////////////////////////////////////////////////////////////////////////////	
 
-	// 조회수 증가 없고, 글 1개 조회
+	// 인기 게시글 리스트 (조회수 많은 순)
 	@Override
-	public BoardDTO getnointerDetail_no_increase(Map<String, String> paraMap) {
-		BoardDTO boardDto = boardDao.getnointerDetail(paraMap);
-		return boardDto;
+	public List<BoardDTO> getTopBoardsByViewCount() {
+		List<BoardDTO> hotReadList = boardDao.getTopBoardsByViewCount();
+		return hotReadList;
 	}
+
+
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	@Override
+	public List<BoardDTO> hotAll() {
+		List<BoardDTO> hotAllList = boardDao.hotAll();
+		return hotAllList;
+	}
+
+
+	// 댓글 많은 게시글 리스트
+	@Override
+	public List<BoardDTO> getTopBoardsByCommentCount() {
+		List<BoardDTO> hotCommentList = boardDao.getTopBoardsByCommentCount();
+		return hotCommentList;
+	}
+
+
+	
 
 }
 
