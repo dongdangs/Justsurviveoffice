@@ -9,99 +9,80 @@
 
 	<!-- === 인덱스 페이지 카테고리 리스트 === -->
 	<select id="categoryList" parameterType="HashMap" resultType="CategoryDTO">
-		SELECT categoryNo, categoryName, categoryDescribe, categoryImagePath
-		FROM category
-		WHERE categoryNo &lt; 6
-		ORDER BY categoryNo
+		select CATEGORYNO, CATEGORYNAME, CATEGORYDESCRIBE, CATEGORYIMAGEPATH
+		from CATEGORY
+		where CATEGORYNO &lt; 6
+		order by CATEGORYNO
 	</select>
 	
 	
 	<!-- 글 목록 -->
 	<select id="boardList" parameterType="String" resultType="BoardDTO">
-		SELECT boardNo, boardName, boardContent, fk_id, readCount, createdAtBoard, fk_categoryNo
-		FROM board
-		WHERE fk_categoryNo = #{categoryNo}
+		select BOARDNO, BOARDNAME, BOARDCONTENT, FK_ID, READCOUNT, CREATEDATBOARD, FK_CATEGORYNO
+		from BOARD
+		where FK_CATEGORYNO = #{categoryNo}
 	</select>
 	
 	
 	<!-- 글 상세 조회 -->
 	<select id="getboardDetail" parameterType="HashMap" resultType="BoardDTO">
-		SELECT 	boardNo, boardName, boardContent, fk_id, readCount, createdAtBoard, fk_categoryNo
-		FROM board
-		WHERE boardNo = #{boardNo}
+		select 	BOARDNO, BOARDNAME, BOARDCONTENT, FK_ID, READCOUNT, CREATEDATBOARD, FK_CATEGORYNO
+		from BOARD
+		where BOARDNO = #{boardNo}
 	</select>
 	
 	
 	<!-- 조회수 증가 -->
 	<update id="incrementReadCount" parameterType="String">
-		UPDATE board SET readCount = readCount + 1
-		WHERE boardNo = #{boardNo}
+		update BOARD set readCount = READCOUNT + 1
+		where BOARDNO = #{boardNo}
 	</update>
 	
 	
 	<!-- ========================================================================================== -->
 	
 	
-	<!-- 인기 게시글 리스트 (조회수 많은 순) -->
-	<select id="getTopBoardsByViewCount" resultType="BoardDTO">
-	    SELECT *
-	    FROM (
-	        SELECT 
-	            ROWNUM AS rank,
-	            boardNo,
-	            boardName,
-	            fk_categoryNo,
-	            readCount
-	        FROM (
-	            SELECT 
-	                boardNo,
-	                boardName,
-	                fk_categoryNo,
-	                readCount
-	            FROM board
-	            WHERE createdAtBoard &gt;= ADD_MONTHS(SYSDATE, -1)
-	            ORDER BY readCount DESC
-	        )
-	    )
-	    WHERE rank &lt;= 5
-	</select>
-	    
-	
 	<!-- Hot 게시글 전체 리스트 (조회수 많은 순) -->
 	<select id="hotAll" resultType="BoardDTO">
-		SELECT boardNo, boardName, boardContent, fk_id, readCount, createdAtBoard, fk_categoryNo
-		FROM board
+		select BOARDNO, BOARDNAME, BOARDCONTENT, FK_ID, READCOUNT, CREATEDATBOARD, FK_CATEGORYNO
+		from BOARD
 	</select>
 	
-	
+	<!-- 인기 게시글 리스트 (조회수 많은 순) -->
+	<select id="getTopBoardsByViewCount" resultType="BoardDTO">
+	    select *
+		from(
+		     select ROWNUM as RANK, BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT
+			 from (
+			       select BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT
+			       from BOARD
+			       where CREATEDATBOARD &gt;= ADD_MONTHS(SYSDATE, -1)
+			       order by READCOUNT desc, CREATEDATBOARD desc
+			      )
+			)
+		WHERE RANK &lt;= 5
+	</select>
+	    
+	    
 	<!-- 댓글 많은 게시글 리스트 -->
 	<select id="getTopBoardsByCommentCount" resultType="BoardDTO">
-		SELECT *
-		FROM (
-		    SELECT 
-		        ROWNUM AS rank,
-		        boardNo,
-		        boardName,
-		        fk_categoryNo,
-		        readCount,
-		        NVL(commentCount, 0) AS commentCount
-		    FROM (
-		        SELECT 
-		            boardNo,
-		            boardName,
-		            fk_categoryNo,
-		            readCount
-		        FROM board
-		        WHERE createdAtBoard &gt;= ADD_MONTHS(SYSDATE, -1)
-		    ) b
-		    LEFT JOIN (
-		        SELECT fk_boardNo, COUNT(*) AS commentCount
-		        FROM comments
-		        GROUP BY fk_boardNo
-		    ) c ON b.boardNo = c.fk_boardNo
-		    ORDER BY c.commentCount DESC NULLS LAST
-		)
-		WHERE rank &lt;= 5
+		select *
+		from(
+		     select rownum as RANK, BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT,
+				    nvl(COMMENTCOUNT, 0) as COMMENTCOUNT
+		     from (
+		           select BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT
+				   from BOARD
+				   where CREATEDATBOARD &gt;= ADD_MONTHS(SYSDATE, -1)
+		          ) B left join 
+		          (
+		           select FK_BOARDNO, count(*) as COMMENTCOUNT
+				   from COMMENTS
+				   group by FK_BOARDNO
+		          ) C on B.BOARDNO = C.FK_BOARDNO
+		          order by COMMENTCOUNT desc
+		          )
+		where rank &lt;= 5
 	</select>
 	
 

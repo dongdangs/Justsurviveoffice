@@ -98,13 +98,18 @@
 </style>
 
 <script type="text/javascript">
+
     function view(boardNo) {
+    	
         const form = document.boardDetailForm;
+        
         form.boardNo.value = boardNo;
+        
         form.method = "post";
         form.action = "<%= ctxPath %>/board/boardDetail";
         form.submit();
     }
+    
 </script>
 
 <div class="container main-wrap">
@@ -173,7 +178,7 @@
                         <div class="row">
                             <c:forEach var="boardDto" items="${boardList}">
                                 <div class="col-12">
-                                    <div class="board-item p-3 mb-3" style="background-color: rgba(255,255,255,0.88); cursor:pointer;" onclick="view('${boardDto.boardNo}')">
+                                    <div class="board-item p-3 mb-3" style="background-color: rgba(255,255,255,0.88); cursor:pointer;" onclick="view('${boardDto.fk_categoryNo}', '${boardDto.boardNo}')">
                                         <div class="fw-bold mb-1">${boardDto.boardName}</div>
                                         <div class="text-muted mb-2 text-clamp-2">${boardDto.boardContent}</div>
                                         <div class="small text-muted d-flex justify-content-between align-items-center">
@@ -207,6 +212,7 @@
 <!-- 글 상세보기 폼 -->
 <form name="boardDetailForm">
     <input type="hidden" name="boardNo" />
+    <input type="hidden" name="categoryNo" />
 </form>
 
 <%-- <jsp:include page="../footer/footer1.jsp"></jsp:include> --%>

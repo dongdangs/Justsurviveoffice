@@ -9,9 +9,9 @@
 	
 	<!-- 댓글 목록 -->
 	<select id="getCommentList" parameterType="HashMap" resultType="CommentDTO">
-		select commentNo, fk_id, fk_name, content, createdAtComment, updateAtComment, fk_boardNo, parentNo
-		from comments
-		where fk_boardNo = #{boardNo}
+		select COMMENTNO, FK_ID, FK_NAME, CONTENT, CREATEDATCOMMENT, UPDATEDATCOMMENT, FK_BOARDNO, PARENTNO
+		from COMMENTS
+		where FK_BOARDNO = #{boardNo}
 	</select>
 	
 	
@@ -26,7 +26,7 @@
 	<update id="updateUsersPoint" parameterType="HashMap">
 		update users set point = point + to_number(#{point})
 		where id = #{id}
-	</update>
+	</update> 
 
 </mapper>
 

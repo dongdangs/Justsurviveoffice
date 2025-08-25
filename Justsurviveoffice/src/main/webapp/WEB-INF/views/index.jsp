@@ -52,7 +52,7 @@
 				    <div class="d-flex justify-content-between align-items-center mb-2">
 				        <h6 style="font-weight: bolder; margin: 0;">대사살 Hot! 게시글</h6>
 				        <a href="<%= ctxPath%>/board/hot/all" class="text-primary" style="font-size: 0.9rem; text-decoration: none;">
-				            더보기
+				            
 				        </a>
 				    </div>
 				    <table class="table table-sm table-borderless">
@@ -77,7 +77,7 @@
 				    <div class="d-flex justify-content-between align-items-center mb-2">
 				        <h6 style="font-weight: bolder; margin: 0;">대사살 댓글많은 게시글</h6>
 				        <a href="<%= ctxPath%>/board/hot/all" class="text-primary" style="font-size: 0.9rem; text-decoration: none;">
-				            더보기
+				            
 				        </a>
 				    </div>
 				    <table class="table table-sm table-borderless">

@@ -175,3 +175,44 @@ values(board_seq.nextval);
 
 
 desc board;
+
+
+desc comments;
+
+
+
+
+
+SELECT *
+FROM(
+     SELECT ROWNUM AS rank, boardNo, boardName, fk_categoryNo, readCount
+	 FROM (
+	       SELECT boardNo, boardName, fk_categoryNo, readCount
+	       FROM board
+	       WHERE createdAtBoard >= ADD_MONTHS(SYSDATE, -1)
+	       ORDER BY readCount DESC, createdAtBoard DESC
+	      )
+	)
+WHERE rank <= 5;
+
+
+SELECT *
+FROM(
+     SELECT ROWNUM AS rank, boardNo, boardName, fk_categoryNo, readCount,
+		    NVL(commentCount, 0) AS commentCount
+     FROM (
+           SELECT boardNo, boardName, fk_categoryNo, readCount, updateatcomment
+		   FROM board
+		   WHERE createdAtBoard >= ADD_MONTHS(SYSDATE, -1)
+          ) b LEFT JOIN 
+          (
+           SELECT fk_boardNo, COUNT(*) AS commentCount
+		   FROM comments
+		   GROUP BY fk_boardNo
+          ) c ON b.boardNo = c.fk_boardNo
+          ORDER BY commentCount DESC, updateatcomment DESC
+          )
+WHERE rank <= 5;
+
+
+
