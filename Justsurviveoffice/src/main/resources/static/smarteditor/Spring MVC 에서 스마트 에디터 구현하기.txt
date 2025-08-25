@@ -225,7 +225,7 @@
   </tr>
 
 
-
+// (대사살 스마트에디터 관련 수정 순서1)	// 해당 html이 있는지 체크
  5. 사진첨부
     /myspring/src/main/resources/static/smarteditor/sample/photo_uploader/photo_uploader.html 에 가면
     form 태그가 존재합니다.
@@ -246,7 +246,7 @@
         </div>
   </form>
 
-
+// (대사살 스마트에디터 관련 수정 순서2)	// js 파일에 아래 코드 처럼 재정의 해주기
  6. /myspring/src/main/resources/static/smarteditor/sample/photo_uploader/attach_photo.js 에 가서
     
    ==> 479번째 줄의 callFileUploader () 함수(단일사진첨부함수)를 보면 
@@ -283,7 +283,7 @@
  >>> 클라이언트 설정변경을 위와같이 모두 해주셨다면 이어서 서버페이지 코드작성을 해보도록 하겠습니다. <<<
 
  8. HTML5 드래그앤드롭 기능을 이용한 스마트에디터 다중파일업로드 관련 컨트롤러를 작성합니다.
-
+	// (대사살 스마트에디터 관련 수정 순서5)	// 본인이 쓰는 컨트롤러 클래스에서 아래 8번 코드 전부 복붙하기.
     /myspring/src/main/java/com/spring/app/board/controller/BoardController.java 에서
 
     // ==== #스마트에디터. 드래그앤드롭을 사용한 다중사진 파일업로드 ====

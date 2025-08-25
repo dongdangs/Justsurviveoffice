@@ -333,7 +333,7 @@
     function html5Upload() {	
     	var tempFile,
     		sUploadURL;
-    	
+    	/* (대사살 스마트에디터 관련 수정 순서4) */
     	sUploadURL= '/justsurviveoffice/rdgAPI/image/multiplePhotoUpload'; 	//upload URL
     	
     	//파일을 하나씩 보내고, 결과를 받음.
@@ -478,6 +478,7 @@
  	 */
  	function callFileUploader (){
  		oFileUploader = new jindo.FileUploader(jindo.$("uploadInputBox"),{
+			/* (대사살 스마트에디터 관련 수정 순서3) */
  			sUrl  : '/justsurviveoffice/rdgAPI/image/photoUpload',	// 파일업로드시 동작되는 컨트롤러 url
  	        sCallback : location.href.replace(/\/[^\/]*$/, '') + '/callback.html',	//업로드 이후  redirect 페이지 url
  	    	sFiletype : "*.jpg;*.png;*.bmp;*.gif",						//허용할 파일의 형식. ex) "*", "*.*", "*.jpg", 구분자(;)	

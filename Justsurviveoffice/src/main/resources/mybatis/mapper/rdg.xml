@@ -22,9 +22,9 @@
 		</insert>
 	
 	
-	<!-- 카테고리별 페이징 처리된 리스트 목록 가져오기(페이지당 3개의 목록 고정) -->
+	<!-- 카테고리별 페이징 처리된 검색된 리스트 목록 가져오기(페이지당 3개의 목록 고정) -->
 	<select id="getBoardList" parameterType="HashMap" resultType="BoardDTO">
-		SELECT boardNo, boardName, boardContent, createdAtBoard, updatedAtBoard, readCount, fk_id, boardFileName, boardFileOriginName, name
+		SELECT boardNo, boardName, boardContent, createdAtBoard, updatedAtBoard, readCount, fk_id, boardFileName, boardFileOriginName, U.name
 		FROM BOARD B JOIN Users U
 		ON B.fk_id = U.id
 		WHERE boardDeleted = 0 AND B.fk_categoryNo = TO_NUMBER(#{fk_categoryNo})
@@ -48,11 +48,26 @@
 	</select>
 	
 	
-	<!-- 해당 카테고리 게시글의 총 개수 -->
-	<select id="getBoardCount" parameterType="String" resultType="int">
+	<!-- 해당 카테고리 검색된 게시글의 총 개수 -->
+	<select id="getBoardCount" parameterType="HashMap" resultType="int">
 		SELECT COUNT(*) AS totalCount
-		FROM board
-		WHERE boardDeleted = 0 AND fk_categoryNo = TO_NUMBER(#{fk_categoryNo})
+		FROM board B JOIN Users U
+		ON B.fk_id = U.id
+		WHERE boardDeleted = 0 AND B.fk_categoryNo = TO_NUMBER(#{fk_categoryNo})
+		<choose>
+			<when test='searchType == "boardName" and searchWord != ""'>
+				AND lower(boardName) like '%'||lower(#{searchWord})||'%'
+			</when>
+			<when test='searchType == "boardContent" and searchWord != ""'>
+				AND lower(boardContent) like '%'||lower(#{searchWord})||'%'
+			</when>
+			<when test='searchType == "boardName_boardContent" and searchWord != ""'>
+				AND ( lower(boardName) like '%'||lower(#{searchWord})||'%' or lower(boardContent) like '%'||lower(#{searchWord})||'%' )
+			</when>
+			<when test='searchType == "name" and searchWord != ""'>
+				AND lower(name) like '%'||lower(#{searchWord})||'%'
+			</when>
+		</choose>
 	</select>
 	
 	
@@ -61,6 +76,37 @@
 		SELECT boardName, boardContent
 		FROM board
 		WHERE boardDeleted = 0 AND fk_categoryNo = TO_NUMBER(#{fk_categoryNo})
+	</select>
+	
+	
+	<!-- 자동 검색어 완성시킬 제목 or 이름 가져오기 -->
+	<select id="getSearchWordList" parameterType="HashMap" resultType="String">
+		<choose>
+			<when test='searchType == "boardName"'>
+				SELECT boardName
+				FROM board
+				WHERE boardDeleted = 0 AND fk_categoryNo = TO_NUMBER(#{fk_categoryNo})
+				AND lower(boardName) LIKE '%' || lower(#{searchWord}) || '%'
+				ORDER BY createdAtBoard
+			</when>
+			<otherwise>
+				SELECT DISTINCT name
+				FROM board B JOIN users U
+				ON B.fk_id = U.id
+				WHERE boardDeleted = 0 AND B.fk_categoryNo = TO_NUMBER(#{fk_categoryNo})
+				AND lower(name) LIKE '%' || lower(#{searchWord}) || '%'
+				ORDER BY name
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<!-- 글 1개 가져오기 -->
+	<select id="selectView" parameterType="HashMap" resultType="BoardDTO">
+		select *
+		from board B join users U
+		ON B.fk_id = U.id
+		where boardno = to_number(#{boardNo})
 	</select>
 	
 	

@@ -1,6 +1,7 @@
 package com.spring.app.users.domain;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,9 +29,9 @@ public class BoardDTO {
 	private String boardContent;
 
 	private LocalDateTime createdAtBoard;
-
+	
 	private LocalDateTime updatedAtBoard;
-
+	
 	private int readCount;
 
 	private String fk_id;
@@ -43,6 +44,23 @@ public class BoardDTO {
 	
 	
 	private Users users;
+	
+	private String name;
+	
+	// 스마트 에디터로 글 작성 시 Jsoup를 통한 텍스트 및 이미지 경로 저장
+	private String boardContentText;
+	private String boardContentImg;
+	
+	// 날짜 포맷 메소드
+	public String getCreatedAtBoardFormatted() {
+	    if (createdAtBoard == null) return "";
+	    return createdAtBoard.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	}
+	
+	public String getUpdatedAtBoardFormatted() {
+	    if (updatedAtBoard == null) return "";
+	    return updatedAtBoard.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	}
 	
 	
 	private MultipartFile attach;

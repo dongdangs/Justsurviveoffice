@@ -117,7 +117,7 @@
 			// 폼(form)을 전송 (submit)
 			const frm = document.addFrm;
 			frm.method = "post";
-			frm.action = "<%= ctxPath%>/rdgAPI/add";
+			frm.action = "<%= ctxPath%>/rdgAPI/add";	/* (대사살 스마트에디터 관련 수정 순서7) myspring의 add.jsp 그대로 가져옴 + action 경로 수정 */
 			frm.submit();
 		});
 		
@@ -141,6 +141,7 @@
 						<th style="width: 15%; background-color: #DDDDDD;">성명</th>
 						<td>
 							<input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}" />
+							<!-- (대사살 스마트에디터 관련 수정 순서8) 히든 카테고리 유형 번호 필요할 거 같아서 추가 -->
 							<input type="hidden" name="fk_categoryNo" value="${sessionScope.loginUser.category.categoryNo}" />
 							<input type="text" name="name" value="${sessionScope.loginUser.name}" readonly>
 						</td>   
@@ -170,6 +171,7 @@
 				
 				<div style="margin: 20px;">
 					<button type="button" class="btn btn-secondary btn-sm mr-3" id="btnWrite">글쓰기</button>
+					<!-- (대사살 스마트에디터 관련 수정 순서9) -->
 					<button type="button" class="btn btn-secondary btn-sm" onclick="location.href='<%= ctxPath%>/rdgAPI/rdglist'">취소</button>  
 				</div>
 				

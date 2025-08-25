@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.safety.Safelist;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -90,18 +93,70 @@ public class RdgService_imple implements RdgService {
 	}
 	
 	
-	// 카테고리별 페이징 처리된 리스트 목록 가져오기(페이지당 3개의 목록 고정)
+	// 카테고리별 페이징 처리된 검색된 리스트 목록 가져오기(페이지당 3개의 목록 고정)
 	@Override
 	public List<BoardDTO> getBoardList(Map<String, String> paraMap) {
 		List<BoardDTO> boardDtoList = mapper.getBoardList(paraMap);
+		
+		// boardContent 에 스마트에디터로 글 작성할 경우 HTML 형식으로 저장되므로 해당 HTML 을 파싱하는 방법
+		/*
+			Jsoup이란?
+			
+			Java 기반 HTML 파서 라이브러리
+			HTML 문자열을 DOM(Document Object Model) 구조로 바꿔서, 자바 코드에서 웹페이지처럼 다룰 수 있게 해줌.
+			CSS 선택자(div > p, .class, #id)로 원하는 요소를 쉽게 뽑을 수 있음.
+			태그 제거, 속성 추출, 텍스트 변환, XSS 방어(안전한 HTML 정화) 같은 작업에 특화.
+			한마디로: "HTML = 문자열"을 "객체(트리 구조)"로 변환해서 편하게 다룰 수 있게 해주는 도구.
+			
+			사용 방법
+			build.gradle 에
+			dependencies {
+				implementation 'org.jsoup:jsoup:1.18.1'
+			} 추가해야 한다.
+			
+			관련 문법
+			
+			HTML → DOM(문서 객체) 변환
+			Document doc = Jsoup.parse("<p>Hello <b>World</b></p>");
+			
+			doc.text()
+			.text() = 태그 다 없애고 글자만 가져오기
+			
+			Element p = doc.selectFirst("p"); // 첫 번째 <p> 태그
+			.select("CSS선택자") → 태그 여러 개 찾기
+			.selectFirst("CSS선택자") → 첫 번째만 찾기
+			.html() → 내부 HTML 그대로
+			
+			String text = Jsoup.clean("<script>alert(1)</script><p>안녕</p>", Safelist.none());
+			System.out.println(text);	// 출력: 안녕
+																			Safelist.none() → 모든 태그 제거, 텍스트만 남김
+																			Safelist.basic() → <b>, <i>, <a> 같은 기본 태그만 허용
+			
+		*/
+		
+		for(BoardDTO dto : boardDtoList) {
+			// 1. 텍스트 변환
+			String boardContentText = Jsoup.clean(dto.getBoardContent()
+					.replaceAll("(?i)<br\\s*/?>", "\n")	// 대소문자 구분 없이, <br>, <br/>, <br >, <BR/> 같은 줄바꿈 태그를 전부 찾기, 및 공백 변환
+					.replace("&nbsp;", " "), Safelist.none());
+			dto.setBoardContentText(boardContentText);
+			
+			// 2. 이미지 체크 및 추출
+			Element img = Jsoup.parse(dto.getBoardContent()).selectFirst("img[src]");	// import org.jsoup.nodes.Element;
+			if (img != null) {
+				String boardContentImg = img.attr("src");
+				dto.setBoardContentImg(boardContentImg);
+			}
+		}// end of for----------------
+		
 		return boardDtoList;
 	}
 	
 	
-	// 해당 카테고리 게시글의 총 개수
+	// 해당 카테고리 검색된 게시글의 총 개수
 	@Override
-	public int getBoardCount(String fk_categoryNo) {
-		int totalCount = mapper.getBoardCount(fk_categoryNo);
+	public int getBoardCount(Map<String, String> paraMap) {
+		int totalCount = mapper.getBoardCount(paraMap);
 		return totalCount;
 	}
 	
@@ -140,7 +195,7 @@ public class RdgService_imple implements RdgService {
 		Map<String, Integer> keywordCount = new HashMap<>();	// 단어별 빈도 수 조사하기!
 		
 		for (String key : keyword_check.split(" ")) {	// 공백을 기준으로 단어 나눠주기
-			if (key.length() >= 2 && !stop.contains(key)) {	// 단어 길이 2이상 및 stop 집합에 들어 있는 단어가 아닌지 체크하기
+			if (key.length() >= 2 && !stop.contains(key)) {	// 단어 길이 2이상 및 stop 집합에 들어있는 단어가 아닌지 체크하기
 				keywordCount.merge(key, 1, Integer::sum);
 				/*
 					map.merge(key, value, remappingFunction)
@@ -177,6 +232,36 @@ public class RdgService_imple implements RdgService {
 		
 		return keyword_top;
 	}
+	
+	
+	// 자동 검색어 완성시키기
+	@Override
+	public List<Map<String, String>> getSearchWordList(Map<String, String> paraMap) {
+		
+		List<String> wordList = mapper.getSearchWordList(paraMap);	// 자동 검색어 완성시킬 제목 or 이름 가져오기
+		
+		List<Map<String, String>> mapList = new ArrayList<>();
+		
+		if(wordList != null) {
+			for(String word : wordList) {
+				Map<String, String> map = new HashMap<>();
+				map.put("word", word);
+				
+				mapList.add(map);
+			}// end of for-----------------
+		}
+		
+		return mapList;
+	}
+	
+	
+	// 글 1개 가져오기
+	@Override
+	public BoardDTO selectView(Map<String, String> paraMap) {
+		BoardDTO bdto = mapper.selectView(paraMap);
+		return bdto;
+	}
+	
 	
 	
 }

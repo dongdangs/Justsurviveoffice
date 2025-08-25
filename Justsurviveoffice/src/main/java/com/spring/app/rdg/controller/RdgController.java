@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.app.common.FileManager;
 import com.spring.app.rdg.service.RdgService;
@@ -33,6 +34,7 @@ public class RdgController {	// http://localhost:9089/justsurviveoffice/rdgAPI/
 	
 	private final FileManager fileManager;
 	
+	// (대사살 스마트에디터 관련 수정 순서6) >> 복붙해옴
 	// ==== #스마트에디터. 드래그앤드롭을 사용한 다중사진 파일업로드 ====
 	@PostMapping("image/multiplePhotoUpload")
 	public void multiplePhotoUpload(HttpServletRequest request, HttpServletResponse response) {
@@ -125,8 +127,8 @@ public class RdgController {	// http://localhost:9089/justsurviveoffice/rdgAPI/
 		// 서비스에서 데이터 가공 및 DB 연동을 통해서 페이징 처리한 리스트 가져오기
 		List<BoardDTO> boardDtoList = service.getBoardList(paraMap);
 		
-		// 해당 카테고리 게시글의 총 개수를 알아야 하므로
-		int totalCount = service.getBoardCount(fk_categoryNo);
+		// 해당 카테고리 검색된 게시글의 총 개수를 알아야 하므로
+		int totalCount = service.getBoardCount(paraMap);
 		int totalPage = (int) Math.ceil((double)totalCount / 3);	// 몇 페이지 까지 있는지 계산
 		
 		model.addAttribute("boardDtoList", boardDtoList);
@@ -136,8 +138,9 @@ public class RdgController {	// http://localhost:9089/justsurviveoffice/rdgAPI/
 		model.addAttribute("searchWord", searchWord);
 		int currentPage = Integer.parseInt(currentShowPageNo);
 		model.addAttribute("currentShowPageNo", currentPage);
+		model.addAttribute("searchType", searchType);	// 검색어 유지용 넘겨주는 데이터
+		model.addAttribute("searchWord", searchWord);	// 검색어 유지용 넘겨주는 데이터
 		// ======================== 1번 데이터 가져오기 일단 완료 =============================== // 
-		
 		
 		// ======================== 2번 키워드 코드 짜보기 ============================ // 
 		List<Map.Entry<String,Integer>> keyword_top = service.getKeyWord(fk_categoryNo);	// 서비스에서 구현
@@ -182,6 +185,139 @@ public class RdgController {	// http://localhost:9089/justsurviveoffice/rdgAPI/
 	}
 	
 	
+	// 게시글 목록에 검색어 자동입력
+	@GetMapping("wordSearchShow")
+	@ResponseBody
+	public List<Map<String, String>> wordSearchShow(@RequestParam(name = "searchType", defaultValue = "") String searchType,
+								 @RequestParam(name = "searchWord", defaultValue = "") String searchWord) {
+		
+		// 서비스에 넘길 데이터
+		String fk_categoryNo = "2";	// 임시로 값 고정시킨 카테고리 번호 나중에 URL에서 직접 받아오는 식으로 수정
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("searchType", searchType);
+		paraMap.put("searchWord", searchWord);
+		paraMap.put("fk_categoryNo", fk_categoryNo);
+		
+		List<Map<String, String>> mapList = service.getSearchWordList(paraMap);	// 자동 검색어 완성시키기
+		
+		return mapList;
+	}
+	
+	
+	@RequestMapping("view")
+	public String view(@RequestParam(name = "searchType", defaultValue = "") String searchType,
+					   @RequestParam(name = "searchWord", defaultValue = "") String searchWord,
+					   @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
+					   @RequestParam(name = "boardNo") String boardNo,
+					   Model model) {
+		
+	//	System.out.println(searchType + "III" + searchWord + "III" +  currentShowPageNo + "III" +  boardNo + "III");
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("searchType", searchType);
+		paraMap.put("searchWord", searchWord);
+		paraMap.put("currentShowPageNo", currentShowPageNo);
+		paraMap.put("boardNo", boardNo);
+		
+		BoardDTO bdto = service.selectView(paraMap);	// 글 1개 가져오기
+		
+		model.addAttribute("bdto", bdto);
+		
+		return "rdgAPI/view";
+	}
+	
+	
+	
+	@GetMapping("download")
+	public void download(HttpServletRequest request, HttpServletResponse response) {
+		
+		String boardNo = request.getParameter("boardNo");
+		// 첨부파일이 있는 글번호
+		
+		// HttpServletResponse response -> 서버가 클라이언트(웹브라우저)로 보내는 응답 객체
+		response.setContentType("text/html; charset=UTF-8");	// 브라우저가 응답을 HTML로 이해하도록 미리 Content-Type을 "text/html; charset=UTF-8"로 지정
+		// 즉, 이 줄은 “파일다운로드 실패 시, JS alert를 HTML로 제대로 해석시키려고” 넣은 것
+		
+		// PrintWriter → 문자 스트림을 응답(HttpServletResponse)에 쓰는 객체
+		PrintWriter out = null;
+		
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("boardNo", boardNo);
+		
+		BoardDTO boardDto = service.selectView(paraMap);
+		
+		try {
+			
+			if(boardDto == null || (boardDto != null && boardDto.getBoardFileName() == null)) {
+				out = response.getWriter();
+				// out 은 웹브라우저에 기술하는 대상체라고 생각하자.
+				
+				out.println("<script type='text/javascript'>alert('파일다운로드가 불가합니다.'); history.back();</script>");
+				return;
+			}
+			
+			else {
+				// 정상적으로 다운로드가 되어질 경우
+				String boardFileName = boardDto.getBoardFileName();
+				// 이것이 20250725123358_a4fc4b64d9dc480e871875bd3db1fe27.pdf 와 같은
+				// 바로 WAS 디스크에 저장된 파일명이다.
+				
+				String boardFileOriginName = boardDto.getBoardFileOriginName();
+				// Electrolux냉장고_사용설명서.pdf
+				// 다운로드시 보여줄 파일명
+				
+				/*
+					첨부파일이 저장되어있는 WAS(톰캣) 디스크 경로명을 알아와야만 다운로드를 해줄 수 있다.
+					이 경로는 우리가 파일첨부를 위해서 @PostMapping("add") 에서 설정해두었던 경로와 똑같아야 한다.    
+				*/
+				// WAS 의 webapp 의 절대경로를 알아와야 한다.
+				HttpSession session = request.getSession();
+				String root = session.getServletContext().getRealPath("/");
+				
+			//	System.out.println("~~~ 확인용 webapp 의 절대경로 ==> " + root);
+				// ~~~ 확인용 webapp 의 절대경로 ==> C:\git\Justsurviveoffice\src\main\webapp\
+				
+				String path = root + "resources" + File.separator + "files";
+				/* File.separator 는 운영체제에서 사용하는 폴더와 파일의 구분자이다.
+					운영체제가 Windows 이라면 File.separator 는  "\" 이고,
+					운영체제가 UNIX, Linux, 매킨토시(맥) 이라면  File.separator 는 "/" 이다. 
+				*/
+				
+				// path 가 첨부파일이 저장될 WAS(톰캣)의 폴더가 된다.
+			//	System.out.println("~~~ 확인용 path ==> " + path);
+				// ~~~ 확인용 path ==> C:\NCS\workspace_spring_boot_17\myspring\src\main\webapp\resources\files
+				
+				// **** file 다운로드하기 **** //
+				boolean flag = false; // file 다운로드 성공, 실패인지 여부를 알려주는 용도
+				flag = fileManager.doFileDownload(boardFileName, boardFileOriginName, path, response);
+				// file 다운로드 성공시 flag 는 true,
+				// file 다운로드 실패시 flag 는 false 를 가진다.
+				
+				if(!flag) {
+					// 다운로드가 실패한 경우 메시지를 띄운다.
+					out = response.getWriter();
+					// out 은 웹브라우저에 기술하는 대상체라고 생각하자.
+					
+					out.println("<script type='text/javascript'>alert('파일다운로드가 실패되었습니다.'); history.back();</script>");
+				}
+				
+			}
+			
+		} catch(Exception e) {
+			
+			try {
+				out = response.getWriter();
+				// out 은 웹브라우저에 기술하는 대상체라고 생각하자.
+				
+				out.println("<script type='text/javascript'>alert('파일다운로드가 불가합니다.'); history.back();</script>");
+			} catch(Exception e1) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
 	
 	
 	
