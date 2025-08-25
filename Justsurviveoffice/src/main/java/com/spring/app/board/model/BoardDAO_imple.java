@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardDAO_imple implements BoardDAO {
 	
+	
 	@Qualifier("sqlsession")
 	private final SqlSessionTemplate sql;
 	
