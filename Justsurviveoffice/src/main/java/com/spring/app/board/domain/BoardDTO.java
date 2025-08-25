@@ -47,6 +47,8 @@ public class BoardDTO {
 				getBytes() → 파일 내용을 바이트 배열로
 				transferTo(File dest) → 실제 서버에 저장 */
 	
+	private Boolean bookmarked; // select 용도
+	 
 	private Users users;// 게시글과 연관된 유저 
 	
 	private CategoryDTO categoryDTO; // boardDto.categoryDto.categoryNo

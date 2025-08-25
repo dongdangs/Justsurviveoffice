@@ -93,6 +93,7 @@
 	   }
 	   
 	   
+	   
 	   <%-- === 검색어 입력시 자동글 완성하기 2 === --%>
 	   $('div#displayList').hide();
 	   
@@ -154,6 +155,43 @@
 		    searchBoard(); // 글목록 검색하기 요청
 	   });
 	   
+	   $(".btn-bookmark").on("click", function(e) {
+	        e.preventDefault();
+	        e.stopPropagation(); // 게시글 클릭과 이벤트 충돌 방지
+	
+	        const icon = $(this);
+	        const boardNo = icon.data("boardno");
+
+	        $.ajax({
+	            type: "POST",
+	            url: "<%=ctxPath%>/bookmark/toggle",
+	            data: { boardNo: boardNo },
+	            success: function(json) {
+	                if(json === "notLogin") {
+	                    alert("로그인이 필요합니다!");
+	                    location.href = "<%=ctxPath%>/login";
+	                    return;
+	                }
+	                if (json === "bookmarked") {
+	                    icon.removeClass("fa-regular")
+	                        .addClass("fa-solid text-warning")
+	                        .attr("title","북마크 해제");
+	                } else if (json === "removed") {
+	                    icon.removeClass("fa-solid text-warning")
+	                        .addClass("fa-regular")
+	                        .attr("title","북마크");
+	                } else {
+	                    alert("알 수 없는 응답: " + json);
+	                }
+	            },
+	            error: function(request, status, error) {
+	                alert("code: "+request.status+"\nmessage: "+request.responseText+"\nerror: "+error);
+	            }
+	        });
+	    });
+	   
+	   
+	   
    }); // end of $(function(){})--------------------------
    
    
@@ -176,7 +214,9 @@
 	 form.action = "<%= ctxPath%>/board/view";
      form.submit();
 	
-   }// end of function view(boardNo)----------------------
+   }// end of function view(boardNo,fk_id)----------------------
+
+   
    
    
    // === 글목록 검색하기 요청 === //
@@ -276,6 +316,7 @@
 	<%-- === 검색어 입력시 자동글 완성하기 1 === --%>
 	<div id="displayList" style="border:solid 1px gray; border-top:0px; height:100px; margin-left:8.7%; margin-top:-1px; margin-bottom:30px; overflow:auto;">
     </div>
+	
 	<%--  특정 글제목을 클릭했을때, 특정 글1개를 보여줄때 POST 방식으로 넘기기 위해 form 태그를 만들겠다. --%>
 	<form name="viewForm">
 	   <input type="hidden" name="boardNo"/>
@@ -290,8 +331,8 @@
     <c:if test="${not empty requestScope.boardList}">
 		<div class="board-list">
 		  <c:forEach var="boardDto" items="${boardList}" varStatus="status">
-		    <div class="board-card" onclick="view('${boardDto.boardNo}', '${boardDto.fk_id}')">
-		      <div style="display: flex;">
+		    <div class="board-card">
+		      <div style="display: flex;" onclick="view('${boardDto.boardNo}', '${boardDto.fk_id}')">
 		        <div>
 		       		 <!-- 제목 -->
 		        	<h3 class="title" style="margin-right: 10%">${boardDto.boardName}</h3>
@@ -303,16 +344,17 @@
 		        <c:if test="${boardDto.boardFileName ne null}">
 		          <img src="<%=ctxPath %>/files/${boardDto.boardFileName}" class="thumbnail" style="margin-left: auto;"/>
 		        </c:if>
+		        <c:if test="${boardDto.boardFileName eq null}"><br><br><br></c:if>
 		      </div>
-		      
+		       
 		      <!-- 작성자/날짜/조회수 -->
-		      <div class="meta">
+		      <div class="meta" >
 		        <span>${boardDto.fk_id}</span>
 		        <span>${boardDto.formattedDate}</span>
-		        <span>조회수: ${boardDto.readCount}</span>
-		        <span> <li><a class="navBookmk" id="bookmarks"
-		      		href="<%=ctxPath%>/mypage/bookmarks"></a></li>
-		        </span>
+		        <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
+			    <i class="btn-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}
+			    	fa-bookmark fa-regular" style="margin: auto; cursor: pointer;"
+			     	></i> 
 		      </div>
 		    </div>
 		  </c:forEach>

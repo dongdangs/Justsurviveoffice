@@ -22,19 +22,6 @@ spring: # 주의할 점은 내용작성시 들여쓰기 내어쓰기시 공백�
       prefix: /WEB-INF/views/
       suffix: .jsp
 
-  # ===== Redis 설정 추가 (여기에 추가!) ===== #
-  data:
-    redis:
-      host: localhost        # Redis 서버 주소
-      port: 6379            # Redis 기본 포트
-      timeout: 2000ms       # 연결 타임아웃
-      lettuce:              # Lettuce 커넥션 풀 설정
-        pool:
-          max-active: 8     # 최대 활성 연결 수
-          max-idle: 8       # 최대 유휴 연결 수
-          min-idle: 2       # 최소 유휴 연결 수
-  # ===== Redis 설정 끝 ===== #
-
 # datasource: #DB 접속이 1개만 있을 경우
 #   driver-class-name: oracle.jdbc.OracleDriver
 #  #url: jdbc:oracle:thin:@127.0.0.1:1521:xe

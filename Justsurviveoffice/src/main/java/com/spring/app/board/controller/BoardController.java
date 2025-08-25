@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
-import com.spring.app.board.service.RedisReadCountService;
+import com.spring.app.bookmark.service.BookmarkService;
 import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
@@ -26,6 +26,7 @@ import com.spring.app.model.HistoryRepository;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -43,8 +44,7 @@ public class BoardController {
 	// === 생성자 주입(Constructor Injection) === //
 	private final UsersService usersService;
 	private final BoardService boardService;
-	
-	private final RedisReadCountService redisService;
+	private final BookmarkService bookmarkService;
 	
 	private final FileManager fileManager;
 
@@ -170,9 +170,20 @@ public class BoardController {
 		int sizePerPage = 10;  // 한 페이지당 보여줄 게시물 건수
 		int totalPage = 0;     // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
 		totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
-		
+
 		boardList = boardService.boardList(paraMap);
 		
+
+		HttpSession session = request.getSession();
+		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+		// 로그인 된 유저가 있다면, 게시물 별 bookmarked 를 체크해야함.
+		if(loginUser != null) {
+			for(BoardDTO boardDto : boardList) {
+				boardDto.setBookmarked(bookmarkService.isBookmarked(
+														loginUser.getId(), 
+														boardDto.getBoardNo())); 
+			}
+		}
 		System.out.println(category);
 
 		modelview.addObject("boardList", boardList);
@@ -189,6 +200,7 @@ public class BoardController {
 	@RequestMapping("view") //post,get 둘 다 받아올 것!
 	public ModelAndView view(ModelAndView modelview,
 							 HttpServletRequest request,
+							 HttpServletResponse response,
 			 @RequestParam(name="searchType", defaultValue="") String searchType,
 			 @RequestParam(name="searchWord", defaultValue="") String searchWord, 
 			 @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
@@ -215,10 +227,11 @@ public class BoardController {
 			System.out.println(boardDto.getFk_categoryNo());
 // 명심할 점!, 1. 완벽한 조회수 알고리즘은 존재하지 않는다.
 		//   2. 방법은 쿠키, 세션, (실무)DB로그, (실무)Redis 가 있다.
-		//	 3. 나는 내가 내가 배운 지식을 재활용하기 위해 세션방식을 선택했을 뿐,
-		//   4. 단점(세션이 만료되거나 로그아웃 시에는 소용이 없다)을 이해하고 구현한다.
-		
-		//		접속한 아이피 + 게시물번호가 세션에 없다면?
+		//	 3. 나는 내가 내가 배운 지식을 재활용하기 위해 세션방식을 해본 후, 쿠키방식을 선택했다..
+		//   4. 세션방식의 단점(세션이 만료되거나 로그아웃 시에는 소용이 없다 + 세션리미트는 하나로 통일됌)을 이해하고 구현한다.
+		//   5. 쿠키방식의 단점(로컬스토리지의 삭제 및 쿠키 조작이 너무 쉽기에 조회수 조작이 더욱 쉬워진다)을 이해하고 구현한다.
+			
+		//		접속한 아이피 + 게시물번호가 세션 or 쿠키에 없다면?
 		//		 >> 아이피 + 게시물번호의 수명을 30분으로 줌, 
 		//	  + loginUser.id 와 fk_id가 같아도 >> 조회수는 증가 안함.
 			HttpSession session = request.getSession();
@@ -228,18 +241,23 @@ public class BoardController {
 			if( loginUser == null ? true : // 로그인유저 아니면 통과.
 				!loginUser.getId().equals(boardDto.getFk_id()) ? true : false ) 
 						/* 로그인된 유저면 아이디비교 */	 			{ 
-			
-				String clientIP = request.getRemoteAddr(); // 우리가 배웠던 AWS 로드밸런서 ip 가져오기.
+				
+				String clientIP = request.getRemoteAddr(); 
+				// 우리가 배웠던 AWS 로드밸런서 ip 가져오기.
  
-				String boardNo_ip = clientIP+"_"+boardDto.getBoardNo();
-				// 0:0:0:0:0:0:0:1_106
+				String boardNo_ip =  clientIP.replaceAll(":","").hashCode()
+									 + "_" + boardDto.getBoardNo();
+				// 0:0:0:0:0:0:0:1_106 를 hashCode화 하기위해 :를 삭제 후 ip만 암호화.
+				// -1173940223_106
+				
 				// 방금 접근한 ip가 세션에 저장되어있지 않다면 조회수를 증가!
-				if(session.getAttribute(boardNo_ip) == null
+				
+			/*	if(session.getAttribute(boardNo_ip) == null
 					) {
 					// 조회수 증가.
 					int n = boardService.updateReadCount(boardDto.getBoardNo());
 //					if(n==1) System.out.println("조회수 증가 완료.");
-
+					
 					boardDto.setReadCount(boardDto.getReadCount() + 1);
 					
 					// 조회수 증가 후, 세션에 30분 조회수 증가 limit 를 부여할 것!
@@ -257,10 +275,25 @@ public class BoardController {
 					System.out.println("세션 남은 시간: " + remainingMinutes + "초");
 					if(remainingMinutes <= 0) {
 						int n = boardService.updateReadCount(boardDto.getBoardNo());
-//						if(n==1) System.out.println("조회수 증가 완료.");
-
-						boardDto.setReadCount(boardDto.getReadCount() + 1);
+//						if(n==1) System.out.println("조회수 증가 완료.");  	   */
+				
+				Cookie[] cookies = request.getCookies();
+				boolean isExist = false; // 쿠키에 해당 boardNO 별 ip가 존재하는지 확인
+				for(Cookie c : cookies) { // 쿠키의 접근은 세션과 다르게 배열접근이 기본!
+					if(c.getName().equals(boardNo_ip)) {
+						isExist = true; break;// 쿠키 수명 잔여 시 조회수 늘리기 종료
 					}
+				}
+				if(!isExist) { // 수명이 다했거나 접근이 기록이 없었다면 조회수 증가
+					int n = boardService.updateReadCount(boardDto.getBoardNo());
+//					if(n==1) System.out.println("조회수 증가 완료.");
+					boardDto.setReadCount(boardDto.getReadCount() + 1);
+					
+					Cookie setCookieLimit = new Cookie(boardNo_ip, "yes");
+					setCookieLimit.setMaxAge(1*60); // 1분
+					setCookieLimit.setPath("/"); // 쿠키가 지정 경로에서만 전송된다는 것!(보안)
+					response.addCookie(setCookieLimit);
+// jakarta.servlet.http.Cookie@5f3fcbef{-1173940223_108=yes,{Max-Age=60, Path=/}}
 				}
 			} // 로그인된 유저가 자신의 게시물에 들어갔다면 if문 생략
 			else System.out.println("본인 게시물 아니세요?");
