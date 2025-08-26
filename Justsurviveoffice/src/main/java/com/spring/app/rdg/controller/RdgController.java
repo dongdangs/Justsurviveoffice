@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.common.FileManager;
 import com.spring.app.rdg.service.RdgService;
 import com.spring.app.users.domain.BoardDTO;
+import com.spring.app.users.domain.UsersDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,7 +53,7 @@ public class RdgController {	// http://localhost:9089/justsurviveoffice/rdgAPI/
 		String path = root + "resources"+File.separator+"photo_upload";
 		// path 가 첨부파일들을 저장할 WAS(톰캣)의 폴더가 된다.
 			
-		System.out.println("~~~ 확인용 path => " + path);
+	//	System.out.println("~~~ 확인용 path => " + path);
 		//  ~~~ 확인용 path => C:\NCS\workspace_spring_boot\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\board\resources\photo_upload
 		
 		File dir = new File(path);
@@ -242,27 +244,30 @@ public class RdgController {	// http://localhost:9089/justsurviveoffice/rdgAPI/
 		response.setContentType("text/html; charset=UTF-8");	// 브라우저가 응답을 HTML로 이해하도록 미리 Content-Type을 "text/html; charset=UTF-8"로 지정
 		// 즉, 이 줄은 "파일다운로드 실패 시, JS alert를 HTML로 제대로 해석시키려고" 넣은 것
 		
+		// 응답 객체에서 **텍스트(문자)**를 직접 브라우저로 내보내려면 response.getWriter()를 호출 이게 PrintWriter(타입)으로 반환
 		// PrintWriter → 문자 스트림을 응답(HttpServletResponse)에 쓰는 객체
-		PrintWriter out = null;
+		PrintWriter out = null;	// 선언해주고!
 		
-		
+		// 내가 클릭한 게시글 관련 데이터 얻어와야 하므로! 맵 작성해주고. >> 제 매퍼 파일 기준으로 파라미터 타입을 맵만 받아오게 만들어놔서 입니다!
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("boardNo", boardNo);
 		
+		// DB에서 데이터 가져오기 위한 작업! 서비스로 이동~
 		BoardDTO boardDto = service.selectView(paraMap);
 		
 		try {
-			
+			// DTO 에 데이터가 있는지 체크! 및 파일이 들어있는지 체크!
 			if(boardDto == null || (boardDto != null && boardDto.getBoardFileName() == null)) {
 				out = response.getWriter();
-				// out 은 웹브라우저에 기술하는 대상체라고 생각하자.
+				// out 은 웹브라우저에 기술하는 대상체라고 생각하자.(PrintWriter)
 				
+				// 파일이 없다면 해당 메시지 출력되게 한다.
 				out.println("<script type='text/javascript'>alert('파일다운로드가 불가합니다.'); history.back();</script>");
 				return;
 			}
 			
 			else {
-				// 정상적으로 다운로드가 되어질 경우
+				// 정상적으로 다운로드가 되어질 경우!
 				String boardFileName = boardDto.getBoardFileName();
 				// 이것이 20250725123358_a4fc4b64d9dc480e871875bd3db1fe27.pdf 와 같은
 				// 바로 WAS 디스크에 저장된 파일명이다.
@@ -322,6 +327,51 @@ public class RdgController {	// http://localhost:9089/justsurviveoffice/rdgAPI/
 		
 	}
 	
+	
+	@GetMapping("delete")
+	public ModelAndView delete(@RequestParam(name = "boardNo") String boardNo,
+						 HttpServletRequest request,
+						 ModelAndView mav) {
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("boardNo", boardNo);
+		
+		HttpSession session = request.getSession();
+		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+		
+		BoardDTO boardDto = service.selectView(paraMap);
+		
+		if(!loginUser.getId().equals(boardDto.getFk_id())) {
+			
+			mav.addObject("message", "다른 사용자의 글은 수정이 불가합니다.");
+			mav.addObject("loc", "javascript:history.back()");
+			
+			mav.setViewName("msg");
+		}
+		
+		else {
+			String root = session.getServletContext().getRealPath("/"); 
+			paraMap.put("root", root);
+			
+			int n = service.delete(paraMap);	// 서비스에서 삭제 로직 구현
+			
+			if(n == 1) {
+				mav.addObject("message", "글 삭제 성공!!");
+				mav.addObject("loc", request.getContextPath() + "/rdgAPI/rdglist");
+				mav.setViewName("msg");
+			}
+			
+			else {
+				mav.addObject("message", "글 삭제 실패!!");
+				mav.addObject("loc", "javascript:history.back()");
+				
+				mav.setViewName("msg");
+			}
+			
+		}
+		
+		return mav;
+	}
 	
 	
 }

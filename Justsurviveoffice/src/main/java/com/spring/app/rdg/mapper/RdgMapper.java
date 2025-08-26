@@ -27,5 +27,8 @@ public interface RdgMapper {
 	
 	// 글 1개 가져오기
 	BoardDTO selectView(Map<String, String> paraMap);
+	
+	// 글 삭제하기
+	int delete(Map<String, String> paraMap);
 
 }

@@ -10,6 +10,7 @@ import java.util.Set;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.safety.Safelist;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -260,6 +261,71 @@ public class RdgService_imple implements RdgService {
 	public BoardDTO selectView(Map<String, String> paraMap) {
 		BoardDTO bdto = mapper.selectView(paraMap);
 		return bdto;
+	}
+	
+	
+	// 글 삭제하기
+	@Override
+	public int delete(Map<String, String> paraMap) {
+		
+		BoardDTO bdto = mapper.selectView(paraMap);
+		if (bdto == null) return 0;
+		
+		int n = mapper.delete(paraMap);	// 글 삭제하기
+		
+		if(n == 1) {
+			// 파일 체크 후 있으면 삭제하기
+			if(bdto.getBoardFileName() != null && !bdto.getBoardFileName().equals("")) {
+				
+				String filepath = paraMap.get("root") + "resources" + File.separator + "files";
+				
+				try {
+					fileManager.doFileDelete(bdto.getBoardFileName(), filepath);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			// 게시글 본문 이미지 체크 후 있으면 전부 삭제
+			Elements imgList = Jsoup.parse(bdto.getBoardContent()).select("img[src]");
+			/*
+				<img src="/justsurviveoffice/resources/photo_upload/20250825162405_39bcb4d270da4a16b38db1cd9fd6a079.png" title="20250825162405_39bcb4d270da4a16b38db1cd9fd6a079.png" width="333" height="382" rwidth="333" rheight="382.5" style="border-color: rgb(0, 0, 0); width: 333px; height: 382.5px;">
+				<img src="/justsurviveoffice/resources/photo_upload/20250825162422_52a49e1fe76142b4af77406883112d8a.png" title="20250825162422_52a49e1fe76142b4af77406883112d8a.png" sqeid="QE_175610666370418462" style="border-color: rgb(0, 0, 0);">
+			*/
+			
+			if(imgList != null) {
+				
+				String imgFilepath = paraMap.get("root") + "resources" + File.separator + "photo_upload";
+				
+				for(Element img : imgList) {
+					
+					String ContentImg = img.attr("src");
+				//	System.out.println(ContentImg);
+					/*
+						/justsurviveoffice/resources/photo_upload/20250825162405_39bcb4d270da4a16b38db1cd9fd6a079.png
+						/justsurviveoffice/resources/photo_upload/20250825162422_52a49e1fe76142b4af77406883112d8a.png
+					*/
+					
+					String imgFilename = new File(ContentImg).getName();	// File.getName() 은 경로 구분자(/, \) 다 처리해주니까 OS 상관없이 안전
+				//	System.out.println(imgFilename);
+					/*
+						20250825162405_39bcb4d270da4a16b38db1cd9fd6a079.png
+						20250825162422_52a49e1fe76142b4af77406883112d8a.png
+					*/
+					
+					try {
+						fileManager.doFileDelete(imgFilename, imgFilepath);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+				}// end of for--------------------------------
+				
+			}// end of if(imgList != null) -------------------------
+			
+		}// end of if(n == 1)----------------------------
+		
+		return n;
 	}
 	
 	

@@ -144,7 +144,16 @@
         </div>
       </div>
     </div>
-
+	
+	 <div class="ml-auto action-right">
+	 	<%-- 로그인/권한 체크는 필요에 따라 보강 (작성자/관리자만 노출 등) --%>
+    <c:if test="${sessionScope.loginUser != null}">
+		<button type="button" onclick='location.href="<%= ctxPath%>/rdgAPI/update"'>수정</button>		<!-- 수정은 동회님 코드 -->
+      <!-- GET 삭제라면 바로 링크 + confirm -->
+      <button type="button" onclick="if(confirm('정말 삭제하시겠습니까?')) location.href='<%= ctxPath%>/rdgAPI/delete?boardNo=${requestScope.bdto.boardNo}'">삭제</button>
+    </c:if>
+	 </div>
+	
   </div>
 
   <!-- 본문 -->

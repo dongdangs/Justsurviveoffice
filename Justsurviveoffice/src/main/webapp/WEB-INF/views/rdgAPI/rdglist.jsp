@@ -327,7 +327,12 @@
 							</div>
 							<!-- 썸네일이 있을 때만 넣기 -->
 							<c:if test="${not empty dto.boardContentImg}">
-								<img class="post-thumb" src="${dto.boardContentImg}" alt="thumb">
+								<c:set var="imgPath" value="${dto.boardContentImg}" />
+								<c:set var="idx" value="${fn:indexOf(imgPath, '/resources/')}" />
+								<c:set var="imgPathReal" value="${fn:substring(imgPath, idx, fn:length(imgPath))}" />
+								
+								<c:url var="img" value="${imgPathReal}" />
+								<img class="post-thumb" src="${img}" alt="thumb">
 							</c:if>
 						</a>
 					</c:forEach>

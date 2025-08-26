@@ -110,6 +110,13 @@
 	</select>
 	
 	
+	<!-- 글 삭제하기 -->
+	<delete id="delete" parameterType="HashMap">
+		delete from board
+		where boardno = to_number(#{boardNo})
+	</delete>
+	
+	
 </mapper>
 
 
