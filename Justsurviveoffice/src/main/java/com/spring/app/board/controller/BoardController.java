@@ -1,6 +1,5 @@
 package com.spring.app.board.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -18,10 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
-import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
-import com.spring.app.entity.Category;
 import com.spring.app.model.HistoryRepository;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
@@ -141,6 +138,7 @@ public class BoardController {
 	}
 	
 	
+	
  // 각 카테고리 게시판에 들어가기!
 	//또는 전체 게시물 검색!
 	@GetMapping("list")
@@ -166,12 +164,26 @@ public class BoardController {
 		paraMap.put("searchWord", searchWord);
 		paraMap.put("category", category);
 		// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
+		
 		int totalCount = 0;    // 총 게시물 건수
 		int sizePerPage = 10;  // 한 페이지당 보여줄 게시물 건수
 		int totalPage = 0;     // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
 		totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
 
 		boardList = boardService.boardList(paraMap);
+		
+		// 정규화가 content는 필요함!
+		for(BoardDTO boardDto : boardList) {
+			boardDto.setBoardContent(
+					boardDto.getBoardContent()
+					.replace("&nbsp;", " ")
+					.toLowerCase()
+					.replaceAll("<[^>]+>", " ")				// <p> 처럼 태그 형태 제거
+					.replaceAll("[^0-9a-zA-Z가-힣]+", " ")	// 한글/영문/숫자 빼고 다 공백 처리
+					.replaceAll("\\s+", " ")	);			// \\s → 정규식에서 공백 문자(whitespace) 를 의미, 공백 정리
+					// replaceAll("\\s+", " ") 은 연속된 모든 종류의 공백(스페이스/탭/줄바꿈 등)을 스페이스 하나 로 바꾸는 코드);
+		}
+		//이렇게 하지않으면, JSP가 HTML 스마트 에디터의 태그까지 문자열로 찍어주기 때문에 레이아웃이 깨짐!
 		
 
 		HttpSession session = request.getSession();
@@ -195,6 +207,7 @@ public class BoardController {
 		
 		return modelview;
 	}
+	
 	
 	// 조회수 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
 	@RequestMapping("view") //post,get 둘 다 받아올 것!
@@ -298,6 +311,8 @@ public class BoardController {
 			} // 로그인된 유저가 자신의 게시물에 들어갔다면 if문 생략
 			else System.out.println("본인 게시물 아니세요?");
 			
+			modelview.addObject("hotReadList", boardService.getTopBoardsByViewCount());
+	        modelview.addObject("hotCommentList", boardService.getTopBoardsByCommentCount());
 			modelview.addObject("boardDto", boardDto);
 			
 			modelview.setViewName("board/view");
@@ -348,8 +363,19 @@ public class BoardController {
 	}
 	
 	
-	
-	
+	//////////////////////////////////////////////////////////////////////
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	@GetMapping("hot/all")
+	public ModelAndView hotAll(ModelAndView mav) {
+		
+		List<BoardDTO> hotAllList = boardService.hotAll();
+		
+		mav.addObject("boardList", hotAllList);
+		mav.setViewName("board/boardList");
+		
+		return mav;
+	}
+	//////////////////////////////////////////////////////////////////////
 	
 	
 }

@@ -1,9 +1,14 @@
 package com.spring.app.index.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.spring.app.board.domain.BoardDTO;
+import com.spring.app.board.service.BoardService;
 import com.spring.app.users.service.UsersService;
 
 import lombok.RequiredArgsConstructor;
@@ -14,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class IndexController {
 
 	private final UsersService service;
+	private final BoardService boardService;
 	
 	@GetMapping("")
 	public String start() {
@@ -21,9 +27,10 @@ public class IndexController {
 	}
 
 	@GetMapping("index")
-	public String index() {
+	public String index(Model model) {
 		return "index";
 	}
+	
 	
 	@GetMapping("users/list")
 	public String memberList() {

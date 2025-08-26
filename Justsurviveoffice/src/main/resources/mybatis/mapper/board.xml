@@ -92,6 +92,54 @@
 		set readCount = readCount + 1 
 		where boardNo = #{boardNo} and boardDeleted = 0
 	</update>
+	
+	
+	<!-- ================================================================================= -->
+	<!-- 인기 게시글 리스트 (조회수 많은 순) -->
+	<select id="getTopBoardsByViewCount" resultType="BoardDTO">
+	    select *
+		from(
+		     select ROWNUM as RANK, BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT
+			 from (
+			       select BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT
+			       from BOARD
+			       where CREATEDATBOARD &gt;= ADD_MONTHS(SYSDATE, -1)
+			       order by READCOUNT desc, CREATEDATBOARD desc
+			      )
+			)
+		WHERE RANK &lt;= 5
+	</select>
+	    
+	    
+	<!-- 댓글 많은 게시글 리스트 -->
+	<select id="getTopBoardsByCommentCount" resultType="BoardDTO">
+		select *
+			from (
+			    select 
+			           row_number() over(
+			               order by nvl(C.COMMENTCOUNT,0) desc, 
+			                        nvl(C.LATESTCOMMENT, to_date('1900-01-01','yyyy-mm-dd')) desc
+			           ) as RANK,
+			           B.BOARDNO, 
+			           B.BOARDNAME, 
+			           B.FK_CATEGORYNO, 
+			           nvl(C.COMMENTCOUNT, 0) as COMMENTCOUNT,
+			           C.LATESTCOMMENT
+			    from BOARD B
+			         left join (
+			            select FK_BOARDNO, 
+			                   count(*) as COMMENTCOUNT,
+			                   max(UPDATEDATCOMMENT) as LATESTCOMMENT
+			            from COMMENTS
+			            group by FK_BOARDNO
+			         ) C 
+			         on B.BOARDNO = C.FK_BOARDNO
+			    where B.CREATEDATBOARD &gt;= ADD_MONTHS(SYSDATE, -1)
+			) 
+			where RANK &lt;= 5
+	</select>
+	<!-- ================================================================================= -->
+	
   	
 </mapper>
 

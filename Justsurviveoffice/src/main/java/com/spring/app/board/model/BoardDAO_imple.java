@@ -49,8 +49,32 @@ public class BoardDAO_imple implements BoardDAO {
 		return sql.update("board.updateReadCount", boardNo);
 	}
 	
+	////////////////////////////////////////////////////////////////////////////
+	// 인기 게시글 리스트 (조회수 많은 순)
+	@Override
+	public List<BoardDTO> getTopBoardsByViewCount() {
+		List<BoardDTO> hotReadList = sql.selectList("board.getTopBoardsByViewCount");
+		return hotReadList;
+	}
+	
+	// 댓글 많은 게시글 리스트
+	@Override
+	public List<BoardDTO> getTopBoardsByCommentCount() {
+		List<BoardDTO> hotCommentList = sql.selectList("board.getTopBoardsByCommentCount");
+		return hotCommentList;
+	}	
+	
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	@Override
+	public List<BoardDTO> hotAll() {
+		List<BoardDTO> hotAllList = sql.selectList("board.hotAll");
+		return hotAllList;
+	}
+	
+	
+	
+	////////////////////////////////////////////////////////////////////////////
+	
 	
 	
 }
-
-
