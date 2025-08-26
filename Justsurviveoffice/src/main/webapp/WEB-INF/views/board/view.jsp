@@ -181,10 +181,9 @@
     </div>
     <!-- 첨부 파일 -->
     <c:if test="${boardDto.boardFileName ne null}">
-        <div class="board-file" style="margin: 10% 0 5% 0">
-            <img src="<%=ctxPath %>/files/${boardDto.boardFileName}" alt="첨부 이미지">
-        </div>
-    </c:if>
+   		 ${boardDto.boardFileName}
+         <img src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}" class="thumbnail" style="margin-left: auto;"/>
+	</c:if>
     <!-- 본문 내용 -->
     <div class="board-content" style="white-space: pre-wrap;"
     	>${boardDto.boardContent}</div>

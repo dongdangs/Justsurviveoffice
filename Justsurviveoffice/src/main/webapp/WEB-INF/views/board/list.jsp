@@ -280,7 +280,6 @@
 		        <!-- 첨부 이미지 썸네일 -->
 		        <c:if test="${boardDto.imgForBoardList ne null}">
 		          <img src="${boardDto.imgForBoardList}" class="thumbnail" style="margin-left: auto;"/>
-		        	1
 		        </c:if>
 		        <c:if test="${boardDto.imgForBoardList eq null}"><br><br><br></c:if>
 		      </div>
