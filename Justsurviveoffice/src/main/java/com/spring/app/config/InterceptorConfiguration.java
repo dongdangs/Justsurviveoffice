@@ -39,8 +39,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 			        		         "/js/**",
 			        		         "/css/**",
 			        	             "/images/**",
-			        		         "/files/**",
-			        		         "/photo_upload/**",
+			        		         "/resources/**",
 			        	             "/smarteditor/**");
 		
 		registry.addInterceptor(adminLoginCheckInterceptor)
@@ -52,8 +51,6 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 	        		         "/js/**",
 	        		         "/css/**",
 	        	             "/images/**",
-	        	             "/files/**",
-	        	             "/photo_upload/**",
 							 "/smarteditor/**");
 	}
 	

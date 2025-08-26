@@ -63,9 +63,10 @@ public class BoardService_imple implements BoardService {
 			// 2. 이미지 체크 및 추출
 			Element img = Jsoup.parse(dto.getBoardContent()).selectFirst("img[src]");	// import org.jsoup.nodes.Element;
 			if (img != null) {
-				String imgForBoardList = img.attr("src").replace("/resources", "");
+				String imgForBoardList = img.attr("src");
 				dto.setImgForBoardList(imgForBoardList);
-				System.out.println("이미지는 경로 >> " +imgForBoardList);
+				System.out.println("스마트에디터이미지는 경로 >> " +imgForBoardList);
+				System.out.println("첨부이미지는 경로 >> " +dto.getBoardFileName());
 			}
 		}
 		//이렇게 하지않으면, JSP가 HTML 스마트 에디터의 태그까지 문자열로 찍어주기 때문에 레이아웃이 깨짐!

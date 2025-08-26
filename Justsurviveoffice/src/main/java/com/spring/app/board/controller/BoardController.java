@@ -67,7 +67,7 @@ public class BoardController {
 		// path 가 첨부파일들을 저장할 WAS(톰캣)의 폴더가 된다.
 			
 		System.out.println("~~~ 확인용 path => " + path);
-		//  ~~~ 확인용 path => C:\NCS\workspace_spring_boot\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\board\resources\photo_upload
+//  /Users/dong/git/Justsurviveoffice/Justsurviveoffice/src/main/webapp/resources/photo_upload
 		
 		File dir = new File(path);
 		if(!dir.exists()) {
@@ -131,18 +131,9 @@ public class BoardController {
 		if(attach != null && !attach.isEmpty()) { 
 			session = request.getSession(); // WAS(톰캣)의 절대경로 알아오기.
 			String root = session.getServletContext().getRealPath("/");
-			//System.out.println(root);
-// /Users/dong/git/Justsurviveoffice/Justsurviveoffice/bin/main/static/files
-			String path = "";
-			try {
-				path = new ClassPathResource("static/files")
-							.getFile().getAbsolutePath();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(path);
-			
+			String path = root+"resources"+File.separator+"files";
+//			System.out.println(path);
+// /Users/dong/git/Justsurviveoffice/Justsurviveoffice/src/main/webapp/resources/files
 			String boardFileName = ""; //WAS(톰캣)의 디스크에 저장될 파일명
 			
 			byte[] bytes = null; // 첨부파일의 내용물을 담는 예정.
@@ -153,6 +144,7 @@ public class BoardController {
 				
 				boardFileName = fileManager // 첨부되어진 파일은 고유이름으로 업로드
 							.doFileUpload(bytes, boardFileOriginName, path);
+				//20250826172844_a2b5f4b0cc9d46e99976ca3901bc555d.png
 				System.out.println(boardFileName);
 				boardDto.setBoardFileName(boardFileName);
 				boardDto.setBoardFileOriginName(boardFileOriginName);
