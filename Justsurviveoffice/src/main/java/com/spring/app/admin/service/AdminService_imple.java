@@ -159,7 +159,8 @@ public class AdminService_imple implements AdminService {
 
    @Override
    public List<Map<String, String>> registerChart() {
-		adminRepository.findAll();
+		return null;
+				//adminRepository.findAll();
    }
    
    
