@@ -23,14 +23,14 @@ import lombok.ToString;
 
 
 @Entity
-@Table(name = "comment")
+@Table(name = "comments")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @ToString
-public class Comment {
+public class Comments {
 
 	@Id
 	@Column(name="commentno", columnDefinition = "NUMBER") 
@@ -50,10 +50,10 @@ public class Comment {
 	private LocalDateTime createdAtComment;
 	
 	
-	@Column(name = "updateatcomment",
+	@Column(name = "updatedatcomment",
 			nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",
 			insertable = false)
-	private LocalDateTime updateAtComment;
+	private LocalDateTime updatedAtComment;
 	
 	@Column(name="fk_name",nullable = false, length = 30)
 	private String fk_name;
@@ -73,7 +73,7 @@ public class Comment {
 					   .content(content)
 					   .parentNo(parentNo)
 					   .createdAtComment(createdAtComment)
-					   .updateAtComment(updateAtComment)
+					   .updatedAtComment(updatedAtComment)
 					   .fk_name(fk_name)
 					   .users(users)
 					   .board(board)

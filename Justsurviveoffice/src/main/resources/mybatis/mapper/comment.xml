@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="comments">
+
+    <!-- 댓글 작성 -->
+    <insert id="insertComment" parameterType="com.spring.app.users.domain.CommentDTO">
+    INSERT INTO COMMENTS (
+        commentNo, 
+        fk_boardNo, 
+        fk_id, 
+        fk_name, 
+        content, 
+        createdAtComment
+    )
+    VALUES (
+        COMMENT_SEQ.NEXTVAL,
+        #{fk_boardNo, jdbcType=NUMERIC},
+        #{fk_id},
+        #{fk_name},
+        #{content},
+        SYSDATE
+    )
+	</insert>
+
+    <!-- 댓글 목록 조회 -->
+    <select id="getCommentsByBoardNo" parameterType="long"
+        resultType="com.spring.app.users.domain.CommentDTO">
+    SELECT commentNo, 
+	        fk_boardNo, 
+	        fk_id, 
+	        fk_name, 
+	        content, 
+	        createdAtComment,
+	        updatedAtComment,
+	        parentNo
+    FROM COMMENTS
+    WHERE fk_boardNo = #{fk_boardNo, jdbcType=NUMERIC}
+    ORDER BY commentNo DESC
+	</select>
+
+    <!-- 댓글 삭제 -->
+    <delete id="deleteComment" parameterType="map">
+        DELETE FROM COMMENTS
+        WHERE commentNo = #{commentNo}
+        AND fk_id = #{fk_id}
+    </delete>
+
+    <!-- 댓글 수정 -->
+    <update id="updateComment" parameterType="map">
+        UPDATE COMMENTS
+        SET content = #{content},
+            updatedAtComment = SYSDATE
+        WHERE commentNo = #{commentNo}
+        AND fk_id = #{fk_id}
+    </update>
+
+    <!-- 댓글 작성자 찾기 -->
+    <select id="findCommentAuthor" parameterType="long" resultType="string">
+        SELECT fk_id
+        FROM COMMENTS
+        WHERE commentNo = #{commentNo}
+    </select>
+
+</mapper>

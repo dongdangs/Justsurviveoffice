@@ -18,14 +18,13 @@ import org.springframework.web.servlet.ModelAndView;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
-import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
-import com.spring.app.entity.Category;
 import com.spring.app.model.HistoryRepository;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
+import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -183,6 +182,7 @@ public class BoardController {
 														loginUser.getId(), 
 														boardDto.getBoardNo())); 
 			}
+			
 		}
 		System.out.println(category);
 
@@ -190,6 +190,8 @@ public class BoardController {
 		modelview.addObject("searchType", searchType);
 		modelview.addObject("searchWord", searchWord);
 		modelview.addObject("category", category);
+		modelview.addObject("loginUser", loginUser.getId());
+
 		
 		modelview.setViewName("board/list");
 		
@@ -346,6 +348,7 @@ public class BoardController {
 		}
 		return modelview;
 	}
+	
 	
 	
 	

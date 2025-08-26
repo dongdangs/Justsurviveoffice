@@ -182,15 +182,12 @@
     	>${boardDto.boardContent}</div>
 
 
-    <!-- 좋아요/싫어요 , 공유/신고/북마크 --> 
+    <!-- 좋아요 , 공유/신고/북마크 --> 
 	<div class="board-actions d-flex justify-content-between align-items-center">
-	    <!-- 왼쪽 좋아요/싫어요 -->
+	    <!-- 좋아요 -->
 	    <div class="d-flex">
 	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
 	            <i class="fas fa-thumbs-up"></i>
-	        </button>
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
-	            <i class="fas fa-thumbs-down"></i>
 	        </button>
 	    </div>
 	    

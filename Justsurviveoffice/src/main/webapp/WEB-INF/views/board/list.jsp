@@ -155,41 +155,6 @@
 		    searchBoard(); // 글목록 검색하기 요청
 	   });
 	   
-	   $(".btn-bookmark").on("click", function(e) {
-	        e.preventDefault();
-	        e.stopPropagation(); // 게시글 클릭과 이벤트 충돌 방지
-	
-	        const icon = $(this);
-	        const boardNo = icon.data("boardno");
-
-	        $.ajax({
-	            type: "POST",
-	            url: "<%=ctxPath%>/bookmark/toggle",
-	            data: { boardNo: boardNo },
-	            success: function(json) {
-	                if(json === "notLogin") {
-	                    alert("로그인이 필요합니다!");
-	                    location.href = "<%=ctxPath%>/login";
-	                    return;
-	                }
-	                if (json === "bookmarked") {
-	                    icon.removeClass("fa-regular")
-	                        .addClass("fa-solid text-warning")
-	                        .attr("title","북마크 해제");
-	                } else if (json === "removed") {
-	                    icon.removeClass("fa-solid text-warning")
-	                        .addClass("fa-regular")
-	                        .attr("title","북마크");
-	                } else {
-	                    alert("알 수 없는 응답: " + json);
-	                }
-	            },
-	            error: function(request, status, error) {
-	                alert("code: "+request.status+"\nmessage: "+request.responseText+"\nerror: "+error);
-	            }
-	        });
-	    });
-	   
 	   
 	   
    }); // end of $(function(){})--------------------------
@@ -217,6 +182,41 @@
    }// end of function view(boardNo,fk_id)----------------------
 
    
+   <!-- 북마크 -->
+   function bookmark(boardNo, fk_id, isBookmarked) {
+	    const url = isBookmarked
+	        ? "<%= ctxPath%>/bookmark/remove"
+	        : "<%= ctxPath%>/bookmark/add";
+
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: boardNo },
+	        success: function(json) {
+	            const icon = $(`#bookmark-icon-${boardNo}`);
+
+	            if (json.success) {
+	                if (isBookmarked) {
+	                    // 북마크 해제 상태
+	                    icon.removeClass("fa-solid text-warning")
+	                        .addClass("fa-regular");
+	                    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+	                } else {
+	                    // 북마크 추가 상태
+	                    icon.removeClass("fa-regular")
+	                        .addClass("fa-solid text-warning");
+	                    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+	                }
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}// end of function Bookmark(boardNo,fk_id)----------------------
+
    
    
    // === 글목록 검색하기 요청 === //
@@ -352,9 +352,17 @@
 		        <span>${boardDto.fk_id}</span>
 		        <span>${boardDto.formattedDate}</span>
 		        <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
-			    <i class="btn-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}
-			    	fa-bookmark fa-regular" style="margin: auto; cursor: pointer;"
-			     	></i> 
+			   
+			    <form id="bookmarkForm-${boardDto.boardNo}">
+				    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+				    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+				    <i id="bookmark-icon-${boardDto.boardNo}"
+				       class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
+				       style="cursor: pointer;"
+				       onclick="bookmark(${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
+				    </i>
+				</form>
+				
 		      </div>
 		    </div>
 		  </c:forEach>

@@ -80,6 +80,19 @@ public class BoardService_imple implements BoardService {
 
 		return n;
 	}
+
+
+	 //내가 작성한 글 목록
+    @Override
+    public List<BoardDTO> getMyBoards(String fkId) {
+        return boardDao.getMyBoards(fkId);
+    }
+
+    // 북마크한 글 목록
+    @Override
+    public List<BoardDTO> getBookmarksById(String fkId) {
+        return boardDao.getBookmarksById(fkId);
+    }
 	
     
     
