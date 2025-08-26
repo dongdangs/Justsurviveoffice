@@ -9,9 +9,24 @@
 %>   
 
 <jsp:include page="../header/header1.jsp" />
+<script type="text/javascript" src="<%=ctxPath%>/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 
 <script type="text/javascript">
    $(function(){
+		// === 스마트 에디터 구현 시작 ===
+	   var oEditors = [];
+
+	   nhn.husky.EZCreator.createInIFrame({
+	       oAppRef: oEditors,
+	       elPlaceHolder: "boardContent",  // textarea id와 동일하게
+	       sSkinURI: "<%=ctxPath%>/smarteditor/SmartEditor2Skin.html",
+	       htParams : {
+	           bUseToolbar : true,
+	           bUseVerticalResizer : true,
+	           bUseModeChanger : true
+	       }
+	   });
+	   // === 스마트 에디터 구현 끝 ===
 	   
 	    // 글쓰기 버튼
 	    $('button#btnWrite').click(function(){
@@ -23,12 +38,19 @@
 	        	return; // 종료
 	        }
 	        
+		    // 스마트에디터의 내용을 textarea로 업데이트
+	        oEditors.getById["boardContent"].exec("UPDATE_CONTENTS_FIELD", []);
+			
 	        // === 글내용 유효성 검사 === //
-	        let contentVal = $('textarea[name="boardContent"]').val().trim();
-	        
+	        // 스마트에디터는 <p>&nbsp;/</p> 태그가 기본으로 있기에 유효성 검사에 유의!
+	        let contentVal = $('textarea[name="boardContent"]').val()
+	        												   .replace(/&nbsp;/gi,"")
+	        												   .replace("<p>","")
+	        												   .replace("</p>","")
+	        												   .trim();
 	        if(contentVal != "") {
 	        	contentVal = $('textarea[name="boardContent"]').val().trim();
-	        	//alert(">>"+ contentVal+ "<<");
+	        	alert(">>"+ contentVal+ "<<");
 	        }
 	        if(contentVal.length == 0) {
 	        	alert("글내용을 입력해주세요");
@@ -41,35 +63,33 @@
 	        form.action = "<%= ctxPath%>/board/write";
 	        form.submit();
 	    });
-	    
+
 
    });// end of $(function(){})-----------------
    
-   // 이미지 업로드시에만 이미지 미리보기 함수!
    function previewImage(event) {
        const file = event.target.files[0];
        const preview = document.getElementById('preview');
 
-       if (file.type.startsWith("image/")) {
-    	   //이미지 업로드시에만 작동!
+       if (file) {
            const reader = new FileReader();
            reader.onload = function(e) {
                preview.src = e.target.result;
                preview.style.display = "block";
            }
            reader.readAsDataURL(file);
-       } else { // 이미지 아닌 파일은 그대로 안보이게 만들기
+       } else {
            preview.style.display = "none";
            preview.src = "";
        }
    }
-
+  
 </script>
 <head>
  <style type="text/css">
- .post-card { 
-  max-width: 600px;
-  margin: 20% auto;
+.post-card { 
+  min-width: 750px;  
+  margin: 50px auto;  
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -88,8 +108,7 @@
   width: 100%;
   border: none;
   resize: none;
-  min-height: 200px;
-  font-size: 14px;
+  min-height: 300px;
   outline: none;
 }
 
@@ -111,6 +130,19 @@
   background: #ccc;
   margin-right: 8px;
 }
+.container {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.boardContent {
+    min-width: 1200px;
+    margin: 0 auto;  /* 가운데 정렬 */
+}
+.grid-layout {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    gap: 20px;
+}
 .preview {
             margin-top: 10px;
             max-width: 300px;
@@ -118,7 +150,22 @@
             border: 1px solid #ccc;
             border-radius: 10px;
             object-fit: contain;
-        }
+       }
+.file-upload {
+    display: none; /* 진짜 input은 숨김 */
+  }
+.file-label {
+  display: inline-block;
+  padding: 5pt; 
+  border-radius: 10px; /* 라운드 */
+  background-color: #FFEDFB; /* 배경색 */
+  color: #333;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.file-label:hover {
+  background-color: #f0dff0; /* hover 시 약간 진하게 */
+}
  </style>
 </head>
 <div style="display: flex; background-image: url('<%= ctxPath %>/images/background.png');">
@@ -136,13 +183,14 @@
    		    <input class="fk_categoryNo" style="display: none"
 		    	 name="fk_categoryNo" value="${requestScope.category}"/>
 		  </div>
-		  
-		  <!-- 업로드한 이미지 미리보기 -->
-		  <img id="preview" class="preview" style="display:none;">
+		  <!-- 업로드한 이미지 미리보기 --> 
+		  <img id="preview" class="preview" style="display:none;"> 
 		  <!-- 파일 업로드 -->
-    	  <input name="attach" class="btn" type="file" 
-    	  		onchange="previewImage(event)">
-  		  <br><br>
+		  <input type="file" name="attach" id="fileUpload" class="file-upload" 
+		       accept="image/*" onchange="previewImage(event)" />
+	       <!-- 라벨을 버튼처럼 --><br>
+		  <label for="fileUpload" class="file-label">첨부 파일</label>
+		  <br><br>
   		  
 		  <!-- 제목 -->
 		  <input type="text" name="boardName" placeholder="제목을 입력하세요" 
