@@ -304,7 +304,14 @@
 	
   <!-- 하단 버튼 -->
   <div class="bottom-bar">
-    <a href="<%= ctxPath%>/rdgAPI/rdglist" class="btn btn-light btn-round">목록</a>
+  	<!-- 검색된 현재 페이지로 돌아오기 -->
+  	<c:url var="listUrl" value="/rdgAPI/rdglist">
+  		<c:param name="currentShowPageNo" value="${requestScope.currentShowPageNo}" />
+  		<c:param name="searchType" value="${requestScope.searchType}" />
+  		<c:param name="searchWord" value="${requestScope.searchWord}" />
+  	</c:url>
+  	
+    <a href="${listUrl}" class="btn btn-light btn-round">목록</a>
     <a href="#" class="btn btn-light btn-round" id="btnTop">▲ TOP</a>
   </div>
 </div>

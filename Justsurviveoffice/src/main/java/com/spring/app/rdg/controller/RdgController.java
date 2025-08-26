@@ -222,8 +222,11 @@ public class RdgController {	// http://localhost:9089/justsurviveoffice/rdgAPI/
 		
 		BoardDTO bdto = service.selectView(paraMap);	// 글 1개 가져오기
 		
+		// 글 1개 보는 view 페이지에서 목록으로 돌아갈 때 검색된 페이지로 돌아가도록 파라미터 전달
 		model.addAttribute("bdto", bdto);
-		
+		model.addAttribute("searchType", searchType);
+		model.addAttribute("searchWord", searchWord);
+		model.addAttribute("currentShowPageNo", currentShowPageNo);
 		return "rdgAPI/view";
 	}
 	
@@ -237,7 +240,7 @@ public class RdgController {	// http://localhost:9089/justsurviveoffice/rdgAPI/
 		
 		// HttpServletResponse response -> 서버가 클라이언트(웹브라우저)로 보내는 응답 객체
 		response.setContentType("text/html; charset=UTF-8");	// 브라우저가 응답을 HTML로 이해하도록 미리 Content-Type을 "text/html; charset=UTF-8"로 지정
-		// 즉, 이 줄은 “파일다운로드 실패 시, JS alert를 HTML로 제대로 해석시키려고” 넣은 것
+		// 즉, 이 줄은 "파일다운로드 실패 시, JS alert를 HTML로 제대로 해석시키려고" 넣은 것
 		
 		// PrintWriter → 문자 스트림을 응답(HttpServletResponse)에 쓰는 객체
 		PrintWriter out = null;
