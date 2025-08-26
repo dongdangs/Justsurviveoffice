@@ -21,24 +21,6 @@ import lombok.RequiredArgsConstructor;
 public class BookmarkController {
 
     private final BookmarkService bookMarkService;
-    
-    @PostMapping("/toggle")
-    @ResponseBody
-    public String toggleBookmark(@RequestParam("boardNo") Long boardNo, HttpSession session) {
-    	
-    	UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
-    	
-        if (loginUser == null) {
-            return "notLogin";
-        }
-        
-        String fk_id = loginUser.getId();
-
-        boolean result = bookMarkService.toggleBookmark(fk_id, boardNo);
-
-        return result ? "bookmarked" : "removed";
-    }
-
 
     // 북마크 추가
     @PostMapping("/add")
@@ -62,7 +44,7 @@ public class BookmarkController {
     // 북마크 삭제
     @PostMapping("/remove")
     @ResponseBody
-    public Map<String, Object> removeBookmark(@RequestParam("fk_boardNo") Long fk_boardNo,
+    public Map<String, Object> removeBookmark(@RequestParam(name="fk_boardNo") Long fk_boardNo,
                                              HttpSession session) {
         Map<String, Object> result = new HashMap<>();
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");

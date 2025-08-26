@@ -56,7 +56,7 @@
     }
     .btn:hover {
         background: #eee;
-    }
+    } .zip
 .content {  /* 내용: 줄바꿈 보존하기!! */
     white-space: pre-wrap;    
 }
@@ -66,7 +66,42 @@
 		
 		
 	});
-	
+	 <!-- 북마크기능 -->
+   function bookmark(boardNo, fk_id, isBookmarked) {
+	    const url = isBookmarked
+	        ? "<%= ctxPath%>/bookmark/remove"
+	        : "<%= ctxPath%>/bookmark/add";
+
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: boardNo },
+	        success: function(json) {
+	            const icon = $(`#bookmark-icon-${boardNo}`);
+
+	            if (json.success) {
+	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	if (isBookmarked) {
+	            	    // 해제된 상태로 변경
+	            	    icon.addClass("fa-regular fa-bookmark");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+	            	} else {
+	            	    // 추가된 상태로 변경
+	            	    icon.addClass("fa-solid fa-bookmark text-warning");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+	            	}
+
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}// end of function Bookmark(boardNo,fk_id)———————————
+
+	   
 	function del() {
 		if(!confirm("정말로 삭제하시겠습니까?")) {
 			return alert("삭제가 취소되었습니다.");
@@ -132,17 +167,19 @@
 	    </div>
 	    
 	    <!-- 오른쪽 공유/신고/북마크 + 글 삭제 -->
-	    <div class="d-flex ml-auto">
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
-	            <i class="fas fa-share"></i>
-	            <span></span>
-	        </button>
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
-	            <i class="fas fa-flag"></i>
-	        </button>
-	        <a href="<%=ctxPath%>/mypage/bookmarks" class="btn btn-sm" style="border:none; background:none;">
-	            <i class="fas fa-bookmark"></i>
-	        </a>
+		<div class="d-flex ml-auto" style="align-items:center; gap:12px;">
+	        <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
+	        
+		    <form id="bookmarkForm-${boardDto.boardNo}">
+			    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+			    <i id="bookmark-icon-${boardDto.boardNo}"
+			       class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
+			       style="cursor: pointer;"
+			       onclick="bookmark(${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
+			    </i>
+			</form> 
+			
 	        <form name="deleteForm" method="post" style="display:inline;margin: auto; ">
 		        <c:if test="${loginUser.id eq boardDto.fk_id}">
 		        	<input name="fk_categoryNo" style="display: none;" value="${boardDto.fk_categoryNo}"/>
@@ -168,7 +205,7 @@
                     ${comment.content}
                 </div>
             </div>
-        </c:forEach>
+        </c:forEach> 
 
         <!-- 댓글 작성 -->
         <form name="commentform" action="${ctxPath}/comment/write" method="post" style="margin-top: 15px;">

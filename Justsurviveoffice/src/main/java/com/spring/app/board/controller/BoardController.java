@@ -1,5 +1,8 @@
 package com.spring.app.board.controller;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +47,62 @@ public class BoardController {
 	private final BookmarkService bookmarkService;
 	
 	private final FileManager fileManager;
-
+	
+ // 2번. 스마트 에디터로 모든 파일 텍스트 업로드해보기
+	// ==== #스마트에디터. 드래그앤드롭을 사용한 다중사진 파일업로드 ====
+	@PostMapping("image/multiplePhotoUpload")
+	public void multiplePhotoUpload(HttpServletRequest request, 
+									HttpServletResponse response) {
+		/*
+		   1. 사용자가 보낸 파일을 WAS(톰캣)의 특정 폴더에 저장해주어야 한다.
+		   >>>> 파일이 업로드 되어질 특정 경로(폴더)지정해주기
+		        우리는 WAS 의 webapp/resources/photo_upload 라는 폴더로 지정해준다.
+		*/
+		// WAS 의 webapp 의 절대경로를 알아와야 한다.
+		HttpSession session = request.getSession();
+		String root = session.getServletContext().getRealPath("/");
+		String path = root + "resources"+File.separator+"photo_upload";
+		// path 가 첨부파일들을 저장할 WAS(톰캣)의 폴더가 된다.
+			
+		System.out.println("~~~ 확인용 path => " + path);
+		//  ~~~ 확인용 path => C:\NCS\workspace_spring_boot\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\board\resources\photo_upload
+		
+		File dir = new File(path);
+		if(!dir.exists()) {
+			dir.mkdirs();
+		}
+		try {
+			String filename = request.getHeader("file-name"); // 파일명(문자열)을 받는다 - 일반 원본파일명
+			// 네이버 스마트에디터를 사용한 파일업로드시 싱글파일업로드와는 다르게 멀티파일업로드는 파일명이 header 속에 담겨져 넘어오게 되어있다. 
+			/*  [참고]
+			    HttpServletRequest의 getHeader() 메소드를 통해 클라이언트 사용자의 정보를 알아올 수 있다. 
+		
+				request.getHeader("Referer");           // 접속 경로(이전 URL)
+				request.getHeader("user-agent");        // 클라이언트 사용자의 시스템 정보
+				request.getHeader("User-Agent");        // 클라이언트 브라우저 정보 
+				request.getHeader("X-Forwarded-For");   // 클라이언트 ip 주소 
+				request.getHeader("host");              // Host 네임  예: 로컬 환경일 경우 ==> localhost:9090    
+			*/
+		//	System.out.println(">>> 확인용 filename ==> " + filename);
+			// >>> 확인용 filename ==> berkelekle%EB%8B%A8%EA%B0%80%EB%9D%BC%ED%8F%AC%EC%9D%B8%ED%8A%B803.jpg 
+			InputStream is = request.getInputStream(); // is는 네이버 스마트 에디터를 사용하여 사진첨부하기 된 이미지 파일임.
+			String newFilename = fileManager.doFileUpload(is, filename, path);
+			String ctxPath = request.getContextPath(); //  /myspring
+			String strURL = "";
+			strURL += "&bNewLine=true&sFileName="+newFilename; 
+			strURL += "&sFileURL="+ctxPath+"/resources/photo_upload/"+newFilename;
+			
+			// === 웹브라우저 상에 사진 이미지를 쓰기 === //
+			PrintWriter out = response.getWriter();
+			out.print(strURL);
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+// ==================================================================== //
+		
+	
 	@GetMapping("write")
 	public ModelAndView writeBoard(@RequestParam(name="category") String category,
 								   ModelAndView modelview) {
@@ -52,7 +110,6 @@ public class BoardController {
 		modelview.setViewName("board/write");
 		return modelview;
 	}
-	
 	// 게시글 업로드 메소드
 	@PostMapping("write")
 	public ModelAndView saveBoard(ModelAndView modelview,
@@ -60,18 +117,16 @@ public class BoardController {
 								  BoardDTO boardDto,
 								  HttpServletRequest request,
 								  HttpSession session) {
-		
 		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
 		
 		MultipartFile attach = boardDto.getAttach();
+	// 1번. 일반 파일 업로드 해보기.	
 /*  	주요 메소드:	getOriginalFilename() → 원본 파일명
 					getSize() → 파일 크기
 					getBytes() → 파일 내용을 바이트 배열로
 					transferTo(File dest) → 실제 서버에 저장 */
-		
 		// 파일이 있는 경우 해당 파일을 저장해줄 부분.
-		
-		if(!attach.isEmpty()) { 
+		if(attach != null && !attach.isEmpty()) { 
 			session = request.getSession(); // WAS(톰캣)의 절대경로 알아오기.
 			String root = session.getServletContext().getRealPath("/");
 			//System.out.println(root);
@@ -89,7 +144,7 @@ public class BoardController {
 			String boardFileName = ""; //WAS(톰캣)의 디스크에 저장될 파일명
 			
 			byte[] bytes = null; // 첨부파일의 내용물을 담는 예정.
-			
+
 			try {//boardFileName
 				bytes = attach.getBytes(); //첨부파일의 내용물을 읽기.
 				String boardFileOriginName = attach.getOriginalFilename();
@@ -107,7 +162,6 @@ public class BoardController {
 				e.printStackTrace();
 			}
 		}
-
 		int n = boardService.insertBoard(boardDto); // 게시판에 업로드!
 		
 		if(n==1) {
@@ -185,7 +239,6 @@ public class BoardController {
 		}
 		//이렇게 하지않으면, JSP가 HTML 스마트 에디터의 태그까지 문자열로 찍어주기 때문에 레이아웃이 깨짐!
 		
-
 		HttpSession session = request.getSession();
 		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
 		// 로그인 된 유저가 있다면, 게시물 별 bookmarked 를 체크해야함.
@@ -251,7 +304,7 @@ public class BoardController {
 			
 			UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
 			// 유저가 존재하고 그 유저의 id가 같은지 확인!
-			if( loginUser == null ? true : // 로그인유저 아니면 통과.
+			if( loginUser == null ? true : // 로그인된 유저이면서, 아이디도 다른 경우!
 				!loginUser.getId().equals(boardDto.getFk_id()) ? true : false ) 
 						/* 로그인된 유저면 아이디비교 */	 			{ 
 				
@@ -264,7 +317,6 @@ public class BoardController {
 				// -1173940223_106
 				
 				// 방금 접근한 ip가 세션에 저장되어있지 않다면 조회수를 증가!
-				
 			/*	if(session.getAttribute(boardNo_ip) == null
 					) {
 					// 조회수 증가.
@@ -292,11 +344,13 @@ public class BoardController {
 				
 				Cookie[] cookies = request.getCookies();
 				boolean isExist = false; // 쿠키에 해당 boardNO 별 ip가 존재하는지 확인
+				
 				for(Cookie c : cookies) { // 쿠키의 접근은 세션과 다르게 배열접근이 기본!
 					if(c.getName().equals(boardNo_ip)) {
 						isExist = true; break;// 쿠키 수명 잔여 시 조회수 늘리기 종료
 					}
 				}
+				
 				if(!isExist) { // 수명이 다했거나 접근이 기록이 없었다면 조회수 증가
 					int n = boardService.updateReadCount(boardDto.getBoardNo());
 //					if(n==1) System.out.println("조회수 증가 완료.");
@@ -308,11 +362,18 @@ public class BoardController {
 					response.addCookie(setCookieLimit);
 // jakarta.servlet.http.Cookie@5f3fcbef{-1173940223_108=yes,{Max-Age=60, Path=/}}
 				}
+				
 			} // 로그인된 유저가 자신의 게시물에 들어갔다면 if문 생략
-			else System.out.println("본인 게시물 아니세요?");
 			
 			modelview.addObject("hotReadList", boardService.getTopBoardsByViewCount());
 	        modelview.addObject("hotCommentList", boardService.getTopBoardsByCommentCount());
+
+			if(loginUser != null) {
+				boardDto.setBookmarked(bookmarkService.isBookmarked(
+						loginUser.getId(), 
+						boardDto.getBoardNo())); 
+			}
+
 			modelview.addObject("boardDto", boardDto);
 			
 			modelview.setViewName("board/view");

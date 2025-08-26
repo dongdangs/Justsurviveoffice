@@ -70,128 +70,91 @@
 
 <script type="text/javascript">
    $(function(){
-      
-      $('span.boardName').hover(function(e){
-         $(e.target).addClass("boardNameStyle");
-      }, function(e){
-         $(e.target).removeClass("boardNameStyle");
-      });
-      
-      // 글검색시 글검색어 입력후 엔터를 했을 경우 이벤트 작성하기
-      $('input:text[name="searchWord"]').bind("keyup", function(e){
-         if(e.keyCode == 13) { // 엔터를 했을 경우
-            searchBoard();
-         }
-      });
-      
-      // 글목록 검색시 검색조건 및 검색어 값 유지시키기
-      if(${not empty requestScope.searchType}) {
-         $('select[name="searchType"]').val("${requestScope.searchType}");
-      }
-      if(${not empty requestScope.searchWord}) {
-         $('input[name="searchWord"]').val("${requestScope.searchWord}");
-      }
-      
-      
-      
-      <%-- === 검색어 입력시 자동글 완성하기 2 === --%>
-      $('div#displayList').hide();
-      
-      $('input[name="searchWord"]').keyup(function(){
-         
-         const wordLength = $(this).val().trim().length;
-         // 검색어에서 공백을 제거한 길이를 알아온다.
-         
-         if(wordLength == 0) {
-            $('div#displayList').hide();
-            // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안 나오도록 해야 한다. 
-         }
-         
-         else {
-            if( $('select[name="searchType"]').val() == "boardName" || 
-               $('select[name="searchType"]').val() == "fk_id" ) {
-               
-               $.ajax({
-                  url:"<%= ctxPath%>/board/wordSearchShow",
-                  type:"get",
-                  data:{"searchType":$('select[name="searchType"]').val()
-                      ,"searchWord":$('input[name="searchWord"]').val()},
-                  dataType:"json",
-                  success:function(json){
-                     <%-- === 검색어 입력시 자동글 완성하기 7 === --%>
-                     if(json.length > 0) {
-                        // 검색된 데이터가 있는 경우임.
-                        let v_html = ``;
-                        
-                        $.each(json, function(index, item){
-                           const word = item.word;
-                           
-                           const idx = word.toLowerCase().indexOf($('input[name="searchWord"]').val().toLowerCase());
-                           const len = $('input[name="searchWord"]').val().length;
-                            const result = word.substring(0, idx) + "<span style='color:red;'>"+word.substring(idx, idx+len)+"</span>" + word.substring(idx+len);
-                            v_html += `<span style='cursor:pointer;' class='result'>\${result}</span><br>`;
-                        });// end of $.each(json, function(index, item){})-------------------
-                        
-                        const input_width = $('input[name="searchWord"]').css("width"); // 검색어 input 태그 width 값 알아오기 
-                        
-                        $('div#displayList').css({"width":input_width}); // 검색결과 div 의 width 크기를 검색어 입력 input 태그의 width 와 일치시키기 
-                        
-                        $('div#displayList').html(v_html).show();
-                     }
-                  },
-                  error: function(request, status, error){
-                     console.log("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-                  } 
-               });
-            }
-         }
-      });// end of $('input[name="searchWord"]').keyup(function(){})-----------------
-      
-      <%-- === 검색어 입력시 자동글 완성하기 8 === --%>
-      $(document).on('click', 'span.result', function(e){
-          const word = $(e.target).text();
-          $('input[name="searchWord"]').val(word); // 텍스트박스에 검색된 결과의 문자열을 입력해준다.
-          $('div#displayList').hide();
-          searchBoard(); // 글목록 검색하기 요청
-      });
-      
-      $(".btn-bookmark").on("click", function(e) {
-           e.preventDefault();
-           e.stopPropagation(); // 게시글 클릭과 이벤트 충돌 방지
-   
-           const icon = $(this);
-           const boardNo = icon.data("boardno");
 
-           $.ajax({
-               type: "POST",
-               url: "<%=ctxPath%>/bookmark/toggle",
-               data: { boardNo: boardNo },
-               success: function(json) {
-                   if(json === "notLogin") {
-                       alert("로그인이 필요합니다!");
-                       location.href = "<%=ctxPath%>/login";
-                       return;
-                   }
-                   if (json === "bookmarked") {
-                       icon.removeClass("fa-regular")
-                           .addClass("fa-solid text-warning")
-                           .attr("title","북마크 해제");
-                   } else if (json === "removed") {
-                       icon.removeClass("fa-solid text-warning")
-                           .addClass("fa-regular")
-                           .attr("title","북마크");
-                   } else {
-                       alert("알 수 없는 응답: " + json);
-                   }
-               },
-               error: function(request, status, error) {
-                   alert("code: "+request.status+"\nmessage: "+request.responseText+"\nerror: "+error);
-               }
-           });
-       });
-      
-      
-      
+	   $('span.boardName').hover(function(e){
+		   $(e.target).addClass("boardNameStyle");
+	   }, function(e){
+		   $(e.target).removeClass("boardNameStyle");
+	   });
+	   
+	   // 글검색시 글검색어 입력후 엔터를 했을 경우 이벤트 작성하기
+	   $('input:text[name="searchWord"]').bind("keyup", function(e){
+		   if(e.keyCode == 13) { // 엔터를 했을 경우
+			   searchBoard();
+		   }
+	   });
+	   
+	   // 글목록 검색시 검색조건 및 검색어 값 유지시키기
+	   if(${not empty requestScope.searchType}) {
+		   $('select[name="searchType"]').val("${requestScope.searchType}");
+	   }
+	   if(${not empty requestScope.searchWord}) {
+		   $('input[name="searchWord"]').val("${requestScope.searchWord}");
+	   }
+	   
+	   
+	   
+	   <%-- === 검색어 입력시 자동글 완성하기 2 === --%>
+	   $('div#displayList').hide();
+	   
+	   $('input[name="searchWord"]').keyup(function(){
+		   
+		   const wordLength = $(this).val().trim().length;
+		   // 검색어에서 공백을 제거한 길이를 알아온다.
+		   
+		   if(wordLength == 0) {
+			   $('div#displayList').hide();
+			   // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안 나오도록 해야 한다. 
+		   }
+		   
+		   else {
+			   if( $('select[name="searchType"]').val() == "boardName" || 
+				   $('select[name="searchType"]').val() == "fk_id" ) {
+				   
+				   $.ajax({
+					   url:"<%= ctxPath%>/board/wordSearchShow",
+					   type:"get",
+					   data:{"searchType":$('select[name="searchType"]').val()
+						    ,"searchWord":$('input[name="searchWord"]').val()},
+					   dataType:"json",
+					   success:function(json){
+						   <%-- === 검색어 입력시 자동글 완성하기 7 === --%>
+						   if(json.length > 0) {
+							   // 검색된 데이터가 있는 경우임.
+							   let v_html = ``;
+							   
+							   $.each(json, function(index, item){
+								   const word = item.word;
+								   
+								   const idx = word.toLowerCase().indexOf($('input[name="searchWord"]').val().toLowerCase());
+								   const len = $('input[name="searchWord"]').val().length;
+							       const result = word.substring(0, idx) + "<span style='color:red;'>"+word.substring(idx, idx+len)+"</span>" + word.substring(idx+len);
+							       v_html += `<span style='cursor:pointer;' class='result'>\${result}</span><br>`;
+							   });// end of $.each(json, function(index, item){})-------------------
+							   
+							   const input_width = $('input[name="searchWord"]').css("width"); // 검색어 input 태그 width 값 알아오기 
+							   
+							   $('div#displayList').css({"width":input_width}); // 검색결과 div 의 width 크기를 검색어 입력 input 태그의 width 와 일치시키기 
+							   
+							   $('div#displayList').html(v_html).show();
+						   }
+					   },
+					   error: function(request, status, error){
+						   console.log("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+					   } 
+				   });
+			   }
+		   }
+	   });// end of $('input[name="searchWord"]').keyup(function(){})-----------------
+	   
+	   <%-- === 검색어 입력시 자동글 완성하기 8 === --%>
+	   $(document).on('click', 'span.result', function(e){
+		    const word = $(e.target).text();
+		    $('input[name="searchWord"]').val(word); // 텍스트박스에 검색된 결과의 문자열을 입력해준다.
+		    $('div#displayList').hide();
+		    searchBoard(); // 글목록 검색하기 요청
+	   });
+	   
    }); // end of $(function(){})--------------------------
    
    
@@ -216,7 +179,44 @@
    
    }// end of function view(boardNo,fk_id)----------------------
 
-   
+   <!-- 북마크기능 -->
+   function bookmark(boardDto, boardNo, fk_id, isBookmarked) {
+	    const url = isBookmarked
+	        ? "<%= ctxPath%>/bookmark/remove"
+	        : "<%= ctxPath%>/bookmark/add";
+		
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: boardNo },
+	        success: function(json) {
+	            const icon = $(`#bookmark-icon-${boardNo}`);
+
+	            if (json.success) {
+	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	
+	            	if (isBookmarked) {
+	            	    // 해제된 상태로 변경
+	            	    boardDto.bookmarked = false;
+	            	    icon.addClass("fa-regular fa-bookmark");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+	            	} else {
+	            	    // 추가된 상태로 변경
+	            	    boardDto.bookmarked = true;
+	            	    icon.addClass("fa-solid fa-bookmark text-warning");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+	            	}
+
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}// end of function Bookmark(boardNo,fk_id)———————————
+
    
    
    // === 글목록 검색하기 요청 === //
@@ -267,37 +267,46 @@
    <br><br>
       
     <c:if test="${not empty requestScope.boardList}">
-      <div class="board-list">
-        <c:forEach var="boardDto" items="${boardList}" varStatus="status">
-          <div class="board-card">
-            <div style="display: flex;" onclick="view('${boardDto.boardNo}', '${boardDto.fk_id}')">
-              <div>
-                    <!-- 제목 -->
-                 <h3 class="title" style="margin-right: 10%">${boardDto.boardName}</h3>
-               <!-- 내용 -->
-                 <div class="content" style="color: grey">${boardDto.boardContent}</div>
-              </div>
-              
-              <!-- 첨부 이미지 썸네일 -->
-              <c:if test="${boardDto.boardFileName ne null}">
-                <img src="<%=ctxPath %>/files/${boardDto.boardFileName}" class="thumbnail" style="margin-left: auto;"/>
-              </c:if>
-              <c:if test="${boardDto.boardFileName eq null}"><br><br><br></c:if>
-            </div>
-             
-            <!-- 작성자/날짜/조회수 -->
-            <div class="meta" >
-              <span>${boardDto.fk_id}</span>
-              <span>${boardDto.formattedDate}</span>
-              <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
-             <i class="btn-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}
-                fa-bookmark fa-regular" style="margin: auto; cursor: pointer;"
-                 ></i> 
-            </div>
-          </div>
-        </c:forEach>
-      </div>
-   </c:if>
+		<div class="board-list">
+		  <c:forEach var="boardDto" items="${boardList}" varStatus="status">
+		    <div class="board-card">
+		      <div style="display: flex;" onclick="view('${boardDto.boardNo}', '${boardDto.fk_id}')">
+		        <div>
+		       		 <!-- 제목 -->
+		        	<h3 class="title" style="margin-right: 10%">${boardDto.boardName}</h3>
+					<!-- 내용 -->
+		    	 	<div class="content" style="color: grey">${boardDto.textForBoardList}</div>
+		        </div>
+		        <!-- 첨부 이미지 썸네일 -->
+		        <c:if test="${boardDto.imgForBoardList ne null}">
+		          <img src="${boardDto.imgForBoardList}" class="thumbnail" style="margin-left: auto;"/>
+		        	1
+		        </c:if>
+		        <c:if test="${boardDto.imgForBoardList eq null}"><br><br><br></c:if>
+		      </div>
+		       
+		      <!-- 작성자/날짜/조회수 -->
+		      <div class="meta" >
+		        <span>${boardDto.fk_id}</span>
+		        <span>${boardDto.formattedDate}</span>
+		        <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
+				
+				<form id="bookmarkForm-${boardDto.boardNo}">
+				    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+				    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+				    <i id="bookmark-icon-${boardDto.boardNo}"
+				       class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
+				       style="cursor: pointer;"
+				       onclick="bookmark(this, ${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
+				    </i>
+				</form>
+				
+		      </div>
+		    </div>
+		  </c:forEach>
+		</div>
+	</c:if>
+
     <c:if test="${empty requestScope.boardList}">
       <tr>
         <td colspan="6">첫 번째 게시물을 올려보세요!</td> 
