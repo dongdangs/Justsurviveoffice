@@ -25,6 +25,7 @@ public interface BoardDAO {
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	public int updateReadCount(Long boardNo);
 	
+<<<<<<< HEAD
 	 //  내가 작성한 글 목록
     List<BoardDTO> getMyBoards(String fk_id);
 
@@ -33,4 +34,20 @@ public interface BoardDAO {
 
     //게시글 좋아요 수
 	public int getLikeCount(Long boardNo);
+=======
+	////////////////////////////////////////////////////////////////////////////
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	List<BoardDTO> hotAll();
+	
+	// 인기 게시글 리스트 (조회수 많은 순)
+	List<BoardDTO> getTopBoardsByViewCount();
+	
+	// 댓글 많은 게시글 리스트
+	List<BoardDTO> getTopBoardsByCommentCount();
+	////////////////////////////////////////////////////////////////////////////
+
+	// 게시물 좋아요
+	int boardLike(String fk_id, Long fk_boardNo);
+	
+>>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 }

@@ -58,4 +58,7 @@ public class BoardDTO {
 	private CategoryDTO categoryDTO; // boardDto.categoryDto.categoryNo
 	// 얘도 접근하려면, 카테고리 서비스로 또 메소드 만들어야해서, 
 	
+	private int rank; // Hot, 댓글 많은 게시글 순위를 위한 select 용
+	private int commentCount; // 댓글 많은 게시글 댓글 수 알아오기 위한 select 용
+	
 }

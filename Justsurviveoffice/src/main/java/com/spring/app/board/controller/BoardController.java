@@ -21,7 +21,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
+<<<<<<< HEAD
 import com.spring.app.comment.service.CommentService;
+=======
+>>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
 import com.spring.app.model.HistoryRepository;
@@ -223,6 +226,19 @@ public class BoardController {
 
 		boardList = boardService.boardList(paraMap);
 		
+		// 정규화가 content는 필요함!
+		for(BoardDTO boardDto : boardList) {
+			boardDto.setBoardContent(
+					boardDto.getBoardContent()
+					.replace("&nbsp;", " ")
+					.toLowerCase()
+					.replaceAll("<[^>]+>", " ")				// <p> 처럼 태그 형태 제거
+					.replaceAll("[^0-9a-zA-Z가-힣]+", " ")	// 한글/영문/숫자 빼고 다 공백 처리
+					.replaceAll("\\s+", " ")	);			// \\s → 정규식에서 공백 문자(whitespace) 를 의미, 공백 정리
+					// replaceAll("\\s+", " ") 은 연속된 모든 종류의 공백(스페이스/탭/줄바꿈 등)을 스페이스 하나 로 바꾸는 코드);
+		}
+		//이렇게 하지않으면, JSP가 HTML 스마트 에디터의 태그까지 문자열로 찍어주기 때문에 레이아웃이 깨짐!
+		
 		HttpSession session = request.getSession();
 		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
 		// 로그인 된 유저가 있다면, 게시물 별 bookmarked 를 체크해야함.
@@ -355,6 +371,9 @@ public class BoardController {
 				
 			} // 로그인된 유저가 자신의 게시물에 들어갔다면 if문 생략
 			
+			modelview.addObject("hotReadList", boardService.getTopBoardsByViewCount());
+	        modelview.addObject("hotCommentList", boardService.getTopBoardsByCommentCount());
+
 			if(loginUser != null) {
 				boardDto.setBookmarked(bookmarkService.isBookmarked(
 						loginUser.getId(), 
@@ -413,6 +432,7 @@ public class BoardController {
 	}
 	
 	
+<<<<<<< HEAD
 	@PostMapping("boardLike")
 	@ResponseBody
 	public Map<String, Object> boardLike(@RequestParam(name="boardNo") Long boardNo , HttpSession session) {
@@ -446,8 +466,41 @@ public class BoardController {
 		
 		
 	}
+=======
+	//////////////////////////////////////////////////////////////////////
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	@GetMapping("hot/all")
+	public ModelAndView hotAll(ModelAndView mav) {
+		
+		List<BoardDTO> hotAllList = boardService.hotAll();
+		
+		mav.addObject("boardList", hotAllList);
+		mav.setViewName("board/boardList");
+		
+		return mav;
+	}
+	//////////////////////////////////////////////////////////////////////
+>>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 	
 	
+	// 북마크 추가
+    @PostMapping("like")
+    @ResponseBody
+    public Map<String, Object> boardLike(@RequestParam(name="fk_boardNo") Long fk_boardNo, HttpSession session) {
+        Map<String, Object> result = new HashMap<>();
+
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            result.put("success", false);
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+
+        boardService.boardLike(loginUser.getId(), fk_boardNo);
+        result.put("success", true);
+        result.put("message", "좋아요");
+        return result;
+    }
 	
 	
 }
