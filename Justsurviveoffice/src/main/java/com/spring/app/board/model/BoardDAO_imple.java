@@ -1,5 +1,6 @@
 package com.spring.app.board.model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,9 +73,15 @@ public class BoardDAO_imple implements BoardDAO {
 	}
 	
 	
-	
 	////////////////////////////////////////////////////////////////////////////
 	
-	
+	// 게시물 좋아요
+	@Override
+	public int boardLike(String fk_id, Long fk_boardNo) {
+		Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("fk_id", fk_id);
+        paramMap.put("fk_boardNo", fk_boardNo);
+        return sql.insert("boardLike.boardLike", paramMap);
+	}
 	
 }

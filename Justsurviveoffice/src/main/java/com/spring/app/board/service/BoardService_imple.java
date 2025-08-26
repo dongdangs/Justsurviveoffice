@@ -123,7 +123,16 @@ public class BoardService_imple implements BoardService {
 		List<BoardDTO> hotCommentList = boardDao.getTopBoardsByCommentCount();
 		return hotCommentList;
 	}
+
+	
 	////////////////////////////////////////////////////////////////////////////////////   
+	
+	
+	// 게시물 좋아요
+	@Override
+	public void boardLike(String fk_id, Long fk_boardNo) {
+		boardDao.boardLike(fk_id, fk_boardNo);
+	}
 	
 }
 

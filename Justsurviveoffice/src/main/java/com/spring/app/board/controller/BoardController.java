@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -437,6 +438,26 @@ public class BoardController {
 		return mav;
 	}
 	//////////////////////////////////////////////////////////////////////
+	
+	
+	// 북마크 추가
+    @PostMapping("like")
+    @ResponseBody
+    public Map<String, Object> boardLike(@RequestParam(name="fk_boardNo") Long fk_boardNo, HttpSession session) {
+        Map<String, Object> result = new HashMap<>();
+
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            result.put("success", false);
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+
+        boardService.boardLike(loginUser.getId(), fk_boardNo);
+        result.put("success", true);
+        result.put("message", "좋아요");
+        return result;
+    }
 	
 	
 }

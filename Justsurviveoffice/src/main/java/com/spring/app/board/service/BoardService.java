@@ -36,6 +36,9 @@ public interface BoardService {
 	
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	public int updateReadCount(Long boardNo);
+
+	// 게시물 좋아요
+	void boardLike(String fk_id, Long fk_boardNo);
 	
 	
 

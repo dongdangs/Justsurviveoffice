@@ -111,6 +111,42 @@
 		form.action = "<%=ctxPath%>/board/delete";
 		form.submit;
 	}
+	
+	
+	function boardLike(fk_boardNo, fk_id, isBoardLiked) {
+		const url = isBookmarked
+        ? "<%= ctxPath%>/board/remove"
+        : "<%= ctxPath%>/board/like";
+
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: fk_boardNo },
+	        success: function(json) {
+	            const icon = $(`#boardLike-icon-fk_boardNo`);
+	            
+	            if (json.success) {
+	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	if (isBoardLiked) {
+	            	    // 해제된 상태로 변경
+	            	    icon.addClass("fa-regular fa-bookmark");
+	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', false)`);
+	            	} else {
+	            	    // 추가된 상태로 변경
+	            	    icon.addClass("fa-solid fa-bookmark text-warning");
+	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', true)`);
+	            	}
+	
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}
+	
 </script>
 
  <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; background-image: url('<%= ctxPath %>/images/background.png');">
@@ -158,12 +194,21 @@
 	<div class="board-actions d-flex justify-content-between align-items-center">
 	    <!-- 왼쪽 좋아요/싫어요 -->
 	    <div class="d-flex">
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
+	        <!-- <button class="btn btn-sm mr-2" style="border:none; background:none;" onclick="like()">
 	            <i class="fas fa-thumbs-up"></i>
 	        </button>
 	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
 	            <i class="fas fa-thumbs-down"></i>
-	        </button>
+	        </button> -->
+	        <form id="boardLikeForm-${boardLikeDto.fk_boardNo}">
+			    <input type="hidden" name="fk_boardNo" value="${boardLikeDto.fk_boardNo}">
+			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+			    <i id="boardLike-icon-${boardLikeDto.fk_boardNo}"
+			       class="fas fa-thumbs-up ${boardLikeDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+			       style="cursor: pointer;"
+			       onclick="boardLike(${boardLikeDto.fk_boardNo}, '${sessionScope.loginUser.id}', ${boardLikeDto.boardLiked ? true : false})">
+			    </i>
+			</form> 
 	    </div>
 	    
 	    <!-- 오른쪽 공유/신고/북마크 + 글 삭제 -->
