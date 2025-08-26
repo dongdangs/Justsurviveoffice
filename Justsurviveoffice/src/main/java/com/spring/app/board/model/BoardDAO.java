@@ -30,4 +30,7 @@ public interface BoardDAO {
 
     //  북마크한 게시글 목록
     List<BoardDTO> getBookmarksById(String fk_id);
+
+    //게시글 좋아요 수
+	public int getLikeCount(Long boardNo);
 }

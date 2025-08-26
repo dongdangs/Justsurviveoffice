@@ -1,5 +1,6 @@
 package com.spring.app.board.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.model.BoardDAO;
+import com.spring.app.comment.model.CommentDAO;
 import com.spring.app.common.FileManager;
+import com.spring.app.users.domain.CommentDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +24,7 @@ public class BoardService_imple implements BoardService {
 
     private final BoardDAO boardDao;
     private final FileManager fileManager;
+    private final CommentDAO commentDao;
 	
     // 게시글 업로드 메소드
 	@Override
@@ -93,6 +97,43 @@ public class BoardService_imple implements BoardService {
     public List<BoardDTO> getBookmarksById(String fkId) {
         return boardDao.getBookmarksById(fkId);
     }
+
+    
+    // 댓글목록
+	@Override
+	public List<CommentDTO> getCommentList(Long boardNo) {
+	    return commentDao.getCommentList(boardNo);
+	}
+
+	
+	//게시글 좋아요 여부
+	@Override
+	public boolean isBoardLiked(Long boardNo, String fkId) {
+		 
+		Map<String, Object> boardLike = new HashMap<>();
+		
+		boardLike.put("fkId", fkId);
+		boardLike.put("boardNo", boardNo);
+		return false;
+		
+	}
+
+	@Override
+	public void deleteBoardLike(Long boardNo, String id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void insertBoardLike(Long boardNo, String id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getBaordLikeCount(Long boardNo) {
+		return boardDao.getLikeCount(boardNo);
+	}
 	
     
     

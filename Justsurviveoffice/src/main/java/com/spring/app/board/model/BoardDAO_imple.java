@@ -60,6 +60,13 @@ public class BoardDAO_imple implements BoardDAO {
     public List<BoardDTO> getBookmarksById(String fkId) {
     	return sql.selectList("board.getBookmarksById", fkId);
     }
+    
+    //게시글 좋아요 수
+	@Override
+	public int getLikeCount(Long boardNo) {
+        return sql.selectOne("boardLike.getLikeCount", boardNo);
+
+	}
 
 
 	
