@@ -51,7 +51,6 @@ public class BoardDAO_imple implements BoardDAO {
 		return sql.update("board.updateReadCount", boardNo);
 	}
 	
-<<<<<<< HEAD
 	// 내가 작성한 글 목록 
     @Override
     public List<BoardDTO> getMyBoards(String fkId) {
@@ -72,7 +71,6 @@ public class BoardDAO_imple implements BoardDAO {
 	}
 
 
-=======
 	////////////////////////////////////////////////////////////////////////////
 	// 인기 게시글 리스트 (조회수 많은 순)
 	@Override
@@ -94,7 +92,6 @@ public class BoardDAO_imple implements BoardDAO {
 		List<BoardDTO> hotAllList = sql.selectList("board.hotAll");
 		return hotAllList;
 	}
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 	
 	
 	////////////////////////////////////////////////////////////////////////////

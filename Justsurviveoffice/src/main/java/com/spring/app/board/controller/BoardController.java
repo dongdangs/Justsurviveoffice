@@ -21,10 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
-<<<<<<< HEAD
 import com.spring.app.comment.service.CommentService;
-=======
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
 import com.spring.app.model.HistoryRepository;
@@ -432,41 +429,7 @@ public class BoardController {
 	}
 	
 	
-<<<<<<< HEAD
-	@PostMapping("boardLike")
-	@ResponseBody
-	public Map<String, Object> boardLike(@RequestParam(name="boardNo") Long boardNo , HttpSession session) {
-		
-		Map<String, Object> boardLike = new HashMap<>();
-		
-		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
-		
-		//  좋아요 여부
-	    boolean isLiked = boardService.isBoardLiked(boardNo, loginUser.getId());
-	    
-	    if(isLiked) {
-	    	//좋아요 취소
-	    	boardService.deleteBoardLike(boardNo, loginUser.getId());
-	    	
-	    	boardLike.put("status", "unliked");
-	    	
-	    } else {
-	    	//좋아요
-	    	boardService.insertBoardLike(boardNo, loginUser.getId());
-	    	boardLike.put("status", "liked");
-	    	
-	    }
-	    
-	    // 좋아요 수 
-	    int likeCount = boardService.getBaordLikeCount(boardNo);
-	    boardLike.put("likeCount", likeCount);
-		
-		return boardLike;
-
-		
-		
-	}
-=======
+	
 	//////////////////////////////////////////////////////////////////////
 	// Hot 게시글 전체 리스트 (조회수 많은 순)
 	@GetMapping("hot/all")
@@ -480,7 +443,6 @@ public class BoardController {
 		return mav;
 	}
 	//////////////////////////////////////////////////////////////////////
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 	
 	
 	// 북마크 추가
