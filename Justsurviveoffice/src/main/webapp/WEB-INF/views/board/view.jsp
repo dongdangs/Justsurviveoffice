@@ -173,6 +173,7 @@
 	        // textarea 숨기고 원래 내용 보이기
 	        textarea.hide();
 	        contentDiv.show();
+	        
 
 	        commentDiv.find(".update-comment").show();
 	        commentDiv.find(".delete-comment").show();
