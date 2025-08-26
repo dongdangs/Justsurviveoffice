@@ -137,3 +137,38 @@ on B.id = H.fk_id
 where B.id = 'chosw';
 
 select * from users where id = 'chosw';
+
+
+select * from board;
+
+
+
+
+
+
+select *
+from (
+    select 
+           row_number() over(
+               order by nvl(C.COMMENTCOUNT,0) desc, 
+                        nvl(C.LATESTCOMMENT, to_date('1900-01-01','yyyy-mm-dd')) desc
+           ) as RANK,
+           B.BOARDNO, 
+           B.BOARDNAME, 
+           B.FK_CATEGORYNO, 
+           nvl(C.COMMENTCOUNT, 0) as COMMENTCOUNT,
+           C.LATESTCOMMENT
+    from BOARD B
+         left join (
+            select FK_BOARDNO, 
+                   count(*) as COMMENTCOUNT,
+                   max(UPDATEDATCOMMENT) as LATESTCOMMENT
+            from COMMENTS
+            group by FK_BOARDNO
+         ) C 
+         on B.BOARDNO = C.FK_BOARDNO
+    where B.CREATEDATBOARD >= ADD_MONTHS(SYSDATE, -1)
+) 
+where RANK <= 5;
+
+

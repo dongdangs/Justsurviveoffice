@@ -4,7 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%
-	String ctxPath = request.getContextPath();
+   String ctxPath = request.getContextPath();
     //     /myspring
 %>
 <jsp:include page="../header/header1.jsp" /> 
@@ -70,7 +70,7 @@
 
 <script type="text/javascript">
    $(function(){
-	   
+
 	   $('span.boardName').hover(function(e){
 		   $(e.target).addClass("boardNameStyle");
 	   }, function(e){
@@ -155,29 +155,28 @@
 		    searchBoard(); // 글목록 검색하기 요청
 	   });
 	   
-	   
    }); // end of $(function(){})--------------------------
    
    
    // Function Declaration
    function view(boardNo, fk_id){
 
-	 // 글 1개만 보기( POST 방식 )
-	 const form = document.viewForm;
-	 form.boardNo.value = boardNo;
-	 form.fk_id,value = fk_id	
-	 if(${not empty requestScope.searchType
-		 || not empty requestScope.searchWord}) {
-		// 글목록보기시 검색조건이 있을 때 글 1개 보기를 하면, 
-		// 글 1개를 보여주면서 이전글보기 다음글보기를 하면 검색조건내에서 이전 과 다음글이 나와야 하므로 
-		// 글목록보기시 검색조건을 /board/view 을 담당하는 메소드로 넘겨주어야 한다.
-		form.searchType.value = "${requestScope.searchType}"; 
-		form.searchWord.value = "${requestScope.searchWord}"; 
-	 }
-	 form.method = "post";
-	 form.action = "<%= ctxPath%>/board/view";
+    // 글 1개만 보기( POST 방식 )
+    const form = document.viewForm;
+    form.boardNo.value = boardNo;
+    form.fk_id,value = fk_id   
+    if(${not empty requestScope.searchType
+       || not empty requestScope.searchWord}) {
+      // 글목록보기시 검색조건이 있을 때 글 1개 보기를 하면, 
+      // 글 1개를 보여주면서 이전글보기 다음글보기를 하면 검색조건내에서 이전 과 다음글이 나와야 하므로 
+      // 글목록보기시 검색조건을 /board/view 을 담당하는 메소드로 넘겨주어야 한다.
+      form.searchType.value = "${requestScope.searchType}"; 
+      form.searchWord.value = "${requestScope.searchWord}"; 
+    }
+    form.method = "post";
+    form.action = "<%= ctxPath%>/board/view";
      form.submit();
-	
+   
    }// end of function view(boardNo,fk_id)----------------------
 
    <!-- 북마크기능 -->
@@ -222,113 +221,51 @@
    
    // === 글목록 검색하기 요청 === //
    function searchBoard() {
-	   const form = document.searchForm;
+      const form = document.searchForm;
    <%--  
-	   form.method = "get";
-	   form.action = "<%= ctxPath%>/board/list?category=?&...";
-   --%>	   
-	   form.submit();
+      form.method = "get";
+      form.action = "<%= ctxPath%>/board/list?category=?&...";
+   --%>      
+      form.submit();
    }
    
 </script>
 
-<div style="display: flex; background-image: url('<%= ctxPath %>/images/background.png');">
-  <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" style="">
-	<div>
-		<img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-             <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
-             <div class="mb-3">
-             	<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                 포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
-             </div>
-	</div>
-	<div style="width: 70%; margin-top:30%; border: solid 1px green;">
-		<h6 style="font-weight: bolder;">대사살 Hot! 게시글</h6>
-		<table class="table table-sm table-borderless">
-			<tbody style="font-size: 10pt;">
-				<tr>
-					<td style="width: 5%; font-weight: bold;">01</td>
-					<td style="width: 95%;">hot 게시글 1등 제목입니다.~~~~~~~<span class="text-right text-danger">(4)</span></td>
-				</tr>
-				<tr>
-					<td style="width: 5%; font-weight: bold;">02</td>
-					<td style="width: 95%;">hot 게시글 2등 제목입니다.!!!!!!!!!!!!!!!!!!!!<span class="text-right text-danger">(9)</span></td>
-				</tr>
-				<tr>
-					<td style="width: 5%; font-weight: bold;">03</td>
-					<td style="width: 95%;">hot 게시글 3등 제목입니다.#######<span class="text-right text-danger">(9)</span></td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-				
-	<div class="mt-5" style="width: 70%; border: solid 1px green;">
-		<h6 style="font-weight: bolder;">대사살 댓글많은 게시글</h6>
-			<table class="table table-sm table-borderless">
-				<tbody style="font-size: 10pt;">
-					<tr>
-						<td style="width: 5%; font-weight: bold;">01</td>
-						<td style="width: 95%;">댓글많은 게시글 1등 제목입니다.~~~<span class="text-right text-danger">(100)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">02</td>
-						<td style="width: 95%;">댓글많은 게시글 2등 제목입니다.!!!!<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">03</td>
-						<td style="width: 95%;">댓글많은 게시글 3등 제목입니다.@@@@<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">04</td>
-						<td style="width: 95%;">댓글많은 게시글 4등 제목입니다.####<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">05</td>
-						<td style="width: 95%;">댓글많은 게시글 5등 제목입니다.$$$$$<span class="text-right text-danger">(55)</span></td>
-					</tr>	
-					<tr>
-						<td style="width: 5%; font-weight: bold;">06</td>
-						<td style="width: 95%;">댓글많은 게시글 6등 제목입니다.~~~<span class="text-right text-danger">(100)</span></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
-  <div style="width: 80%; margin: auto; padding-left: 3%;">
-	<h2 style="margin-bottom: 30px; font-size: 25pt; font-weight: bold;">글목록</h2>
-	<%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
-	<form name="searchForm" style="margin-top: 20px;">
-		<select name="searchType" style="height: 26px;">
-			<option value="boardName">글제목</option>
-			<option value="boardContent">글내용</option>
-			<option value="boardName_boardContent">글제목+글내용</option>
-			<option value="fk_id">글쓴이</option>
-		</select>
-		<input type="text" name="searchWord" size="50" autocomplete="off" /> 
-	       <input type="text" style="display: none;"/> <%-- form 태그내에 input 태그가 오로지 1개 뿐일경우에는 엔터를 했을 경우 검색이 되어지므로 이것을 방지하고자 만든것이다. --%>  
-		<button type="button" class="btn btn-secondary btn-sm" onclick="searchBoard()">검색</button> 
-		
-		<span><a href="<%=ctxPath %>/board/write?category=${category}" class="btn btn-secondary btn-sm" 
-				style="background-color: navy;">글쓰기</a></span>
-		<span><input name="category" style="display: none" value="${category}"/></span>
-	</form> 
-	
-	
-	<%-- === 검색어 입력시 자동글 완성하기 1 === --%>
-	<div id="displayList" style="border:solid 1px gray; border-top:0px; height:100px; margin-left:8.7%; margin-top:-1px; margin-bottom:30px; overflow:auto;">
+<div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png'); border: solid 2px blue;">
+   <h2 style="margin-bottom: 30px; font-size: 25pt; font-weight: bold;">글목록</h2>
+   <%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
+   <form name="searchForm" style="margin-top: 20px;">
+      <select name="searchType" style="height: 26px;">
+         <option value="boardName">글제목</option>
+         <option value="boardContent">글내용</option>
+         <option value="boardName_boardContent">글제목+글내용</option>
+         <option value="fk_id">글쓴이</option>
+      </select>
+      <input type="text" name="searchWord" size="50" autocomplete="off" /> 
+          <input type="text" style="display: none;"/> <%-- form 태그내에 input 태그가 오로지 1개 뿐일경우에는 엔터를 했을 경우 검색이 되어지므로 이것을 방지하고자 만든것이다. --%>  
+      <button type="button" class="btn btn-secondary btn-sm" onclick="searchBoard()">검색</button> 
+      
+      <span><a href="<%=ctxPath %>/board/write?category=${category}" class="btn btn-secondary btn-sm" 
+            style="background-color: navy;">글쓰기</a></span>
+      <span><input name="category" style="display: none" value="${category}"/></span>
+   </form> 
+   
+   
+   <%-- === 검색어 입력시 자동글 완성하기 1 === --%>
+   <div id="displayList" style="border:solid 1px gray; border-top:0px; height:100px; margin-left:8.7%; margin-top:-1px; margin-bottom:30px; overflow:auto;">
     </div>
-	
-	<%--  특정 글제목을 클릭했을때, 특정 글1개를 보여줄때 POST 방식으로 넘기기 위해 form 태그를 만들겠다. --%>
-	<form name="viewForm">
-	   <input type="hidden" name="boardNo"/>
-	   <input type="hidden" name="fk_id" /> 
-	   <input type="hidden" name="searchType" />
-	   <input type="hidden" name="searchWord" />
-	   <input type="hidden" name="category" value="${category}" />
-	</form>
-	
-	<br><br>
-		
+   
+   <%--  특정 글제목을 클릭했을때, 특정 글1개를 보여줄때 POST 방식으로 넘기기 위해 form 태그를 만들겠다. --%>
+   <form name="viewForm">
+      <input type="hidden" name="boardNo"/>
+      <input type="hidden" name="fk_id" /> 
+      <input type="hidden" name="searchType" />
+      <input type="hidden" name="searchWord" />
+      <input type="hidden" name="category" value="${category}" />
+   </form>
+   
+   <br><br>
+      
     <c:if test="${not empty requestScope.boardList}">
 		<div class="board-list">
 		  <c:forEach var="boardDto" items="${boardList}" varStatus="status">
@@ -368,20 +305,20 @@
 		  </c:forEach>
 		</div>
 	</c:if>
+
     <c:if test="${empty requestScope.boardList}">
       <tr>
         <td colspan="6">첫 번째 게시물을 올려보세요!</td> 
       </tr>
     </c:if>
-	
-	
-	<%-- === 페이지바 보여주기 === --%>
-	<div align="center" style="border: solid 0px gray; width: 80%; margin: 30px auto;">
-	     ${requestScope.pageBar} page
-	</div>
-	
-  </div>
-</div> 	
+   
+   
+   <%-- === 페이지바 보여주기 === --%>
+   <div align="center" style="border: solid 0px gray; width: 80%; margin: 30px auto;">
+        ${requestScope.pageBar} page
+   </div>
+   
+  </div>   
 
 
 

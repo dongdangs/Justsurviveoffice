@@ -99,8 +99,39 @@ public class BoardService_imple implements BoardService {
 		return n;
 	}
 	
-    
-    
+	////////////////////////////////////////////////////////////////////////////////////
+	// 인기 게시글 리스트 (조회수 많은 순)
+	@Override
+	public List<BoardDTO> getTopBoardsByViewCount() {
+		List<BoardDTO> hotReadList = boardDao.getTopBoardsByViewCount();
+		return hotReadList;
+	}
+	
+	
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	@Override
+	public List<BoardDTO> hotAll() {
+		List<BoardDTO> hotAllList = boardDao.hotAll();
+		return hotAllList;
+	}
+	
+	
+	// 댓글 많은 게시글 리스트
+	@Override
+	public List<BoardDTO> getTopBoardsByCommentCount() {
+		List<BoardDTO> hotCommentList = boardDao.getTopBoardsByCommentCount();
+		return hotCommentList;
+	}
+
+	
+	////////////////////////////////////////////////////////////////////////////////////   
+	
+	
+	// 게시물 좋아요
+	@Override
+	public void boardLike(String fk_id, Long fk_boardNo) {
+		boardDao.boardLike(fk_id, fk_boardNo);
+	}
 	
 }
 

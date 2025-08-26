@@ -111,72 +111,45 @@
 		form.action = "<%=ctxPath%>/board/delete";
 		form.submit;
 	}
+	
+	
+	function boardLike(fk_boardNo, fk_id, isBoardLiked) {
+		const url = isBookmarked
+        ? "<%= ctxPath%>/board/remove"
+        : "<%= ctxPath%>/board/like";
+
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: fk_boardNo },
+	        success: function(json) {
+	            const icon = $(`#boardLike-icon-fk_boardNo`);
+	            
+	            if (json.success) {
+	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	if (isBoardLiked) {
+	            	    // 해제된 상태로 변경
+	            	    icon.addClass("fa-regular fa-bookmark");
+	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', false)`);
+	            	} else {
+	            	    // 추가된 상태로 변경
+	            	    icon.addClass("fa-solid fa-bookmark text-warning");
+	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', true)`);
+	            	}
+	
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}
+	
 </script>
 
-
-<div style="display: flex; background-image: url('<%= ctxPath %>/images/background.png');">
-  <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" style="">
-	<div>
-		<img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-             <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
-             <div class="mb-3">
-             	<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                 포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
-             </div>
-	</div>
-	<div style="width: 70%; margin-top:30%; border: solid 1px green;">
-		<h6 style="font-weight: bolder;">대사살 Hot! 게시글</h6>
-		<table class="table table-sm table-borderless">
-			<tbody style="font-size: 10pt;">
-				<tr>
-					<td style="width: 5%; font-weight: bold;">01</td>
-					<td style="width: 95%;">hot 게시글 1등 제목입니다.~~~~~~~<span class="text-right text-danger">(4)</span></td>
-				</tr>
-				<tr>
-					<td style="width: 5%; font-weight: bold;">02</td>
-					<td style="width: 95%;">hot 게시글 2등 제목입니다.!!!!!!!!!!!!!!!!!!!!<span class="text-right text-danger">(9)</span></td>
-				</tr>
-				<tr>
-					<td style="width: 5%; font-weight: bold;">03</td>
-					<td style="width: 95%;">hot 게시글 3등 제목입니다.#######<span class="text-right text-danger">(9)</span></td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-				
-	<div class="mt-5" style="width: 70%; border: solid 1px green;">
-		<h6 style="font-weight: bolder;">대사살 댓글많은 게시글</h6>
-			<table class="table table-sm table-borderless">
-				<tbody style="font-size: 10pt;">
-					<tr>
-						<td style="width: 5%; font-weight: bold;">01</td>
-						<td style="width: 95%;">댓글많은 게시글 1등 제목입니다.~~~<span class="text-right text-danger">(100)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">02</td>
-						<td style="width: 95%;">댓글많은 게시글 2등 제목입니다.!!!!<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">03</td>
-						<td style="width: 95%;">댓글많은 게시글 3등 제목입니다.@@@@<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">04</td>
-						<td style="width: 95%;">댓글많은 게시글 4등 제목입니다.####<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">05</td>
-						<td style="width: 95%;">댓글많은 게시글 5등 제목입니다.$$$$$<span class="text-right text-danger">(55)</span></td>
-					</tr>	
-					<tr>
-						<td style="width: 5%; font-weight: bold;">06</td>
-						<td style="width: 95%;">댓글많은 게시글 6등 제목입니다.~~~<span class="text-right text-danger">(100)</span></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
- <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; margin-left:20px;">
+ <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; background-image: url('<%= ctxPath %>/images/background.png');">
 	<div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray">
 		<input name="fk_categoryNo" style="display: none;"
 				    value="${boardDto.fk_categoryNo}"/>
@@ -220,12 +193,21 @@
 	<div class="board-actions d-flex justify-content-between align-items-center">
 	    <!-- 왼쪽 좋아요/싫어요 -->
 	    <div class="d-flex">
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
+	        <!-- <button class="btn btn-sm mr-2" style="border:none; background:none;" onclick="like()">
 	            <i class="fas fa-thumbs-up"></i>
 	        </button>
 	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
 	            <i class="fas fa-thumbs-down"></i>
-	        </button>
+	        </button> -->
+	        <form id="boardLikeForm-${boardLikeDto.fk_boardNo}">
+			    <input type="hidden" name="fk_boardNo" value="${boardLikeDto.fk_boardNo}">
+			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+			    <i id="boardLike-icon-${boardLikeDto.fk_boardNo}"
+			       class="fas fa-thumbs-up ${boardLikeDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+			       style="cursor: pointer;"
+			       onclick="boardLike(${boardLikeDto.fk_boardNo}, '${sessionScope.loginUser.id}', ${boardLikeDto.boardLiked ? true : false})">
+			    </i>
+			</form> 
 	    </div>
 	    
 	    <!-- 오른쪽 공유/신고/북마크 + 글 삭제 -->
