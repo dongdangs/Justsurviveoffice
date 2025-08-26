@@ -25,6 +25,14 @@ public interface BoardDAO {
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	public int updateReadCount(Long boardNo);
 	
+	 //  내가 작성한 글 목록
+    List<BoardDTO> getMyBoards(String fk_id);
+
+    //  북마크한 게시글 목록
+    List<BoardDTO> getBookmarksById(String fk_id);
+
+    //게시글 좋아요 수
+	public int getLikeCount(Long boardNo);
 	////////////////////////////////////////////////////////////////////////////
 	// Hot 게시글 전체 리스트 (조회수 많은 순)
 	List<BoardDTO> hotAll();
