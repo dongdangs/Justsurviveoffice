@@ -22,6 +22,9 @@ public interface BoardDAO {
 	// 게시물 삭제하기 == boardDeleted = 0 으로 전환하기 == update
 	public int softDeleteBoard(Long boardNo);
 
+	// 게시물 수정하기, 수정시 기존 파일은 삭제!
+	public int updateBoard(BoardDTO boardDto);
+
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	public int updateReadCount(Long boardNo);
 	

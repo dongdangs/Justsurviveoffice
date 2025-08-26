@@ -37,7 +37,7 @@
 				                        ${hotRead.rank}
 				                    </td>
 				                    <td style="width: 95%;">
-				                        <a href="<%= ctxPath%>/board/view?categoryNo=${hotRead.fk_categoryNo}&boardNo=${hotRead.boardNo}">
+				                        <a href="<%= ctxPath%>/board/view/${hotRead.fk_categoryNo}&boardNo=${hotRead.boardNo}">
 				                            ${hotRead.boardName}
 				                        </a>
 				                        <span class="text-right text-danger">(${hotRead.readCount})</span>
@@ -62,7 +62,7 @@
 				                        ${hotComment.rank}
 				                    </td>
 				                    <td style="width: 95%;">
-				                        <a href="<%= ctxPath%>/board/view?categoryNo=${hotComment.fk_categoryNo}&boardNo=${hotComment.boardNo}">
+				                        <a href="<%= ctxPath%>/board/view/${hotComment.fk_categoryNo}&boardNo=${hotComment.boardNo}">
 				                            ${hotComment.boardName}
 				                        </a>
 				                        <span class="text-right text-danger">(${hotComment.commentCount})</span>
@@ -93,7 +93,7 @@
 				
 				<!-- DB 카드 반복 -->
 				<div class="col-md-4 mb-4">
-					<a href="board/list?category=2" class="card text-decoration-none h-100" style="background-color: navy;">
+					<a href="board/list/2" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/adult.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>
@@ -105,7 +105,7 @@
 				</div>
 				
 				<div class="col-md-4 mb-4">
-					<a href="board/list?category=3" class="card text-decoration-none h-100" style="background-color: navy;">
+					<a href="board/list/3" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/slave.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>
@@ -117,7 +117,7 @@
 				</div>
 				
 				<div class="col-md-4 mb-3">
-					<a href="board/list?category=5" class="card text-decoration-none h-100" style="background-color: navy;">
+					<a href="board/list/5" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/nointer.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>
@@ -129,7 +129,7 @@
 				</div>
 				
 				<div class="col-md-4 mb-4">
-					<a href="board/list?category=4" class="card text-decoration-none h-100" style="background-color: navy;">
+					<a href="board/list/4" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/myway.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>
@@ -141,7 +141,7 @@
 				</div>
 				
 				<div class="col-md-4 mb-4">
-					<a href="board/list?category=1" class="card text-decoration-none h-100" style="background-color: navy;">
+					<a href="board/list/1" class="card text-decoration-none h-100" style="background-color: navy;">
 						<div style="margin: 5% 5%; border: solid 1px red; height: 60%;">
 							<img src="<%= ctxPath%>/images/mz.png" class="card-img-top" style="width:100%; height:100%; object-fit:cover;" alt="">
 						</div>

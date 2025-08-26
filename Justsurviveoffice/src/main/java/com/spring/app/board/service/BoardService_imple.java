@@ -38,7 +38,7 @@ public class BoardService_imple implements BoardService {
 	public int insertBoard(BoardDTO boardDto) {
 		
 		int result = 0;
-		
+		// SQL문 if 처리해도 되지만, service 단에서 처리하는 실무연습.
 		if(boardDto.getBoardFileName() == null ||
 			"".equals(boardDto.getBoardFileName())) {
 			// 파일첨부 안 된 경우.
@@ -107,7 +107,15 @@ public class BoardService_imple implements BoardService {
 		return n;
 	}
 
+	// 게시물 수정하기, 수정시 기존 파일은 삭제!
+	@Override
+	public int updateBoard(BoardDTO boardDto) {
+		
+		int n = boardDao.updateBoard(boardDto);
 
+		return n;
+	}
+	
 	 //내가 작성한 글 목록
     @Override
     public List<BoardDTO> getMyBoards(String fkId) {
@@ -190,6 +198,7 @@ public class BoardService_imple implements BoardService {
 	public void boardLike(String fk_id, Long fk_boardNo) {
 		boardDao.boardLike(fk_id, fk_boardNo);
 	}
+
 	
 }
 

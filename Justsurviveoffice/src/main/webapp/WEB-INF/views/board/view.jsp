@@ -187,15 +187,25 @@
 	}); 
 	
 	
-	
 	// 글 삭제
 	function del() {
 		if(!confirm("정말로 삭제하시겠습니까?")) {
 			return alert("삭제가 취소되었습니다.");
 		}
-		const form = document.deleteForm;
+		const form = document.delnEditForm;
 		form.method = "post";
 		form.action = "<%=ctxPath%>/board/delete";
+		form.submit();
+	}
+	
+	// 글 수정하기 >> restAPI
+	function edit() {
+		if(!confirm("수정하시겠습니까?")) {
+			return alert("취소되었습니다.");
+		}
+		const form = document.delnEditForm;
+		form.method = "get";
+		form.action = "<%=ctxPath%>/board/edit";
 		form.submit();
 	}
 	
@@ -309,13 +319,15 @@
 			    </i>
 			</form> 
 			
-	        <form name="deleteForm" method="post" style="display:inline;margin: auto; ">
+	        <form name="delnEditForm" method="post" style="display:inline;margin: auto; ">
 		        <c:if test="${loginUser.id eq boardDto.fk_id}">
 		        	<input name="fk_categoryNo" style="display: none;" value="${boardDto.fk_categoryNo}"/>
 		        	<input type="hidden" name="boardNo" value="${boardDto.boardNo}">
 	           		<input type="hidden" name="fk_id" value="${boardDto.fk_id}">
 		            <button class="btn" onclick="del()" style="background-color: white;"
 		              >글 삭제</button>
+		            <button class="btn" onclick="edit()" style="background-color: white;"
+		              >수정하기</button>
 		        </c:if>
 	         </form>
 	    </div>
@@ -368,7 +380,7 @@
 	    </div>
 	    <!-- 목록 버튼 -->
 	    <div style="margin-top:1px;">
-	        <a href="<%=ctxPath %>/board/list?category=${boardDto.fk_categoryNo}" class="btn">목록</a>
+	        <a href="<%=ctxPath %>/board/list/${boardDto.fk_categoryNo}" class="btn">목록</a>
 	    </div>
 	</div>
 

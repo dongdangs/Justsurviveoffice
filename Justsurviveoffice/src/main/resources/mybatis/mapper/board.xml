@@ -21,6 +21,17 @@
                		  #{boardFileName}, #{boardFileOriginName}) 
     </insert>
     
+    <!-- 파일첨부 된 게시물 업로드 -->
+    <update id="updateBoard" parameterType="BoardDTO">
+    	update Board
+    	set boardName = #{boardName}, boardContent = #{boardContent}
+    	<if test="boardFileName != null">
+    		,boardFileName = #{boardFileName}
+    		,boardFileOriginName = #{boardFileOriginName}
+    	</if>
+    	where boardNo = #{boardNo}
+    </update>
+    
     <!-- 게시판 접근! -->
     <select id="selectBoardList" parameterType="HashMap" resultType="BoardDTO">
     	select boardNo, fk_id, 
@@ -94,7 +105,6 @@
 		set readCount = readCount + 1 
 		where boardNo = #{boardNo} and boardDeleted = 0
 	</update>
-	
 	
 	<!-- ================================================================================= -->
 	<!-- 인기 게시글 리스트 (조회수 많은 순) -->
