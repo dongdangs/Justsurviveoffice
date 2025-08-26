@@ -28,7 +28,7 @@ public class CommentDTO {
 
 	private  LocalDateTime createdAtComment;
 
-	private  LocalDateTime updateAtComment;
+	private  LocalDateTime updatedAtComment;
 
 	private Long fk_boardNo;
 

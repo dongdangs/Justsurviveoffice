@@ -34,7 +34,7 @@ public class CommentLike {
 	@Id
 	@ManyToOne // 외래키 제약을 걸고 싶을 때 추가!
 	@JoinColumn(name = "FK_COMMENTNO", referencedColumnName = "commentNo", nullable = true)
-	private Comment comment;
+	private Comments comment;
 
 	
 	

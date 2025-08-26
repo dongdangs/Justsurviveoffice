@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.spring.app.board.domain.BoardDTO;
+import com.spring.app.users.domain.CommentDTO;
 
 public interface BoardService {
 
@@ -21,5 +22,28 @@ public interface BoardService {
 	
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	public int updateReadCount(Long boardNo);
+	
+    
+    // 내가 작성한 글 목록
+    List<BoardDTO> getMyBoards(String fkId);
+
+    // 북마크한 게시글 목록
+    List<BoardDTO> getBookmarksById(String fkId);
+
+	public List<CommentDTO> getCommentList(Long boardNo);
+
+	//게시물 좋아요 여부 확인
+	public boolean isBoardLiked(Long boardNo, String fkId);
+
+	//게시물 좋아요 취소
+	public void deleteBoardLike(Long boardNo, String fkId);
+
+	//게시물 좋아요
+	public void insertBoardLike(Long boardNo, String fkId);
+
+    // 좋아요 수 
+	public int getBaordLikeCount(Long boardNo);
+	
+	
 
 }

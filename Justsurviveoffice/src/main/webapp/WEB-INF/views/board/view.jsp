@@ -56,15 +56,42 @@
     }
     .btn:hover {
         background: #eee;
+<<<<<<< HEAD
     } .zip
 .content {  /* 내용: 줄바꿈 보존하기!! */
     white-space: pre-wrap;    
+=======
+    }
+/* .content {  /* 내용: 줄바꿈 보존하기!! */
+    white-space: pre-wrap; */   
+    
+    
+    
+     
+>>>>>>> refs/heads/hy02325
 }
 </style>
 <script type="text/javascript">
 	$(function() {
 		
+		 // 댓글작성
+	    $('button#addComment').click(function(){
+	        
+	        // === 댓글내용 유효성 검사 === //
+	        let contentVal = $('textarea[name="content"]').val().trim();
+	        
+	        if(contentVal.length == 0) {
+	        	alert("댓글내용을 입력해주세요 !");
+	        	return; 
+	        }
+	        
+	        const form = document.commentform;
+	        form.method = "post";
+	        form.action = "<%= ctxPath%>/comment/writeComment";
+	        form.submit();
+	    });
 		
+<<<<<<< HEAD
 	});
 	 <!-- 북마크기능 -->
    function bookmark(boardNo, fk_id, isBookmarked) {
@@ -102,6 +129,96 @@
 	}// end of function Bookmark(boardNo,fk_id)———————————
 
 	   
+=======
+		 
+
+		 // 댓글 삭제 
+	    $(document).on("click", ".delete-comment", function () {
+	        if (!confirm("정말로 삭제하시겠습니까?")) {
+	            alert("삭제가 취소되었습니다.");
+	            return;
+	        }
+
+	        const commentNo = $(this).data("id");
+	        const fkBoardNo = "${boardDto.boardNo}";
+	        const fkId = "${sessionScope.loginUser.id}";
+
+	        const form = $("<form>", {
+	            method: "post",
+	            action: "<%=ctxPath%>/comment/deleteComment"
+	        });
+
+	        form.append($("<input>", { type: "hidden", name: "commentNo", value: commentNo }));
+	        form.append($("<input>", { type: "hidden", name: "fk_boardNo", value: fkBoardNo }));
+	        form.append($("<input>", { type: "hidden", name: "fk_id", value: fkId }));
+
+	        $(document.body).append(form);
+	        form.submit();
+	    });
+		 
+
+		 //댓글 수정
+		 $(document).on("click", ".update-comment", function () {
+	        const commentDiv = $(this).closest(".comment");
+	        const contentDiv = commentDiv.find(".content");
+	        const textarea = commentDiv.find(".edit-content");
+
+	        contentDiv.hide();
+	        textarea.show().focus();
+
+	        commentDiv.find(".update-comment").hide();
+	        commentDiv.find(".delete-comment").hide();
+	        commentDiv.find(".save-edit").show();
+	        commentDiv.find(".cancel-edit").show();
+	    });
+
+	    //  댓글 수정 취소 
+	    $(document).on("click", ".cancel-edit", function () {
+	        const commentDiv = $(this).closest(".comment");
+	        const contentDiv = commentDiv.find(".content");
+	        const textarea = commentDiv.find(".edit-content");
+
+	        // textarea 숨기고 원래 내용 보이기
+	        textarea.hide();
+	        contentDiv.show();
+
+	        commentDiv.find(".update-comment").show();
+	        commentDiv.find(".delete-comment").show();
+	        commentDiv.find(".save-edit").hide();
+	        commentDiv.find(".cancel-edit").hide();
+	    });
+
+	    // 댓글 수정 저장 
+	    $(document).on("click", ".save-edit", function () {
+	        const commentDiv = $(this).closest(".comment");
+	        const commentNo = $(this).data("id");
+	        const newContent = commentDiv.find(".edit-content").val().trim();
+
+	        if (newContent.length === 0) {
+	            alert("댓글 내용을 입력해주세요!");
+	            return;
+	        }
+
+	        const form = $("<form>", {
+	            method: "post",
+	            action: "<%=ctxPath%>/comment/updateComment"
+	        });
+
+	        form.append($("<input>", { type: "hidden", name: "commentNo", value: commentNo }));
+	        form.append($("<input>", { type: "hidden", name: "content", value: newContent }));
+	        form.append($("<input>", { type: "hidden", name: "fk_boardNo", value: "${boardDto.boardNo}" }));
+	        
+	        $(document.body).append(form);
+	        form.submit();
+	    });
+		 
+		 
+	}); 
+	
+	
+	
+	// 글 삭제
+>>>>>>> refs/heads/hy02325
 	function del() {
 		if(!confirm("정말로 삭제하시겠습니까?")) {
 			return alert("삭제가 취소되었습니다.");
@@ -109,8 +226,10 @@
 		const form = document.deleteForm;
 		form.method = "post";
 		form.action = "<%=ctxPath%>/board/delete";
-		form.submit;
+		form.submit();
 	}
+	
+	
 </script>
 
 
@@ -216,15 +335,12 @@
     	>${boardDto.boardContent}</div>
 
 
-    <!-- 좋아요/싫어요 , 공유/신고/북마크 --> 
+    <!-- 좋아요 , 공유/신고/북마크 --> 
 	<div class="board-actions d-flex justify-content-between align-items-center">
-	    <!-- 왼쪽 좋아요/싫어요 -->
+	    <!-- 좋아요 -->
 	    <div class="d-flex">
 	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
 	            <i class="fas fa-thumbs-up"></i>
-	        </button>
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
-	            <i class="fas fa-thumbs-down"></i>
 	        </button>
 	    </div>
 	    
@@ -256,25 +372,48 @@
 	
 	<!-- 댓글 영역 -->
     <div class="comment-section">
-        <h3 style="font-weight: bold;">댓글<span>${commentList.length}</span></h3>
+	  <h3 style="font-weight: bold;">댓글<span>${fn:length(commentList)}</span></h3>
         <c:forEach var="comment" items="${commentList}">
-            <div class="comment">
-                <div class="meta">
-                    <span>${comment.fk_id}</span> | 
-                    <span>${comment.formattedDate}</span>
-                </div>
-                <div class="content">
-                    ${comment.content}
-                </div>
-            </div>
-        </c:forEach> 
+
+    <div class="comment">
+        <div class="meta">
+            <span>${comment.fk_id}</span> | 
+            	<span class="comment-date">
+		    	<c:choose>
+		        <c:when test="${not empty comment.updatedAtComment}">
+		            ${fn:replace(comment.updatedAtComment, "T", " ")} <span style="color:gray;">(수정됨)</span>
+		        </c:when>
+		        <c:otherwise>
+		            ${fn:replace(comment.createdAtComment, "T", " ")}
+		        </c:otherwise>
+		    </c:choose>
+			</span>
+        </div>
+
+        <!-- 댓글 내용 -->
+        <div class="content">${comment.content}</div>
+
+        <!-- 수정 입력창 (숨김) -->
+        <textarea class="form-control edit-content" style="display:none;">${comment.content}</textarea>
+
+        <!-- 버튼 영역 -->
+        <div class="comment-buttons mt-2">
+            <c:if test="${not empty loginUser and loginUser.id == comment.fk_id}">
+                <button type="button" class="btn update-comment" data-id="${comment.commentNo}">수정</button>
+                <button type="button" class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
+                <button type="button" class="btn btn-sm  save-edit" data-id="${comment.commentNo}" style="display:none;">저장</button>
+                <button type="button" class="btn btn-sm  cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
+            </c:if>
+        </div>
+    </div>
+</c:forEach>
 
         <!-- 댓글 작성 -->
-        <form name="commentform" action="${ctxPath}/comment/write" method="post" style="margin-top: 15px;">
-            <input type="hidden" name="boardNo" value="${boardDto.boardNo}">
-            <input type="hidden" name="fk_id" value="${boardDto.fk_id}">
+        <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
+            <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+            <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
             <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
-            <button type="submit" class="btn">댓글 등록</button>
+            <button type="submit" class="btn" id="addComment">댓글 등록</button>
         </form>
     </div>
 

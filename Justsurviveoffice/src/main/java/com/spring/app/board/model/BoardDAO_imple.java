@@ -50,6 +50,26 @@ public class BoardDAO_imple implements BoardDAO {
 		return sql.update("board.updateReadCount", boardNo);
 	}
 	
+	// 내가 작성한 글 목록 
+    @Override
+    public List<BoardDTO> getMyBoards(String fkId) {
+        return sql.selectList("board.getMyBoards", fkId);
+    }
+	
+	 // 북마크한 게시글 목록 
+    @Override
+    public List<BoardDTO> getBookmarksById(String fkId) {
+    	return sql.selectList("board.getBookmarksById", fkId);
+    }
+    
+    //게시글 좋아요 수
+	@Override
+	public int getLikeCount(Long boardNo) {
+        return sql.selectOne("boardLike.getLikeCount", boardNo);
+
+	}
+
+
 	
 	
 }

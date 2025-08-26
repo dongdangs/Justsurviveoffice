@@ -14,20 +14,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
-import com.spring.app.category.domain.CategoryDTO;
+import com.spring.app.comment.service.CommentService;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
-import com.spring.app.entity.Category;
 import com.spring.app.model.HistoryRepository;
+import com.spring.app.users.domain.CommentDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
+import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,6 +49,7 @@ public class BoardController {
 	private final UsersService usersService;
 	private final BoardService boardService;
 	private final BookmarkService bookmarkService;
+	private final CommentService commentService;
 	
 	private final FileManager fileManager;
 	
@@ -229,6 +232,7 @@ public class BoardController {
 														loginUser.getId(), 
 														boardDto.getBoardNo())); 
 			}
+			
 		}
 		System.out.println(category);
 
@@ -236,6 +240,8 @@ public class BoardController {
 		modelview.addObject("searchType", searchType);
 		modelview.addObject("searchWord", searchWord);
 		modelview.addObject("category", category);
+		modelview.addObject("loginUser", loginUser.getId());
+
 		
 		modelview.setViewName("board/list");
 		
@@ -268,6 +274,9 @@ public class BoardController {
 		paraMap.put("currentShowPageNo", searchType);
 		
 		boardDto = boardService.selectView(boardDto.getBoardNo());
+
+        // 댓글 목록 조회
+        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
 		
 		if(boardDto != null) { // 뒤로가기 혹은 오류가 없는 정상 게시물인 경우 이동.
 			System.out.println(boardDto.getBoardNo());
@@ -353,6 +362,8 @@ public class BoardController {
 			}
 
 			modelview.addObject("boardDto", boardDto);
+	        modelview.addObject("commentList", commentList);
+			
 			
 			modelview.setViewName("board/view");
 			return modelview;
@@ -402,6 +413,39 @@ public class BoardController {
 	}
 	
 	
+	@PostMapping("boardLike")
+	@ResponseBody
+	public Map<String, Object> boardLike(@RequestParam(name="boardNo") Long boardNo , HttpSession session) {
+		
+		Map<String, Object> boardLike = new HashMap<>();
+		
+		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+		
+		//  좋아요 여부
+	    boolean isLiked = boardService.isBoardLiked(boardNo, loginUser.getId());
+	    
+	    if(isLiked) {
+	    	//좋아요 취소
+	    	boardService.deleteBoardLike(boardNo, loginUser.getId());
+	    	
+	    	boardLike.put("status", "unliked");
+	    	
+	    } else {
+	    	//좋아요
+	    	boardService.insertBoardLike(boardNo, loginUser.getId());
+	    	boardLike.put("status", "liked");
+	    	
+	    }
+	    
+	    // 좋아요 수 
+	    int likeCount = boardService.getBaordLikeCount(boardNo);
+	    boardLike.put("likeCount", likeCount);
+		
+		return boardLike;
+
+		
+		
+	}
 	
 	
 	

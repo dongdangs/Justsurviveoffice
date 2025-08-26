@@ -91,6 +91,29 @@
 		where boardNo = #{boardNo} and boardDeleted = 0
 	</update>
   	
+  	  <!-- ===== 내가 작성한 글 목록 ===== -->
+    <select id="getMyBoards" parameterType="string" resultType="BoardDTO">
+        SELECT *
+        FROM board
+        WHERE fk_id = #{fk_id}
+        ORDER BY createdAtBoard DESC
+    </select>
+
+	<!-- 북마크한 게시글 목록 -->
+	<select id="getBookmarksById" parameterType="string" resultType="com.spring.app.users.domain.BookMarkDTO">
+	    select bookmark.bookmarkNo,
+	           bookmark.fk_id,
+	           bookmark.fk_boardNo,
+	           bookmark.createdAtMark,
+	           board.boardName,
+	           board.boardContent,
+	           board.createdAtBoard
+	    from bookmark bookmark
+	    join Board board ON bookmark.fk_boardNo = board.boardNo
+	    where bookmark.fk_id = #{fk_id}
+	    order by bookmark.createdAtMark DESC
+	</select>
+  	
 </mapper>
 
 

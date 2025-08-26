@@ -155,7 +155,6 @@
 		    searchBoard(); // 글목록 검색하기 요청
 	   });
 	   
-	   
    }); // end of $(function(){})--------------------------
    
    
@@ -217,7 +216,6 @@
 	        }
 	    });
 	}// end of function Bookmark(boardNo,fk_id)———————————
-
    
    
    // === 글목록 검색하기 요청 === //
@@ -352,14 +350,14 @@
 		        <span>${boardDto.fk_id}</span>
 		        <span>${boardDto.formattedDate}</span>
 		        <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
-				
-				<form id="bookmarkForm-${boardDto.boardNo}">
+
+			    <form id="bookmarkForm-${boardDto.boardNo}">
 				    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
 				    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
 				    <i id="bookmark-icon-${boardDto.boardNo}"
 				       class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
 				       style="cursor: pointer;"
-				       onclick="bookmark(this, ${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
+				       onclick="bookmark(${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
 				    </i>
 				</form>
 				

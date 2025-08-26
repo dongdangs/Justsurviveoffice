@@ -153,7 +153,7 @@ $(function () {
                 <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
                 <div class="mb-3">
                 	<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> p</b>
+                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/>p</b>
                 </div>
                 <hr>
                 <div class="sidebar-menu text-left">
@@ -174,7 +174,7 @@ $(function () {
                         <a class="nav-link active" href="<%= ctxPath%>/mypage/info">내 정보</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<%= ctxPath%>/mypage/forms">작성한 폼</a>
+                        <a class="nav-link" href="<%= ctxPath%>/mypage/forms">내가 쓴 글</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<%= ctxPath%>/mypage/bookmarks">내 북마크</a>
