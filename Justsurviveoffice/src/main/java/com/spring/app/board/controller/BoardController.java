@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -218,19 +217,6 @@ public class BoardController {
 		totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
 
 		boardList = boardService.boardList(paraMap);
-		
-		// 정규화가 content는 필요함!
-		for(BoardDTO boardDto : boardList) {
-			boardDto.setBoardContent(
-					boardDto.getBoardContent()
-					.replace("&nbsp;", " ")
-					.toLowerCase()
-					.replaceAll("<[^>]+>", " ")				// <p> 처럼 태그 형태 제거
-					.replaceAll("[^0-9a-zA-Z가-힣]+", " ")	// 한글/영문/숫자 빼고 다 공백 처리
-					.replaceAll("\\s+", " ")	);			// \\s → 정규식에서 공백 문자(whitespace) 를 의미, 공백 정리
-					// replaceAll("\\s+", " ") 은 연속된 모든 종류의 공백(스페이스/탭/줄바꿈 등)을 스페이스 하나 로 바꾸는 코드);
-		}
-		//이렇게 하지않으면, JSP가 HTML 스마트 에디터의 태그까지 문자열로 찍어주기 때문에 레이아웃이 깨짐!
 		
 		HttpSession session = request.getSession();
 		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");

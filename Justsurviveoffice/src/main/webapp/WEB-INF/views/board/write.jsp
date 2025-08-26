@@ -8,7 +8,17 @@
     //     /myspring
 %>   
 
-<jsp:include page="../header/header1.jsp" />
+ <%-- Bootstrap CSS --%>
+ <link rel="stylesheet" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" type="text/css">
+
+ <%-- Optional JavaScript --%>
+ <script type="text/javascript" src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
+ <script type="text/javascript" src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
+
+<%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
+ <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.css" />
+ <script type="text/javascript" src="<%=ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.js"></script>
+   
 <script type="text/javascript" src="<%=ctxPath%>/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 
 <script type="text/javascript">
@@ -44,13 +54,11 @@
 	        // === 글내용 유효성 검사 === //
 	        // 스마트에디터는 <p>&nbsp;/</p> 태그가 기본으로 있기에 유효성 검사에 유의!
 	        let contentVal = $('textarea[name="boardContent"]').val()
-	        												   .replace(/&nbsp;/gi,"")
-	        												   .replace("<p>","")
-	        												   .replace("</p>","")
-	        												   .trim();
+										   .replace(/(&nbsp;|<p>|<\/p>|\r?\n|\r)/gi, "")
+										   .trim(); // 기본태그, 띄어쓰기, 엔터 정규식 처리! 
 	        if(contentVal != "") {
 	        	contentVal = $('textarea[name="boardContent"]').val().trim();
-	        	alert(">>"+ contentVal+ "<<");
+	        	// alert(">>"+ contentVal+ "<<");
 	        }
 	        if(contentVal.length == 0) {
 	        	alert("글내용을 입력해주세요");

@@ -24,7 +24,11 @@
     <!-- 게시판 접근! -->
     <select id="selectBoardList" parameterType="HashMap" resultType="BoardDTO">
     	select boardNo, fk_id, 
-               boardName,
+    		   case
+    		   	when length(boardName) > 12
+    		   		then substr(boardName, 1, 12)
+    		   		else boardName
+    		   	end as boardName,
      		   boardContent,
                BoardFileName, BoardFileOriginName, readcount, 
                to_char(updatedAtBoard, 'yyyy-mm-dd hh24:mi:ss') as updatedAtBoard,
