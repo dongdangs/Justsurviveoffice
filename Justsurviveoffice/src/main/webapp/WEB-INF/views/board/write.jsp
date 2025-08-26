@@ -8,7 +8,20 @@
     //     /myspring
 %>   
 
-<jsp:include page="../header/header1.jsp" />
+<!DOCTYPE html>
+<html>
+<head>
+ <%-- Bootstrap CSS --%>
+ <link rel="stylesheet" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" type="text/css">
+
+ <%-- Optional JavaScript --%>
+ <script type="text/javascript" src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
+ <script type="text/javascript" src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
+
+<%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
+ <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.css" />
+ <script type="text/javascript" src="<%=ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.js"></script>
+   
 <script type="text/javascript" src="<%=ctxPath%>/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 
 <script type="text/javascript">
@@ -85,7 +98,6 @@
    }
   
 </script>
-<head>
  <style type="text/css">
 .post-card { 
   min-width: 750px;  
@@ -211,7 +223,6 @@
    
    </div>
 </div>
-
 
 
 
