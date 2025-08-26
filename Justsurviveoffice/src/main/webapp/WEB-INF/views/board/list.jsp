@@ -4,7 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%
-	String ctxPath = request.getContextPath();
+   String ctxPath = request.getContextPath();
     //     /myspring
 %>
 <jsp:include page="../header/header1.jsp" /> 
@@ -70,7 +70,7 @@
 
 <script type="text/javascript">
    $(function(){
-	   
+
 	   $('span.boardName').hover(function(e){
 		   $(e.target).addClass("boardNameStyle");
 	   }, function(e){
@@ -155,83 +155,84 @@
 		    searchBoard(); // 글목록 검색하기 요청
 	   });
 	   
-	   $(".btn-bookmark").on("click", function(e) {
-	        e.preventDefault();
-	        e.stopPropagation(); // 게시글 클릭과 이벤트 충돌 방지
-	
-	        const icon = $(this);
-	        const boardNo = icon.data("boardno");
-
-	        $.ajax({
-	            type: "POST",
-	            url: "<%=ctxPath%>/bookmark/toggle",
-	            data: { boardNo: boardNo },
-	            success: function(json) {
-	                if(json === "notLogin") {
-	                    alert("로그인이 필요합니다!");
-	                    location.href = "<%=ctxPath%>/login";
-	                    return;
-	                }
-	                if (json === "bookmarked") {
-	                    icon.removeClass("fa-regular")
-	                        .addClass("fa-solid text-warning")
-	                        .attr("title","북마크 해제");
-	                } else if (json === "removed") {
-	                    icon.removeClass("fa-solid text-warning")
-	                        .addClass("fa-regular")
-	                        .attr("title","북마크");
-	                } else {
-	                    alert("알 수 없는 응답: " + json);
-	                }
-	            },
-	            error: function(request, status, error) {
-	                alert("code: "+request.status+"\nmessage: "+request.responseText+"\nerror: "+error);
-	            }
-	        });
-	    });
-	   
-	   
-	   
    }); // end of $(function(){})--------------------------
    
    
    // Function Declaration
    function view(boardNo, fk_id){
 
-	 // 글 1개만 보기( POST 방식 )
-	 const form = document.viewForm;
-	 form.boardNo.value = boardNo;
-	 form.fk_id,value = fk_id	
-	 if(${not empty requestScope.searchType
-		 || not empty requestScope.searchWord}) {
-		// 글목록보기시 검색조건이 있을 때 글 1개 보기를 하면, 
-		// 글 1개를 보여주면서 이전글보기 다음글보기를 하면 검색조건내에서 이전 과 다음글이 나와야 하므로 
-		// 글목록보기시 검색조건을 /board/view 을 담당하는 메소드로 넘겨주어야 한다.
-		form.searchType.value = "${requestScope.searchType}"; 
-		form.searchWord.value = "${requestScope.searchWord}"; 
-	 }
-	 form.method = "post";
-	 form.action = "<%= ctxPath%>/board/view";
+    // 글 1개만 보기( POST 방식 )
+    const form = document.viewForm;
+    form.boardNo.value = boardNo;
+    form.fk_id,value = fk_id   
+    if(${not empty requestScope.searchType
+       || not empty requestScope.searchWord}) {
+      // 글목록보기시 검색조건이 있을 때 글 1개 보기를 하면, 
+      // 글 1개를 보여주면서 이전글보기 다음글보기를 하면 검색조건내에서 이전 과 다음글이 나와야 하므로 
+      // 글목록보기시 검색조건을 /board/view 을 담당하는 메소드로 넘겨주어야 한다.
+      form.searchType.value = "${requestScope.searchType}"; 
+      form.searchWord.value = "${requestScope.searchWord}"; 
+    }
+    form.method = "post";
+    form.action = "<%= ctxPath%>/board/view";
      form.submit();
-	
+   
    }// end of function view(boardNo,fk_id)----------------------
 
-   
+   <!-- 북마크기능 -->
+   function bookmark(boardDto, boardNo, fk_id, isBookmarked) {
+	    const url = isBookmarked
+	        ? "<%= ctxPath%>/bookmark/remove"
+	        : "<%= ctxPath%>/bookmark/add";
+		
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: boardNo },
+	        success: function(json) {
+	            const icon = $(`#bookmark-icon-${boardNo}`);
+
+	            if (json.success) {
+	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	
+	            	if (isBookmarked) {
+	            	    // 해제된 상태로 변경
+	            	    boardDto.bookmarked = false;
+	            	    icon.addClass("fa-regular fa-bookmark");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+	            	} else {
+	            	    // 추가된 상태로 변경
+	            	    boardDto.bookmarked = true;
+	            	    icon.addClass("fa-solid fa-bookmark text-warning");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+	            	}
+
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}// end of function Bookmark(boardNo,fk_id)———————————
+
    
    
    // === 글목록 검색하기 요청 === //
    function searchBoard() {
-	   const form = document.searchForm;
+      const form = document.searchForm;
    <%--  
-	   form.method = "get";
-	   form.action = "<%= ctxPath%>/board/list?category=?&...";
-   --%>	   
-	   form.submit();
+      form.method = "get";
+      form.action = "<%= ctxPath%>/board/list?category=?&...";
+   --%>      
+      form.submit();
    }
    
 </script>
 
 <div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png'); border: solid 2px blue;">
+<<<<<<< HEAD
 	<h2 style="margin-bottom: 30px; font-size: 25pt; font-weight: bold;">${category}글목록</h2>
 	<%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
 	<form name="searchForm" style="margin-top: 20px;">
@@ -253,19 +254,42 @@
 	
 	<%-- === 검색어 입력시 자동글 완성하기 1 === --%>
 	<div id="displayList" style="border:solid 1px gray; border-top:0px; height:100px; margin-left:8.7%; margin-top:-1px; margin-bottom:30px; overflow:auto;">
+=======
+   <h2 style="margin-bottom: 30px; font-size: 25pt; font-weight: bold;">글목록</h2>
+   <%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
+   <form name="searchForm" style="margin-top: 20px;">
+      <select name="searchType" style="height: 26px;">
+         <option value="boardName">글제목</option>
+         <option value="boardContent">글내용</option>
+         <option value="boardName_boardContent">글제목+글내용</option>
+         <option value="fk_id">글쓴이</option>
+      </select>
+      <input type="text" name="searchWord" size="50" autocomplete="off" /> 
+          <input type="text" style="display: none;"/> <%-- form 태그내에 input 태그가 오로지 1개 뿐일경우에는 엔터를 했을 경우 검색이 되어지므로 이것을 방지하고자 만든것이다. --%>  
+      <button type="button" class="btn btn-secondary btn-sm" onclick="searchBoard()">검색</button> 
+      
+      <span><a href="<%=ctxPath %>/board/write?category=${category}" class="btn btn-secondary btn-sm" 
+            style="background-color: navy;">글쓰기</a></span>
+      <span><input name="category" style="display: none" value="${category}"/></span>
+   </form> 
+   
+   
+   <%-- === 검색어 입력시 자동글 완성하기 1 === --%>
+   <div id="displayList" style="border:solid 1px gray; border-top:0px; height:100px; margin-left:8.7%; margin-top:-1px; margin-bottom:30px; overflow:auto;">
+>>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
     </div>
-	
-	<%--  특정 글제목을 클릭했을때, 특정 글1개를 보여줄때 POST 방식으로 넘기기 위해 form 태그를 만들겠다. --%>
-	<form name="viewForm">
-	   <input type="hidden" name="boardNo"/>
-	   <input type="hidden" name="fk_id" /> 
-	   <input type="hidden" name="searchType" />
-	   <input type="hidden" name="searchWord" />
-	   <input type="hidden" name="category" value="${category}" />
-	</form>
-	
-	<br><br>
-		
+   
+   <%--  특정 글제목을 클릭했을때, 특정 글1개를 보여줄때 POST 방식으로 넘기기 위해 form 태그를 만들겠다. --%>
+   <form name="viewForm">
+      <input type="hidden" name="boardNo"/>
+      <input type="hidden" name="fk_id" /> 
+      <input type="hidden" name="searchType" />
+      <input type="hidden" name="searchWord" />
+      <input type="hidden" name="category" value="${category}" />
+   </form>
+   
+   <br><br>
+      
     <c:if test="${not empty requestScope.boardList}">
 		<div class="board-list">
 		  <c:forEach var="boardDto" items="${boardList}" varStatus="status">
@@ -275,14 +299,13 @@
 		       		 <!-- 제목 -->
 		        	<h3 class="title" style="margin-right: 10%">${boardDto.boardName}</h3>
 					<!-- 내용 -->
-		    	 	<div class="content" style="color: grey">${boardDto.boardContent}</div>
+		    	 	<div class="content" style="color: grey">${boardDto.textForBoardList}</div>
 		        </div>
-		        
 		        <!-- 첨부 이미지 썸네일 -->
-		        <c:if test="${boardDto.boardFileName ne null}">
-		          <img src="<%=ctxPath %>/files/${boardDto.boardFileName}" class="thumbnail" style="margin-left: auto;"/>
+		        <c:if test="${boardDto.imgForBoardList ne null}">
+		          <img src="${boardDto.imgForBoardList}" class="thumbnail" style="margin-left: auto;"/>
 		        </c:if>
-		        <c:if test="${boardDto.boardFileName eq null}"><br><br><br></c:if>
+		        <c:if test="${boardDto.imgForBoardList eq null}"><br><br><br></c:if>
 		      </div>
 		       
 		      <!-- 작성자/날짜/조회수 -->
@@ -290,19 +313,29 @@
 		        <span>${boardDto.fk_id}</span>
 		        <span>${boardDto.formattedDate}</span>
 		        <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
-			    <i class="btn-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}
-			    	fa-bookmark fa-regular" style="margin: auto; cursor: pointer;"
-			     	></i> 
+				
+				<form id="bookmarkForm-${boardDto.boardNo}">
+				    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+				    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+				    <i id="bookmark-icon-${boardDto.boardNo}"
+				       class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
+				       style="cursor: pointer;"
+				       onclick="bookmark(this, ${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
+				    </i>
+				</form>
+				
 		      </div>
 		    </div>
 		  </c:forEach>
 		</div>
 	</c:if>
+
     <c:if test="${empty requestScope.boardList}">
       <tr>
         <td colspan="6">첫 번째 게시물을 올려보세요!</td> 
       </tr>
     </c:if>
+<<<<<<< HEAD
 	
 	
 	<%-- === 페이지바 보여주기 === --%>
@@ -311,6 +344,16 @@
 	</div>
 	
   </div>	
+=======
+   
+   
+   <%-- === 페이지바 보여주기 === --%>
+   <div align="center" style="border: solid 0px gray; width: 80%; margin: 30px auto;">
+        ${requestScope.pageBar} page
+   </div>
+   
+  </div>   
+>>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 
 
 

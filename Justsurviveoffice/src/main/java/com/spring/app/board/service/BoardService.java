@@ -3,9 +3,25 @@ package com.spring.app.board.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.cache.annotation.Cacheable;
+
 import com.spring.app.board.domain.BoardDTO;
+import com.spring.app.users.domain.CommentDTO;
 
 public interface BoardService {
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	List<BoardDTO> hotAll();
+		
+	// 인기 게시글 리스트 (조회수 많은 순)
+	@Cacheable("hotReadList")
+	List<BoardDTO> getTopBoardsByViewCount();
+	
+	// 댓글 많은 게시글 리스트
+	@Cacheable("hotCommentList")
+	List<BoardDTO> getTopBoardsByCommentCount();
+	//////////////////////////////////////////////////////////////////////////
 
 	// 게시글 업로드 메소드
 	public int insertBoard(BoardDTO boardDto);
@@ -21,15 +37,35 @@ public interface BoardService {
 	
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	public int updateReadCount(Long boardNo);
+	
+    
+    // 내가 작성한 글 목록
+    List<BoardDTO> getMyBoards(String fkId);
+
+    // 북마크한 게시글 목록
+    List<BoardDTO> getBookmarksById(String fkId);
+
+	public List<CommentDTO> getCommentList(Long boardNo);
+
+	//게시물 좋아요 여부 확인
+	public boolean isBoardLiked(Long boardNo, String fkId);
+
+	//게시물 좋아요 취소
+	public void deleteBoardLike(Long boardNo, String fkId);
+
+	//게시물 좋아요
+	public void insertBoardLike(Long boardNo, String fkId);
+
+    // 좋아요 수 
+	public int getBaordLikeCount(Long boardNo);
+	
+	
+
+	// 게시물 좋아요
+	void boardLike(String fk_id, Long fk_boardNo);
 
 	// 메인페이지 카테고리 자동 불러오기 메서드
 	public List<Map<String, String>> getIndexList(String fk_categoryNo);
-
-	// 인기 게시글 리스트 (조회수 많은 순)
-	List<BoardDTO> getTopBoardsByViewCount();
-	   
-	// 댓글 많은 게시글 리스트
-	List<BoardDTO> getTopBoardsByCommentCount();
 
 	// 페이지네이션 구현
 	public BoardDTO getView(Long boardNo);

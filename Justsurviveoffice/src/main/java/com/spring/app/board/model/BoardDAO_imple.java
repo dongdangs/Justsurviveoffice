@@ -1,5 +1,6 @@
 package com.spring.app.board.model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Repository
 @RequiredArgsConstructor
 public class BoardDAO_imple implements BoardDAO {
+	
 	
 	@Qualifier("sqlsession")
 	private final SqlSessionTemplate sql;
@@ -56,20 +58,11 @@ public class BoardDAO_imple implements BoardDAO {
 		return IndexList;
 	}
 	
-	
-	// 인기 게시글 리스트 (조회수 많은 순)
-	@Override
-	public List<BoardDTO> getTopBoardsByViewCount() {
-	    List<BoardDTO> hotReadList = sql.selectList("board.getTopBoardsByViewCount");
-	    return hotReadList;
-	}
-	   
-	// 댓글 많은 게시글 리스트
-	@Override
-	public List<BoardDTO> getTopBoardsByCommentCount() {
-	      List<BoardDTO> hotCommentList = sql.selectList("board.getTopBoardsByCommentCount");
-	      return hotCommentList;
-	}
+	// 내가 작성한 글 목록 
+    @Override
+    public List<BoardDTO> getMyBoards(String fkId) {
+        return sql.selectList("board.getMyBoards", fkId);
+    }
 	
 	//페이지내이션 
 	@Override
@@ -77,6 +70,51 @@ public class BoardDAO_imple implements BoardDAO {
 		return sql.selectOne("board.getView", boardNo);
 	}   
 	
+	 // 북마크한 게시글 목록 
+    @Override
+    public List<BoardDTO> getBookmarksById(String fkId) {
+    	return sql.selectList("board.getBookmarksById", fkId);
+    }
+    
+    //게시글 좋아요 수
+	@Override
+	public int getLikeCount(Long boardNo) {
+        return sql.selectOne("boardLike.getLikeCount", boardNo);
+
+	}
+
+	////////////////////////////////////////////////////////////////////////////
+	// 인기 게시글 리스트 (조회수 많은 순)
+	@Override
+	public List<BoardDTO> getTopBoardsByViewCount() {
+		List<BoardDTO> hotReadList = sql.selectList("board.getTopBoardsByViewCount");
+		return hotReadList;
+	}
+	
+	// 댓글 많은 게시글 리스트
+	@Override
+	public List<BoardDTO> getTopBoardsByCommentCount() {
+		List<BoardDTO> hotCommentList = sql.selectList("board.getTopBoardsByCommentCount");
+		return hotCommentList;
+	}	
+	
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	@Override
+	public List<BoardDTO> hotAll() {
+		List<BoardDTO> hotAllList = sql.selectList("board.hotAll");
+		return hotAllList;
+	}
+	
+	
+	////////////////////////////////////////////////////////////////////////////
+	
+	// 게시물 좋아요
+	@Override
+	public int boardLike(String fk_id, Long fk_boardNo) {
+		Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("fk_id", fk_id);
+        paramMap.put("fk_boardNo", fk_boardNo);
+        return sql.insert("boardLike.boardLike", paramMap);
+	}
+	
 }
-
-

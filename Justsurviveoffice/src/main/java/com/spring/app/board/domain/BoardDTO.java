@@ -41,6 +41,10 @@ public class BoardDTO {
 	private String boardFileName;// 첨부된 파일명 
 	private String boardFileOriginName;// 업로드 시 첨부된 파일명
 	
+	// 스마트 에디터로 글 작성 시 Jsoup를 통한 텍스트 및 이미지 경로 저장
+	private String textForBoardList;
+	private String imgForBoardList;
+	
 	private MultipartFile attach; //스프링에서 제공하는 업로드된 파일을 다루는 객체
 	/*  주요 메소드:	getOriginalFilename() → 원본 파일명
 				getSize() → 파일 크기
@@ -62,5 +66,5 @@ public class BoardDTO {
 	private String preName; 	// 이전글제목
 	private String nextNo;         // 다음글번호
 	private String nextName;     // 다음글제목 
-	
+
 }

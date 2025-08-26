@@ -54,8 +54,8 @@ public class IndexController {
 			
 			
 			return "index";
-
 	}
+	
 	
 	@GetMapping("users/list")
 	public String memberList() {

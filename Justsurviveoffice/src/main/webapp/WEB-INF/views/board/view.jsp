@@ -56,17 +56,42 @@
     }
     .btn:hover {
         background: #eee;
-    }
+    } .zip
 .content {  /* 내용: 줄바꿈 보존하기!! */
     white-space: pre-wrap;    
+    }
+/* .content {  /* 내용: 줄바꿈 보존하기!! */
+    white-space: pre-wrap; */   
+    
+     
 }
 </style>
 <script type="text/javascript">
 
 	$(function(){
 		
+<<<<<<< HEAD
 		const nextVals = ${boardDto.nextNo};
+=======
+		 // 댓글작성
+	    $('button#addComment').click(function(){
+	        
+	        // === 댓글내용 유효성 검사 === //
+	        let contentVal = $('textarea[name="content"]').val().trim();
+	        
+	        if(contentVal.length == 0) {
+	        	alert("댓글내용을 입력해주세요 !");
+	        	return; 
+	        }
+	        
+	        const form = document.commentform;
+	        form.method = "post";
+	        form.action = "<%= ctxPath%>/comment/writeComment";
+	        form.submit();
+	    });
+>>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 		
+<<<<<<< HEAD
 		if(nextVals == 0) {
 			$('div#nextBtn').hide();
 		}
@@ -96,7 +121,133 @@
 		 frm.action = "<%= ctxPath%>/board/view";
 		 frm.submit();
 	}
+=======
+	 <!-- 북마크기능 -->
+   function bookmark(boardNo, fk_id, isBookmarked) {
+	    const url = isBookmarked
+	        ? "<%= ctxPath%>/bookmark/remove"
+	        : "<%= ctxPath%>/bookmark/add";
+
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: boardNo },
+	        success: function(json) {
+	            const icon = $(`#bookmark-icon-${boardNo}`);
+
+	            if (json.success) {
+	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	if (isBookmarked) {
+	            	    // 해제된 상태로 변경
+	            	    icon.addClass("fa-regular fa-bookmark");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+	            	} else {
+	            	    // 추가된 상태로 변경
+	            	    icon.addClass("fa-solid fa-bookmark text-warning");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+	            	}
+
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}// end of function Bookmark(boardNo,fk_id)———————————
+
+	   
+		 
+
+		 // 댓글 삭제 
+	    $(document).on("click", ".delete-comment", function () {
+	        if (!confirm("정말로 삭제하시겠습니까?")) {
+	            alert("삭제가 취소되었습니다.");
+	            return;
+	        }
+
+	        const commentNo = $(this).data("id");
+	        const fkBoardNo = "${boardDto.boardNo}";
+	        const fkId = "${sessionScope.loginUser.id}";
+
+	        const form = $("<form>", {
+	            method: "post",
+	            action: "<%=ctxPath%>/comment/deleteComment"
+	        });
+
+	        form.append($("<input>", { type: "hidden", name: "commentNo", value: commentNo }));
+	        form.append($("<input>", { type: "hidden", name: "fk_boardNo", value: fkBoardNo }));
+	        form.append($("<input>", { type: "hidden", name: "fk_id", value: fkId }));
+
+	        $(document.body).append(form);
+	        form.submit();
+	    });
+		 
+
+		 //댓글 수정
+		 $(document).on("click", ".update-comment", function () {
+	        const commentDiv = $(this).closest(".comment");
+	        const contentDiv = commentDiv.find(".content");
+	        const textarea = commentDiv.find(".edit-content");
+
+	        contentDiv.hide();
+	        textarea.show().focus();
+
+	        commentDiv.find(".update-comment").hide();
+	        commentDiv.find(".delete-comment").hide();
+	        commentDiv.find(".save-edit").show();
+	        commentDiv.find(".cancel-edit").show();
+	    });
+
+	    //  댓글 수정 취소 
+	    $(document).on("click", ".cancel-edit", function () {
+	        const commentDiv = $(this).closest(".comment");
+	        const contentDiv = commentDiv.find(".content");
+	        const textarea = commentDiv.find(".edit-content");
+
+	        // textarea 숨기고 원래 내용 보이기
+	        textarea.hide();
+	        contentDiv.show();
+	        
+
+	        commentDiv.find(".update-comment").show();
+	        commentDiv.find(".delete-comment").show();
+	        commentDiv.find(".save-edit").hide();
+	        commentDiv.find(".cancel-edit").hide();
+	    });
+
+	    // 댓글 수정 저장 
+	    $(document).on("click", ".save-edit", function () {
+	        const commentDiv = $(this).closest(".comment");
+	        const commentNo = $(this).data("id");
+	        const newContent = commentDiv.find(".edit-content").val().trim();
+
+	        if (newContent.length === 0) {
+	            alert("댓글 내용을 입력해주세요!");
+	            return;
+	        }
+
+	        const form = $("<form>", {
+	            method: "post",
+	            action: "<%=ctxPath%>/comment/updateComment"
+	        });
+
+	        form.append($("<input>", { type: "hidden", name: "commentNo", value: commentNo }));
+	        form.append($("<input>", { type: "hidden", name: "content", value: newContent }));
+	        form.append($("<input>", { type: "hidden", name: "fk_boardNo", value: "${boardDto.boardNo}" }));
+	        
+	        $(document.body).append(form);
+	        form.submit();
+	    });
+		 
+		 
+	}); 
+>>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 	
+	
+	
+	// 글 삭제
 	function del() {
 		if(!confirm("정말로 삭제하시겠습니까?")) {
 			return alert("삭제가 취소되었습니다.");
@@ -104,11 +255,51 @@
 		const form = document.deleteForm;
 		form.method = "post";
 		form.action = "<%=ctxPath%>/board/delete";
-		form.submit;
+		form.submit();
 	}
+	
+	
+	function boardLike(fk_boardNo, fk_id, isBoardLiked) {
+		const url = isBookmarked
+        ? "<%= ctxPath%>/board/remove"
+        : "<%= ctxPath%>/board/like";
+
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: fk_boardNo },
+	        success: function(json) {
+	            const icon = $(`#boardLike-icon-fk_boardNo`);
+	            
+	            if (json.success) {
+	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	if (isBoardLiked) {
+	            	    // 해제된 상태로 변경
+	            	    icon.addClass("fa-regular fa-bookmark");
+	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', false)`);
+	            	} else {
+	            	    // 추가된 상태로 변경
+	            	    icon.addClass("fa-solid fa-bookmark text-warning");
+	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', true)`);
+	            	}
+	
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}
+	
 </script>
 
+<<<<<<< HEAD
  <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px;">
+=======
+ <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; background-image: url('<%= ctxPath %>/images/background.png');">
+>>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 	<div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray">
 		<input name="fk_categoryNo" style="display: none;"
 				    value="${boardDto.fk_categoryNo}"/>
@@ -140,39 +331,44 @@
     </div>
     <!-- 첨부 파일 -->
     <c:if test="${boardDto.boardFileName ne null}">
-        <div class="board-file" style="margin: 10% 0 5% 0">
-            <img src="<%=ctxPath %>/files/${boardDto.boardFileName}" alt="첨부 이미지">
-        </div>
-    </c:if>
+   		 ${boardDto.boardFileName}
+         <img src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}" class="thumbnail" style="margin-left: auto;"/>
+	</c:if>
     <!-- 본문 내용 -->
     <div class="board-content" style="white-space: pre-wrap;"
     	>${boardDto.boardContent}</div>
 
 
-    <!-- 좋아요/싫어요 , 공유/신고/북마크 --> 
+    <!-- 좋아요 , 공유/신고/북마크 --> 
 	<div class="board-actions d-flex justify-content-between align-items-center">
-	    <!-- 왼쪽 좋아요/싫어요 -->
+	    <!-- 좋아요 -->
 	    <div class="d-flex">
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
-	            <i class="fas fa-thumbs-up"></i>
-	        </button>
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
-	            <i class="fas fa-thumbs-down"></i>
-	        </button>
+	        
+	        <form id="boardLikeForm-${boardLikeDto.fk_boardNo}">
+			    <input type="hidden" name="fk_boardNo" value="${boardLikeDto.fk_boardNo}">
+			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+			    <i id="boardLike-icon-${boardLikeDto.fk_boardNo}"
+			       class="fas fa-thumbs-up ${boardLikeDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+			       style="cursor: pointer;"
+			       onclick="boardLike(${boardLikeDto.fk_boardNo}, '${sessionScope.loginUser.id}', ${boardLikeDto.boardLiked ? true : false})">
+			    </i>
+			</form> 
 	    </div>
 	    
 	    <!-- 오른쪽 공유/신고/북마크 + 글 삭제 -->
-	    <div class="d-flex ml-auto">
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
-	            <i class="fas fa-share"></i>
-	            <span></span>
-	        </button>
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
-	            <i class="fas fa-flag"></i>
-	        </button>
-	        <a href="<%=ctxPath%>/mypage/bookmarks" class="btn btn-sm" style="border:none; background:none;">
-	            <i class="fas fa-bookmark"></i>
-	        </a>
+		<div class="d-flex ml-auto" style="align-items:center; gap:12px;">
+	        <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
+	        
+		    <form id="bookmarkForm-${boardDto.boardNo}">
+			    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+			    <i id="bookmark-icon-${boardDto.boardNo}"
+			       class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
+			       style="cursor: pointer;"
+			       onclick="bookmark(${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
+			    </i>
+			</form> 
+			
 	        <form name="deleteForm" method="post" style="display:inline;margin: auto; ">
 		        <c:if test="${loginUser.id eq boardDto.fk_id}">
 		        	<input name="fk_categoryNo" style="display: none;" value="${boardDto.fk_categoryNo}"/>
@@ -187,25 +383,48 @@
 	
 	<!-- 댓글 영역 -->
     <div class="comment-section">
-        <h3 style="font-weight: bold;">댓글<span>${commentList.length}</span></h3>
+	  <h3 style="font-weight: bold;">댓글<span>${fn:length(commentList)}</span></h3>
         <c:forEach var="comment" items="${commentList}">
-            <div class="comment">
-                <div class="meta">
-                    <span>${comment.fk_id}</span> | 
-                    <span>${comment.formattedDate}</span>
-                </div>
-                <div class="content">
-                    ${comment.content}
-                </div>
-            </div>
-        </c:forEach>
+
+    <div class="comment">
+        <div class="meta">
+            <span>${comment.fk_id}</span> | 
+            	<span class="comment-date">
+		    	<c:choose>
+		        <c:when test="${not empty comment.updatedAtComment}">
+		            ${fn:replace(comment.updatedAtComment, "T", " ")} <span style="color:gray;">(수정됨)</span>
+		        </c:when>
+		        <c:otherwise>
+		            ${fn:replace(comment.createdAtComment, "T", " ")}
+		        </c:otherwise>
+		    </c:choose>
+			</span>
+        </div>
+
+        <!-- 댓글 내용 -->
+        <div class="content">${comment.content}</div>
+
+        <!-- 수정 입력창 (숨김) -->
+        <textarea class="form-control edit-content" style="display:none;">${comment.content}</textarea>
+
+        <!-- 버튼 영역 -->
+        <div class="comment-buttons mt-2">
+            <c:if test="${not empty loginUser and loginUser.id == comment.fk_id}">
+                <button type="button" class="btn update-comment" data-id="${comment.commentNo}">수정</button>
+                <button type="button" class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
+                <button type="button" class="btn btn-sm  save-edit" data-id="${comment.commentNo}" style="display:none;">저장</button>
+                <button type="button" class="btn btn-sm  cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
+            </c:if>
+        </div>
+    </div>
+</c:forEach>
 
         <!-- 댓글 작성 -->
-        <form name="commentform" action="${ctxPath}/comment/write" method="post" style="margin-top: 15px;">
-            <input type="hidden" name="boardNo" value="${boardDto.boardNo}">
-            <input type="hidden" name="fk_id" value="${boardDto.fk_id}">
+        <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
+            <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+            <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
             <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
-            <button type="submit" class="btn">댓글 등록</button>
+            <button type="submit" class="btn" id="addComment">댓글 등록</button>
         </form>
     </div>
 
@@ -225,6 +444,5 @@
 	<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
 	<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
 
-</div>
 </div>
 </html>

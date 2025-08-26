@@ -1,7 +1,5 @@
 package com.spring.app.mypage.controller;
 
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,10 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.spring.app.users.domain.BookMarkDTO;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
-import com.spring.app.entity.Users;
-import com.spring.app.users.domain.BookMarkDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -28,52 +25,47 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("mypage/")
 public class MyPageController {
- 
+
     private final UsersService usersService;
-    private final BoardService boardService; 
+    private final BoardService boardService;
 
-    // 내정보 화면 (필요시)
-
+    // 내정보 화면
     @GetMapping("info")
     public String info() {
-		return "users/mypage/info";
+        return "users/mypage/info";
     }
 
-    // 작성한 폼 
-    @GetMapping("forms")    
+ // 내가 작성한 글 목록
+    @GetMapping("forms")
     public String myBoardList(HttpSession session, Model model) {
-        // 로그인 체크 주석 처리
-    	UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
-    	if (loginUser == null) {
-    		return "login/loginForm";
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "login/loginForm";
         }
 
-        //List<BoardDTO> myBoardList = boardService.getBoardsByWriterId(loginUser.getId());
-        //model.addAttribute("myBoards", myBoardList);
+        List<BoardDTO> boardList = boardService.getMyBoards(loginUser.getId());
+        model.addAttribute("myBoards", boardList);
         return "users/mypage/forms";
     }
 
-    // 북마크
+    // 북마크 목록
     @GetMapping("bookmarks")
     public String myBookmarks(HttpSession session, Model model) {
-        // 로그인 체크 주석 처리
-    	UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         if (loginUser == null) {
-    		return "login/loginForm";
+            return "login/loginForm";
         }
 
-        //List<BookMarkDTO> bookmarks = boardService.getBookmarksById(loginUser.getId());
-        //model.addAttribute("myBookmarks", bookmarks);
+        model.addAttribute("myBookmarks", boardService.getBookmarksById(loginUser.getId()));
         return "users/mypage/bookmarks";
     }
 
-    // 회원 수정 
+    // 회원 정보 수정
     @PostMapping("update")
     public String update(UsersDTO userDto, HttpServletRequest request, HttpSession session) {
-
         UsersDTO updatedUser = usersService.updateUser(userDto);
 
-        // 세션 갱신 (중요!)
+        // 세션 갱신
         session.setAttribute("loginUser", updatedUser);
 
         String message = "정보가 변경되었습니다.";
@@ -84,35 +76,26 @@ public class MyPageController {
 
         return "msg";
     }
-    
 
-	// 회원탈퇴
+    // 회원 탈퇴
     @PostMapping("quit")
     @ResponseBody
-    public Map<String, Integer> delete(@RequestParam(name="id") String id, HttpSession session) {
+    public Map<String, Integer> delete(@RequestParam(name = "id") String id, HttpSession session) {
         int n = usersService.delete(id);
         if (n == 1) {
             session.invalidate(); // 로그아웃 처리
         }
         return Map.of("n", n);
     }
-    
-    
-    
+
     // 이메일 중복확인
     @GetMapping("emailDuplicate")
     @ResponseBody
-    public Map<String, Object> emailDup(@RequestParam(name="email") String email,
-			    					                          HttpSession session){
-    	UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+    public Map<String, Object> emailDup(@RequestParam(name = "email") String email, HttpSession session) {
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         String myId = (loginUser != null ? loginUser.getId() : null);
 
         boolean duplicated = usersService.isEmailDuplicated(email);
-        return Map.of("duplicated", duplicated); // true면 중복, false면 사용가능
-    	
+        return Map.of("duplicated", duplicated);
     }
-    
-   
-    
-    
 }
