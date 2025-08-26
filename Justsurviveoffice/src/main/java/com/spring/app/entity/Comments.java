@@ -30,7 +30,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 @ToString
-public class Comment {
+public class Comments {
 
 	@Id
 	@Column(name="commentno", columnDefinition = "NUMBER") 
