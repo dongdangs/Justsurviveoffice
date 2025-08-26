@@ -154,7 +154,6 @@
 		    $('div#displayList').hide();
 		    searchBoard(); // 글목록 검색하기 요청
 	   });
-	     
 	   
 	   
    }); // end of $(function(){})--------------------------
