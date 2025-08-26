@@ -67,7 +67,7 @@ public class BoardController {
 		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
 		
 		MultipartFile attach = boardDto.getAttach();
-/*  	주요 메소드:	getOriginalFilename() → 원본 파일명
+		/*  	주요 메소드:	getOriginalFilename() → 원본 파일명
 					getSize() → 파일 크기
 					getBytes() → 파일 내용을 바이트 배열로
 					transferTo(File dest) → 실제 서버에 저장 */
@@ -78,7 +78,7 @@ public class BoardController {
 			session = request.getSession(); // WAS(톰캣)의 절대경로 알아오기.
 			String root = session.getServletContext().getRealPath("/");
 			//System.out.println(root);
-// /Users/dong/git/Justsurviveoffice/Justsurviveoffice/bin/main/static/files
+			// /Users/dong/git/Justsurviveoffice/Justsurviveoffice/bin/main/static/files
 			String path = "";
 			try {
 				path = new ClassPathResource("static/files")
@@ -141,70 +141,85 @@ public class BoardController {
 	}
 	
 	
- // 각 카테고리 게시판에 들어가기!
-	//또는 전체 게시물 검색!
-	@GetMapping("list")
-	public ModelAndView list(ModelAndView modelview, 
-							 HttpServletRequest request,
-							 HttpServletResponse response,
-	 @RequestParam(name="searchType", defaultValue="") String searchType,
-	 @RequestParam(name="searchWord", defaultValue="") String searchWord, 
-	 @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
-	 @RequestParam(name="category", defaultValue="") String category) {
- // http://localhost:9089/justsurviveoffice/board/list?category=1
-		List<BoardDTO> boardList = null;
-		
-		// 추후 referer 는 spring security의 토큰 검사로 변경.
-		String referer = request.getHeader("Referer");
-		if(referer == null) { // url타고 get방식으로 접근 불가능하도록!
-			modelview.setViewName("redirect:/index");
+	 // 각 카테고리 게시판에 들어가기!
+		//또는 전체 게시물 검색!
+		@GetMapping("list")
+		public ModelAndView list(ModelAndView modelview, 
+								 HttpServletRequest request,
+								 HttpServletResponse response,
+		 @RequestParam(name="searchType", defaultValue="") String searchType,
+		 @RequestParam(name="searchWord", defaultValue="") String searchWord, 
+		 @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
+		 @RequestParam(name="category", defaultValue="") String category) {
+			// http://localhost:9089/justsurviveoffice/board/list?category=1
+			List<BoardDTO> boardList = null;
+			
+			// 추후 referer 는 spring security의 토큰 검사로 변경.
+			String referer = request.getHeader("Referer");
+			if(referer == null) { // url타고 get방식으로 접근 불가능하도록!
+				modelview.setViewName("redirect:/index");
+				return modelview;
+			}
+			 
+			Map<String, String> paraMap = new HashMap<>();
+			paraMap.put("searchType", searchType);
+			paraMap.put("searchWord", searchWord);
+			paraMap.put("category", category);
+			// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
+			
+			int totalCount = 0;    // 총 게시물 건수
+			int sizePerPage = 10;  // 한 페이지당 보여줄 게시물 건수
+			int totalPage = 0;     // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
+			totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
+
+			boardList = boardService.boardList(paraMap);
+			
+			// 정규화가 content는 필요함!
+			for(BoardDTO boardDto : boardList) {
+				boardDto.setBoardContent(
+						 boardDto.getBoardContent()
+						.replace("&nbsp;", " ")
+						.toLowerCase()
+						.replaceAll("<[^>]+>", " ")				// <p> 처럼 태그 형태 제거
+						.replaceAll("[^0-9a-zA-Z가-힣]+", " ")	// 한글/영문/숫자 빼고 다 공백 처리
+						.replaceAll("\\s+", " ")	);			// \\s → 정규식에서 공백 문자(whitespace) 를 의미, 공백 정리
+						// replaceAll("\\s+", " ") 은 연속된 모든 종류의 공백(스페이스/탭/줄바꿈 등)을 스페이스 하나 로 바꾸는 코드);
+			}
+			//이렇게 하지않으면, JSP가 HTML 스마트 에디터의 태그까지 문자열로 찍어주기 때문에 레이아웃이 깨짐!
+			
+
+			HttpSession session = request.getSession();
+			UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+			// 로그인 된 유저가 있다면, 게시물 별 bookmarked 를 체크해야함.
+			if(loginUser != null) {
+				for(BoardDTO boardDto : boardList) {
+					boardDto.setBookmarked(bookmarkService.isBookmarked(
+															loginUser.getId(), 
+															boardDto.getBoardNo())); 
+				}
+			}
+			System.out.println(category);
+
+			modelview.addObject("boardList", boardList);
+			modelview.addObject("searchType", searchType);
+			modelview.addObject("searchWord", searchWord);
+			modelview.addObject("category", category);
+			
+			modelview.setViewName("board/list");
+			
 			return modelview;
 		}
-		 
-		Map<String, String> paraMap = new HashMap<>();
-		paraMap.put("searchType", searchType);
-		paraMap.put("searchWord", searchWord);
-		paraMap.put("category", category);
-		// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
-		int totalCount = 0;    // 총 게시물 건수
-		int sizePerPage = 10;  // 한 페이지당 보여줄 게시물 건수
-		int totalPage = 0;     // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
-		totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
 
-		boardList = boardService.boardList(paraMap);
-		
-
-		HttpSession session = request.getSession();
-		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
-		// 로그인 된 유저가 있다면, 게시물 별 bookmarked 를 체크해야함.
-		if(loginUser != null) {
-			for(BoardDTO boardDto : boardList) {
-				boardDto.setBookmarked(bookmarkService.isBookmarked(
-														loginUser.getId(), 
-														boardDto.getBoardNo())); 
-			}
-		}
-		System.out.println(category);
-
-		modelview.addObject("boardList", boardList);
-		modelview.addObject("searchType", searchType);
-		modelview.addObject("searchWord", searchWord);
-		modelview.addObject("category", category);
-		
-		modelview.setViewName("board/list");
-		
-		return modelview;
-	}
 	
 	// 조회수 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
 	@RequestMapping("view") //post,get 둘 다 받아올 것!
 	public ModelAndView view(ModelAndView modelview,
 							 HttpServletRequest request,
 							 HttpServletResponse response,
-			 @RequestParam(name="searchType", defaultValue="") String searchType,
-			 @RequestParam(name="searchWord", defaultValue="") String searchWord, 
-			 @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
-			 @RequestParam(name="category", defaultValue="") String category,
+							 @RequestParam(name="searchType", defaultValue="") String searchType,
+							 @RequestParam(name="searchWord", defaultValue="") String searchWord, 
+							 @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
+							 @RequestParam(name="category", defaultValue="") String category,
 			 				 BoardDTO boardDto) {
 
 		// 추후 referer 는 spring security의 토큰 검사로 변경.
@@ -214,6 +229,12 @@ public class BoardController {
 			return modelview;
 		}
 		
+		
+		modelview.addObject(boardDto);
+		
+		boardDto = boardService.getView(boardDto.getBoardNo());
+
+		
 		Map<String, String> paraMap = new HashMap<>();
 		
 		paraMap.put("searchType", searchType); 
@@ -221,11 +242,11 @@ public class BoardController {
 		paraMap.put("currentShowPageNo", searchType);
 		
 		boardDto = boardService.selectView(boardDto.getBoardNo());
-		
+				
 		if(boardDto != null) { // 뒤로가기 혹은 오류가 없는 정상 게시물인 경우 이동.
 			System.out.println(boardDto.getBoardNo());
 			System.out.println(boardDto.getFk_categoryNo());
-// 명심할 점!, 1. 완벽한 조회수 알고리즘은 존재하지 않는다.
+			// 명심할 점!, 1. 완벽한 조회수 알고리즘은 존재하지 않는다.
 		//   2. 방법은 쿠키, 세션, (실무)DB로그, (실무)Redis 가 있다.
 		//	 3. 나는 내가 내가 배운 지식을 재활용하기 위해 세션방식을 해본 후, 쿠키방식을 선택했다..
 		//   4. 세션방식의 단점(세션이 만료되거나 로그아웃 시에는 소용이 없다 + 세션리미트는 하나로 통일됌)을 이해하고 구현한다.
@@ -293,8 +314,23 @@ public class BoardController {
 					setCookieLimit.setMaxAge(1*60); // 1분
 					setCookieLimit.setPath("/"); // 쿠키가 지정 경로에서만 전송된다는 것!(보안)
 					response.addCookie(setCookieLimit);
-// jakarta.servlet.http.Cookie@5f3fcbef{-1173940223_108=yes,{Max-Age=60, Path=/}}
+					// jakarta.servlet.http.Cookie@5f3fcbef{-1173940223_108=yes,{Max-Age=60, Path=/}}
 				}
+				/* 김예준 이전글 다음긇 체크용
+				System.out.println("이전페이지 1:" + boardDto.getPreNo());
+				System.out.println("다음페이지 1:" + boardDto.getNextNo());
+				System.out.println("보드넘버 1: " + boardDto.getBoardNo());
+				*/
+				
+				/* null 일시 0값 부여서해서 view.jsp 로 0 값을 보냄 (김예준)*/
+				if(boardDto.getPreNo() == null ) {
+					boardDto.setPreNo("0");
+				}
+				else if(boardDto.getNextNo() == null ) {
+					boardDto.setNextNo("0");
+				}
+				
+				
 			} // 로그인된 유저가 자신의 게시물에 들어갔다면 if문 생략
 			else System.out.println("본인 게시물 아니세요?");
 			
@@ -302,6 +338,7 @@ public class BoardController {
 			
 			modelview.setViewName("board/view");
 			return modelview;
+			
 		}
 		else { // 뒤로가기 혹은 오류로 인한 삭제게시물을 클릭한 경우.
 			modelview.addObject("message", "현재 존재하지 않는 게시물입니다.");

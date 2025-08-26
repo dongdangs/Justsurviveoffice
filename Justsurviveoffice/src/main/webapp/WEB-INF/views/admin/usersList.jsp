@@ -83,8 +83,9 @@
 </script>
 
 </head>
+<jsp:include page="../header/header2.jsp" />	
 <body>
-	
+
 	<!-- 사용자 검색 및 목록 박스 -->
 	<div class="container mt-4 mb-5 p-5" id="userListBox">
 		

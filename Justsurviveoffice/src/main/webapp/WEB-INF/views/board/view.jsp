@@ -62,10 +62,40 @@
 }
 </style>
 <script type="text/javascript">
-	$(function() {
+
+	$(function(){
 		
+		const nextVals = ${boardDto.nextNo};
 		
-	});
+		if(nextVals == 0) {
+			$('div#nextBtn').hide();
+		}
+		
+		const preVals = ${boardDto.preNo};
+		
+		if(preVals == 0) {
+			$('div#prevBtn').hide();
+		}
+		
+	});  // end of $(function()}{})
+
+	function goViewA(){
+		 const frm = document.goViewFrm;
+		 frm.boardNo.value = ${boardDto.preNo};
+		 
+		 frm.method = "post";
+		 frm.action = "<%= ctxPath%>/board/view";
+		 frm.submit();
+	}
+
+	function goViewB(){
+		 const frm = document.goViewFrm;
+		 frm.boardNo.value = ${boardDto.nextNo};
+		 
+		 frm.method = "post";
+		 frm.action = "<%= ctxPath%>/board/view";
+		 frm.submit();
+	}
 	
 	function del() {
 		if(!confirm("정말로 삭제하시겠습니까?")) {
@@ -78,70 +108,7 @@
 	}
 </script>
 
-
-<div style="display: flex; background-image: url('<%= ctxPath %>/images/background.png');">
-  <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" style="">
-	<div>
-		<img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-             <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
-             <div class="mb-3">
-             	<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                 포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
-             </div>
-	</div>
-	<div style="width: 70%; margin-top:30%; border: solid 1px green;">
-		<h6 style="font-weight: bolder;">대사살 Hot! 게시글</h6>
-		<table class="table table-sm table-borderless">
-			<tbody style="font-size: 10pt;">
-				<tr>
-					<td style="width: 5%; font-weight: bold;">01</td>
-					<td style="width: 95%;">hot 게시글 1등 제목입니다.~~~~~~~<span class="text-right text-danger">(4)</span></td>
-				</tr>
-				<tr>
-					<td style="width: 5%; font-weight: bold;">02</td>
-					<td style="width: 95%;">hot 게시글 2등 제목입니다.!!!!!!!!!!!!!!!!!!!!<span class="text-right text-danger">(9)</span></td>
-				</tr>
-				<tr>
-					<td style="width: 5%; font-weight: bold;">03</td>
-					<td style="width: 95%;">hot 게시글 3등 제목입니다.#######<span class="text-right text-danger">(9)</span></td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-				
-	<div class="mt-5" style="width: 70%; border: solid 1px green;">
-		<h6 style="font-weight: bolder;">대사살 댓글많은 게시글</h6>
-			<table class="table table-sm table-borderless">
-				<tbody style="font-size: 10pt;">
-					<tr>
-						<td style="width: 5%; font-weight: bold;">01</td>
-						<td style="width: 95%;">댓글많은 게시글 1등 제목입니다.~~~<span class="text-right text-danger">(100)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">02</td>
-						<td style="width: 95%;">댓글많은 게시글 2등 제목입니다.!!!!<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">03</td>
-						<td style="width: 95%;">댓글많은 게시글 3등 제목입니다.@@@@<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">04</td>
-						<td style="width: 95%;">댓글많은 게시글 4등 제목입니다.####<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">05</td>
-						<td style="width: 95%;">댓글많은 게시글 5등 제목입니다.$$$$$<span class="text-right text-danger">(55)</span></td>
-					</tr>	
-					<tr>
-						<td style="width: 5%; font-weight: bold;">06</td>
-						<td style="width: 95%;">댓글많은 게시글 6등 제목입니다.~~~<span class="text-right text-danger">(100)</span></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
- <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; margin-left:20px;">
+ <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px;">
 	<div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray">
 		<input name="fk_categoryNo" style="display: none;"
 				    value="${boardDto.fk_categoryNo}"/>
@@ -246,6 +213,17 @@
     <div style="margin-top:20px;">
         <a href="<%=ctxPath %>/board/list?category=${boardDto.fk_categoryNo}" class="btn">목록</a>
     </div>
+    
+    <div class="Boardpagination">
+			<div id="prevBtn" class="prevBtn" onclick="goViewA('${boardDto.preNo}')" style="cursor:pointer;">이전글: ${boardDto.preName}</div>
+			<div id="nextBtn" class="nextBtn" onclick="goViewB('${boardDto.nextNo}')" style="cursor:pointer;">다음글: ${boardDto.nextName}</div>
+		</div>
+	<form name="goViewFrm">
+	    <input type="hidden" name="boardNo" />
+		<input type="hidden" name="boardWritt" />
+	</form>
+	<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
+	<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
 
 </div>
 </div>

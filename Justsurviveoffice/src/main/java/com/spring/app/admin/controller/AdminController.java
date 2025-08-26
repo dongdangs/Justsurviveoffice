@@ -1,6 +1,7 @@
 package com.spring.app.admin.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.app.common.MyUtil;
 import com.spring.app.entity.Users;
@@ -28,6 +30,10 @@ public class AdminController {
    // === 생성자 주입(Constructor Injection) === //
    private final AdminService adminService;
    
+   @GetMapping("/adm")
+   public String adminIndex() {
+	   return "admin/adm";
+   }
    
    // 회원목록 전체보기(페이징 처리)
    @GetMapping("usersList")
@@ -151,6 +157,18 @@ public class AdminController {
       model.addAttribute("usersDto", usersDto);
       
       return "admin/usersDetail";
+   }
+   
+   @GetMapping("chart")
+   public String chart() {
+	   return "admin/chart";
+   }
+   
+   @GetMapping("chart/registerChart")
+   @ResponseBody
+   public List<Map<String, String>> registerChart() {
+	   List<Map<String, String>> registerPercent = adminService.registerChart();
+	   return registerPercent;
    }
    
 }

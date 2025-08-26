@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     
 <%
     String ctxPath = request.getContextPath();
@@ -40,3 +42,66 @@
 		</div>
 		
 		<div id="mycontent">
+			<div class="row">
+				<div class="col-md-3 d-flex flex-column align-items-center justify-content-start" style="border:solid 2px red;">
+					<div>
+						<img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
+	                	<div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
+		                <div class="mb-3">
+		                	<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
+		                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
+		                </div>
+					</div>
+					<div style="width: 70%; margin-top:30%; border: solid 1px green;">
+                		<div class="d-flex justify-content-between align-items-center mb-2">
+		                   		<h6 style="font-weight: bolder; margin: 0;">대사살 Hot! 게시글</h6>
+		                    <a href="<%= ctxPath%>/board/hot/all" class="text-primary" style="font-size: 0.9rem; text-decoration: none;">
+		                        
+		                    </a>
+               			 </div>
+                <table class="table table-sm table-borderless">
+                    <tbody style="font-size: 10pt;">
+                        <c:forEach var="hotRead" items="${hotReadList}">
+                            <tr>
+                                <td style="width: 5%; font-weight: bold;">
+                                    ${hotRead.rank}
+                                </td>
+                                <td style="width: 95%;">
+                                    <a href="<%= ctxPath%>/board/view?categoryNo=${hotRead.fk_categoryNo}&boardNo=${hotRead.boardNo}">
+                                        ${hotRead.boardName}
+                                    </a>
+                                    <span class="text-right text-danger">(${hotRead.readCount})</span>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+            <div style="width: 70%; margin-top:30%; border: solid 1px green;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 style="font-weight: bolder; margin: 0;">대사살 댓글많은 게시글</h6>
+                    <a href="<%= ctxPath%>/board/hot/all" class="text-primary" style="font-size: 0.9rem; text-decoration: none;">
+                        
+                    </a>
+                </div>
+                <table class="table table-sm table-borderless">
+                    <tbody style="font-size: 10pt;">
+                        <c:forEach var="hotComment" items="${hotCommentList}">
+                            <tr>
+                                <td style="width: 5%; font-weight: bold;">
+                                    ${hotComment.rank}
+                                </td>
+                                <td style="width: 95%;">
+                                    <a href="<%= ctxPath%>/board/view?categoryNo=${hotComment.fk_categoryNo}&boardNo=${hotComment.boardNo}">
+                                        ${hotComment.boardName}
+                                    </a>
+                                    <span class="text-right text-danger">(${hotComment.commentCount})</span>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+					
+				</div>
+			

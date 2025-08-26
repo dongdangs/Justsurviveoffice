@@ -80,9 +80,38 @@ public class BoardService_imple implements BoardService {
 
 		return n;
 	}
-	
+
+	// 메인페이지 카테고리 자동 불러오기 메서드
+	@Override
+	public List<Map<String, String>> getIndexList(String fk_categoryNo) {
+		List<Map<String, String>> IndexList = boardDao.getIndexList(fk_categoryNo);
+		return IndexList;
+	}
+
     
-    
+	   // 인기 게시글 리스트 (조회수 많은 순)
+	   @Override
+	   public List<BoardDTO> getTopBoardsByViewCount() {
+	      List<BoardDTO> hotReadList = boardDao.getTopBoardsByViewCount();
+	      return hotReadList;
+	   }
+	   	   
+	   // 댓글 많은 게시글 리스트
+	   @Override
+	   public List<BoardDTO> getTopBoardsByCommentCount() {
+	      List<BoardDTO> hotCommentList = boardDao.getTopBoardsByCommentCount();
+	      return hotCommentList;
+	   }
+
+	   @Override
+	   public BoardDTO getView(Long boardNo) {
+			BoardDTO boardDto = boardDao.getView(boardNo);
+			
+			return boardDto;
+	   }
+
+
+
 	
 }
 

@@ -25,5 +25,16 @@ public interface BoardDAO {
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	public int updateReadCount(Long boardNo);
 	
+	// 메인페이지 카테고리 자동 불러오기
+	public List<Map<String, String>> getIndexList(String fk_categoryNo);
+	
+	// 인기 게시글 리스트 (조회수 많은 순)
+	List<BoardDTO> getTopBoardsByViewCount();
+	   
+	// 댓글 많은 게시글 리스트
+	List<BoardDTO> getTopBoardsByCommentCount();
+
+	// 페이지내이션 
+	public BoardDTO getView(Long boardNo);
 	
 }

@@ -4,6 +4,7 @@ import static com.spring.app.entity.QCategory.category;
 import static com.spring.app.entity.QUsers.users;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -154,6 +155,11 @@ public class AdminService_imple implements AdminService {
       }
       
       return usersDto;
+   }
+
+   @Override
+   public List<Map<String, String>> registerChart() {
+		adminRepository.findAll();
    }
    
    
