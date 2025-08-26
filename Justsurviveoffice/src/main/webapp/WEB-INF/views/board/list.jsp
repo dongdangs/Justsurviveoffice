@@ -155,42 +155,6 @@
 		    searchBoard(); // 글목록 검색하기 요청
 	   });
 	   
-	   $(".btn-bookmark").on("click", function(e) {
-	        e.preventDefault();
-	        e.stopPropagation(); // 게시글 클릭과 이벤트 충돌 방지
-	
-	        const icon = $(this);
-	        const boardNo = icon.data("boardno");
-
-	        $.ajax({
-	            type: "POST",
-	            url: "<%=ctxPath%>/bookmark/toggle",
-	            data: { boardNo: boardNo },
-	            success: function(json) {
-	                if(json === "notLogin") {
-	                    alert("로그인이 필요합니다!");
-	                    location.href = "<%=ctxPath%>/login";
-	                    return;
-	                }
-	                if (json === "bookmarked") {
-	                    icon.removeClass("fa-regular")
-	                        .addClass("fa-solid text-warning")
-	                        .attr("title","북마크 해제");
-	                } else if (json === "removed") {
-	                    icon.removeClass("fa-solid text-warning")
-	                        .addClass("fa-regular")
-	                        .attr("title","북마크");
-	                } else {
-	                    alert("알 수 없는 응답: " + json);
-	                }
-	            },
-	            error: function(request, status, error) {
-	                alert("code: "+request.status+"\nmessage: "+request.responseText+"\nerror: "+error);
-	            }
-	        });
-	    });
-	   
-	   
 	   
    }); // end of $(function(){})--------------------------
    
@@ -216,7 +180,44 @@
 	
    }// end of function view(boardNo,fk_id)----------------------
 
-   
+   <!-- 북마크기능 -->
+   function bookmark(boardDto, boardNo, fk_id, isBookmarked) {
+	    const url = isBookmarked
+	        ? "<%= ctxPath%>/bookmark/remove"
+	        : "<%= ctxPath%>/bookmark/add";
+		
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: boardNo },
+	        success: function(json) {
+	            const icon = $(`#bookmark-icon-${boardNo}`);
+
+	            if (json.success) {
+	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	
+	            	if (isBookmarked) {
+	            	    // 해제된 상태로 변경
+	            	    boardDto.bookmarked = false;
+	            	    icon.addClass("fa-regular fa-bookmark");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+	            	} else {
+	            	    // 추가된 상태로 변경
+	            	    boardDto.bookmarked = true;
+	            	    icon.addClass("fa-solid fa-bookmark text-warning");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+	            	}
+
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}// end of function Bookmark(boardNo,fk_id)———————————
+
    
    
    // === 글목록 검색하기 요청 === //
@@ -337,14 +338,13 @@
 		       		 <!-- 제목 -->
 		        	<h3 class="title" style="margin-right: 10%">${boardDto.boardName}</h3>
 					<!-- 내용 -->
-		    	 	<div class="content" style="color: grey">${boardDto.boardContent}</div>
+		    	 	<div class="content" style="color: grey">${boardDto.textForBoardList}</div>
 		        </div>
-		        
 		        <!-- 첨부 이미지 썸네일 -->
-		        <c:if test="${boardDto.boardFileName ne null}">
-		          <img src="<%=ctxPath %>/files/${boardDto.boardFileName}" class="thumbnail" style="margin-left: auto;"/>
+		        <c:if test="${boardDto.imgForBoardList ne null}">
+		          <img src="${boardDto.imgForBoardList}" class="thumbnail" style="margin-left: auto;"/>
 		        </c:if>
-		        <c:if test="${boardDto.boardFileName eq null}"><br><br><br></c:if>
+		        <c:if test="${boardDto.imgForBoardList eq null}"><br><br><br></c:if>
 		      </div>
 		       
 		      <!-- 작성자/날짜/조회수 -->
@@ -352,9 +352,17 @@
 		        <span>${boardDto.fk_id}</span>
 		        <span>${boardDto.formattedDate}</span>
 		        <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
-			    <i class="btn-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}
-			    	fa-bookmark fa-regular" style="margin: auto; cursor: pointer;"
-			     	></i> 
+				
+				<form id="bookmarkForm-${boardDto.boardNo}">
+				    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+				    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+				    <i id="bookmark-icon-${boardDto.boardNo}"
+				       class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
+				       style="cursor: pointer;"
+				       onclick="bookmark(this, ${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
+				    </i>
+				</form>
+				
 		      </div>
 		    </div>
 		  </c:forEach>

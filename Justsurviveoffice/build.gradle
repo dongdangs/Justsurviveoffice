@@ -41,6 +41,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	
+	implementation 'org.jsoup:jsoup:1.18.1'
 	// mongodb 관련
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
 	//implementation 'org.mongodb:mongodb-driver-sync'
