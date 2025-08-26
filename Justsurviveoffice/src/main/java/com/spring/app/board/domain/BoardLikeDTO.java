@@ -18,6 +18,6 @@ public class BoardLikeDTO {
 
 	private String fk_boardNo;
 	
-
+	private boolean isBoardLiked;
 	
 }

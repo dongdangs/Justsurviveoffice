@@ -56,11 +56,12 @@
     }
     .btn:hover {
         background: #eee;
+    } .zip
+.content {  /* 내용: 줄바꿈 보존하기!! */
+    white-space: pre-wrap;    
     }
 /* .content {  /* 내용: 줄바꿈 보존하기!! */
     white-space: pre-wrap; */   
-    
-    
     
      
 }
@@ -85,6 +86,42 @@
 	        form.submit();
 	    });
 		
+	 <!-- 북마크기능 -->
+   function bookmark(boardNo, fk_id, isBookmarked) {
+	    const url = isBookmarked
+	        ? "<%= ctxPath%>/bookmark/remove"
+	        : "<%= ctxPath%>/bookmark/add";
+
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: boardNo },
+	        success: function(json) {
+	            const icon = $(`#bookmark-icon-${boardNo}`);
+
+	            if (json.success) {
+	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	if (isBookmarked) {
+	            	    // 해제된 상태로 변경
+	            	    icon.addClass("fa-regular fa-bookmark");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+	            	} else {
+	            	    // 추가된 상태로 변경
+	            	    icon.addClass("fa-solid fa-bookmark text-warning");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+	            	}
+
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}// end of function Bookmark(boardNo,fk_id)———————————
+
+	   
 		 
 
 		 // 댓글 삭제 
@@ -184,72 +221,43 @@
 	}
 	
 	
+	function boardLike(fk_boardNo, fk_id, isBoardLiked) {
+		const url = isBookmarked
+        ? "<%= ctxPath%>/board/remove"
+        : "<%= ctxPath%>/board/like";
+
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: fk_boardNo },
+	        success: function(json) {
+	            const icon = $(`#boardLike-icon-fk_boardNo`);
+	            
+	            if (json.success) {
+	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	if (isBoardLiked) {
+	            	    // 해제된 상태로 변경
+	            	    icon.addClass("fa-regular fa-bookmark");
+	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', false)`);
+	            	} else {
+	            	    // 추가된 상태로 변경
+	            	    icon.addClass("fa-solid fa-bookmark text-warning");
+	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', true)`);
+	            	}
+	
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}
+	
 </script>
 
-
-<div style="display: flex; background-image: url('<%= ctxPath %>/images/background.png');">
-  <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" style="">
-	<div>
-		<img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-             <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
-             <div class="mb-3">
-             	<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                 포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
-             </div>
-	</div>
-	<div style="width: 70%; margin-top:30%; border: solid 1px green;">
-		<h6 style="font-weight: bolder;">대사살 Hot! 게시글</h6>
-		<table class="table table-sm table-borderless">
-			<tbody style="font-size: 10pt;">
-				<tr>
-					<td style="width: 5%; font-weight: bold;">01</td>
-					<td style="width: 95%;">hot 게시글 1등 제목입니다.~~~~~~~<span class="text-right text-danger">(4)</span></td>
-				</tr>
-				<tr>
-					<td style="width: 5%; font-weight: bold;">02</td>
-					<td style="width: 95%;">hot 게시글 2등 제목입니다.!!!!!!!!!!!!!!!!!!!!<span class="text-right text-danger">(9)</span></td>
-				</tr>
-				<tr>
-					<td style="width: 5%; font-weight: bold;">03</td>
-					<td style="width: 95%;">hot 게시글 3등 제목입니다.#######<span class="text-right text-danger">(9)</span></td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-				
-	<div class="mt-5" style="width: 70%; border: solid 1px green;">
-		<h6 style="font-weight: bolder;">대사살 댓글많은 게시글</h6>
-			<table class="table table-sm table-borderless">
-				<tbody style="font-size: 10pt;">
-					<tr>
-						<td style="width: 5%; font-weight: bold;">01</td>
-						<td style="width: 95%;">댓글많은 게시글 1등 제목입니다.~~~<span class="text-right text-danger">(100)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">02</td>
-						<td style="width: 95%;">댓글많은 게시글 2등 제목입니다.!!!!<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">03</td>
-						<td style="width: 95%;">댓글많은 게시글 3등 제목입니다.@@@@<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">04</td>
-						<td style="width: 95%;">댓글많은 게시글 4등 제목입니다.####<span class="text-right text-danger">(55)</span></td>
-					</tr>
-					<tr>
-						<td style="width: 5%; font-weight: bold;">05</td>
-						<td style="width: 95%;">댓글많은 게시글 5등 제목입니다.$$$$$<span class="text-right text-danger">(55)</span></td>
-					</tr>	
-					<tr>
-						<td style="width: 5%; font-weight: bold;">06</td>
-						<td style="width: 95%;">댓글많은 게시글 6등 제목입니다.~~~<span class="text-right text-danger">(100)</span></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
- <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; margin-left:20px;">
+ <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; background-image: url('<%= ctxPath %>/images/background.png');">
 	<div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray">
 		<input name="fk_categoryNo" style="display: none;"
 				    value="${boardDto.fk_categoryNo}"/>
@@ -281,10 +289,9 @@
     </div>
     <!-- 첨부 파일 -->
     <c:if test="${boardDto.boardFileName ne null}">
-        <div class="board-file" style="margin: 10% 0 5% 0">
-            <img src="<%=ctxPath %>/files/${boardDto.boardFileName}" alt="첨부 이미지">
-        </div>
-    </c:if>
+   		 ${boardDto.boardFileName}
+         <img src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}" class="thumbnail" style="margin-left: auto;"/>
+	</c:if>
     <!-- 본문 내용 -->
     <div class="board-content" style="white-space: pre-wrap;"
     	>${boardDto.boardContent}</div>
@@ -294,23 +301,32 @@
 	<div class="board-actions d-flex justify-content-between align-items-center">
 	    <!-- 좋아요 -->
 	    <div class="d-flex">
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
-	            <i class="fas fa-thumbs-up"></i>
-	        </button>
+	        
+	        <form id="boardLikeForm-${boardLikeDto.fk_boardNo}">
+			    <input type="hidden" name="fk_boardNo" value="${boardLikeDto.fk_boardNo}">
+			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+			    <i id="boardLike-icon-${boardLikeDto.fk_boardNo}"
+			       class="fas fa-thumbs-up ${boardLikeDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+			       style="cursor: pointer;"
+			       onclick="boardLike(${boardLikeDto.fk_boardNo}, '${sessionScope.loginUser.id}', ${boardLikeDto.boardLiked ? true : false})">
+			    </i>
+			</form> 
 	    </div>
 	    
 	    <!-- 오른쪽 공유/신고/북마크 + 글 삭제 -->
-	    <div class="d-flex ml-auto">
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
-	            <i class="fas fa-share"></i>
-	            <span></span>
-	        </button>
-	        <button class="btn btn-sm mr-2" style="border:none; background:none;">
-	            <i class="fas fa-flag"></i>
-	        </button>
-	        <a href="<%=ctxPath%>/mypage/bookmarks" class="btn btn-sm" style="border:none; background:none;">
-	            <i class="fas fa-bookmark"></i>
-	        </a>
+		<div class="d-flex ml-auto" style="align-items:center; gap:12px;">
+	        <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
+	        
+		    <form id="bookmarkForm-${boardDto.boardNo}">
+			    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+			    <i id="bookmark-icon-${boardDto.boardNo}"
+			       class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
+			       style="cursor: pointer;"
+			       onclick="bookmark(${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
+			    </i>
+			</form> 
+			
 	        <form name="deleteForm" method="post" style="display:inline;margin: auto; ">
 		        <c:if test="${loginUser.id eq boardDto.fk_id}">
 		        	<input name="fk_categoryNo" style="display: none;" value="${boardDto.fk_categoryNo}"/>
@@ -327,6 +343,7 @@
     <div class="comment-section">
 	  <h3 style="font-weight: bold;">댓글<span>${fn:length(commentList)}</span></h3>
         <c:forEach var="comment" items="${commentList}">
+
     <div class="comment">
         <div class="meta">
             <span>${comment.fk_id}</span> | 
@@ -374,6 +391,5 @@
         <a href="<%=ctxPath %>/board/list?category=${boardDto.fk_categoryNo}" class="btn">목록</a>
     </div>
 
-</div>
 </div>
 </html>

@@ -33,4 +33,18 @@ public interface BoardDAO {
 
     //게시글 좋아요 수
 	public int getLikeCount(Long boardNo);
+	////////////////////////////////////////////////////////////////////////////
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	List<BoardDTO> hotAll();
+	
+	// 인기 게시글 리스트 (조회수 많은 순)
+	List<BoardDTO> getTopBoardsByViewCount();
+	
+	// 댓글 많은 게시글 리스트
+	List<BoardDTO> getTopBoardsByCommentCount();
+	////////////////////////////////////////////////////////////////////////////
+
+	// 게시물 좋아요
+	int boardLike(String fk_id, Long fk_boardNo);
+	
 }

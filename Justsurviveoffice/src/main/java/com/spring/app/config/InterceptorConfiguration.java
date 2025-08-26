@@ -33,13 +33,14 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 									 "/admin/**",
 									 "/survey/**",
 									 "categoryTest/survey/**",
-	// Interceptor 가 /css/*, /js/**, /images/** 등의 정적 자원까지 가로채고, 
+	// Interceptor 가 /css/*, /js/**, /images/** 등의 정적(static) 자원까지 가로채고, 
 	// 로그인하지 않은 사용자는 이런 리소스에 접근할 수 없게 되었기 때문에 반드시 포함.
 			        		         "/bootstrap-4.6.2-dist/**",
 			        		         "/js/**",
 			        		         "/css/**",
 			        	             "/images/**",
-			        		         "/files/**");
+			        		         "/resources/**",
+			        	             "/smarteditor/**");
 		
 		registry.addInterceptor(adminLoginCheckInterceptor)
 		.addPathPatterns("/admin/**")
@@ -50,7 +51,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 	        		         "/js/**",
 	        		         "/css/**",
 	        	             "/images/**",
-	        	             "/files/**");
+							 "/smarteditor/**");
 	}
 	
 	
