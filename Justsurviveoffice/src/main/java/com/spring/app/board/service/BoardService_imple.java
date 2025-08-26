@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.model.BoardDAO;
-import com.spring.app.common.FileManager;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 public class BoardService_imple implements BoardService {
 
     private final BoardDAO boardDao;
-    private final FileManager fileManager;
 	
     // 게시글 업로드 메소드
 	@Override

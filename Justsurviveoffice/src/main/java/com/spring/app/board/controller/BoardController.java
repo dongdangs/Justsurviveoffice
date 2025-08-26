@@ -206,7 +206,7 @@ public class BoardController {
 			modelview.setViewName("redirect:/index");
 			return modelview;
 		}
-		 
+
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("searchType", searchType);
 		paraMap.put("searchWord", searchWord);
@@ -230,8 +230,7 @@ public class BoardController {
 														boardDto.getBoardNo())); 
 			}
 		}
-		System.out.println(category);
-
+		// System.out.println(category);
 		modelview.addObject("boardList", boardList);
 		modelview.addObject("searchType", searchType);
 		modelview.addObject("searchWord", searchWord);
