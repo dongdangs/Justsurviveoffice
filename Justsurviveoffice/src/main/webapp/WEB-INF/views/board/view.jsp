@@ -7,65 +7,43 @@
     //     /myspring 
 %>
 <jsp:include page="../header/header1.jsp" /> 
-<html>
-<style>
-    .board-container {
-        width: 80%;
-        margin: 20px auto;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 20px;
-    }
-    .board-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .board-header h2 {
-        margin: 0;
-    }
-    .board-meta {
-        font-size: 0.9em;
-        color: #666;
-    }
-    .board-content {
-        margin: 15px 0;
-    }
-    .board-file img {
-        max-width: 300px;
-        margin-top: 10px;
-    }
-    .board-actions {
-        margin-top: 10px;
-    }
-    .comment-section {
-        margin-top: 30px;
-    }
-    .comment {
-        border-top: 1px solid #eee;
-        padding: 10px 0;
-    }
-    .comment .meta {
-        font-size: 0.8em;
-        color: #555;
-    }
-    .btn {
-        padding: 5px 10px;
-        border: 1px solid #ccc;
-        background: #f9f9f9;
-        cursor: pointer;
-    }
-    .btn:hover {
-        background: #eee;
-    } .zip
-.content {  /* 내용: 줄바꿈 보존하기!! */
-    white-space: pre-wrap;    
-    }
-/* .content {  /* 내용: 줄바꿈 보존하기!! */
-    white-space: pre-wrap; */   
-    
-     
+<html><style>
+  .board-container {
+    width: 80%;
+    margin: 20px auto;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+  }
+  .board-header { display:flex; justify-content:space-between; align-items:center; }
+  .board-header h2 { margin:0; }
+  .board-meta { font-size:0.9em; color:#666; }
+  .board-content { margin:15px 0; white-space: pre-wrap; word-break: break-word; }
+  .board-file img { max-width:300px; margin-top:10px; }
+  .board-actions { margin-top:10px; }
+  .comment-section { margin-top:30px; }
+  .comment { border-top:1px solid #eee; padding:10px 0; }
+  .comment .meta { font-size:0.8em; color:#555; }
+  .btn { padding:5px 10px; border:1px solid #ccc; background:#f9f9f9; cursor:pointer; }
+  .btn:hover { background:#eee; }
+
+  /* << 핵심: 본문 내 삽입 미디어 크기 제한 >> */
+  .board-content img,
+  .board-content video,
+  .board-content iframe {
+    max-width: 100% !important;  /* 컨테이너 너비를 넘지 않도록 */
+    height: auto !important;     /* 비율 유지 */
+    display: block;
+    margin: 0 auto;              /* 가운데 정렬(옵션) */
+  }
+.comment img,
+.comment video,
+.comment iframe {
+  max-width: 100% !important;
+  height: auto !important;
 }
+  
 </style>
+
 <script type="text/javascript">
 	$(function() {
 		
@@ -257,9 +235,9 @@
 	}
 	
 </script>
-
- <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; background-image: url('<%= ctxPath %>/images/background.png');">
-	<div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray">
+<body style="background-image: url('<%= ctxPath %>/images/background.png'); "></body>
+ <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; ">
+	<div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray;">
 		<input name="fk_categoryNo" style="display: none;"
 				    value="${boardDto.fk_categoryNo}"/>
 		<c:if test="${boardDto.fk_categoryNo eq 1}">
@@ -288,15 +266,18 @@
         <span>${boardDto.formattedDate}</span> |
         <span>조회수: ${boardDto.readCount}</span>
     </div>
-    <!-- 첨부 파일 -->
-    <c:if test="${boardDto.boardFileName ne null}">
-   		 ${boardDto.boardFileName}
-         <img src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}" class="thumbnail" style="margin-left: auto;"/>
-	</c:if>
+	<!-- 첨부 파일 -->
+	<div style="min-height: 20%; max-width: 100%; overflow: hidden;">
+	    <c:if test="${boardDto.boardFileName ne null}">
+	        ${boardDto.boardFileName}
+	        <img src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}" 
+	             class="thumbnail" 
+	             style="max-width: 100%; height: auto; display: block; margin: 0 auto;" />
+	    </c:if>
+	</div>
     <!-- 본문 내용 -->
     <div class="board-content" style="white-space: pre-wrap;"
     	>${boardDto.boardContent}</div>
-
 
     <!-- 좋아요 , 공유/신고/북마크 --> 
 	<div class="board-actions d-flex justify-content-between align-items-center">
@@ -375,22 +356,20 @@
                 <button type="button" class="btn btn-sm  cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
             </c:if>
         </div>
-    </div>
-</c:forEach>
+	    </div>
+		</c:forEach>
+	       <!-- 댓글 작성 -->
+	       <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
+	           <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+	           <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+	           <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
+	           <button type="submit" class="btn" id="addComment">댓글 등록</button>
+	       </form>
+	    </div>
+	    <!-- 목록 버튼 -->
+	    <div style="margin-top:1px;">
+	        <a href="<%=ctxPath %>/board/list?category=${boardDto.fk_categoryNo}" class="btn">목록</a>
+	    </div>
+	</div>
 
-        <!-- 댓글 작성 -->
-        <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
-            <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
-            <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
-            <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
-            <button type="submit" class="btn" id="addComment">댓글 등록</button>
-        </form>
-    </div>
-
-    <!-- 목록 버튼 -->
-    <div style="margin-top:20px;">
-        <a href="<%=ctxPath %>/board/list?category=${boardDto.fk_categoryNo}" class="btn">목록</a>
-    </div>
-
-</div>
 </html>

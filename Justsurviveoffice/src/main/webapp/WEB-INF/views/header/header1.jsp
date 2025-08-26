@@ -5,7 +5,7 @@
     
 <%
     String ctxPath = request.getContextPath();
-    //     /justsurviveoffice
+    //     /myspring
 %>    
     
 <!DOCTYPE html>
@@ -41,16 +41,16 @@
          <jsp:include page="../menu/menu1.jsp" />
       </div>
       
-      <div id="mycontent">
-         <div class="row">
-            <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" style="border:solid 2px red;">
+      <div id="mycontent"">
+         <div class="row"> 
+            <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
             <c:if test="${not empty sessionScope.loginUser}">   
                <div>
                   <img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-                   <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
-                   <div class="mb-3">
+                   <div class="text-muted small mb-3 ml-3">${sessionScope.loginUser.email}</div>
+                   <div class="mb-3 ml-3">
                       <span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                       포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
+                      <div>포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b></div>
                    </div>
                </div>
             </c:if>   
@@ -77,6 +77,29 @@
                     </tbody>
                 </table>
             </div>
-               <jsp:include page="../menu/menubar.jsp" />
+            <div style="width: 70%; margin-top:30%; border: solid 1px green;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 style="font-weight: bolder; margin: 0;">대사살 댓글많은 게시글</h6>
+                </div>
+                <table class="table table-sm table-borderless">
+                    <tbody style="font-size: 10pt;">
+                        <c:forEach var="hotComment" items="${hotCommentList}">
+                            <tr>
+                                <td style="width: 5%; font-weight: bold;">
+                                    ${hotComment.rank}
+                                </td>
+                                <td style="width: 95%;">
+                                    <a href="<%= ctxPath%>/board/view?categoryNo=${hotComment.fk_categoryNo}&boardNo=${hotComment.boardNo}"
+                                       style="color: #000;">
+                                        ${hotComment.boardName}
+                                    </a>
+                                    <span class="fa-regular fa-comment text-muted" style="font-size: 8pt;">(${hotComment.commentCount})</span>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+               
             </div>
          
