@@ -24,6 +24,7 @@ import com.spring.app.bookmark.service.BookmarkService;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
 import com.spring.app.model.HistoryRepository;
+import com.spring.app.users.domain.CommentDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -351,7 +352,9 @@ public class BoardController {
 						loginUser.getId(), 
 						boardDto.getBoardNo())); 
 			}
-
+			// 댓글 목록 조회
+	        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
+	        modelview.addObject("commentList", commentList);
 			modelview.addObject("boardDto", boardDto);
 			
 			modelview.setViewName("board/view");
@@ -484,6 +487,84 @@ public class BoardController {
 		
 		return modelview;
 	}
+	
+	// 첨부파일 다운받기!
+	@PostMapping("download")
+    public void download(HttpServletRequest request,  
+		   				HttpServletResponse response,
+		   				String boardFileName,
+		   				String boardFileOriginName) {
+      
+      // HttpServletResponse response -> 서버가 클라이언트(웹브라우저)로 보내는 응답 객체
+      response.setContentType("text/html; charset=UTF-8");   // 브라우저가 응답을 HTML로 이해하도록 미리 Content-Type을 "text/html; charset=UTF-8"로 지정
+      // 즉, 이 줄은 "파일다운로드 실패 시, JS alert를 HTML로 제대로 해석시키려고" 넣은 것
+      
+      // 응답 객체에서 **텍스트(문자)**를 직접 브라우저로 내보내려면 response.getWriter()를 호출 이게 PrintWriter(타입)으로 반환
+      // PrintWriter → 문자 스트림을 응답(HttpServletResponse)에 쓰는 객체
+      PrintWriter out = null;   // 선언해주고!
+      
+      try {
+         // DTO 에 데이터가 있는지 체크! 및 파일이 들어있는지 체크!
+         if(boardFileOriginName == null) {
+            out = response.getWriter();
+            // out 은 웹브라우저에 기술하는 대상체라고 생각하자.(PrintWriter)
+            
+            // 파일이 없다면 해당 메시지 출력되게 한다.
+            out.println("<script type='text/javascript'>alert('파일다운로드가 불가합니다.'); history.back();</script>");
+            return;
+         }
+         else {
+            // 정상적으로 다운로드가 되어질 경우!
+            // 이것이 20250725123358_a4fc4b64d9dc480e871875bd3db1fe27.pdf 와 같은
+            // 바로 WAS 디스크에 저장된 파일명이다.
+            // Electrolux냉장고_사용설명서.pdf
+            // 다운로드시 보여줄 파일명
+            /*
+               첨부파일이 저장되어있는 WAS(톰캣) 디스크 경로명을 알아와야만 다운로드를 해줄 수 있다.
+               이 경로는 우리가 파일첨부를 위해서 @PostMapping("add") 에서 설정해두었던 경로와 똑같아야 한다.    
+            */
+            // WAS 의 webapp 의 절대경로를 알아와야 한다.
+            HttpSession session = request.getSession();
+            String root = session.getServletContext().getRealPath("/");
+            
+         //   System.out.println("~~~ 확인용 webapp 의 절대경로 ==> " + root);
+            // ~~~ 확인용 webapp 의 절대경로 ==> C:\git\Justsurviveoffice\src\main\webapp\
+            
+            String path = root + "resources" + File.separator + "files";
+            /* File.separator 는 운영체제에서 사용하는 폴더와 파일의 구분자이다.
+               운영체제가 Windows 이라면 File.separator 는  "\" 이고,
+               운영체제가 UNIX, Linux, 매킨토시(맥) 이라면  File.separator 는 "/" 이다. 
+            */
+            // path 가 첨부파일이 저장될 WAS(톰캣)의 폴더가 된다.
+            // System.out.println("~~~ 확인용 path ==> " + path);
+            // ~~~ 확인용 path ==> C:\NCS\workspace_spring_boot_17\myspring\src\main\webapp\resources\files
+            
+            // **** file 다운로드하기 **** //
+            boolean flag = false; // file 다운로드 성공, 실패인지 여부를 알려주는 용도
+            flag = fileManager.doFileDownload(boardFileName, boardFileOriginName, path, response);
+            // file 다운로드 성공시 flag 는 true,
+            // file 다운로드 실패시 flag 는 false 를 가진다.
+            if(!flag) {
+               // 다운로드가 실패한 경우 메시지를 띄운다.
+               out = response.getWriter();
+               // out 은 웹브라우저에 기술하는 대상체라고 생각하자.
+               out.println("<script type='text/javascript'>alert('파일다운로드가 실패되었습니다.'); history.back();</script>");
+            }
+         }
+      } catch(Exception e) {
+         
+         try {
+            out = response.getWriter();
+            // out 은 웹브라우저에 기술하는 대상체라고 생각하자.
+            
+            out.println("<script type='text/javascript'>alert('파일다운로드가 불가합니다.'); history.back();</script>");
+         } catch(Exception e1) {
+            e.printStackTrace();
+         }
+      }
+      
+   }
+
 	
 	
 	//////////////////////////////////////////////////////////////////////
