@@ -220,8 +220,8 @@ public class UsersController {
 	
 	
 	@PostMapping("verifyCertification")
-	public String verifyCertification(@RequestParam("userCertificationCode") String userCertificationCode,
-            						  @RequestParam("id") String id,
+	public String verifyCertification(@RequestParam(name="userCertificationCode") String userCertificationCode,
+            						  @RequestParam(name="id") String id,
             						  HttpSession session,
             						  HttpServletRequest request) {
 		
@@ -263,7 +263,7 @@ public class UsersController {
 	
 	@PostMapping("pwdUpdate")
 	public String pwdUpdate(@RequestParam(name="id") String id
-						  , @RequestParam("newPassword2") String newPassword
+						  , @RequestParam(name="newPassword2") String newPassword
 						  , HttpServletRequest request) {
 		
 		usersService.updatePassword(id, newPassword);
@@ -279,7 +279,7 @@ public class UsersController {
 	
 	@PostMapping("checkIdDuplicate")
 	@ResponseBody
-	public Map<String, Boolean> checkIdDuplicate(@RequestParam("id") String id) {
+	public Map<String, Boolean> checkIdDuplicate(@RequestParam(name="id") String id) {
 		
 	    boolean isExists = usersService.isIdExists(id);
 
@@ -292,7 +292,7 @@ public class UsersController {
 	
 	@PostMapping("checkEmailDuplicate")
 	@ResponseBody
-	public Map<String, Boolean> checkEmailDuplicate(@RequestParam("email") String email) {
+	public Map<String, Boolean> checkEmailDuplicate(@RequestParam(name="email") String email) {
 		
 	    boolean isExists = usersService.isEmailExists(email);
 

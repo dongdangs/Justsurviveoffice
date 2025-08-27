@@ -226,17 +226,19 @@
   	
   	  <!-- ===== 내가 작성한 글 목록 ===== -->
     <select id="getMyBoards" parameterType="string" resultType="BoardDTO">
-        select boardno, fk_categoryno, case
-    		   	when length(boardName) > 12
-    		   		then substr(boardName, 1, 12)
-    		   		else boardName
-    		   	end as boardName, createdatboard, updatedatboard, readcount, fk_id, boardfilename,
-boardfileoriginname, boarddeleted, case
-    		   	when length(boardcontent) > 12
-    		   		then substr(boardcontent, 1, 12)
-    		   		else boardcontent
-    		   	end as boardcontent
-from board
+        SELECT boardno, fk_categoryno, 
+        	   case
+    		   	  when length(boardName) > 12
+    		      then substr(boardName, 1, 12)
+    		   	  else boardName
+    		   end as boardName, 
+    		   createdatboard, updatedatboard, readcount, fk_id, boardfilename, boardfileoriginname, boarddeleted, 
+    		   case
+    		   	  when length(boardcontent) > 12
+    		   	  then substr(boardcontent, 1, 12)
+    		   	  else boardcontent
+    		   end as boardcontent
+		FROM board
         WHERE fk_id = #{fk_id}
         ORDER BY createdAtBoard DESC
     </select>

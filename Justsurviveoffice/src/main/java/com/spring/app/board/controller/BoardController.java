@@ -583,23 +583,6 @@ public class BoardController {
       
    }
 
-	
-	
-	//////////////////////////////////////////////////////////////////////
-	// Hot 게시글 전체 리스트 (조회수 많은 순)
-	@GetMapping("hot/all")
-	public ModelAndView hotAll(ModelAndView modelview) {
-		
-		List<BoardDTO> hotAllList = boardService.hotAll();
-		
-		modelview.addObject("boardList", hotAllList);
-		modelview.setViewName("board/boardList");
-		
-		return modelview;
-	}
-	//////////////////////////////////////////////////////////////////////
-	
-	
 	// 북마크 추가
     @PostMapping("like")
     @ResponseBody
