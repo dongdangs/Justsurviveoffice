@@ -121,4 +121,18 @@ public class BoardDAO_imple implements BoardDAO {
         return sql.insert("boardLike.boardLike", paramMap);
 	}
 	
+	// 총 검색된 게시물 건수
+	@Override
+	public int searchListCount(Map<String, String> paraMap) {
+		int n = sql.selectOne("board.searchListCount", paraMap);
+		return n;
+	}
+	
+	// 자동 검색어 완성
+	@Override
+	public List<String> getSearchWordList(Map<String, String> paraMap) {
+		List<String> wordList = sql.selectList("board.getSearchWordList", paraMap);
+		return wordList;
+	}
+	
 }

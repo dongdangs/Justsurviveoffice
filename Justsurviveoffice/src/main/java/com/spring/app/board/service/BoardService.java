@@ -71,4 +71,10 @@ public interface BoardService {
 	// 페이지네이션 구현
 	public BoardDTO getView(Long boardNo);
 	
+	// 총 검색된 게시물 건수
+	int searchListCount(Map<String, String> paraMap);
+	
+	// 자동 검색어 완성시키기
+	List<Map<String, String>> getSearchWordList(Map<String, String> paraMap);
+	
 }
