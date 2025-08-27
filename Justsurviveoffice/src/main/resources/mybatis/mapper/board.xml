@@ -202,24 +202,17 @@
 	    
 	<!-- 댓글 많은 게시글 리스트 -->
 	<select id="getTopBoardsByCommentCount" resultType="BoardDTO">
-		select *
-		from (
-		    select 
-		           row_number() over(
-		               order by C.COMMENTCOUNT desc, READCOUNT desc
-		           ) as RANK,
-		           B.BOARDNO, B.BOARDNAME, B.FK_CATEGORYNO, C.COMMENTCOUNT
-		    from BOARD B
-		         join (
-		            select FK_BOARDNO, 
-		                   count(*) as COMMENTCOUNT
-		            from COMMENTS
-		            group by FK_BOARDNO
-		         ) C 
-		         on B.BOARDNO = C.FK_BOARDNO
-		    where B.CREATEDATBOARD &gt;= ADD_MONTHS(SYSDATE, -1)
-		) 
-		where RANK &lt;= 5
+		select B.BOARDNO, B.BOARDNAME, B.FK_CATEGORYNO, C.COMMENTCOUNT
+		from BOARD B
+		     join (
+		        select FK_BOARDNO, count(*) as COMMENTCOUNT
+		        from COMMENTS
+		        group by FK_BOARDNO
+		     ) C
+		     on B.BOARDNO = C.FK_BOARDNO
+		where B.CREATEDATBOARD &gt;= ADD_MONTHS(SYSDATE, -1)
+		order by C.COMMENTCOUNT desc, readCount desc
+		fetch first 5 rows only
 	</select>
 	<!-- ================================================================================= -->
 	
