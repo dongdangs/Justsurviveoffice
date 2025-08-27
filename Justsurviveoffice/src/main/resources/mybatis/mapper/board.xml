@@ -328,6 +328,15 @@
   	</select>
   	
   	
+  	<!-- 보드 테이블에서 제목과 내용 가져오기(DB) -->
+  	<select id="getBoardContents" parameterType="String" resultType="BoardDTO">
+  		SELECT boardName, boardContent
+		FROM board
+		WHERE boardDeleted = 0 AND fk_categoryNo = TO_NUMBER(#{category})
+  	</select>
+  	
+  	
+  	
 </mapper>
 
 

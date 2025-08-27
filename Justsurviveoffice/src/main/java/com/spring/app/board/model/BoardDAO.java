@@ -65,4 +65,7 @@ public interface BoardDAO {
 	// 자동 검색어 완성
 	public List<String> getSearchWordList(Map<String, String> paraMap);
 	
+	// 보드 테이블에서 제목과 내용 가져오기(DB)
+	public List<BoardDTO> getBoardContents(String category);
+	
 }

@@ -135,4 +135,11 @@ public class BoardDAO_imple implements BoardDAO {
 		return wordList;
 	}
 	
+	// 보드 테이블에서 제목과 내용 가져오기(DB)
+	@Override
+	public List<BoardDTO> getBoardContents(String category) {
+		List<BoardDTO> boardListKey = sql.selectList("board.getBoardContents", category);
+		return boardListKey;
+	}
+	
 }

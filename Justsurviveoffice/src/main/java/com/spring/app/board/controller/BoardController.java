@@ -246,6 +246,11 @@ public class BoardController {
 		// ===========  게시글 보여주기(페이징 처리) 수정 끝 =========== //
 		modelview.setViewName("board/list");
 		
+		// == 키워드 메소드 작성 해봄 == // 
+		List<Map.Entry<String,Integer>> keyword_top = boardService.getKeyWord(category);	// 서비스에서 구현
+		modelview.addObject("keyword_top", keyword_top);
+		
+		
 		return modelview;
 	}
 	

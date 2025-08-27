@@ -2,6 +2,7 @@ package com.spring.app.board.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.cache.annotation.Cacheable;
 
@@ -76,5 +77,8 @@ public interface BoardService {
 	
 	// 자동 검색어 완성시키기
 	List<Map<String, String>> getSearchWordList(Map<String, String> paraMap);
+	
+	// == 키워드 메소드 작성 해봄 == // 
+	List<Entry<String, Integer>> getKeyWord(String category);
 	
 }
