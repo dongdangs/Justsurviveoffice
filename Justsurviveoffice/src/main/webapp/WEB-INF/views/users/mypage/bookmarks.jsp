@@ -235,12 +235,23 @@ $(function () {
 						</thead>
                             <tbody>
 						    <c:forEach var="bm" items="${myBookmarks}" varStatus="st">
+						    
+						    <form id="viewForm${bm.fk_boardNo}" 
+							      action="<%= ctxPath %>/board/view" 
+							      method="post" 
+							      style="display:none;">
+							    <input type="hidden" name="category" value="${bm.fk_categoryNo}">
+							    <input type="hidden" name="boardNo" value="${bm.fk_boardNo}">
+							</form>
+							
 						    <tr>
 						        <td>${st.index + 1}</td>
 						        <td>
-						            <a href="${pageContext.request.contextPath}/board/detail?boardNo=${bm.fk_boardNo}">
-						                ${bm.boardName}
-						            </a>
+						            <a href="javascript:void(0);" 
+							           onclick="document.getElementById('viewForm${bm.fk_boardNo}').submit();" 
+							           style="color: #000;">
+							            ${bm.boardName}
+							        </a>
 						        </td>
 						        <td>${fn:replace(bm.createdAtMark, "T", " ")}</td>
 						        <td>

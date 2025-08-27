@@ -130,20 +130,36 @@ $(function(){
            <c:otherwise>
              <table class="table table-hover">
                <thead class="thead-light">
-                 <tr>
+                 <tr style="text-align: center;">
                    <th>번호</th>
                    <th>제목</th>
                    <th>작성일</th>
                    <th>조회수</th>
+                   <th>삭제여부</th>
                  </tr>
                </thead>
                <tbody>
                  <c:forEach var="board" items="${myBoards}" varStatus="st">
-                   <tr>
+                   <form id="viewForm${board.boardNo}" 
+					      action="<%= ctxPath %>/board/view" 
+					      method="post" 
+					      style="display:none;">
+					    <input type="hidden" name="category" value="${board.fk_categoryNo}">
+					    <input type="hidden" name="boardNo" value="${board.boardNo}">
+				   </form>	
+                 
+                   <tr style="text-align: center;">
                      <td>${st.count}</td>
-                     <td>${board.boardName}</td>
+                     <td>
+			            <a href="javascript:void(0);" 
+				           onclick="document.getElementById('viewForm${board.boardNo}').submit();" 
+				           style="color: #000;">
+				            ${board.boardName}
+				        </a>
+			         </td>
                      <td>${fn:substring(board.createdAtBoard, 0, 10)}</td>
                      <td>${board.readCount}</td>
+                     <td>${board.boardDeleted}</td>
                    </tr>
                  </c:forEach>
                </tbody>

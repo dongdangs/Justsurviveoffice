@@ -23,9 +23,11 @@ public class BookMarkDTO {
 
 	private LocalDateTime createdAtMark;
 	
+	private Long fk_categoryNo; // 카테고리번호 // jsp에서 계속 받아와야함.
 	
 	private String boardName;        
 	private LocalDateTime createdAtBoard; // 게시글 작성일
 	private int readCount;           // 게시글 조회수
+	
 	
 }

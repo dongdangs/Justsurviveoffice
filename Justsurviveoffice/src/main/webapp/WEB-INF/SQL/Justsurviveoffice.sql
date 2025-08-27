@@ -150,19 +150,16 @@ select *
 from (
     select 
            row_number() over(
-               order by nvl(C.COMMENTCOUNT,0) desc, 
-                        nvl(C.LATESTCOMMENT, to_date('1900-01-01','yyyy-mm-dd')) desc
+               order by nvl(C.COMMENTCOUNT,0) desc
            ) as RANK,
            B.BOARDNO, 
            B.BOARDNAME, 
            B.FK_CATEGORYNO, 
-           nvl(C.COMMENTCOUNT, 0) as COMMENTCOUNT,
-           C.LATESTCOMMENT
+           nvl(C.COMMENTCOUNT, 0) as COMMENTCOUNT
     from BOARD B
          left join (
             select FK_BOARDNO, 
-                   count(*) as COMMENTCOUNT,
-                   max(UPDATEDATCOMMENT) as LATESTCOMMENT
+                   count(*) as COMMENTCOUNT
             from COMMENTS
             group by FK_BOARDNO
          ) C 
@@ -172,3 +169,28 @@ from (
 where RANK <= 5;
 
 
+select * from board;
+
+desc board;
+
+
+
+select boardno, fk_categoryno, case
+    		   	when length(boardName) > 12
+    		   		then substr(boardName, 1, 12)
+    		   		else boardName
+    		   	end as boardName, createdatboard, updatedatboard, readcount, fk_id, boardfilename,
+boardfileoriginname, boarddeleted, case
+    		   	when length(boardcontent) > 12
+    		   		then substr(boardcontent, 1, 12)
+    		   		else boardcontent
+    		   	end as boardcontent
+from board;
+
+
+select * from comments;
+
+
+select count(*)
+from comments
+group by fk_boardNo;

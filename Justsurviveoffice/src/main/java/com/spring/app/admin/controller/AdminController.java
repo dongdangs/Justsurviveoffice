@@ -163,12 +163,18 @@ public class AdminController {
    public String chart() {
 	   return "admin/chart";
    }
-   
+     
    @GetMapping("chart/registerChart")
    @ResponseBody
    public List<Map<String, String>> registerChart() {
 	   List<Map<String, String>> registerPercent = adminService.registerChart();
 	   return registerPercent;
    }
+   
+   
+   
+   
+   
+   
    
 }

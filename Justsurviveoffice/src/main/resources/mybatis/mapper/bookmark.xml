@@ -41,6 +41,7 @@
             bm.fk_boardno       AS fk_boardNo,  <!-- ✅ alias 꼭 설정 -->
             bm.createdatmark     AS createdAtMark,
             b.board_title       AS boardName
+            b.fk_categoryno     AS fk_categoryNo
         FROM bookmark bm
         JOIN board b
           ON bm.fk_boardno = b.board_no
