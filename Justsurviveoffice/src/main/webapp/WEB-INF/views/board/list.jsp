@@ -186,7 +186,7 @@
 	   
 	   <%-- === 검색어 입력시 자동글 완성하기  === --%>
 	   $(document).on('click', 'span.result', function(e){
-		    const word = $(e.target).text();
+		    const word = $(this).text()
 		    $('input[name="searchWord"]').val(word); // 텍스트박스에 검색된 결과의 문자열을 입력해준다.
 		    $('div#displayList').hide();
 		    searchBoard(); // 글목록 검색하기 요청

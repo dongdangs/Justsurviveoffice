@@ -384,8 +384,8 @@
    	 	<input type="hidden" name="boardNo" />
 		<input type="hidden" name="boardWritt" />
 	</form>
-	<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
-	<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
+	<input type="hidden" id="preNo" name="preNo"  value="${boardDto.preNo}" />
+	<input type="hidden" id="NextNo" name="nextNo" value="${boardDto.nextNo}" />
 	</div>
 </div>
 
