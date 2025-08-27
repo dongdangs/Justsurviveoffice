@@ -103,6 +103,7 @@ public class BoardController {
 	}
 // ==================================================================== //
 		
+
 	
 	@GetMapping("write/{category}") // RestAPI
 	public ModelAndView writeBoard(@PathVariable("category") String category,
@@ -344,6 +345,15 @@ public class BoardController {
 				
 			} // 로그인된 유저가 자신의 게시물에 들어갔다면 if문 생략
 			
+			
+			/* null 일시 0값 부여서해서 view.jsp 로 0 값을 보냄 (김예준)*/
+			if(boardDto.getPreNo() == null ) {
+				boardDto.setPreNo("0");
+			}
+			else if(boardDto.getNextNo() == null ) {
+				boardDto.setNextNo("0");
+			}
+			
 			modelview.addObject("hotReadList", boardService.getTopBoardsByViewCount());
 	        modelview.addObject("hotCommentList", boardService.getTopBoardsByCommentCount());
 
@@ -354,14 +364,6 @@ public class BoardController {
 			}
 
 			modelview.addObject("boardDto", boardDto);
-			
-			/* null 일시 0값 부여서해서 view.jsp 로 0 값을 보냄 (김예준)*/
-			if(boardDto.getPreNo() == null ) {
-				boardDto.setPreNo("0");
-			}
-			else if(boardDto.getNextNo() == null ) {
-				boardDto.setNextNo("0");
-			}
 			
 			modelview.setViewName("board/view");
 			return modelview;
