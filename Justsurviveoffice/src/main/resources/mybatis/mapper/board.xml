@@ -159,27 +159,7 @@
    		2. 그래서 서브쿼리를 안쓰고 where 절 쓸 시 한행만 도출되고 나머진 버려져서 안나옴
    		
     -->
-	  <select id="getView" resultType="BoardDTO" parameterType="long">
-		  SELECT
-		      A.preNo, A.preName,
-		      A.nextNo, A.nextName,
-		      A.boardNo, A.boardName, A.boardContent, A.fkId
-		  FROM (
-			      SELECT
-			          LEAD(B.boardNo)   OVER (ORDER BY B.boardNo DESC) AS preNo,
-			          LEAD(B.boardName) OVER (ORDER BY B.boardNo DESC) AS preName,
-			          LAG (B.boardNo)   OVER (ORDER BY B.boardNo DESC) AS nextNo,
-			          LAG (B.boardName) OVER (ORDER BY B.boardNo DESC) AS nextName,
-			          B.boardNo,
-			          B.boardName,
-			          B.boardContent,
-			          B.fk_id AS fkId
-			      FROM board B
-			      JOIN category C ON B.fk_categoryNo = C.categoryNo
-			      WHERE B.boardDeleted = 0
-		  ) A
-		  WHERE A.boardNo = #{boardNo}
-	</select>
+
 	
 	<!-- ================================================================================= -->
 	<!-- 인기 게시글 리스트 (조회수 많은 순) -->

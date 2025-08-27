@@ -16,7 +16,4 @@ public interface AdminService {
 	// 특정 회원 1명 상세보기(Detail)
 	UsersDTO getUsers(String id);
 
-	List<Map<String, String>> registerChart();
-	
-
 }

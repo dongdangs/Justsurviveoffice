@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.app.common.MyUtil;
 import com.spring.app.entity.Users;
+import com.spring.app.model.UsersRepository;
 import com.spring.app.admin.service.AdminService;
 import com.spring.app.users.domain.UsersDTO;
+import com.spring.app.users.service.UsersService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,11 +26,13 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor  // @RequiredArgsConstructor는 Lombok 라이브러리에서 제공하는 애너테이션으로, final 필드 또는 @NonNull이 붙은 필드에 대해 생성자를 자동으로 생성해준다.
-@RequestMapping("admin/")
+@RequestMapping("/admin/")
 public class AdminController {
    
    // === 생성자 주입(Constructor Injection) === //
    private final AdminService adminService;
+   private final UsersService usersService;
+   
    
    @GetMapping("/adm")
    public String adminIndex() {
@@ -158,17 +162,20 @@ public class AdminController {
       
       return "admin/usersDetail";
    }
-   
-   @GetMapping("chart")
+
+   @GetMapping("/chart")
    public String chart() {
-	   return "admin/chart";
+       return "admin/chart";  // /WEB-INF/views/admin/chart.jsp
    }
+
    
-   @GetMapping("chart/registerChart")
+   @GetMapping(value = "/chart/registerChart", produces = "application/json; charset=UTF-8")
    @ResponseBody
-   public List<Map<String, String>> registerChart() {
-	   List<Map<String, String>> registerPercent = adminService.registerChart();
-	   return registerPercent;
+   public List<Map<String,String>> registerChart(
+           @RequestParam(name = "year", required = false) Integer year 
+   ) {
+       return (year == null) ? usersService.registerChart()
+                             : usersService.registerChart(year);
    }
    
 }

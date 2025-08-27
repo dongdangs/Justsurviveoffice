@@ -156,13 +156,5 @@ public class AdminService_imple implements AdminService {
       
       return usersDto;
    }
-
-   @Override
-   public List<Map<String, String>> registerChart() {
-		return null;
-				//adminRepository.findAll();
-   }
-   
-   
    
 }

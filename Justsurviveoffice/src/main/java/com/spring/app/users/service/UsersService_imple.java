@@ -4,6 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -271,6 +274,33 @@ public class UsersService_imple implements UsersService {
 		}
 		else System.out.println("유저를 찾지못함. 포인트업로드 오류!");
 	}
+
+
+	  @Override
+	   public List<Map<String, String>> registerChart(int year) {
+
+	        // 12개월 0으로 초기화 (누락 월 0 보장)
+	        int[] bucket = new int[12];
+
+	        List<UsersRepository.MonthCount> rows = usersRepository.findByMonthRegister(year);
+	        for (UsersRepository.MonthCount r : rows) {
+	            int idx = Integer.parseInt(r.getMm()) - 1; // "01" -> 0
+	            bucket[idx] = r.getCnt().intValue();
+	        }
+
+	        // List<Map<String,String>> 형태로 변환  [{mm:"01", cnt:"3"}, ...]
+	        List<Map<String, String>> result = new ArrayList<>(12);
+	        for (int i = 1; i <= 12; i++) {
+	            String mm  = String.format("%02d", i);
+	            String cnt = String.valueOf(bucket[i - 1]);
+
+	            Map<String, String> row = new LinkedHashMap<>();
+	            row.put("mm",  mm);
+	            row.put("cnt", cnt);
+	            result.add(row);
+	        }
+	        return result;
+	    }
 
 
    
