@@ -65,7 +65,6 @@ public class BoardService_imple implements BoardService {
 			dto.setTextForBoardList(textForBoardList.length() > 20
 									? textForBoardList.substring(0,20) + "..."
 									: textForBoardList);
-
 			// 2. 이미지 체크 및 추출
 			Element img = Jsoup.parse(dto.getBoardContent()).selectFirst("img[src]");	// import org.jsoup.nodes.Element;
 			if (img != null) {

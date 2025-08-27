@@ -48,28 +48,21 @@
 	$(function() {
 		
 		const nextVals = ${boardDto.nextNo};
-		
 		if(nextVals == 0) {
 			$('div#nextBtn').hide();
 		}
-		
 		const preVals = ${boardDto.preNo};
-		
 		if(preVals == 0) {
 			$('div#prevBtn').hide();
 		}
-		
 		 // 댓글작성
 	    $('button#addComment').click(function(){
-	        
 	        // === 댓글내용 유효성 검사 === //
 	        let contentVal = $('textarea[name="content"]').val().trim();
-	        
 	        if(contentVal.length == 0) {
 	        	alert("댓글내용을 입력해주세요 !");
 	        	return; 
 	        }
-	        
 	        const form = document.commentform;
 	        form.method = "post";
 	        form.action = "<%= ctxPath%>/comment/writeComment";
@@ -91,7 +84,6 @@
 	            method: "post",
 	            action: "<%=ctxPath%>/comment/deleteComment"
 	        });
-
 	        form.append($("<input>", { type: "hidden", name: "commentNo", value: commentNo }));
 	        form.append($("<input>", { type: "hidden", name: "fk_boardNo", value: fkBoardNo }));
 	        form.append($("<input>", { type: "hidden", name: "fk_id", value: fkId }));
@@ -99,7 +91,6 @@
 	        $(document.body).append(form);
 	        form.submit();
 	    });
-		 
 
 		 //댓글 수정
 		 $(document).on("click", ".update-comment", function () {
@@ -126,7 +117,6 @@
 	        textarea.hide();
 	        contentDiv.show();
 	        
-
 	        commentDiv.find(".update-comment").show();
 	        commentDiv.find(".delete-comment").show();
 	        commentDiv.find(".save-edit").hide();
@@ -143,12 +133,10 @@
 	            alert("댓글 내용을 입력해주세요!");
 	            return;
 	        }
-
 	        const form = $("<form>", {
 	            method: "post",
 	            action: "<%=ctxPath%>/comment/updateComment"
 	        });
-
 	        form.append($("<input>", { type: "hidden", name: "commentNo", value: commentNo }));
 	        form.append($("<input>", { type: "hidden", name: "content", value: newContent }));
 	        form.append($("<input>", { type: "hidden", name: "fk_boardNo", value: "${boardDto.boardNo}" }));
@@ -190,65 +178,31 @@
 	}
 	
 	
-	function boardLike(fk_boardNo, fk_id, isBoardLiked) {
-		const url = isBookmarked
-        ? "<%= ctxPath%>/board/remove"
-        : "<%= ctxPath%>/board/like";
-
-	    $.ajax({
-	        url: url,
-	        type: "POST",
-	        data: { fk_boardNo: fk_boardNo },
-	        success: function(json) {
-	            const icon = $(`#boardLike-icon-fk_boardNo`);
-	            
-	            if (json.success) {
-	            	icon.removeClass("fa-solid fa-regular text-warning");
-	            	if (isBoardLiked) {
-	            	    // 해제된 상태로 변경
-	            	    icon.addClass("fa-regular fa-bookmark");
-	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', false)`);
-	            	} else {
-	            	    // 추가된 상태로 변경
-	            	    icon.addClass("fa-solid fa-bookmark text-warning");
-	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', true)`);
-	            	}
-	            } else {
-	                alert(json.message);
-	            }
-	        },
-	        error: function(request, status, error) {
-	            alert("code:" + request.status + "\nmessage:" + request.responseText);
-	        }
-	    });
-	}
 	<!-- 북마크기능 -->
     function bookmark(boardNo, fk_id, isBookmarked) {
 	    const url = isBookmarked
-	        ? "<%= ctxPath%>/bookmark/remove"
-	        : "<%= ctxPath%>/bookmark/add";
-
+			        ? "<%= ctxPath%>/bookmark/remove"
+			        : "<%= ctxPath%>/bookmark/add";
 	    $.ajax({
 	        url: url,
 	        type: "POST",
 	        data: { fk_boardNo: boardNo },
 	        success: function(json) {
-	            const icon = $(`#bookmark-icon-${boardNo}`);
-
+	            const icon = $('#bookmark-icon-'+boardNo);
 	            if (json.success) {
-	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	icon.removeClass("fa-solid fa-bookmark text-warning fa-regular");
 	            	if (isBookmarked) {
 	            	    // 해제된 상태로 변경
 	            	    icon.addClass("fa-regular fa-bookmark");
-	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+	            	    icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', false)");
 	            	} else {
 	            	    // 추가된 상태로 변경
 	            	    icon.addClass("fa-solid fa-bookmark text-warning");
-	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+	            	    icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', true)");
 	            	}
-
 	            } else {
 	                alert(json.message);
+	                window.location.href = "<%=ctxPath%>/login/loginForm";
 	            }
 	        },
 	        error: function(request, status, error) {
@@ -312,7 +266,7 @@
       <div class="d-flex justify-content-end">
         <div class="file-box border rounded d-flex align-items-center" style="font-size: 9pt;">
           <form name="downloadForm">
-            <div id="download" class="text-dark">${boardDto.boardFileOriginName} 다운로드</div>
+            <div id="download" class="text-dark" style="cursor:pointer;">${boardDto.boardFileOriginName} 다운로드</div>
           	<input type="hidden" name="boardFileName" value="${boardDto.boardFileName}"/>
           	<input type="hidden" name="boardFileOriginName" value="${boardDto.boardFileOriginName}"/>
           </form>
@@ -377,38 +331,34 @@
     <div class="comment-section">
 	  <h3 style="font-weight: bold;">댓글<span>${fn:length(commentList)}</span></h3>
         <c:forEach var="comment" items="${commentList}">
-
-    <div class="comment">
-        <div class="meta">
-            <span>${comment.fk_id}</span> | 
-            	<span class="comment-date">
-		    	<c:choose>
-		        <c:when test="${not empty comment.updatedAtComment}">
-		            ${fn:replace(comment.updatedAtComment, "T", " ")} 
-		            <span style="color:gray;">(수정됨)</span>
-		        </c:when>
-		        <c:otherwise>
-		            ${fn:replace(comment.createdAtComment, "T", " ")}
-		        </c:otherwise>
-		    </c:choose>
-			</span>
-        </div>
-
-        <!-- 댓글 내용 -->
-        <div class="content">${comment.content}</div>
-
-        <!-- 수정 입력창 (숨김) -->
-        <textarea class="form-control edit-content" style="display:none;">${comment.content}</textarea>
-
-        <!-- 버튼 영역 -->
-        <div class="comment-buttons mt-2">
-            <c:if test="${not empty loginUser and loginUser.id == comment.fk_id}">
-                <button type="button" class="btn update-comment" data-id="${comment.commentNo}">수정</button>
-                <button type="button" class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
-                <button type="button" class="btn btn-sm  save-edit" data-id="${comment.commentNo}" style="display:none;">저장</button>
-                <button type="button" class="btn btn-sm  cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
-            </c:if>
-        </div>
+	    <div class="comment">
+	        <div class="meta">
+	            <span>${comment.fk_id}</span> | 
+	            	<span class="comment-date">
+			    	<c:choose>
+			        <c:when test="${not empty comment.updatedAtComment}">
+			            ${fn:replace(comment.updatedAtComment, "T", " ")} 
+			            <span style="color:gray;">(수정됨)</span>
+			        </c:when>
+			        <c:otherwise>
+			            ${fn:replace(comment.createdAtComment, "T", " ")}
+			        </c:otherwise>
+			    </c:choose>
+				</span>
+	        </div>
+	        <!-- 댓글 내용 -->
+	        <div class="content">${comment.content}</div>
+	        <!-- 수정 입력창 (숨김) -->
+	        <textarea class="form-control edit-content" style="display:none;">${comment.content}</textarea>
+	        <!-- 버튼 영역 -->
+	        <div class="comment-buttons mt-2">
+	            <c:if test="${not empty loginUser and loginUser.id == comment.fk_id}">
+	                <button type="button" class="btn update-comment" data-id="${comment.commentNo}">수정</button>
+	                <button type="button" class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
+	                <button type="button" class="btn btn-sm  save-edit" data-id="${comment.commentNo}" style="display:none;">저장</button>
+	                <button type="button" class="btn btn-sm  cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
+	            </c:if>
+	        </div>
 	    </div>
 		</c:forEach>
 	       <!-- 댓글 작성 -->
@@ -418,23 +368,25 @@
 	           <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
 	           <button type="submit" class="btn" id="addComment">댓글 등록</button>
 	       </form>
-	    </div>
-	    <!-- 목록 버튼, 이전글 다음글 -->
-	    <div style="display:flex; margin-top:3px;"> 
-	    <div class="mr-3">
-	        <a href="<%=ctxPath %>/board/list/${boardDto.fk_categoryNo}" class="btn">목록</a>
-	    </div>
-	    <div class="Boardpagination mt-1">
-			<div id="nextBtn" class="" onclick="goViewB('${boardDto.nextNo}')" style="cursor:pointer;">다음글: ${boardDto.nextName}</div>
-			<div id="prevBtn" class="" onclick="goViewA('${boardDto.preNo}')" style="cursor:pointer;">이전글: ${boardDto.preName}</div>
-		</div>
-		<form name="goViewFrm">
-	   	 	<input type="hidden" name="boardNo" />
-			<input type="hidden" name="boardWritt" />
-		</form>
-		<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
-		<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
-		</div>
+    </div>
+    <!-- 목록 버튼, 이전글 다음글 -->
+    <div style="display:flex; margin-top:3px;"> 
+    <div class="mr-3">
+        <a href="<%=ctxPath %>/board/list/${boardDto.fk_categoryNo}" class="btn">목록</a>
+    </div>
+    <div class="Boardpagination mt-1">
+		<div id="nextBtn" class="" onclick="goViewB('${boardDto.nextNo}')" style="cursor:pointer;">
+	  	 다음글: ${fn:substring(boardDto.nextName, 0, 20)}</div>
+		<div id="prevBtn" class="" onclick="goViewA('${boardDto.preNo}')" style="cursor:pointer;">
+	 	 이전글: ${fn:substring(boardDto.preName, 0, 20)}</div>
 	</div>
+	<form name="goViewFrm">
+   	 	<input type="hidden" name="boardNo" />
+		<input type="hidden" name="boardWritt" />
+	</form>
+	<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
+	<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
+	</div>
+</div>
 
 </html>
