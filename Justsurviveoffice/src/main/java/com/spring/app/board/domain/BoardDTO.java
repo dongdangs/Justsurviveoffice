@@ -52,7 +52,8 @@ public class BoardDTO {
 				transferTo(File dest) → 실제 서버에 저장 */
 	
 	private Boolean bookmarked; // select 용도
-	 
+	private boolean boardLiked; // view 페이지에 입장 시, 좋아요 여부의 select 용도
+	
 	private Users users;// 게시글과 연관된 유저 
 	
 	private CategoryDTO categoryDTO; // boardDto.categoryDto.categoryNo

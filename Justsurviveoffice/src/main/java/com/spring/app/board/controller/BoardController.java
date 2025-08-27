@@ -207,17 +207,15 @@ public class BoardController {
 			modelview.setViewName("redirect:/index");
 			return modelview;
 		}
-		
-		// ===========  게시글 보여주기(페이징 처리) 수정 시작 =========== //
+
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("searchType", searchType);
 		paraMap.put("searchWord", searchWord);
 		paraMap.put("category", category);
-		paraMap.put("currentShowPageNo", currentShowPageNo);
 		// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
 		
-		int totalCount = boardService.searchListCount(paraMap);	// 총 검색된 게시물 건수
-		int sizePerPage = 5;  // 한 페이지당 보여줄 게시물 건수
+		int totalCount = 0;    // 총 게시물 건수
+		int sizePerPage = 10;  // 한 페이지당 보여줄 게시물 건수
 		int totalPage = 0;     // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
 		totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
 
@@ -239,11 +237,6 @@ public class BoardController {
 		modelview.addObject("searchWord", searchWord);
 		modelview.addObject("category", category);
 		
-		// 페이지바 전용 데이터
-		modelview.addObject("totalPage", totalPage);
-		int currentPage = Integer.parseInt(currentShowPageNo);
-		modelview.addObject("currentShowPageNo", currentPage);
-		// ===========  게시글 보여주기(페이징 처리) 수정 끝 =========== //
 		modelview.setViewName("board/list");
 		
 		return modelview;
@@ -369,7 +362,15 @@ public class BoardController {
 				boardDto.setBookmarked(bookmarkService.isBookmarked(
 						loginUser.getId(), 
 						boardDto.getBoardNo())); 
+				 // 좋아요 여부 
+			    boolean isLiked = boardService.isBoardLiked(loginUser.getId(), boardDto.getBoardNo());
+			    boardDto.setBoardLiked(isLiked);
+			    
+			    System.out.println("=== 좋아요 여부: " + isLiked);
 			}
+			// 좋아요 개수 추가
+	        int likeCount = boardService.getBoardLikeCount(boardDto.getBoardNo());
+	        modelview.addObject("likeCount", likeCount);
 			// 댓글 목록 조회
 	        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
 	        modelview.addObject("commentList", commentList);
@@ -582,7 +583,6 @@ public class BoardController {
       }
       
    }
-
 	
 	
 	//////////////////////////////////////////////////////////////////////
@@ -600,45 +600,48 @@ public class BoardController {
 	//////////////////////////////////////////////////////////////////////
 	
 	
-	// 북마크 추가
-    @PostMapping("like")
+
+	// 게시글 좋아요
+    @PostMapping("boardlike")
     @ResponseBody
     public Map<String, Object> boardLike(@RequestParam(name="fk_boardNo") Long fk_boardNo, HttpSession session) {
-        Map<String, Object> result = new HashMap<>();
+       
+    	Map<String, Object> result = new HashMap<>();
 
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        System.out.println("===> loginUser: " + loginUser);
+        
         if (loginUser == null) {
             result.put("success", false);
             result.put("message", "로그인이 필요합니다.");
             return result;
         }
+        
+        String fk_id = loginUser.getId();
+        System.out.println("===> fk_id: " + fk_id);
 
-        boardService.boardLike(loginUser.getId(), fk_boardNo);
+        boolean isLiked = boardService.isBoardLiked(fk_id, fk_boardNo);
+        
+        if(isLiked == true) {
+        	boardService.deleteBoardLike(fk_id,fk_boardNo);
+        	result.put("status", "unliked");
+        } 
+        else {
+        	boardService.insertBoardLike(fk_id,fk_boardNo);
+        	result.put("status", "liked");
+        }
+        
+        // 현재 게시글의 좋아요 수
+        int likeCount = boardService.getBoardLikeCount(fk_boardNo);
+        
+        boolean newStatus = boardService.isBoardLiked(fk_id, fk_boardNo); // 최신 상태 재조회
+
         result.put("success", true);
-        result.put("message", "좋아요");
+        result.put("likeCount", likeCount);
+        
         return result;
     }
 	
+    
 	
-    // 게시글 목록에 검색어 자동입력
- 	@GetMapping("wordSearchShow")
- 	@ResponseBody
- 	public List<Map<String, String>> wordSearchShow(@RequestParam(name = "searchType", defaultValue = "") String searchType,
- 													@RequestParam(name = "searchWord", defaultValue = "") String searchWord,
- 													@RequestParam(name = "category") String category) {
- 		
- 		Map<String, String> paraMap = new HashMap<>();
- 		paraMap.put("searchType", searchType);
- 		paraMap.put("searchWord", searchWord);
- 		paraMap.put("category", category);
- 		
- 		List<Map<String, String>> mapList = boardService.getSearchWordList(paraMap);	// 자동 검색어 완성시키기
- 		
- 		return mapList;
- 	}
- 	
- 	
- 	
-    
-    
 }

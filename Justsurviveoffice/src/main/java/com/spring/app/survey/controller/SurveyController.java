@@ -90,7 +90,7 @@ public class SurveyController {
 	
 	@PostMapping("submit")
 	@ResponseBody
-	public String submit(@RequestParam("answer_arr") List<Integer> answerArr) {
+	public String submit(@RequestParam(name="answer_arr") List<Integer> answerArr) {
 		
 	//	System.out.println(answerArr);
 		
