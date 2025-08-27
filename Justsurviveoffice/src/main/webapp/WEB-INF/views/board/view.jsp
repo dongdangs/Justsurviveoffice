@@ -419,21 +419,22 @@
 	           <button type="submit" class="btn" id="addComment">댓글 등록</button>
 	       </form>
 	    </div>
-	    <!-- 목록 버튼 -->
-	    <div style="margin-top:1px;">
+	    <!-- 목록 버튼, 이전글 다음글 -->
+	    <div style="display:flex; margin-top:3px;"> 
+	    <div class="mr-3">
 	        <a href="<%=ctxPath %>/board/list/${boardDto.fk_categoryNo}" class="btn">목록</a>
 	    </div>
-	    <div class="Boardpagination">
-			<div id="prevBtn" class="prevBtn" onclick="goViewA('${boardDto.preNo}')" style="cursor:pointer;">이전글: ${boardDto.preName}</div>
-			<div id="nextBtn" class="nextBtn" onclick="goViewB('${boardDto.nextNo}')" style="cursor:pointer;">다음글: ${boardDto.nextName}</div>
+	    <div class="Boardpagination mt-1">
+			<div id="nextBtn" class="" onclick="goViewB('${boardDto.nextNo}')" style="cursor:pointer;">다음글: ${boardDto.nextName}</div>
+			<div id="prevBtn" class="" onclick="goViewA('${boardDto.preNo}')" style="cursor:pointer;">이전글: ${boardDto.preName}</div>
+		</div>
+		<form name="goViewFrm">
+	   	 	<input type="hidden" name="boardNo" />
+			<input type="hidden" name="boardWritt" />
+		</form>
+		<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
+		<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
 		</div>
 	</div>
 
-	<form name="goViewFrm">
-	    <input type="hidden" name="boardNo" />
-		<input type="hidden" name="boardWritt" />
-	</form>
-	<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
-	<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
-</div>
 </html>
