@@ -134,4 +134,27 @@ public class BoardDAO_imple implements BoardDAO {
 	    return sql.selectOne("boardLike.isBoardLiked", paramMap);
 	}
 	
+	// =====================0827 rdg7203 수정 시작 =============================== //
+	// 총 검색된 게시물 건수
+	@Override
+	public int searchListCount(Map<String, String> paraMap) {
+		int n = sql.selectOne("board.searchListCount", paraMap);
+		return n;
+	}
+	
+	// 자동 검색어 완성
+	@Override
+	public List<String> getSearchWordList(Map<String, String> paraMap) {
+		List<String> wordList = sql.selectList("board.getSearchWordList", paraMap);
+		return wordList;
+	}
+	
+	// 보드 테이블에서 제목과 내용 가져오기(DB)
+	@Override
+	public List<BoardDTO> getBoardContents(String category) {
+		List<BoardDTO> boardListKey = sql.selectList("board.getBoardContents", category);
+		return boardListKey;
+	}
+	// =====================0827 rdg7203 수정 끝 =============================== //
+	
 }
