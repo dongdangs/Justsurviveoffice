@@ -41,7 +41,7 @@ public class BoardLike {
 	 public BoardLikeDTO toDTO() {
 	        return BoardLikeDTO.builder()
 	                .fk_id(users.getId())
-	                .fk_boardNo(String.valueOf(board.getBoardNo()))
+	                .fk_boardNo(board.getBoardNo())
 	                .build();
 	    }
 	

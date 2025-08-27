@@ -5,7 +5,7 @@ import java.util.List;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.spring.app.users.domain.CommentDTO;
+import com.spring.app.comment.domain.CommentDTO;
 
 import lombok.RequiredArgsConstructor;
 

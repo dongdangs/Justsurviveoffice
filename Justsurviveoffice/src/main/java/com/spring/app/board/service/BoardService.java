@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.spring.app.board.domain.BoardDTO;
-import com.spring.app.users.domain.CommentDTO;
+import com.spring.app.comment.domain.CommentDTO;
 
 public interface BoardService {
 	
@@ -48,21 +48,18 @@ public interface BoardService {
 	public List<CommentDTO> getCommentList(Long boardNo);
 
 	//게시물 좋아요 여부 확인
-	public boolean isBoardLiked(Long boardNo, String fkId);
+	public boolean isBoardLiked(String fkId, Long boardNo) ;
 
 	//게시물 좋아요 취소
-	public void deleteBoardLike(Long boardNo, String fkId);
+	public int deleteBoardLike(String fkId, Long boardNo) ;
 
 	//게시물 좋아요
-	public void insertBoardLike(Long boardNo, String fkId);
+	public int insertBoardLike(String fkId, Long boardNo) ;
 
     // 좋아요 수 
 	public int getBaordLikeCount(Long boardNo);
 	
-	
 
-	// 게시물 좋아요
-	void boardLike(String fk_id, Long fk_boardNo);
 	
 	
 

@@ -19,11 +19,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.comment.service.CommentService;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
 import com.spring.app.model.HistoryRepository;
-import com.spring.app.users.domain.CommentDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -442,22 +442,37 @@ public class BoardController {
 	//////////////////////////////////////////////////////////////////////
 	
 	
-	// 북마크 추가
-    @PostMapping("like")
+	// 게시글 좋아요
+    @PostMapping("boardlike")
     @ResponseBody
     public Map<String, Object> boardLike(@RequestParam(name="fk_boardNo") Long fk_boardNo, HttpSession session) {
-        Map<String, Object> result = new HashMap<>();
+       
+    	Map<String, Object> result = new HashMap<>();
 
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        
         if (loginUser == null) {
             result.put("success", false);
             result.put("message", "로그인이 필요합니다.");
             return result;
         }
 
-        boardService.boardLike(loginUser.getId(), fk_boardNo);
-        result.put("success", true);
-        result.put("message", "좋아요");
+        boolean isLiked = boardService.isBoardLiked(loginUser.getId(),fk_boardNo );
+        
+        if(isLiked == true) {
+        	
+        	boardService.deleteBoardLike(loginUser.getId(),fk_boardNo);
+        	result.put("status", "unliked");
+        } else {
+        	
+        	boardService.insertBoardLike(loginUser.getId(),fk_boardNo);
+        	result.put("status", "liked");
+        }
+        
+        // 현재 게시글의 좋아요 수
+        int likeCount = boardService.getBaordLikeCount(fk_boardNo);
+        result.put("likeCount", likeCount);
+        
         return result;
     }
 	

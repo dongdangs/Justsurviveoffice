@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.comment.service.CommentService;
-import com.spring.app.users.domain.CommentDTO;
 import com.spring.app.users.domain.UsersDTO;
 
 import jakarta.servlet.http.HttpSession;

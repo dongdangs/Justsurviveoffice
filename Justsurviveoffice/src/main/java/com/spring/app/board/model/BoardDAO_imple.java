@@ -63,12 +63,7 @@ public class BoardDAO_imple implements BoardDAO {
     	return sql.selectList("board.getBookmarksById", fkId);
     }
     
-    //게시글 좋아요 수
-	@Override
-	public int getLikeCount(Long boardNo) {
-        return sql.selectOne("boardLike.getLikeCount", boardNo);
-
-	}
+   
 
 
 	////////////////////////////////////////////////////////////////////////////
@@ -105,4 +100,23 @@ public class BoardDAO_imple implements BoardDAO {
         return sql.insert("boardLike.boardLike", paramMap);
 	}
 	
+	// 게시글 좋아요 취소
+	@Override
+	public int deleteBoardLike(String fkId, Long boardNo) {
+		return sql.delete("boardLike.deleteBoardLike");
+	}
+	
+	//게시글 좋아요 추가
+	@Override
+	public int insertBoardLike(String fkId, Long boardNo) {
+		return sql.insert("boardLike.insertBoardLike");
+	}
+	
+	 //게시글 좋아요 수
+		@Override
+		public int getLikeCount(Long boardNo) {
+	        return sql.selectOne("boardLike.getLikeCount", boardNo);
+	
+		}
+		
 }

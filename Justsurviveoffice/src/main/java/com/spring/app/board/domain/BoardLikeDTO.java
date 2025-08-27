@@ -16,8 +16,7 @@ public class BoardLikeDTO {
 
 	private String fk_id;
 
-	private String fk_boardNo;
+	private Long fk_boardNo;
 	
-	private boolean isBoardLiked;
 	
 }

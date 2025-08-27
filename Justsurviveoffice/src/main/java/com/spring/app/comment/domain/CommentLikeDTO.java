@@ -1,5 +1,8 @@
-package com.spring.app.users.domain;
+package com.spring.app.comment.domain;
 
+import java.time.LocalDateTime;
+
+import com.spring.app.entity.Users;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentDislikeDTO {
+public class CommentLikeDTO {
 	
 	private String fk_id;
 

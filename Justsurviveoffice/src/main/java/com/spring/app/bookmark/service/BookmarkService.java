@@ -2,7 +2,7 @@ package com.spring.app.bookmark.service;
 
 import java.util.List;
 
-import com.spring.app.users.domain.BookMarkDTO;
+import com.spring.app.bookmark.domain.BookMarkDTO;
 
 public interface BookmarkService {
 

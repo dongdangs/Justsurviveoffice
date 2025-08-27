@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.comment.model.CommentDAO;
-import com.spring.app.users.domain.CommentDTO;
 
 import lombok.RequiredArgsConstructor;
 

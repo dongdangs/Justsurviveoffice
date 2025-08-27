@@ -2,7 +2,7 @@ package com.spring.app.comment.model;
 
 import java.util.List;
 
-import com.spring.app.users.domain.CommentDTO;
+import com.spring.app.comment.domain.CommentDTO;
 
 public interface CommentDAO {
 	

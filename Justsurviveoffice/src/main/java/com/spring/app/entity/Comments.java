@@ -2,7 +2,7 @@ package com.spring.app.entity;
 
 import java.time.LocalDateTime;
 
-import com.spring.app.users.domain.CommentDTO;
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.users.domain.UsersDTO;
 
 import jakarta.persistence.Column;

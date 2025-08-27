@@ -221,39 +221,35 @@
 	}
 	
 	
-	function boardLike(fk_boardNo, fk_id, isBoardLiked) {
-		const url = isBookmarked
-        ? "<%= ctxPath%>/board/remove"
-        : "<%= ctxPath%>/board/like";
+	// 게시글 좋아요
+function boardLike(boardNo, fk_id) {
 
-	    $.ajax({
-	        url: url,
-	        type: "POST",
-	        data: { fk_boardNo: fk_boardNo },
-	        success: function(json) {
-	            const icon = $(`#boardLike-icon-fk_boardNo`);
-	            
-	            if (json.success) {
-	            	icon.removeClass("fa-solid fa-regular text-warning");
-	            	if (isBoardLiked) {
-	            	    // 해제된 상태로 변경
-	            	    icon.addClass("fa-regular fa-bookmark");
-	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', false)`);
-	            	} else {
-	            	    // 추가된 상태로 변경
-	            	    icon.addClass("fa-solid fa-bookmark text-warning");
-	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', true)`);
-	            	}
-	
-	            } else {
-	                alert(json.message);
-	            }
-	        },
-	        error: function(request, status, error) {
-	            alert("code:" + request.status + "\nmessage:" + request.responseText);
-	        }
-	    });
-	}
+    $.ajax({
+        url: "<%= ctxPath%>/board/boardlike", 
+        type: "POST",
+        data: { fk_boardNo: boardNo },
+        success: function(json) {
+            const icon = $(`#boardLike-icon-${boardNo}`);
+            const likeCountSpan = $("#likeCount");
+
+            if (json.status === "liked") {
+                // 좋아요 추가됨
+            	icon.removeClass("fa-regular").addClass("fa-solid text-warning");
+            } 
+            else if (json.status === "unliked") {
+                // 좋아요 취소됨
+                icon.removeClass("fa-solid text-warning").addClass("fa-regular");
+            } 
+            
+            
+            // 좋아요 개수 갱신
+            likeCountSpan.text(json.likeCount);
+        },
+        error: function(request, status, error) {
+            alert("code:" + request.status + "\nmessage:" + request.responseText);
+        }
+    });
+}
 	
 </script>
 
@@ -305,11 +301,12 @@
 	        <form id="boardLikeForm-${boardLikeDto.fk_boardNo}">
 			    <input type="hidden" name="fk_boardNo" value="${boardLikeDto.fk_boardNo}">
 			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
-			    <i id="boardLike-icon-${boardLikeDto.fk_boardNo}"
-			       class="fas fa-thumbs-up ${boardLikeDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
-			       style="cursor: pointer;"
-			       onclick="boardLike(${boardLikeDto.fk_boardNo}, '${sessionScope.loginUser.id}', ${boardLikeDto.boardLiked ? true : false})">
-			    </i>
+			    <i id="boardLike-icon-${boardDto.boardNo}"
+				   class="fas fa-thumbs-up ${boardDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+				   style="cursor: pointer;"
+				   onclick="boardLike(${boardDto.boardNo}, '${sessionScope.loginUser.id}')">
+				</i>
+				<span id="likeCount">${likeCount}</span>
 			</form> 
 	    </div>
 	    
@@ -336,7 +333,7 @@
 		              >글 삭제</button>
 		        </c:if>
 	         </form>
-	    </div>
+	    </div>t
 	</div>
 	
 	<!-- 댓글 영역 -->

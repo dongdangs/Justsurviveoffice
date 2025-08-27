@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="boardLike">
+
+  <!-- 좋아요 추가 -->
+    <insert id="insertLike" parameterType="map">
+        insert into boardLike (fk_id, fk_boardno)
+        values (#{fk_id}, #{boardNo})
+    </insert>
+
+
+    <!-- 좋아요 삭제 -->
+    <delete id="deleteLike" parameterType="map">
+        delete from boardLike
+        where fk_id = #{fk_id}
+          and fk_boardno = #{boardNo}
+    </delete>
+
+
+    <!-- 좋아요 개수 -->
+    <select id="getLikeCount" parameterType="long" resultType="int">
+        select count(*)
+        from boardLike
+        where fk_boardno = #{boardNo}
+    </select>
+
+</mapper>

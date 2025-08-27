@@ -1,4 +1,4 @@
-package com.spring.app.users.domain;
+package com.spring.app.bookmark.domain;
 
 import java.time.LocalDateTime;
 

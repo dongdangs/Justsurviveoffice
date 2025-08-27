@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.spring.app.users.domain.BookMarkDTO;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
+import com.spring.app.bookmark.domain.BookMarkDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 

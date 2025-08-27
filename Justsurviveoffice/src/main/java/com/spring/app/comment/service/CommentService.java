@@ -2,9 +2,9 @@ package com.spring.app.comment.service;
 
 import java.util.List;
 
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.entity.Board;
 import com.spring.app.entity.Comments;
-import com.spring.app.users.domain.CommentDTO;
 import com.spring.app.users.domain.UsersDTO;
 
 public interface CommentService {

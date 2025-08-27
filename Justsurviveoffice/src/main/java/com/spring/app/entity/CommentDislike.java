@@ -1,7 +1,7 @@
 package com.spring.app.entity;
 
 
-import com.spring.app.users.domain.CommentDislikeDTO;
+import com.spring.app.comment.domain.CommentDislikeDTO;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

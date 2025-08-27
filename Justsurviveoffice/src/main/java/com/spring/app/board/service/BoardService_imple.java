@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.model.BoardDAO;
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.comment.model.CommentDAO;
 import com.spring.app.common.FileManager;
-import com.spring.app.users.domain.CommentDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -126,34 +126,7 @@ public class BoardService_imple implements BoardService {
 	}
 
 	
-	//게시글 좋아요 여부
-	@Override
-	public boolean isBoardLiked(Long boardNo, String fkId) {
-		 
-		Map<String, Object> boardLike = new HashMap<>();
-		
-		boardLike.put("fkId", fkId);
-		boardLike.put("boardNo", boardNo);
-		return false;
-		
-	}
-
-	@Override
-	public void deleteBoardLike(Long boardNo, String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void insertBoardLike(Long boardNo, String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getBaordLikeCount(Long boardNo) {
-		return boardDao.getLikeCount(boardNo);
-	}
+	
 	
 	////////////////////////////////////////////////////////////////////////////////////
 	// 인기 게시글 리스트 (조회수 많은 순)
@@ -183,11 +156,41 @@ public class BoardService_imple implements BoardService {
 	////////////////////////////////////////////////////////////////////////////////////   
 	
 	
-	// 게시물 좋아요
-	@Override
-	public void boardLike(String fk_id, Long fk_boardNo) {
-		boardDao.boardLike(fk_id, fk_boardNo);
-	}
+		//게시글 좋아요 여부
+		@Override
+		public boolean isBoardLiked(String fkId, Long boardNo) {
+			 
+			Map<String, Object> boardLike = new HashMap<>();
+			
+			boardLike.put("fkId", fkId);
+			boardLike.put("boardNo", boardNo);
+			return false;
+			
+		}
+
+		//게시글 좋아요 취소
+		@Override
+		public int deleteBoardLike(String fkId, Long boardNo) {
+			int n = boardDao.deleteBoardLike( fkId,boardNo );
+			return n;
+			
+		}
+
+		//게시글 좋아요
+		@Override
+		public int insertBoardLike(String fkId, Long boardNo) {
+			int n = boardDao.insertBoardLike( fkId,boardNo );
+			return n;
+		}
+		
+
+		//게시글 좋아요 수
+		@Override
+		public int getBaordLikeCount(Long boardNo) {
+			return boardDao.getLikeCount(boardNo);
+		}
+
+		
 	
 }
 
