@@ -4,7 +4,7 @@
     String ctxPath = request.getContextPath();
 %>
 
-<jsp:include page="../header/header1.jsp" />
+<jsp:include page="../header/header2.jsp" />
 
 <style type="text/css">
   body {background-color:#f9fafb;}
@@ -212,9 +212,9 @@
                 });
                 break;
 
-            case "myPurchase_byMonth_byCategory":
+            case "category":
                 $.ajax({
-                    url: "<%= ctxPath%>/shop/myPurchase_byMonth_byCategoryJSON.do",
+                    url: "<%= ctxPath%>/admin/categoryChart",
                     data: { "id": "${sessionScope.loginUser.id}" },
                     dataType: "json",
                     success: function (json) {

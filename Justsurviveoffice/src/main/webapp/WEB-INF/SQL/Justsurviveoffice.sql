@@ -194,3 +194,10 @@ select * from comments;
 select count(*)
 from comments
 group by fk_boardNo;
+
+
+select * from board;
+
+select * from category;
+
+select * from 
