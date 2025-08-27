@@ -16,6 +16,7 @@ import com.spring.app.common.MyUtil;
 import com.spring.app.entity.Users;
 import com.spring.app.admin.service.AdminService;
 import com.spring.app.users.domain.UsersDTO;
+import com.spring.app.users.service.UsersService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ public class AdminController {
    
    // === 생성자 주입(Constructor Injection) === //
    private final AdminService adminService;
+   private final UsersService usersService;
    
    @GetMapping("/adm")
    public String adminIndex() {
@@ -159,16 +161,20 @@ public class AdminController {
       return "admin/usersDetail";
    }
    
-   @GetMapping("chart")
+   // 뷰 반환: /admin/chart
+   @GetMapping("/chart")
    public String chart() {
-	   return "admin/chart";
+       return "admin/chart";  // /WEB-INF/views/admin/chart.jsp
    }
-   
-   @GetMapping("chart/registerChart")
+
+   // JSON 반환: /admin/chart/registerChart
+   @GetMapping(value = "/chart/registerChart", produces = "application/json; charset=UTF-8")
    @ResponseBody
-   public List<Map<String, String>> registerChart() {
-	   List<Map<String, String>> registerPercent = adminService.registerChart();
-	   return registerPercent;
+   public List<Map<String,String>> registerChart(
+           @RequestParam(name = "year", required = false) Integer year // ★ name 명시!
+   ) {
+       return (year == null) ? usersService.registerChart()
+                             : usersService.registerChart(year);
    }
    
 }
