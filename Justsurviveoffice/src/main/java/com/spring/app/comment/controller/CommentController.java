@@ -79,9 +79,9 @@ public class CommentController {
     // 댓글 수정
     @PostMapping("/updateComment")
     public String updateComment( @RequestParam(name="commentNo") Long commentNo,
-						            @RequestParam(name="content") String content,
-		                            @RequestParam(name = "fk_boardNo") Long fkBoardNo,
-						            HttpSession session) {
+						         @RequestParam(name="content") String content,
+		                         @RequestParam(name = "fk_boardNo") Long fkBoardNo,
+						         HttpSession session) {
 
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         if (loginUser == null) {
