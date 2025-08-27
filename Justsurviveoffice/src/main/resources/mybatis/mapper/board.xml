@@ -36,7 +36,7 @@
     <select id="selectBoardList" parameterType="HashMap" resultType="BoardDTO">
     	select boardNo, fk_id, 
     		   case
-    		   	when length(boardName) > 12
+    		   	when length(boardName) &gt; 12
     		   		then substr(boardName, 1, 12)
     		   		else boardName
     		   	end as boardName,
