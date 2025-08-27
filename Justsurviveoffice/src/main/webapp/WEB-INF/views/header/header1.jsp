@@ -41,16 +41,16 @@
          <jsp:include page="../menu/menu1.jsp" />
       </div>
       
-      <div id="mycontent">
-         <div class="row">
-            <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" style="border:solid 2px red;">
+      <div id="mycontent"">
+         <div class="row"> 
+            <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
             <c:if test="${not empty sessionScope.loginUser}">   
                <div>
                   <img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-                   <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
-                   <div class="mb-3">
+                   <div class="text-muted small mb-3 ml-3">${sessionScope.loginUser.email}</div>
+                   <div class="mb-3 ml-3">
                       <span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                       포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
+                      <div>포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b></div>
                    </div>
                </div>
             </c:if>   

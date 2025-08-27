@@ -38,7 +38,7 @@ public class BoardService_imple implements BoardService {
 	public int insertBoard(BoardDTO boardDto) {
 		
 		int result = 0;
-		
+		// SQL문 if 처리해도 되지만, service 단에서 처리하는 실무연습.
 		if(boardDto.getBoardFileName() == null ||
 			"".equals(boardDto.getBoardFileName())) {
 			// 파일첨부 안 된 경우.
@@ -62,7 +62,9 @@ public class BoardService_imple implements BoardService {
 			String textForBoardList = Jsoup.clean(dto.getBoardContent()
 					.replaceAll("(?i)<br\\s*/?>", "\n")	// 대소문자 구분 없이, <br>, <br/>, <br >, <BR/> 같은 줄바꿈 태그를 전부 찾기, 및 공백 변환
 					.replace("&nbsp;", " "), Safelist.none());
-			dto.setTextForBoardList(textForBoardList);
+			dto.setTextForBoardList(textForBoardList.length() > 20
+									? textForBoardList.substring(0,20) + "..."
+									: textForBoardList);
 
 			// 2. 이미지 체크 및 추출
 			Element img = Jsoup.parse(dto.getBoardContent()).selectFirst("img[src]");	// import org.jsoup.nodes.Element;
@@ -105,7 +107,15 @@ public class BoardService_imple implements BoardService {
 		return n;
 	}
 
+	// 게시물 수정하기, 수정시 기존 파일은 삭제!
+	@Override
+	public int updateBoard(BoardDTO boardDto) {
+		
+		int n = boardDao.updateBoard(boardDto);
 
+		return n;
+	}
+	
 	// 메인페이지 카테고리 자동 불러오기 메서드
 	@Override
 	public List<Map<String, String>> getIndexList(String fk_categoryNo) {
@@ -120,7 +130,6 @@ public class BoardService_imple implements BoardService {
 			
 			return boardDto;
 	   }
-
 
 	 //내가 작성한 글 목록
     @Override
@@ -203,6 +212,7 @@ public class BoardService_imple implements BoardService {
 	public void boardLike(String fk_id, Long fk_boardNo) {
 		boardDao.boardLike(fk_id, fk_boardNo);
 	}
+
 	
 }
 

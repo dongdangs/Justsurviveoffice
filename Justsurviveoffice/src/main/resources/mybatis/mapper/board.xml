@@ -21,10 +21,25 @@
                		  #{boardFileName}, #{boardFileOriginName}) 
     </insert>
     
+    <!-- 파일첨부 된 게시물 업로드 -->
+    <update id="updateBoard" parameterType="BoardDTO">
+    	update Board
+    	set boardName = #{boardName}, boardContent = #{boardContent}
+    	<if test="boardFileName != null">
+    		,boardFileName = #{boardFileName}
+    		,boardFileOriginName = #{boardFileOriginName}
+    	</if>
+    	where boardNo = #{boardNo}
+    </update>
+    
     <!-- 게시판 접근! -->
     <select id="selectBoardList" parameterType="HashMap" resultType="BoardDTO">
     	select boardNo, fk_id, 
-               boardName,
+    		   case
+    		   	when length(boardName) > 12
+    		   		then substr(boardName, 1, 12)
+    		   		else boardName
+    		   	end as boardName,
      		   boardContent,
                BoardFileName, BoardFileOriginName, readcount, 
                to_char(updatedAtBoard, 'yyyy-mm-dd hh24:mi:ss') as updatedAtBoard,
@@ -117,6 +132,7 @@
 		where boardNo = #{boardNo} and boardDeleted = 0
 	</update>
 
+	
 	 <select id="getIndexList" parameterType="string" resultType="map">
           select
 			    C.categoryNo         AS "categoryNo",

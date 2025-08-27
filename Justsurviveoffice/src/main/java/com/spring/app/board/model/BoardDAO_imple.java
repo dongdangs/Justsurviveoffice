@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardDAO_imple implements BoardDAO {
 	
-	
 	@Qualifier("sqlsession")
 	private final SqlSessionTemplate sql;
 	
@@ -44,6 +43,11 @@ public class BoardDAO_imple implements BoardDAO {
 	@Override
 	public int softDeleteBoard(Long boardNo) {
 		return sql.update("board.softDeleteBoard", boardNo);
+	}
+	// 게시물 수정하기, 수정시 기존 파일은 삭제!
+	@Override
+	public int updateBoard(BoardDTO boardDto) {
+		return sql.update("board.updateBoard", boardDto);
 	}
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	@Override

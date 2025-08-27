@@ -3,12 +3,14 @@ package com.spring.app.board.controller;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,11 +21,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
-import com.spring.app.comment.service.CommentService;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
 import com.spring.app.model.HistoryRepository;
-import com.spring.app.users.domain.CommentDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -46,7 +46,6 @@ public class BoardController {
 	private final UsersService usersService;
 	private final BoardService boardService;
 	private final BookmarkService bookmarkService;
-	private final CommentService commentService;
 	
 	private final FileManager fileManager;
 	
@@ -104,8 +103,9 @@ public class BoardController {
 	}
 // ==================================================================== //
 		
-	@GetMapping("write")
-	public ModelAndView writeBoard(@RequestParam(name="category") String category,
+	
+	@GetMapping("write/{category}") // RestAPI
+	public ModelAndView writeBoard(@PathVariable("category") String category,
 								   ModelAndView modelview) {
 		modelview.addObject("category", category); // 카테고리 번호가 게시판마다 따라가야함!
 		modelview.setViewName("board/write");
@@ -159,8 +159,7 @@ public class BoardController {
 		int n = boardService.insertBoard(boardDto); // 게시판에 업로드!
 		
 		if(n==1) {
-			modelview.setViewName("redirect:list?category="
-									+boardDto.getFk_categoryNo());
+			modelview.setViewName("redirect:list/"+boardDto.getFk_categoryNo());
 		}
 		else {
 			modelview.addObject("message", "오류: 현재 게시물 업로드가 불가능합니다.");
@@ -189,15 +188,15 @@ public class BoardController {
 	
  // 각 카테고리 게시판에 들어가기!
 	//또는 전체 게시물 검색!
-	@GetMapping("list")
+	@GetMapping("list/{category}") // RestAPI
 	public ModelAndView list(ModelAndView modelview, 
 							 HttpServletRequest request,
 							 HttpServletResponse response,
 	 @RequestParam(name="searchType", defaultValue="") String searchType,
 	 @RequestParam(name="searchWord", defaultValue="") String searchWord, 
 	 @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
-	 @RequestParam(name="category", defaultValue="") String category) {
- // http://localhost:9089/justsurviveoffice/board/list?category=1
+	 @PathVariable("category") String category) {
+ // http://localhost:9089/justsurviveoffice/board/list/1
 		List<BoardDTO> boardList = null;
 		
 		// 추후 referer 는 spring security의 토큰 검사로 변경.
@@ -206,7 +205,7 @@ public class BoardController {
 			modelview.setViewName("redirect:/index");
 			return modelview;
 		}
-		 
+
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("searchType", searchType);
 		paraMap.put("searchWord", searchWord);
@@ -220,19 +219,6 @@ public class BoardController {
 
 		boardList = boardService.boardList(paraMap);
 		
-		// 정규화가 content는 필요함!
-		for(BoardDTO boardDto : boardList) {
-			boardDto.setBoardContent(
-					boardDto.getBoardContent()
-					.replace("&nbsp;", " ")
-					.toLowerCase()
-					.replaceAll("<[^>]+>", " ")				// <p> 처럼 태그 형태 제거
-					.replaceAll("[^0-9a-zA-Z가-힣]+", " ")	// 한글/영문/숫자 빼고 다 공백 처리
-					.replaceAll("\\s+", " ")	);			// \\s → 정규식에서 공백 문자(whitespace) 를 의미, 공백 정리
-					// replaceAll("\\s+", " ") 은 연속된 모든 종류의 공백(스페이스/탭/줄바꿈 등)을 스페이스 하나 로 바꾸는 코드);
-		}
-		//이렇게 하지않으면, JSP가 HTML 스마트 에디터의 태그까지 문자열로 찍어주기 때문에 레이아웃이 깨짐!
-		
 		HttpSession session = request.getSession();
 		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
 		// 로그인 된 유저가 있다면, 게시물 별 bookmarked 를 체크해야함.
@@ -242,16 +228,12 @@ public class BoardController {
 														loginUser.getId(), 
 														boardDto.getBoardNo())); 
 			}
-			
 		}
-		System.out.println(category);
-
+		// System.out.println(category);
 		modelview.addObject("boardList", boardList);
 		modelview.addObject("searchType", searchType);
 		modelview.addObject("searchWord", searchWord);
 		modelview.addObject("category", category);
-		modelview.addObject("loginUser", loginUser.getId());
-
 		
 		modelview.setViewName("board/list");
 		
@@ -284,9 +266,6 @@ public class BoardController {
 		paraMap.put("currentShowPageNo", searchType);
 		
 		boardDto = boardService.selectView(boardDto.getBoardNo());
-
-        // 댓글 목록 조회
-        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
 		
 		if(boardDto != null) { // 뒤로가기 혹은 오류가 없는 정상 게시물인 경우 이동.
 			System.out.println(boardDto.getBoardNo());
@@ -375,7 +354,6 @@ public class BoardController {
 			}
 
 			modelview.addObject("boardDto", boardDto);
-	        modelview.addObject("commentList", commentList);
 			
 			/* null 일시 0값 부여서해서 view.jsp 로 0 값을 보냄 (김예준)*/
 			if(boardDto.getPreNo() == null ) {
@@ -390,8 +368,7 @@ public class BoardController {
 		}
 		else { // 뒤로가기 혹은 오류로 인한 삭제게시물을 클릭한 경우.
 			modelview.addObject("message", "현재 존재하지 않는 게시물입니다.");
-			modelview.addObject("loc", "list?category="
-										+category); // category = fk_categoryNo
+			modelview.addObject("loc", "list/"+category); // category = fk_categoryNo
 			modelview.setViewName("msg"); 
 			
 			return modelview;
@@ -412,14 +389,12 @@ public class BoardController {
 			
 			if(n==1) { 
 				modelview.addObject("message", "글이 삭제되었습니다.");
-				modelview.addObject("loc", "list?category="
-										+boardDto.getFk_categoryNo());
+				modelview.addObject("loc", "list/"+boardDto.getFk_categoryNo());
 				modelview.setViewName("msg");
 			}
 			else {
 				modelview.addObject("message", "이미 삭제된 게시물입니다.");
-				modelview.addObject("loc", "list?category="
-										+boardDto.getFk_categoryNo());
+				modelview.addObject("loc", "list/"+boardDto.getFk_categoryNo());
 				modelview.setViewName("msg");
 			}
 		}
@@ -432,19 +407,105 @@ public class BoardController {
 		return modelview;
 	}
 	
+	// 게시물 수정하기.
+	@GetMapping("edit")
+	public ModelAndView editBoard(HttpServletRequest request,
+							 HttpServletResponse response,
+							 ModelAndView modelview,
+							 BoardDTO boardDto) {
+					   	  // boardNo, fk_id, fk_category
+		String referer = request.getHeader("Referer");
+		if(referer == null) {	// URL로 타고 들어오지 못하도록 1차 보안.
+			modelview.setViewName("redirect:/index");
+			return modelview;
+		}
+		HttpSession session = request.getSession();
+		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+		// 자신의 게시물이 아닌 게시물을 수정하지 못하도록 2차 보안.
+		if(boardDto.getFk_id().equals(loginUser.getId())) { 
+			boardDto = boardService.selectView(boardDto.getBoardNo());
+
+			modelview.addObject("boardDto", boardDto); // boardDto를 넘겨주고 모두 보여주자!
+			modelview.setViewName("board/edit");
+			
+		}
+		else {
+			modelview.addObject("message", "본인 게시물에만 접근 가능합니다.");
+			modelview.addObject("loc", "javascript:history.back()");
+			modelview.setViewName("msg");
+		}
+		return modelview;
+	}
+	// 게시물 수정하기, 수정시 기존 파일은 삭제!
+	@PostMapping("edit")
+	public ModelAndView updateBoard(ModelAndView modelview,
+								  Map<String, String> paraMap,
+								  BoardDTO boardDto,
+								  HttpServletRequest request,
+								  HttpSession session) {
+		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+		
+		MultipartFile attach = boardDto.getAttach();
+	// 1번. 일반 파일 업로드 해보기.	
+/*  	주요 메소드:	getOriginalFilename() → 원본 파일명
+					getSize() → 파일 크기
+					getBytes() → 파일 내용을 바이트 배열로
+					transferTo(File dest) → 실제 서버에 저장 */
+		// 파일이 있는 경우 해당 파일을 저장해줄 부분.
+		if(attach != null && !attach.isEmpty()) { 
+			session = request.getSession(); // WAS(톰캣)의 절대경로 알아오기.
+			String root = session.getServletContext().getRealPath("/");
+			String path = root+"resources"+File.separator+"files";
+//				System.out.println(path);
+// /Users/dong/git/Justsurviveoffice/Justsurviveoffice/src/main/webapp/resources/files
+			String boardFileName = ""; //WAS(톰캣)의 디스크에 저장될 파일명
+			
+			byte[] bytes = null; // 첨부파일의 내용물을 담는 예정.
+
+			try {//boardFileName
+				bytes = attach.getBytes(); //첨부파일의 내용물을 읽기.
+				String boardFileOriginName = attach.getOriginalFilename();
+				
+				boardFileName = fileManager // 첨부되어진 파일은 고유이름으로 업로드
+							.doFileUpload(bytes, boardFileOriginName, path);
+				//20250826172844_a2b5f4b0cc9d46e99976ca3901bc555d.png
+				System.out.println(boardFileName);
+				boardDto.setBoardFileName(boardFileName);
+				boardDto.setBoardFileOriginName(boardFileOriginName);
+				// 게시물에서 첨부된 파일을 보여줄 때 기존명 노출.
+				// 사용자가 파일을 다운로드 할 때도 기존명 노출.
+				// 하지만 WAS에는 고유 파일 이름으로 저장해놔야만 선택 및 삭제 시 오류가 나지 않음.
+				// 찾을 때도 고유 파일 이름(newFileName == boardFileName)
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		int n = boardService.updateBoard(boardDto); // 게시판에 수정본 업로드!
+		
+		if(n==1) {
+			modelview.setViewName("redirect:list/"+boardDto.getFk_categoryNo());
+		}
+		else {
+			modelview.addObject("message", "오류: 현재 게시물 수정이 불가능합니다.");
+			modelview.addObject("loc", "javascript:history.back()");
+			modelview.setViewName("msg");
+		}
+		
+		return modelview;
+	}
 	
 	
 	//////////////////////////////////////////////////////////////////////
 	// Hot 게시글 전체 리스트 (조회수 많은 순)
 	@GetMapping("hot/all")
-	public ModelAndView hotAll(ModelAndView mav) {
+	public ModelAndView hotAll(ModelAndView modelview) {
 		
 		List<BoardDTO> hotAllList = boardService.hotAll();
 		
-		mav.addObject("boardList", hotAllList);
-		mav.setViewName("board/boardList");
+		modelview.addObject("boardList", hotAllList);
+		modelview.setViewName("board/boardList");
 		
-		return mav;
+		return modelview;
 	}
 	//////////////////////////////////////////////////////////////////////
 	
