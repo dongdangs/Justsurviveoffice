@@ -214,113 +214,94 @@
 
             case "category":
                 $.ajax({
-                    url: "<%= ctxPath%>/admin/categoryChart",
-                    data: { "id": "${sessionScope.loginUser.id}" },
+                    url: "<%= ctxPath%>/admin/chart/categoryChart",
                     dataType: "json",
                     success: function (json) {
                         $("div#chart_container").empty();
                         $("div#table_container").empty();
 
-                        const resultArr = [];
-
-                        for (let i = 0; i < json.length; i++) {
-                            const month_arr = [
-                                Number(json[i].m_01),
-                                Number(json[i].m_02),
-                                Number(json[i].m_03),
-                                Number(json[i].m_04),
-                                Number(json[i].m_05),
-                                Number(json[i].m_06),
-                                Number(json[i].m_07),
-                                Number(json[i].m_08),
-                                Number(json[i].m_09),
-                                Number(json[i].m_10),
-                                Number(json[i].m_11),
-                                Number(json[i].m_12)
-                            ];
-
-                            resultArr.push({
-                                name: json[i].categoryname,
-                                data: month_arr
-                            });
-                        }
-
-                        Highcharts.chart('chart_container', {
-                            title: {
-                                text: new Date().getFullYear() + '년 카테고리별 월별주문 통계'
-                            },
-                            yAxis: {
-                                title: {
-                                    text: '주문 금액'
-                                }
-                            },
-                            xAxis: {
-                                accessibility: {
-                                    rangeDescription: '범위: 1 to 12'
-                                }
-                            },
-                            legend: {
-                                layout: 'vertical',
-                                align: 'right',
-                                verticalAlign: 'middle'
-                            },
-                            plotOptions: {
-                                series: {
-                                    label: {
-                                        connectorAllowed: false
-                                    },
-                                    pointStart: 1
-                                }
-                            },
-                            series: resultArr,
-                            responsive: {
-                                rules: [{
-                                    condition: {
-                                        maxWidth: 500
-                                    },
-                                    chartOptions: {
-                                        legend: {
-                                            layout: 'horizontal',
-                                            align: 'center',
-                                            verticalAlign: 'bottom'
-                                        }
-                                    }
-                                }]
-                            }
-                        });
-
-                        let html = "<table class='stats-table'>";
-                        html += "<tr><th>카테고리</th>";
-                        for (let m = 1; m <= 12; m++) {
-                            html += "<th>" + (m < 10 ? '0' + m : m) + "월</th>";
-                        }
-                        html += "</tr>";
-
-                        $.each(json, function (index, item) {
-                            html += "<tr>" +
-                                "<td>" + item.categoryname + "</td>" +
-                                "<td>" + Number(item.m_01).toLocaleString('en') + "</td>" +
-                                "<td>" + Number(item.m_02).toLocaleString('en') + "</td>" +
-                                "<td>" + Number(item.m_03).toLocaleString('en') + "</td>" +
-                                "<td>" + Number(item.m_04).toLocaleString('en') + "</td>" +
-                                "<td>" + Number(item.m_05).toLocaleString('en') + "</td>" +
-                                "<td>" + Number(item.m_06).toLocaleString('en') + "</td>" +
-                                "<td>" + Number(item.m_07).toLocaleString('en') + "</td>" +
-                                "<td>" + Number(item.m_08).toLocaleString('en') + "</td>" +
-                                "<td>" + Number(item.m_09).toLocaleString('en') + "</td>" +
-                                "<td>" + Number(item.m_10).toLocaleString('en') + "</td>" +
-                                "<td>" + Number(item.m_11).toLocaleString('en') + "</td>" +
-                                "<td>" + Number(item.m_12).toLocaleString('en') + "</td>" +
-                                "</tr>";
-                        });
-
-                        html += "</table>";
-                        $("div#table_container").html(html);
-                    },
-                    error: function (request, status, error) {
-                        alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
-                    }
-                });
+						let resultArr = [];
+						
+						for(let i=0; i<json.length; i++) {
+							
+							let obj;
+							
+							if(i==0) {
+								obj = {name: json[i].categoryName,
+							           y: Number(json[i].percentage),
+							           sliced: true,
+							           selected: true};
+							}
+							else {
+								obj = {name: json[i].categoryName,
+							           y: Number(json[i].percentage)};
+							}
+							
+							resultArr.push(obj); // 배열속에 객체를 넣기
+							
+						} // end of for
+						
+						// ====================================================== //
+						Highcharts.chart('chart_container', {
+						    chart: {
+						        plotBackgroundColor: null,
+						        plotBorderWidth: null,
+						        plotShadow: false,
+						        type: 'pie'
+						    },
+						    title: {
+						        text: '카테고리별 인원통계'
+						    },
+						    tooltip: {
+						        pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+						    },
+						    accessibility: {
+						        point: {
+						            valueSuffix: '%'
+						        }
+						    },
+						    plotOptions: {
+						        pie: {
+						            allowPointSelect: true,
+						            cursor: 'pointer',
+						            dataLabels: {
+						                enabled: true,
+						                format: '<b>{point.name}</b>: {point.percentage:.2f} %'
+						            }
+						        }
+						    },
+						    series: [{
+						        name: '인원비율',
+						        colorByPoint: true,
+						        data: resultArr
+						    }]
+						});						
+						// ====================================================== //
+						
+						let v_html = `<table>
+										 <tr>
+										 	<th>카테고리</th>
+										 	<th>인원수</th>
+										 	<th>퍼센티지</th>
+										 </tr>`;
+										 
+						$.each(json, function(index, item){
+							v_html += `<tr>
+										  <td>\${item.categoryName}</td>
+										  <td>\${item.cnt}</td>
+										  <td>\${item.percentage}</td>
+									   </tr>`;
+						});				 
+										 
+						v_html += `</table>`;
+						
+						$('div#table_container').html(v_html);			
+						
+					},
+					error: function(request, status, error){
+	                  	alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	               	}
+				});
                 break;
         }
     }

@@ -200,4 +200,11 @@ select * from board;
 
 select * from category;
 
-select * from 
+
+select COALESCE(c.categoryNo, 0) AS categoryNo, 
+       COALESCE(c.categoryname, '미분류') AS categoryName, 
+       count(*) as cnt,
+       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM users), 2) AS percentage
+from users U LEFT JOIN category C
+ON U.fk_categoryNo = C.categoryNo
+group by categoryNo, categoryName;

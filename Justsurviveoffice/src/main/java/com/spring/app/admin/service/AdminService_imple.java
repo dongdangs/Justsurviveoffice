@@ -3,6 +3,8 @@ package com.spring.app.admin.service;
 import static com.spring.app.entity.QCategory.category;
 import static com.spring.app.entity.QUsers.users;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -22,6 +24,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.app.entity.Users;
 import com.spring.app.admin.model.AdminRepository;
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.common.AES256;
 import com.spring.app.common.SecretMyKey;
 import com.spring.app.users.domain.UsersDTO;
@@ -162,6 +165,24 @@ public class AdminService_imple implements AdminService {
 	// TODO Auto-generated method stub
 	return null;
    }
+
+   
+   	// 카테고리별 인원 통계
+   	@Override
+   	public List<Map<String, String>> categoryChart() {
+   		List<CategoryDTO> categoryPercentageList = adminRepository.getCategoryChart();
+   		
+   		List<Map<String, String>> result = new ArrayList<>();
+   		for(CategoryDTO categoryDto : categoryPercentageList) {
+   			Map<String, String> map = new HashMap<>();
+   			map.put("categoryName", categoryDto.getCategoryName());
+   			map.put("cnt", String.valueOf(categoryDto.getCnt()));
+   			map.put("percentage", String.valueOf(categoryDto.getPercentage()));
+   			result.add(map);
+   		}
+   		
+   		return result;
+   	}
 
   
    
