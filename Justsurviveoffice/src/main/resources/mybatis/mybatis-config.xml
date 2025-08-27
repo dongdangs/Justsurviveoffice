@@ -3,7 +3,6 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     
-<<<<<<< HEAD
   <!-- domain(DTO) package -->
   <typeAliases>
 	<!-- <typeAlias type="com.spring.app.users.domain.UsersDTO" alias="UsersDTO"/> -->
@@ -11,11 +10,5 @@
   	<typeAlias type="com.spring.app.board.domain.BoardLikeDTO" alias="BoardLikeDTO"/>
   	<typeAlias type="com.spring.app.category.domain.CategoryDTO" alias="CategoryDTO"/>
   </typeAliases>
-=======
-    <!-- domain(DTO) package -->
-    <typeAliases>
-    	<typeAlias type="com.spring.app.users.domain.BoardDTO" alias="BoardDTO" />
-   	</typeAliases>
->>>>>>> branch 'rdg7203' of https://github.com/dongdangs/Justsurviveoffice.git
 
 </configuration>
