@@ -305,6 +305,7 @@
 	        data: { fk_boardNo: boardNo },
 	        success: function(json) {
 	            const icon = $('#bookmark-icon-'+boardNo);
+	            
 	            if (json.success) {
 	            	icon.removeClass("fa-solid fa-bookmark text-warning fa-regular");
 	            	if (isBookmarked) {
@@ -318,7 +319,7 @@
 	            	}
 	            } else {
 	                alert(json.message);
-	                window.location.href = "<%=ctxPath%>/login/loginForm";
+	                window.location.href = "<%=ctxPath%>/users/loginForm";
 	            }
 	        },
 	        error: function(request, status, error) {

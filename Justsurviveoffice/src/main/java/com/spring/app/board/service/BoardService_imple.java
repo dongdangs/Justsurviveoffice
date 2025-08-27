@@ -153,35 +153,6 @@ public class BoardService_imple implements BoardService {
 	}
 
 	
-	//게시글 좋아요 여부
-	@Override
-	public boolean isBoardLiked(Long boardNo, String fk_id) {
-		 
-		Map<String, Object> boardLike = new HashMap<>();
-		
-		boardLike.put("fkId", fk_id);
-		boardLike.put("boardNo", boardNo);
-		return false;
-		
-	}
-
-	@Override
-	public void deleteBoardLike(Long boardNo, String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void insertBoardLike(Long boardNo, String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getBaordLikeCount(Long boardNo) {
-		return boardDao.getLikeCount(boardNo);
-	}
-	
 	////////////////////////////////////////////////////////////////////////////////////
 	// 인기 게시글 리스트 (조회수 많은 순)
 	@Override
@@ -209,10 +180,17 @@ public class BoardService_imple implements BoardService {
 	
 	////////////////////////////////////////////////////////////////////////////////////   
 	
-	// 게시물 좋아요
+	//게시글 좋아요 여부
 	@Override
-	public void boardLike(String fk_id, Long fk_boardNo) {
-		boardDao.boardLike(fk_id, fk_boardNo);
+	public boolean isBoardLiked(String fk_id, Long fk_boardNo) {
+		 
+		Map<String, Object> paramMap = new HashMap<>();
+		
+		paramMap.put("fk_id", fk_id);
+		paramMap.put("fk_boardNo", fk_boardNo);
+		
+		int count = boardDao.isBoardLiked(paramMap);
+	    return count > 0; // 좋아요가 존재하면 true			
 	}
 	
 	// 총 검색된 게시물 건수
@@ -332,6 +310,29 @@ public class BoardService_imple implements BoardService {
 		return keyword_top;
 	}
 
+	//게시글 좋아요 취소
+	@Override
+	public int deleteBoardLike(String fk_id, Long fk_boardNo) {
+	    return boardDao.deleteBoardLike(fk_id, fk_boardNo);
+
+		
+	}
+
+	//게시글 좋아요 추가
+	@Override
+	public int insertBoardLike(String fk_id, Long fk_boardNo) {
+		int n = boardDao.insertBoardLike( fk_id, fk_boardNo );
+		return n;
+	}
+	
+
+	//게시글 좋아요 수
+	@Override
+	public int getBoardLikeCount(Long fk_boardNo) {
+		return boardDao.getLikeCount(fk_boardNo);
+	}
+
+	
 	
 }
 

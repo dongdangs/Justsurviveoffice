@@ -47,18 +47,22 @@ public interface BoardDAO {
     //  북마크한 게시글 목록
     List<BoardDTO> getBookmarksById(String fk_id);
 
-    //게시글 좋아요 수
-	public int getLikeCount(Long boardNo);
 	////////////////////////////////////////////////////////////////////////////
 	// Hot 게시글 전체 리스트 (조회수 많은 순)
 	List<BoardDTO> hotAll();
 	
 
 	////////////////////////////////////////////////////////////////////////////
-
+	// 게시물 좋아요 여부
+	public int isBoardLiked(Map<String, Object> paramMap);
+	//게시글 좋아요 취소
+	public int deleteBoardLike(String fk_id, Long fk_boardNo);
 	// 게시물 좋아요
-	int boardLike(String fk_id, Long fk_boardNo);
+	public int insertBoardLike(String fk_id, Long fk_boardNo);;
+	//게시글 좋아요 수
+	public int getLikeCount(Long boardNo);
 	
+	// =====================0827 rdg7203 수정 시작 =============================== //
 	// 총 검색된 게시물 건수
 	public int searchListCount(Map<String, String> paraMap);
 	
@@ -67,5 +71,6 @@ public interface BoardDAO {
 	
 	// 보드 테이블에서 제목과 내용 가져오기(DB)
 	public List<BoardDTO> getBoardContents(String category);
+	// =====================0827 rdg7203 수정 끝 =============================== //
 	
 }

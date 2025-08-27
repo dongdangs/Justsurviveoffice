@@ -374,7 +374,15 @@ public class BoardController {
 				boardDto.setBookmarked(bookmarkService.isBookmarked(
 						loginUser.getId(), 
 						boardDto.getBoardNo())); 
+				 // 좋아요 여부 
+			    boolean isLiked = boardService.isBoardLiked(loginUser.getId(), boardDto.getBoardNo());
+			    boardDto.setBoardLiked(isLiked);
+			    
+			    System.out.println("=== 좋아요 여부: " + isLiked);
 			}
+			// 좋아요 개수 추가
+	        int likeCount = boardService.getBoardLikeCount(boardDto.getBoardNo());
+	        modelview.addObject("likeCount", likeCount);
 			// 댓글 목록 조회
 	        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
 	        modelview.addObject("commentList", commentList);
@@ -514,9 +522,9 @@ public class BoardController {
 	// 첨부파일 다운받기!
 	@PostMapping("download")
     public void download(HttpServletRequest request,  
-		   				 HttpServletResponse response,
-		   				 @RequestParam(name = "boardFileName") String boardFileName,
-		   				 @RequestParam(name = "boardFileOriginName") String boardFileOriginName) {
+		   				HttpServletResponse response,
+		   				@RequestParam(name = "boardFileName") String boardFileName,
+		   				@RequestParam(name = "boardFileOriginName") String boardFileOriginName) {
       
       // HttpServletResponse response -> 서버가 클라이언트(웹브라우저)로 보내는 응답 객체
       response.setContentType("text/html; charset=UTF-8");   // 브라우저가 응답을 HTML로 이해하도록 미리 Content-Type을 "text/html; charset=UTF-8"로 지정
@@ -587,7 +595,6 @@ public class BoardController {
       }
       
    }
-
 	
 	
 	//////////////////////////////////////////////////////////////////////
@@ -605,25 +612,49 @@ public class BoardController {
 	//////////////////////////////////////////////////////////////////////
 	
 	
-	// 북마크 추가
-    @PostMapping("like")
+
+	// 게시글 좋아요
+    @PostMapping("boardlike")
     @ResponseBody
     public Map<String, Object> boardLike(@RequestParam(name="fk_boardNo") Long fk_boardNo, HttpSession session) {
-        Map<String, Object> result = new HashMap<>();
+       
+    	Map<String, Object> result = new HashMap<>();
 
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        System.out.println("===> loginUser: " + loginUser);
+        
         if (loginUser == null) {
             result.put("success", false);
             result.put("message", "로그인이 필요합니다.");
             return result;
         }
+        
+        String fk_id = loginUser.getId();
+        System.out.println("===> fk_id: " + fk_id);
 
-        boardService.boardLike(loginUser.getId(), fk_boardNo);
+        boolean isLiked = boardService.isBoardLiked(fk_id, fk_boardNo);
+        
+        if(isLiked == true) {
+        	boardService.deleteBoardLike(fk_id,fk_boardNo);
+        	result.put("status", "unliked");
+        } 
+        else {
+        	boardService.insertBoardLike(fk_id,fk_boardNo);
+        	result.put("status", "liked");
+        }
+        
+        // 현재 게시글의 좋아요 수
+        int likeCount = boardService.getBoardLikeCount(fk_boardNo);
+        
+        boolean newStatus = boardService.isBoardLiked(fk_id, fk_boardNo); // 최신 상태 재조회
+
         result.put("success", true);
-        result.put("message", "좋아요");
+        result.put("likeCount", likeCount);
+        
         return result;
     }
 	
+    
 	
     // 게시글 목록에 검색어 자동입력
  	@GetMapping("wordSearchShow")
