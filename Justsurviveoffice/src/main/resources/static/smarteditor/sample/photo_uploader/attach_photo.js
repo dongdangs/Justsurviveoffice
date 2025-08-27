@@ -334,154 +334,6 @@
     	var tempFile,
     		sUploadURL;
     	/* (대사살 스마트에디터 관련 수정 순서4) */
-<<<<<<< HEAD
-    	sUploadURL= '/justsurviveoffice/board/image/multiplePhotoUpload'; 	//upload URL
-    	
-    	//파일을 하나씩 보내고, 결과를 받음.
-    	for(var j=0, k=0; j < nImageInfoCnt; j++) {
-    		tempFile = htImageInfo['img'+j];
-    		try{
-	    		if(!!tempFile){
-	    			//Ajax통신하는 부분. 파일과 업로더할 url을 전달한다.
-	    			callAjaxForHTML5(tempFile,sUploadURL);
-	    			k += 1;
-	    		}
-	    	}catch(e){}
-    		tempFile = null;
-    	}
-	}
-    
-    function callAjaxForHTML5 (tempFile, sUploadURL){
-    	var oAjax = jindo.$Ajax(sUploadURL, {
-			type: 'xhr',
-			method : "post",
-			onload : function(res){ // 요청이 완료되면 실행될 콜백 함수
-				var sResString = res._response.responseText;
-				if (res.readyState() == 4) {
-					if(sResString.indexOf("NOTALLOW_") > -1){
-						var sFileName = sResString.replace("NOTALLOW_", "");
-						alert("이미지 파일(jpg,gif,png,bmp)만 업로드 하실 수 있습니다. ("+sFileName+")");
-					}else{
-						//성공 시에  responseText를 가지고 array로 만드는 부분.
-						makeArrayFromString(res._response.responseText);
-					}
-				}
-			},
-			timeout : 3,
-			onerror :  jindo.$Fn(onAjaxError, this).bind()
-		});
-		oAjax.header("contentType","multipart/form-data");
-		oAjax.header("file-name",encodeURIComponent(tempFile.name));
-		oAjax.header("file-size",tempFile.size);
-		oAjax.header("file-Type",tempFile.type);
-		oAjax.request(tempFile);
-    }
-    
-    function makeArrayFromString(sResString){
-    	var	aTemp = [],
-    		aSubTemp = [],
-    		htTemp = {}
-    		aResultleng = 0;
-    	
- 		try{
- 			if(!sResString || sResString.indexOf("sFileURL") < 0){
- 	    		return ;
- 	    	}
- 			aTemp = sResString.split("&");
-	    	for (var i = 0; i < aTemp.length ; i++){
-	    		if( !!aTemp[i] && aTemp[i] != "" && aTemp[i].indexOf("=") > 0){
-	    			aSubTemp = aTemp[i].split("=");
-	    			htTemp[aSubTemp[0]] = aSubTemp[1];
-	    		}
-	 		}
- 		}catch(e){}
- 		
- 		aResultleng = aResult.length;
-    	aResult[aResultleng] = htTemp;
-    	
-    	if(aResult.length == nImageFileCount){
-    		setPhotoToEditor(aResult); 
-    		aResult = null;
-    		window.close();
-    	}
-    }
-    
-    /**
- 	 * 사진 삭제 시에 호출되는 함수
- 	 * @param {Object} sParentId 
- 	 */
- 	function delImage (sParentId){
- 		var elLi = jindo.$$.getSingle("#"+sParentId);
- 		
- 		refreshTotalImageSize(sParentId);
- 		
- 		updateViewTotalSize();
- 		updateViewCount(nImageFileCount,-1);
- 		//사진 file array에서 정보 삭제.
- 		removeImageInfo(sParentId);
- 		//해당 li삭제
- 		$Element(elLi).leave();
- 		
- 		//마지막 이미지인경우.
- 		if(nImageFileCount === 0){
- 			readyModeBG();
- 			//사진 추가 버튼 비활성화
- 			goReadyMode();
- 		}
- 		
- 		// drop 영역 이벤트 다시 활성화.
- 		if(!bAttachEvent){
- 			addEvent();
- 		}
- 	}
-
- 	/**
-     * 이벤트 할당
-     */
-	function addEvent() {
-		bAttachEvent = true;
-		elDropArea.addEventListener("dragenter", dragEnter, false);
-		elDropArea.addEventListener("dragexit", dragExit, false);
-		elDropArea.addEventListener("dragover", dragOver, false);
-		elDropArea.addEventListener("drop", drop, false);
-	}
-	
-	function removeEvent(){
-		bAttachEvent = false;
-		elDropArea.removeEventListener("dragenter", dragEnter, false);
-	    elDropArea.removeEventListener("dragexit", dragExit, false);
-	    elDropArea.removeEventListener("dragover", dragOver, false);
-	    elDropArea.removeEventListener("drop", drop, false);	
-	}
- 	
-	/**
-	 * Ajax 통신 시 error가 발생할 때 처리하는 함수입니다.
-	 * @return
-	 */
-	function onAjaxError (){
-		alert("[가이드]사진 업로더할 서버URL셋팅이 필요합니다.-onAjaxError");
-	}
-
- 	/**
-      * 이미지 업로드 시작
-      * 확인 버튼 클릭하면 호출되는 msg
-      */
-     function uploadImage (e){
-    	 if(!bSupportDragAndDropAPI){
-    		 generalUpload();
-    	 }else{
-    		 html5Upload();
-    	 }
-     }
-     
- 	/**
- 	 * jindo에 파일 업로드 사용.(iframe에 Form을 Submit하여 리프레시없이 파일을 업로드하는 컴포넌트)
- 	 */
- 	function callFileUploader (){
- 		oFileUploader = new jindo.FileUploader(jindo.$("uploadInputBox"),{
-			/* (대사살 스마트에디터 관련 수정 순서3) */
- 			sUrl  : '/justsurviveoffice/board/image/photoUpload',	// 파일업로드시 동작되는 컨트롤러 url
-=======
     	sUploadURL= '/justsurviveoffice/rdgAPI/image/multiplePhotoUpload'; 	//upload URL
     	
     	//파일을 하나씩 보내고, 결과를 받음.
@@ -628,14 +480,13 @@
  		oFileUploader = new jindo.FileUploader(jindo.$("uploadInputBox"),{
 			/* (대사살 스마트에디터 관련 수정 순서3) */
  			sUrl  : '/justsurviveoffice/rdgAPI/image/photoUpload',	// 파일업로드시 동작되는 컨트롤러 url
->>>>>>> branch 'rdg7203' of https://github.com/dongdangs/Justsurviveoffice.git
  	        sCallback : location.href.replace(/\/[^\/]*$/, '') + '/callback.html',	//업로드 이후  redirect 페이지 url
  	    	sFiletype : "*.jpg;*.png;*.bmp;*.gif",						//허용할 파일의 형식. ex) "*", "*.*", "*.jpg", 구분자(;)	
  	    	sMsgNotAllowedExt : 'JPG, GIF, PNG, BMP 확장자만 가능합니다',	//허용할 파일의 형식이 아닌경우에 띄워주는 경고창의 문구
  	    	bAutoUpload : false,									 	//파일이 선택됨과 동시에 자동으로 업로드를 수행할지 여부 (upload 메소드 수행)
  	    	bAutoReset : true 											// 업로드한 직후에 파일폼을 리셋 시킬지 여부 (reset 메소드 수행)
  	    }).attach({
- 	    	select : function(oCustomEvent) {
+ 	    	select : function(oCustomEvent) {""
  	    		//파일 선택이 완료되었을 때 발생
 // 		    	 oCustomEvent (이벤트 객체) = {
 // 	    			sValue (String) 선택된 File Input의 값
