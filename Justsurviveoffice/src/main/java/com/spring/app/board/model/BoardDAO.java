@@ -59,4 +59,10 @@ public interface BoardDAO {
 	// 게시물 좋아요
 	int boardLike(String fk_id, Long fk_boardNo);
 	
+	// 총 검색된 게시물 건수
+	public int searchListCount(Map<String, String> paraMap);
+	
+	// 자동 검색어 완성
+	public List<String> getSearchWordList(Map<String, String> paraMap);
+	
 }
