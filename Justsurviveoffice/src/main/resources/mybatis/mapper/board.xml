@@ -218,7 +218,7 @@
 	<!-- ================================================================================= -->
 	
   	
-  	  <!-- ===== 내가 작성한 글 목록 ===== -->
+  	<!-- ===== 내가 작성한 글 목록 ===== -->
     <select id="getMyBoards" parameterType="string" resultType="BoardDTO">
         SELECT boardno, fk_categoryno, 
               case
