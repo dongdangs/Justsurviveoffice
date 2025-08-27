@@ -1,5 +1,6 @@
 package com.spring.app.board.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,6 @@ public class BoardService_imple implements BoardService {
 			dto.setTextForBoardList(textForBoardList.length() > 20
 									? textForBoardList.substring(0,20) + "..."
 									: textForBoardList);
-
 			// 2. 이미지 체크 및 추출
 			Element img = Jsoup.parse(dto.getBoardContent()).selectFirst("img[src]");	// import org.jsoup.nodes.Element;
 			if (img != null) {
@@ -211,6 +211,33 @@ public class BoardService_imple implements BoardService {
 	@Override
 	public void boardLike(String fk_id, Long fk_boardNo) {
 		boardDao.boardLike(fk_id, fk_boardNo);
+	}
+	
+	// 총 검색된 게시물 건수
+	@Override
+	public int searchListCount(Map<String, String> paraMap) {
+		int n = boardDao.searchListCount(paraMap);
+		return n;
+	}
+	
+	// 자동 검색어 완성시키기
+	@Override
+	public List<Map<String, String>> getSearchWordList(Map<String, String> paraMap) {
+		
+		List<String> wordList = boardDao.getSearchWordList(paraMap);	// 자동 검색어 완성시킬 제목 or 이름 가져오기
+		
+		List<Map<String, String>> mapList = new ArrayList<>();
+		
+		if(wordList != null) {
+			for(String word : wordList) {
+				Map<String, String> map = new HashMap<>();
+				map.put("word", word);
+				System.out.println(word);
+				mapList.add(map);
+			}// end of for-----------------
+		}
+		
+		return mapList;
 	}
 
 	

@@ -47,8 +47,12 @@
 	        // === 글제목 유효성 검사 === //
 	        const boardName = $('input[name="boardName"]').val().trim();
 	        if(boardName == "") {
-	        	alert("글제목을 입력하세요!!");
+	        	alert("제목을 입력하세요!!");
 	        	$('input[name="boardName"]').val("");
+	        	return; // 종료
+	        }
+	        if(boardName.length > 30) {
+	        	alert("제목은 30자를 초과할 수 없습니다.");
 	        	return; // 종료
 	        }
 	        
