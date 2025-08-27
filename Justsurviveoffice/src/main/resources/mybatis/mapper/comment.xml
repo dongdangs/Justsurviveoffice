@@ -34,7 +34,6 @@
 	        fk_name, 
 	        content, 
 	        createdAtComment,
-	        updatedAtComment,
 	        parentNo
     from comments
     where fk_boardNo = #{fk_boardNo, jdbcType=NUMERIC}

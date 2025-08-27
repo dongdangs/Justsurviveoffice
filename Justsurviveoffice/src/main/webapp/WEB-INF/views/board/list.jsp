@@ -64,7 +64,7 @@
 .title,content { /* 제목과 내용의 라인을 한줄로 제한하고, 이상이되면 안보이게! */
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    
 }
 </style> 
 
@@ -180,43 +180,38 @@
    }// end of function view(boardNo,fk_id)----------------------
 
    <!-- 북마크기능 -->
-   function bookmark(boardDto, boardNo, fk_id, isBookmarked) {
+   function bookmark(boardNo, fk_id, isBookmarked) {
 	    const url = isBookmarked
-	        ? "<%= ctxPath%>/bookmark/remove"
-	        : "<%= ctxPath%>/bookmark/add";
-		
+			        ? "<%= ctxPath%>/bookmark/remove"
+			        : "<%= ctxPath%>/bookmark/add";
 	    $.ajax({
 	        url: url,
 	        type: "POST",
 	        data: { fk_boardNo: boardNo },
 	        success: function(json) {
-	            const icon = $(`#bookmark-icon-${boardNo}`);
-
+	            const icon = $('#bookmark-icon-'+boardNo);
 	            if (json.success) {
-	            	icon.removeClass("fa-solid fa-regular text-warning");
-	            	
+	            	icon.removeClass("fa-solid fa-bookmark text-warning fa-regular");
 	            	if (isBookmarked) {
 	            	    // 해제된 상태로 변경
-	            	    boardDto.bookmarked = false;
 	            	    icon.addClass("fa-regular fa-bookmark");
-	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+	            	    icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', false)");
 	            	} else {
 	            	    // 추가된 상태로 변경
-	            	    boardDto.bookmarked = true;
 	            	    icon.addClass("fa-solid fa-bookmark text-warning");
-	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+	            	    icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', true)");
 	            	}
-
 	            } else {
 	                alert(json.message);
+	                window.location.href = "<%=ctxPath%>/login/loginForm";
 	            }
 	        },
 	        error: function(request, status, error) {
 	            alert("code:" + request.status + "\nmessage:" + request.responseText);
 	        }
 	    });
-	}// end of function Bookmark(boardNo,fk_id)———————————
-
+	 }// end of function Bookmark(boardNo,fk_id)———————————
+	
    
    
    // === 글목록 검색하기 요청 === //
@@ -224,7 +219,7 @@
       const form = document.searchForm;
    <%--  
       form.method = "get";
-      form.action = "<%= ctxPath%>/board/list?category=?&...";
+      form.action = "<%= ctxPath%>/board/list/1&...";
    --%>      
       form.submit();
    }
@@ -232,6 +227,19 @@
 </script>
 
 <div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png'); border: solid 2px blue;">
+    <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 5% 0">
+		<c:if test="${requestScope.category eq 1}">
+			<span>MZ들의&nbsp;</span></c:if>
+		<c:if test="${requestScope.category eq 2}">
+			<span>꼰대들의&nbsp;</span></c:if>
+		<c:if test="${requestScope.category eq 3}">
+			<span>노예들의&nbsp;</span></c:if>		
+		<c:if test="${requestScope.category eq 4}">
+			<span>MyWay들의&nbsp;</span></c:if>
+		<c:if test="${requestScope.category eq 5}">
+			<span>금쪽이들의&nbsp;</span></c:if>
+		<span>생존 게시판</span>
+	</div>
    <h2 style="margin-bottom: 30px; font-size: 25pt; font-weight: bold;">글목록</h2>
    <%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
    <form name="searchForm" style="margin-top: 20px;">
@@ -245,7 +253,7 @@
           <input type="text" style="display: none;"/> <%-- form 태그내에 input 태그가 오로지 1개 뿐일경우에는 엔터를 했을 경우 검색이 되어지므로 이것을 방지하고자 만든것이다. --%>  
       <button type="button" class="btn btn-secondary btn-sm" onclick="searchBoard()">검색</button> 
       
-      <span><a href="<%=ctxPath %>/board/write?category=${category}" class="btn btn-secondary btn-sm" 
+      <span><a href="<%=ctxPath %>/board/write/${category}" class="btn btn-secondary btn-sm" 
             style="background-color: navy;">글쓰기</a></span>
       <span><input name="category" style="display: none" value="${category}"/></span>
    </form> 
@@ -265,7 +273,6 @@
    </form>
    
    <br><br>
-      
     <c:if test="${not empty requestScope.boardList}">
 		<div class="board-list">
 		  <c:forEach var="boardDto" items="${boardList}" varStatus="status">
@@ -273,7 +280,7 @@
 		      <div style="display: flex;" onclick="view('${boardDto.boardNo}', '${boardDto.fk_id}')">
 		        <div>
 		       		 <!-- 제목 -->
-		        	<h3 class="title" style="margin-right: 10%">${boardDto.boardName}</h3>
+		        	<h3 class="title" style="margin-right:0">${boardDto.boardName}</h3>
 					<!-- 내용 -->
 		    	 	<div class="content" style="color: grey">${boardDto.textForBoardList}</div>
 		        </div>
@@ -296,7 +303,7 @@
 				    <i id="bookmark-icon-${boardDto.boardNo}"
 				       class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
 				       style="cursor: pointer;"
-				       onclick="bookmark(this, ${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
+				       onclick="bookmark( ${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
 				    </i>
 				</form>
 				
@@ -319,9 +326,3 @@
    </div>
    
   </div>   
-
-
-
-
-   
-    

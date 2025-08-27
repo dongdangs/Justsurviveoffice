@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardDAO_imple implements BoardDAO {
 	
-	
 	@Qualifier("sqlsession")
 	private final SqlSessionTemplate sql;
 	
@@ -45,10 +44,22 @@ public class BoardDAO_imple implements BoardDAO {
 	public int softDeleteBoard(Long boardNo) {
 		return sql.update("board.softDeleteBoard", boardNo);
 	}
+	// 게시물 수정하기, 수정시 기존 파일은 삭제!
+	@Override
+	public int updateBoard(BoardDTO boardDto) {
+		return sql.update("board.updateBoard", boardDto);
+	}
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	@Override
 	public int updateReadCount(Long boardNo) {
 		return sql.update("board.updateReadCount", boardNo);
+	}
+
+	// 메인페이지 카테고리 리스트 자동 받아오기
+	@Override
+	public List<Map<String, String>> getIndexList(String fk_categoryNo) {
+		List<Map<String, String>> IndexList = sql.selectList("board.getIndexList");
+		return IndexList;
 	}
 	
 	// 내가 작성한 글 목록 
@@ -57,6 +68,12 @@ public class BoardDAO_imple implements BoardDAO {
         return sql.selectList("board.getMyBoards", fk_id);
     }
 	
+	//페이지내이션 
+	@Override
+	public BoardDTO getView(Long boardNo) {
+		return sql.selectOne("board.getView", boardNo);
+	}   
+	
 	 // 북마크한 게시글 목록 
     @Override
     public List<BoardDTO> getBookmarksById(String fk_id) {
@@ -64,7 +81,6 @@ public class BoardDAO_imple implements BoardDAO {
     }
     
    
-
 
 	////////////////////////////////////////////////////////////////////////////
 	// 인기 게시글 리스트 (조회수 많은 순)

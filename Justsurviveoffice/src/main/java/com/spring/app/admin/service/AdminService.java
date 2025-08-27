@@ -1,5 +1,8 @@
 package com.spring.app.admin.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 
 import com.spring.app.users.domain.UsersDTO;
@@ -12,5 +15,8 @@ public interface AdminService {
 
 	// 특정 회원 1명 상세보기(Detail)
 	UsersDTO getUsers(String id);
+
+	List<Map<String, String>> registerChart();
+	
 
 }

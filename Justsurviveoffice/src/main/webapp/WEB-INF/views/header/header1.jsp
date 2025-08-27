@@ -41,16 +41,16 @@
          <jsp:include page="../menu/menu1.jsp" />
       </div>
       
-      <div id="mycontent">
-         <div class="row">
-            <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" style="border:solid 2px red;">
+      <div id="mycontent"">
+         <div class="row"> 
+            <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
             <c:if test="${not empty sessionScope.loginUser}">   
                <div>
                   <img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-                   <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
-                   <div class="mb-3">
+                   <div class="text-muted small mb-3 ml-3">${sessionScope.loginUser.email}</div>
+                   <div class="mb-3 ml-3">
                       <span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                       포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b>
+                      <div>포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b></div>
                    </div>
                </div>
             </c:if>   
@@ -61,18 +61,29 @@
                 <table class="table table-sm table-borderless">
                     <tbody style="font-size: 10pt;">
                         <c:forEach var="hotRead" items="${hotReadList}">
-                            <tr>
-                                <td style="width: 5%; font-weight: bold;">
-                                    ${hotRead.rank}
-                                </td>
-                                <td style="width: 95%;">
-                                    <a href="<%= ctxPath%>/board/view?categoryNo=${hotRead.fk_categoryNo}&boardNo=${hotRead.boardNo}"
-                                       style="color: #000;">
-                                        ${hotRead.boardName}
-                                    </a>
-                                    <span class="fa-regular fa-eye text-muted" style="font-size: 8pt;">(${hotRead.readCount})</span>
-                                </td>
-                            </tr>
+                            <form id="viewForm${hotRead.boardNo}" 
+							      action="<%= ctxPath %>/board/view" 
+							      method="post" 
+							      style="display:none;">
+							    <input type="hidden" name="category" value="${hotRead.fk_categoryNo}">
+							    <input type="hidden" name="boardNo" value="${hotRead.boardNo}">
+							</form>
+							
+							<tr>
+							    <td style="width: 5%; font-weight: bold;">
+							        ${hotRead.rank}
+							    </td>
+							    <td style="width: 95%;">
+							        <a href="javascript:void(0);" 
+							           onclick="document.getElementById('viewForm${hotRead.boardNo}').submit();" 
+							           style="color: #000;">
+							            ${hotRead.boardName}
+							        </a>
+							        <span class="fa-regular fa-eye text-muted" style="font-size: 8pt;">
+							            (${hotRead.readCount})
+							        </span>
+							    </td>
+							</tr>
                         </c:forEach>
                     </tbody>
                 </table>
@@ -84,22 +95,34 @@
                 <table class="table table-sm table-borderless">
                     <tbody style="font-size: 10pt;">
                         <c:forEach var="hotComment" items="${hotCommentList}">
-                            <tr>
-                                <td style="width: 5%; font-weight: bold;">
-                                    ${hotComment.rank}
-                                </td>
-                                <td style="width: 95%;">
-                                    <a href="<%= ctxPath%>/board/view?categoryNo=${hotComment.fk_categoryNo}&boardNo=${hotComment.boardNo}"
-                                       style="color: #000;">
-                                        ${hotComment.boardName}
-                                    </a>
-                                    <span class="fa-regular fa-comment text-muted" style="font-size: 8pt;">(${hotComment.commentCount})</span>
-                                </td>
-                            </tr>
+                        	<form id="viewForm${hotComment.boardNo}" 
+							      action="<%= ctxPath %>/board/view" 
+							      method="post" 
+							      style="display:none;">
+							    <input type="hidden" name="category" value="${hotComment.fk_categoryNo}">
+							    <input type="hidden" name="boardNo" value="${hotComment.boardNo}">
+							</form>
+							
+							<tr>
+							    <td style="width: 5%; font-weight: bold;">
+							        ${hotComment.rank}
+							    </td>
+							    <td style="width: 95%;">
+							        <a href="javascript:void(0);" 
+							           onclick="document.getElementById('viewForm${hotComment.boardNo}').submit();" 
+							           style="color: #000;">
+							            ${hotComment.boardName}
+							        </a>
+							        <span class="fa-regular fa-eye text-muted" style="font-size: 8pt;">
+							            (${hotComment.commentCount})
+							        </span>
+							    </td>
+							</tr>
                         </c:forEach>
                     </tbody>
                 </table>
             </div>
-               
+            
             </div>
+         
          

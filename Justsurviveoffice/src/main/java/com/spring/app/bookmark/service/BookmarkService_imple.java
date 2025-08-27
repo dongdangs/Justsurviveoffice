@@ -15,12 +15,12 @@ public class BookmarkService_imple implements BookmarkService {
     private final BookmarkDAO bookMarkDao;
 
     @Override
-    public void addBookmark(String fk_id, Long fk_boardNo) {
-    	bookMarkDao.addBookmark(fk_id, fk_boardNo);
+    public int addBookmark(String fk_id, Long fk_boardNo) {
+    	return bookMarkDao.addBookmark(fk_id, fk_boardNo);
     }
 
     @Override
-    public long removeBookmark(String fk_id, Long fk_boardNo) {
+    public int removeBookmark(String fk_id, Long fk_boardNo) {
         return bookMarkDao.removeBookmark(fk_id, fk_boardNo);
     }
 
