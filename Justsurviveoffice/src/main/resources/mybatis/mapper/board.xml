@@ -181,39 +181,40 @@
 	    
 	    
 	<!-- 댓글 많은 게시글 리스트 -->
-	<select id="getTopBoardsByCommentCount" resultType="BoardDTO">
-		select *
-			from (
-			    select 
-			           row_number() over(
-			               order by nvl(C.COMMENTCOUNT,0) desc, 
-			                        nvl(C.LATESTCOMMENT, to_date('1900-01-01','yyyy-mm-dd')) desc
-			           ) as RANK,
-			           B.BOARDNO, 
-			           B.BOARDNAME, 
-			           B.FK_CATEGORYNO, 
-			           nvl(C.COMMENTCOUNT, 0) as COMMENTCOUNT,
-			           C.LATESTCOMMENT
-			    from BOARD B
-			         left join (
-			            select FK_BOARDNO, 
-			                   count(*) as COMMENTCOUNT,
-			                   max(UPDATEDATCOMMENT) as LATESTCOMMENT
-			            from COMMENTS
-			            group by FK_BOARDNO
-			         ) C 
-			         on B.BOARDNO = C.FK_BOARDNO
-			    where B.CREATEDATBOARD &gt;= ADD_MONTHS(SYSDATE, -1)
-			) 
-			where RANK &lt;= 5
-	</select>
+    <select id="getTopBoardsByCommentCount" resultType="BoardDTO">
+		select B.BOARDNO,
+		       B.BOARDNAME,
+		       B.FK_CATEGORYNO,
+		       C.COMMENTCOUNT, B.createdatboard
+		from BOARD B
+		     inner join (
+		        select FK_BOARDNO, count(*) as COMMENTCOUNT
+		        from COMMENTS
+		        group by FK_BOARDNO
+		     ) C
+		     on B.BOARDNO = C.FK_BOARDNO
+		where B.CREATEDATBOARD &gt;= ADD_MONTHS(SYSDATE, -1)
+		order by C.COMMENTCOUNT desc, B.createdatboard desc
+		fetch first 5 rows only       
+    </select>
 	<!-- ================================================================================= -->
 	
   	
   	  <!-- ===== 내가 작성한 글 목록 ===== -->
     <select id="getMyBoards" parameterType="string" resultType="BoardDTO">
-        SELECT *
-        FROM board
+        SELECT boardno, fk_categoryno, 
+              case
+                  when length(boardName) &gt; 12
+                then substr(boardName, 1, 12)
+                  else boardName
+             end as boardName, 
+             createdatboard, updatedatboard, readcount, fk_id, boardfilename, boardfileoriginname, boarddeleted, 
+             case
+                  when length(boardcontent) &gt; 12
+                  then substr(boardcontent, 1, 12)
+                  else boardcontent
+             end as boardcontent
+      FROM board
         WHERE fk_id = #{fk_id}
         ORDER BY createdAtBoard DESC
     </select>

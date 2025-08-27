@@ -1,7 +1,6 @@
 package com.spring.app.comment.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +24,8 @@ public class CommentController {
 	
 	// 댓글 작성
 	@PostMapping("writeComment")
-	public String writeComment(ModelAndView modelview, CommentDTO comment,
+	public String writeComment(ModelAndView modelview, 
+								CommentDTO comment,
 	                         	HttpSession session) {
 
 	    UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");

@@ -60,9 +60,10 @@
 	        // === 댓글내용 유효성 검사 === //
 	        let contentVal = $('textarea[name="content"]').val().trim();
 	        if(contentVal.length == 0) {
-	        	alert("댓글내용을 입력해주세요 !");
-	        	return; 
+	        	alert("댓글내용을 입력해주세요.");
+	        	return;
 	        }
+	        
 	        const form = document.commentform;
 	        form.method = "post";
 	        form.action = "<%= ctxPath%>/comment/writeComment";
@@ -177,6 +178,41 @@
 		form.submit();
 	}
 	
+	// 게시글 좋아요
+	function boardLike(boardNo, fk_id) {
+	    const icon = $('#boardLike-icon-'+boardNo);
+	    const likeCountSpan = $("#likeCount");
+	    $.ajax({
+	        url: "<%=ctxPath%>/board/boardlike",
+	        type: "POST",
+	        data: { fk_boardNo: boardNo },
+	        success: function(json) {
+	            if (json.success) {
+	            	// 현재 좋아요 상태 변경
+		            const isLiked = json.status === "liked";
+		            // 클래스 완전히 초기화 후 상태 적용
+		            icon.removeClass("fa-solid fa-regular text-warning");
+		            if (isLiked) {
+		                icon.addClass("fa-solid fa-thumbs-up text-warning");
+		            } 
+		            else {
+		                icon.addClass("fa-regular fa-thumbs-up");
+		            }
+		            // data-liked 속성 갱신
+		            icon.attr("data-liked", isLiked);
+		            // 좋아요 개수 즉시 갱신
+		            likeCountSpan.text(json.likeCount);
+	            }
+	            else {
+	            	alert(json.message);
+	            	window.location.href = "<%=ctxPath%>/users/loginForm";
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}
 	
 	<!-- 북마크기능 -->
     function bookmark(boardNo, fk_id, isBookmarked) {
@@ -202,7 +238,7 @@
 	            	}
 	            } else {
 	                alert(json.message);
-	                window.location.href = "<%=ctxPath%>/login/loginForm";
+	                window.location.href = "<%=ctxPath%>/users/loginForm";
 	            }
 	        },
 	        error: function(request, status, error) {
@@ -228,6 +264,7 @@
 		 frm.action = "<%= ctxPath%>/board/view";
 		 frm.submit();
 	}
+	
 	
 </script>
 <body style="background-image: url('<%= ctxPath %>/images/background.png'); "></body>
@@ -287,16 +324,17 @@
 	<div class="board-actions d-flex justify-content-between align-items-center">
 	    <!-- 좋아요 -->
 	    <div class="d-flex">
-	        
-	        <form id="boardLikeForm-${boardLikeDto.fk_boardNo}">
-			    <input type="hidden" name="fk_boardNo" value="${boardLikeDto.fk_boardNo}">
+			<form id="boardLikeForm-${boardDto.boardNo}">
+			    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
 			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
-			    <i id="boardLike-icon-${boardLikeDto.fk_boardNo}"
-			       class="fas fa-thumbs-up ${boardLikeDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
-			       style="cursor: pointer;"
-			       onclick="boardLike(${boardLikeDto.fk_boardNo}, '${sessionScope.loginUser.id}', ${boardLikeDto.boardLiked ? true : false})">
-			    </i>
-			</form> 
+			    <i id="boardLike-icon-${boardDto.boardNo}"
+				   class="fa-thumbs-up ${boardDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+				   style="cursor: pointer; font-size: 20px;"
+				   data-liked="${boardDto.boardLiked}"
+				   onclick="boardLike(${boardDto.boardNo}, '${sessionScope.loginUser.id}')">
+				</i>
+				<span id="likeCount">${likeCount}</span>
+			</form>
 	    </div>
 	    
 	    <!-- 오른쪽 공유/신고/북마크 + 글 삭제 -->
@@ -361,13 +399,13 @@
 	        </div>
 	    </div>
 		</c:forEach>
-	       <!-- 댓글 작성 -->
-	       <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
-	           <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
-	           <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
-	           <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
-	           <button type="submit" class="btn" id="addComment">댓글 등록</button>
-	       </form>
+       <!-- 댓글 작성 -->
+       <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
+           <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+           <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+           <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
+           <button type="button" class="btn" id="addComment">댓글 등록</button>
+       </form>
     </div>
     <!-- 목록 버튼, 이전글 다음글 -->
     <div style="display:flex; margin-top:3px;"> 

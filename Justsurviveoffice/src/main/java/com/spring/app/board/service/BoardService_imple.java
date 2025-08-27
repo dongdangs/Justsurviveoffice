@@ -1,6 +1,5 @@
 package com.spring.app.board.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,35 +150,6 @@ public class BoardService_imple implements BoardService {
 	}
 
 	
-	//게시글 좋아요 여부
-	@Override
-	public boolean isBoardLiked(Long boardNo, String fk_id) {
-		 
-		Map<String, Object> boardLike = new HashMap<>();
-		
-		boardLike.put("fkId", fk_id);
-		boardLike.put("boardNo", boardNo);
-		return false;
-		
-	}
-
-	@Override
-	public void deleteBoardLike(Long boardNo, String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void insertBoardLike(Long boardNo, String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getBaordLikeCount(Long boardNo) {
-		return boardDao.getLikeCount(boardNo);
-	}
-	
 	////////////////////////////////////////////////////////////////////////////////////
 	// 인기 게시글 리스트 (조회수 많은 순)
 	@Override
@@ -207,39 +177,42 @@ public class BoardService_imple implements BoardService {
 	
 	////////////////////////////////////////////////////////////////////////////////////   
 	
-	// 게시물 좋아요
+	//게시글 좋아요 여부
 	@Override
-	public void boardLike(String fk_id, Long fk_boardNo) {
-		boardDao.boardLike(fk_id, fk_boardNo);
+	public boolean isBoardLiked(String fk_id, Long fk_boardNo) {
+		 
+		Map<String, Object> paramMap = new HashMap<>();
+		
+		paramMap.put("fk_id", fk_id);
+		paramMap.put("fk_boardNo", fk_boardNo);
+		
+		int count = boardDao.isBoardLiked(paramMap);
+	    return count > 0; // 좋아요가 존재하면 true			
 	}
-	
-	// 총 검색된 게시물 건수
+
+	//게시글 좋아요 취소
 	@Override
-	public int searchListCount(Map<String, String> paraMap) {
-		int n = boardDao.searchListCount(paraMap);
+	public int deleteBoardLike(String fk_id, Long fk_boardNo) {
+	    return boardDao.deleteBoardLike(fk_id, fk_boardNo);
+
+		
+	}
+
+	//게시글 좋아요 추가
+	@Override
+	public int insertBoardLike(String fk_id, Long fk_boardNo) {
+		int n = boardDao.insertBoardLike( fk_id, fk_boardNo );
 		return n;
 	}
 	
-	// 자동 검색어 완성시키기
+
+	//게시글 좋아요 수
 	@Override
-	public List<Map<String, String>> getSearchWordList(Map<String, String> paraMap) {
-		
-		List<String> wordList = boardDao.getSearchWordList(paraMap);	// 자동 검색어 완성시킬 제목 or 이름 가져오기
-		
-		List<Map<String, String>> mapList = new ArrayList<>();
-		
-		if(wordList != null) {
-			for(String word : wordList) {
-				Map<String, String> map = new HashMap<>();
-				map.put("word", word);
-				System.out.println(word);
-				mapList.add(map);
-			}// end of for-----------------
-		}
-		
-		return mapList;
+	public int getBoardLikeCount(Long fk_boardNo) {
+		return boardDao.getLikeCount(fk_boardNo);
 	}
 
+	
 	
 }
 
