@@ -67,12 +67,20 @@
 }
 </style>
 <script type="text/javascript">
-
-	$(function(){
+	$(function() {
 		
-<<<<<<< HEAD
 		const nextVals = ${boardDto.nextNo};
-=======
+		
+		if(nextVals == 0) {
+			$('div#nextBtn').hide();
+		}
+		
+		const preVals = ${boardDto.preNo};
+		
+		if(preVals == 0) {
+			$('div#prevBtn').hide();
+		}
+		
 		 // 댓글작성
 	    $('button#addComment').click(function(){
 	        
@@ -89,76 +97,41 @@
 	        form.action = "<%= ctxPath%>/comment/writeComment";
 	        form.submit();
 	    });
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 		
-<<<<<<< HEAD
-		if(nextVals == 0) {
-			$('div#nextBtn').hide();
-		}
-		
-		const preVals = ${boardDto.preNo};
-		
-		if(preVals == 0) {
-			$('div#prevBtn').hide();
-		}
-		
-	});  // end of $(function()}{})
-
-	function goViewA(){
-		 const frm = document.goViewFrm;
-		 frm.boardNo.value = ${boardDto.preNo};
-		 
-		 frm.method = "post";
-		 frm.action = "<%= ctxPath%>/board/view";
-		 frm.submit();
-	}
-
-	function goViewB(){
-		 const frm = document.goViewFrm;
-		 frm.boardNo.value = ${boardDto.nextNo};
-		 
-		 frm.method = "post";
-		 frm.action = "<%= ctxPath%>/board/view";
-		 frm.submit();
-	}
-=======
-	 <!-- 북마크기능 -->
-   function bookmark(boardNo, fk_id, isBookmarked) {
-	    const url = isBookmarked
-	        ? "<%= ctxPath%>/bookmark/remove"
-	        : "<%= ctxPath%>/bookmark/add";
-
-	    $.ajax({
-	        url: url,
-	        type: "POST",
-	        data: { fk_boardNo: boardNo },
-	        success: function(json) {
-	            const icon = $(`#bookmark-icon-${boardNo}`);
-
-	            if (json.success) {
-	            	icon.removeClass("fa-solid fa-regular text-warning");
-	            	if (isBookmarked) {
-	            	    // 해제된 상태로 변경
-	            	    icon.addClass("fa-regular fa-bookmark");
-	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
-	            	} else {
-	            	    // 추가된 상태로 변경
-	            	    icon.addClass("fa-solid fa-bookmark text-warning");
-	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
-	            	}
-
-	            } else {
-	                alert(json.message);
-	            }
-	        },
-	        error: function(request, status, error) {
-	            alert("code:" + request.status + "\nmessage:" + request.responseText);
-	        }
-	    });
-	}// end of function Bookmark(boardNo,fk_id)———————————
-
-	   
-		 
+		 <!-- 북마크기능 -->
+   		function bookmark(boardNo, fk_id, isBookmarked) {
+		    const url = isBookmarked
+		        ? "<%= ctxPath%>/bookmark/remove"
+		        : "<%= ctxPath%>/bookmark/add";
+	
+		    $.ajax({
+		        url: url,
+		        type: "POST",
+		        data: { fk_boardNo: boardNo },
+		        success: function(json) {
+		            const icon = $(`#bookmark-icon-${boardNo}`);
+	
+		            if (json.success) {
+		            	icon.removeClass("fa-solid fa-regular text-warning");
+		            	if (isBookmarked) {
+		            	    // 해제된 상태로 변경
+		            	    icon.addClass("fa-regular fa-bookmark");
+		            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+		            	} else {
+		            	    // 추가된 상태로 변경
+		            	    icon.addClass("fa-solid fa-bookmark text-warning");
+		            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+		            	}
+	
+		            } else {
+		                alert(json.message);
+		            }
+		        },
+		        error: function(request, status, error) {
+		            alert("code:" + request.status + "\nmessage:" + request.responseText);
+		        }
+		    });
+		}// end of function Bookmark(boardNo,fk_id)———————————
 
 		 // 댓글 삭제 
 	    $(document).on("click", ".delete-comment", function () {
@@ -243,7 +216,6 @@
 		 
 		 
 	}); 
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 	
 	
 	
@@ -293,13 +265,27 @@
 	    });
 	}
 	
+	function goViewA(){
+		 const frm = document.goViewFrm;
+		 frm.boardNo.value = ${boardDto.preNo};
+		 
+		 frm.method = "post";
+		 frm.action = "<%= ctxPath%>/board/view";
+		 frm.submit();
+	}
+
+	function goViewB(){
+		 const frm = document.goViewFrm;
+		 frm.boardNo.value = ${boardDto.nextNo};
+		 
+		 frm.method = "post";
+		 frm.action = "<%= ctxPath%>/board/view";
+		 frm.submit();
+	}
+	
 </script>
 
-<<<<<<< HEAD
- <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px;">
-=======
  <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; background-image: url('<%= ctxPath %>/images/background.png');">
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 	<div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray">
 		<input name="fk_categoryNo" style="display: none;"
 				    value="${boardDto.fk_categoryNo}"/>
@@ -432,8 +418,8 @@
     <div style="margin-top:20px;">
         <a href="<%=ctxPath %>/board/list?category=${boardDto.fk_categoryNo}" class="btn">목록</a>
     </div>
-    
-    <div class="Boardpagination">
+
+	 <div class="Boardpagination">
 			<div id="prevBtn" class="prevBtn" onclick="goViewA('${boardDto.preNo}')" style="cursor:pointer;">이전글: ${boardDto.preName}</div>
 			<div id="nextBtn" class="nextBtn" onclick="goViewB('${boardDto.nextNo}')" style="cursor:pointer;">다음글: ${boardDto.nextName}</div>
 		</div>
@@ -443,6 +429,5 @@
 	</form>
 	<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
 	<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
-
 </div>
 </html>

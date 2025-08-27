@@ -64,7 +64,7 @@
 .title,content { /* 제목과 내용의 라인을 한줄로 제한하고, 이상이되면 안보이게! */
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    
 }
 </style> 
 
@@ -232,29 +232,6 @@
 </script>
 
 <div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png'); border: solid 2px blue;">
-<<<<<<< HEAD
-	<h2 style="margin-bottom: 30px; font-size: 25pt; font-weight: bold;">${category}글목록</h2>
-	<%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
-	<form name="searchForm" style="margin-top: 20px;">
-		<select name="searchType" style="height: 26px;">
-			<option value="boardName">글제목</option>
-			<option value="boardContent">글내용</option>
-			<option value="boardName_boardContent">글제목+글내용</option>
-			<option value="fk_id">글쓴이</option>
-		</select>
-		<input type="text" name="searchWord" size="50" autocomplete="off" /> 
-	       <input type="text" style="display: none;"/> <%-- form 태그내에 input 태그가 오로지 1개 뿐일경우에는 엔터를 했을 경우 검색이 되어지므로 이것을 방지하고자 만든것이다. --%>  
-		<button type="button" class="btn btn-secondary btn-sm" onclick="searchBoard()">검색</button> 
-		
-		<span><a href="<%=ctxPath %>/board/write?category=${category}" class="btn btn-secondary btn-sm" 
-				style="background-color: navy;">글쓰기</a></span>
-		<span><input name="category" style="display: none" value="${category}"/></span>
-	</form> 
-	
-	
-	<%-- === 검색어 입력시 자동글 완성하기 1 === --%>
-	<div id="displayList" style="border:solid 1px gray; border-top:0px; height:100px; margin-left:8.7%; margin-top:-1px; margin-bottom:30px; overflow:auto;">
-=======
    <h2 style="margin-bottom: 30px; font-size: 25pt; font-weight: bold;">글목록</h2>
    <%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
    <form name="searchForm" style="margin-top: 20px;">
@@ -276,7 +253,6 @@
    
    <%-- === 검색어 입력시 자동글 완성하기 1 === --%>
    <div id="displayList" style="border:solid 1px gray; border-top:0px; height:100px; margin-left:8.7%; margin-top:-1px; margin-bottom:30px; overflow:auto;">
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
     </div>
    
    <%--  특정 글제목을 클릭했을때, 특정 글1개를 보여줄때 POST 방식으로 넘기기 위해 form 태그를 만들겠다. --%>
@@ -297,7 +273,7 @@
 		      <div style="display: flex;" onclick="view('${boardDto.boardNo}', '${boardDto.fk_id}')">
 		        <div>
 		       		 <!-- 제목 -->
-		        	<h3 class="title" style="margin-right: 10%">${boardDto.boardName}</h3>
+		        	<h3 class="title" style="margin-right:0">${boardDto.boardName}</h3>
 					<!-- 내용 -->
 		    	 	<div class="content" style="color: grey">${boardDto.textForBoardList}</div>
 		        </div>
@@ -335,16 +311,6 @@
         <td colspan="6">첫 번째 게시물을 올려보세요!</td> 
       </tr>
     </c:if>
-<<<<<<< HEAD
-	
-	
-	<%-- === 페이지바 보여주기 === --%>
-	<div align="center" style="border: solid 0px gray; width: 80%; margin: 30px auto;">
-	     ${requestScope.pageBar} page
-	</div>
-	
-  </div>	
-=======
    
    
    <%-- === 페이지바 보여주기 === --%>
@@ -353,10 +319,3 @@
    </div>
    
   </div>   
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
-
-
-
-
-   
-    
