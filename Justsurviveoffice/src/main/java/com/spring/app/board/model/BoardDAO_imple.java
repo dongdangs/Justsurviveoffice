@@ -53,14 +53,14 @@ public class BoardDAO_imple implements BoardDAO {
 	
 	// 내가 작성한 글 목록 
     @Override
-    public List<BoardDTO> getMyBoards(String fkId) {
-        return sql.selectList("board.getMyBoards", fkId);
+    public List<BoardDTO> getMyBoards(String fk_id) {
+        return sql.selectList("board.getMyBoards", fk_id);
     }
 	
 	 // 북마크한 게시글 목록 
     @Override
-    public List<BoardDTO> getBookmarksById(String fkId) {
-    	return sql.selectList("board.getBookmarksById", fkId);
+    public List<BoardDTO> getBookmarksById(String fk_id) {
+    	return sql.selectList("board.getBookmarksById", fk_id);
     }
     
    
@@ -91,32 +91,40 @@ public class BoardDAO_imple implements BoardDAO {
 	
 	////////////////////////////////////////////////////////////////////////////
 	
-	// 게시물 좋아요
+	
+	 
+	// 게시글 좋아요 취소
 	@Override
-	public int boardLike(String fk_id, Long fk_boardNo) {
+	public int deleteBoardLike(String fk_id, Long fk_boardNo) {
 		Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("fk_id", fk_id);
         paramMap.put("fk_boardNo", fk_boardNo);
-        return sql.insert("boardLike.boardLike", paramMap);
-	}
-	
-	// 게시글 좋아요 취소
-	@Override
-	public int deleteBoardLike(String fkId, Long boardNo) {
-		return sql.delete("boardLike.deleteBoardLike");
+		return sql.delete("boardLike.deleteBoardLike", paramMap);
 	}
 	
 	//게시글 좋아요 추가
 	@Override
-	public int insertBoardLike(String fkId, Long boardNo) {
-		return sql.insert("boardLike.insertBoardLike");
+	public int insertBoardLike(String fk_id, Long fk_boardNo) {
+		Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("fk_id", fk_id);
+        paramMap.put("fk_boardNo", fk_boardNo);
+        return sql.insert("boardLike.insertBoardLike", paramMap); 
+		
 	}
+	
 	
 	 //게시글 좋아요 수
 		@Override
 		public int getLikeCount(Long boardNo) {
 	        return sql.selectOne("boardLike.getLikeCount", boardNo);
 	
+		}
+		
+		
+		//좋아요 여부
+		@Override
+		public int isBoardLiked(Map<String, Object> paramMap) {
+		    return sql.selectOne("boardLike.isBoardLiked", paramMap);
 		}
 		
 }

@@ -3,7 +3,6 @@ package com.spring.app.board.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -108,14 +107,14 @@ public class BoardService_imple implements BoardService {
 
 	 //내가 작성한 글 목록
     @Override
-    public List<BoardDTO> getMyBoards(String fkId) {
-        return boardDao.getMyBoards(fkId);
+    public List<BoardDTO> getMyBoards(String fk_id) {
+        return boardDao.getMyBoards(fk_id);
     }
 
     // 북마크한 글 목록
     @Override
-    public List<BoardDTO> getBookmarksById(String fkId) {
-        return boardDao.getBookmarksById(fkId);
+    public List<BoardDTO> getBookmarksById(String fk_id) {
+        return boardDao.getBookmarksById(fk_id);
     }
 
     
@@ -158,36 +157,37 @@ public class BoardService_imple implements BoardService {
 	
 		//게시글 좋아요 여부
 		@Override
-		public boolean isBoardLiked(String fkId, Long boardNo) {
+		public boolean isBoardLiked(String fk_id, Long fk_boardNo) {
 			 
-			Map<String, Object> boardLike = new HashMap<>();
+			Map<String, Object> paramMap = new HashMap<>();
 			
-			boardLike.put("fkId", fkId);
-			boardLike.put("boardNo", boardNo);
-			return false;
+			paramMap.put("fk_id", fk_id);
+			paramMap.put("fk_boardNo", fk_boardNo);
 			
+			int count = boardDao.isBoardLiked(paramMap);
+		    return count > 0; // 좋아요가 존재하면 true			
 		}
 
 		//게시글 좋아요 취소
 		@Override
-		public int deleteBoardLike(String fkId, Long boardNo) {
-			int n = boardDao.deleteBoardLike( fkId,boardNo );
-			return n;
+		public int deleteBoardLike(String fk_id, Long fk_boardNo) {
+		    return boardDao.deleteBoardLike(fk_id, fk_boardNo);
+
 			
 		}
 
-		//게시글 좋아요
+		//게시글 좋아요 추가
 		@Override
-		public int insertBoardLike(String fkId, Long boardNo) {
-			int n = boardDao.insertBoardLike( fkId,boardNo );
+		public int insertBoardLike(String fk_id, Long fk_boardNo) {
+			int n = boardDao.insertBoardLike( fk_id,fk_boardNo );
 			return n;
 		}
 		
 
 		//게시글 좋아요 수
 		@Override
-		public int getBaordLikeCount(Long boardNo) {
-			return boardDao.getLikeCount(boardNo);
+		public int getBaordLikeCount(Long fk_boardNo) {
+			return boardDao.getLikeCount(fk_boardNo);
 		}
 
 		

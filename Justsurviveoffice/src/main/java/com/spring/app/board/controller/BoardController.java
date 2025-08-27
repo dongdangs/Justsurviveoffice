@@ -303,6 +303,8 @@ public class BoardController {
 			HttpSession session = request.getSession();
 			
 			UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+			
+			
 			// 유저가 존재하고 그 유저의 id가 같은지 확인!
 			if( loginUser == null ? true : // 로그인된 유저이면서, 아이디도 다른 경우!
 				!loginUser.getId().equals(boardDto.getFk_id()) ? true : false ) 
@@ -372,12 +374,21 @@ public class BoardController {
 				boardDto.setBookmarked(bookmarkService.isBookmarked(
 						loginUser.getId(), 
 						boardDto.getBoardNo())); 
+				
+				 // 좋아요 여부 
+			    boolean isLiked = boardService.isBoardLiked(loginUser.getId(), boardDto.getBoardNo());
+			    boardDto.setBoardLiked(isLiked);
+			    
+			    System.out.println("=== 좋아요 여부: " + isLiked);
 			}
+
+			// 좋아요 개수 추가
+	        int likeCount = boardService.getBaordLikeCount(boardDto.getBoardNo());
+	        modelview.addObject("likeCount", likeCount);
 
 			modelview.addObject("boardDto", boardDto);
 	        modelview.addObject("commentList", commentList);
-			
-			
+	       
 			modelview.setViewName("board/view");
 			return modelview;
 		}
@@ -450,32 +461,53 @@ public class BoardController {
     	Map<String, Object> result = new HashMap<>();
 
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        System.out.println("===> loginUser: " + loginUser);
+
         
         if (loginUser == null) {
+
             result.put("success", false);
             result.put("message", "로그인이 필요합니다.");
             return result;
+            
         }
+        
+        String fk_id = loginUser.getId();
+        System.out.println("===> fk_id: " + fk_id);
 
-        boolean isLiked = boardService.isBoardLiked(loginUser.getId(),fk_boardNo );
+
+        boolean isLiked = boardService.isBoardLiked(fk_id,fk_boardNo );
         
         if(isLiked == true) {
         	
-        	boardService.deleteBoardLike(loginUser.getId(),fk_boardNo);
+        	boardService.deleteBoardLike(fk_id,fk_boardNo);
         	result.put("status", "unliked");
         } else {
         	
-        	boardService.insertBoardLike(loginUser.getId(),fk_boardNo);
+        	boardService.insertBoardLike(fk_id,fk_boardNo);
         	result.put("status", "liked");
         }
         
         // 현재 게시글의 좋아요 수
         int likeCount = boardService.getBaordLikeCount(fk_boardNo);
+        
+        boolean newStatus = boardService.isBoardLiked(fk_id, fk_boardNo); // 최신 상태 재조회
+
+        result.put("success", true);
         result.put("likeCount", likeCount);
         
         return result;
     }
 	
+    
+    // === 댓글에 딸린 댓글들을 조회해오기 (댓글의 답글 즉, 대댓글 읽어오기) === //
+//    @GetMapping("reply")
+//    @ResponseBody
+//    public List<Map<String, String>> replytList(@RequestParam(name="parentNo") int parentNo) {
+//    	
+//    	
+//    	return replytList;
+//    }
 	
 }
 

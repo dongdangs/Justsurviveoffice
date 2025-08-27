@@ -42,7 +42,7 @@ public class Comments {
 	private String content;
 	
 	@Column(name="parentno" ,nullable = false) // int형은 자동으로 0이 디폴트값임!!
-	private int parentNo;
+	private Long parentNo;
 	
 	@Column(name = "createdatcomment",
 			nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",

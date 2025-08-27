@@ -40,24 +40,26 @@ public interface BoardService {
 	
     
     // 내가 작성한 글 목록
-    List<BoardDTO> getMyBoards(String fkId);
+    List<BoardDTO> getMyBoards(String fk_id);
 
     // 북마크한 게시글 목록
-    List<BoardDTO> getBookmarksById(String fkId);
+    List<BoardDTO> getBookmarksById(String fk_id);
 
 	public List<CommentDTO> getCommentList(Long boardNo);
 
 	//게시물 좋아요 여부 확인
-	public boolean isBoardLiked(String fkId, Long boardNo) ;
+	public boolean isBoardLiked(String fk_id, Long fk_boardNo) ;
 
 	//게시물 좋아요 취소
-	public int deleteBoardLike(String fkId, Long boardNo) ;
+	public int deleteBoardLike(String fk_id, Long fk_boardNo) ;
 
 	//게시물 좋아요
-	public int insertBoardLike(String fkId, Long boardNo) ;
+	public int insertBoardLike(String fk_id, Long fk_boardNo) ;
 
     // 좋아요 수 
-	public int getBaordLikeCount(Long boardNo);
+	public int getBaordLikeCount(Long fk_boardNo);
+
+
 	
 
 	

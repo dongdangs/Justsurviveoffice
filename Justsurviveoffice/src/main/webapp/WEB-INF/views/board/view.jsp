@@ -223,26 +223,34 @@
 	
 	// 게시글 좋아요
 function boardLike(boardNo, fk_id) {
+    const icon = $('#boardLike-icon-'+boardNo);
+    const likeCountSpan = $("#likeCount");
 
     $.ajax({
-        url: "<%= ctxPath%>/board/boardlike", 
+        url: "<%= ctxPath%>/board/boardlike",
         type: "POST",
         data: { fk_boardNo: boardNo },
         success: function(json) {
-            const icon = $(`#boardLike-icon-${boardNo}`);
-            const likeCountSpan = $("#likeCount");
+            if (!json.success) {
+                alert(json.message);
+                return;
+            }
 
-            if (json.status === "liked") {
-                // 좋아요 추가됨
-            	icon.removeClass("fa-regular").addClass("fa-solid text-warning");
-            } 
-            else if (json.status === "unliked") {
-                // 좋아요 취소됨
-                icon.removeClass("fa-solid text-warning").addClass("fa-regular");
-            } 
-            
-            
-            // 좋아요 개수 갱신
+            // 현재 좋아요 상태 변경
+            const isLiked = json.status === "liked";
+
+            // 클래스 완전히 초기화 후 상태 적용
+            icon.removeClass("fa-solid fa-regular text-warning");
+            if (isLiked) {
+                icon.addClass("fa-solid fa-thumbs-up text-warning");
+            } else {
+                icon.addClass("fa-regular fa-thumbs-up");
+            }
+
+            // data-liked 속성 갱신
+            icon.attr("data-liked", isLiked);
+
+            // 좋아요 개수 즉시 갱신
             likeCountSpan.text(json.likeCount);
         },
         error: function(request, status, error) {
@@ -298,16 +306,19 @@ function boardLike(boardNo, fk_id) {
 	    <!-- 좋아요 -->
 	    <div class="d-flex">
 	        
-	        <form id="boardLikeForm-${boardLikeDto.fk_boardNo}">
-			    <input type="hidden" name="fk_boardNo" value="${boardLikeDto.fk_boardNo}">
+	       <!-- 좋아요 아이콘 + 개수 표시 -->
+			<form id="boardLikeForm-${boardDto.boardNo}">
+			    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
 			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+			
 			    <i id="boardLike-icon-${boardDto.boardNo}"
-				   class="fas fa-thumbs-up ${boardDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
-				   style="cursor: pointer;"
-				   onclick="boardLike(${boardDto.boardNo}, '${sessionScope.loginUser.id}')">
-				</i>
-				<span id="likeCount">${likeCount}</span>
-			</form> 
+   class="fa-thumbs-up ${boardDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+   style="cursor: pointer; font-size: 20px;"
+   data-liked="${boardDto.boardLiked}"
+   onclick="boardLike(${boardDto.boardNo}, '${sessionScope.loginUser.id}')">
+</i>
+<span id="likeCount">${likeCount}</span>
+			</form>
 	    </div>
 	    
 	    <!-- 오른쪽 공유/신고/북마크 + 글 삭제 -->
@@ -333,7 +344,7 @@ function boardLike(boardNo, fk_id) {
 		              >글 삭제</button>
 		        </c:if>
 	         </form>
-	    </div>t
+	    </div>
 	</div>
 	
 	<!-- 댓글 영역 -->

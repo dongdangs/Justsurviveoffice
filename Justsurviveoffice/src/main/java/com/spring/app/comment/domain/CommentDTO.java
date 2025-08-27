@@ -32,7 +32,7 @@ public class CommentDTO {
 
 	private Long fk_boardNo;
 
-	private int parentNo;
+	private Long parentNo;
 	
 	private Users users;
 	

@@ -4,14 +4,15 @@
 <mapper namespace="comments">
 
     <!-- 댓글 작성 -->
-    <insert id="insertComment" parameterType="com.spring.app.users.domain.CommentDTO">
+    <insert id="insertComment" parameterType="com.spring.app.comment.domain.CommentDTO">
     insert into comments (
         commentNo, 
         fk_boardNo, 
         fk_id, 
         fk_name, 
         content, 
-        createdAtComment
+        createdAtComment,
+        parentNo
     )
     values (
         comment_seq.NEXTVAL,
@@ -19,13 +20,14 @@
         #{fk_id},
         #{fk_name},
         #{content},
-        SYSDATE
+        SYSDATE,
+        #{parentNo}
     )
 	</insert>
 
     <!-- 댓글 목록 조회 -->
     <select id="getCommentsByBoardNo" parameterType="long"
-        resultType="com.spring.app.users.domain.CommentDTO">
+        resultType="com.spring.app.comment.domain.CommentDTO">
     select commentNo, 
 	        fk_boardNo, 
 	        fk_id, 
@@ -36,7 +38,9 @@
 	        parentNo
     from comments
     where fk_boardNo = #{fk_boardNo, jdbcType=NUMERIC}
-    order by commentNo desc
+    order by 
+        case when parentNo is null then commentNo else parentNo end ,
+        case when parentNo is null then 0 else commentNo end 
 	</select>
 
     <!-- 댓글 삭제 -->

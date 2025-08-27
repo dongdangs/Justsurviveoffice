@@ -4,26 +4,37 @@
 
 <mapper namespace="boardLike">
 
+   <!-- 좋아요 여부 확인 -->
+    <select id="isBoardLiked" parameterType="map" resultType="int">
+        select count(*)
+        from BoardLike
+        where fk_id = #{fk_id}
+          and fk_boardNo = #{fk_boardNo}
+    </select>
+
   <!-- 좋아요 추가 -->
-    <insert id="insertLike" parameterType="map">
-        insert into boardLike (fk_id, fk_boardno)
-        values (#{fk_id}, #{boardNo})
+    <insert id="insertBoardLike" parameterType="map">
+        insert into BoardLike (fk_id, fk_boardNo)
+        values (
+ 			#{fk_id, jdbcType=VARCHAR},
+            #{fk_boardNo, jdbcType=NUMERIC}    
+             )
     </insert>
 
 
     <!-- 좋아요 삭제 -->
-    <delete id="deleteLike" parameterType="map">
-        delete from boardLike
-        where fk_id = #{fk_id}
-          and fk_boardno = #{boardNo}
+    <delete id="deleteBoardLike" parameterType="map">
+        delete from BoardLike
+        where fk_id = #{fk_id, jdbcType=VARCHAR}
+          and fk_boardNo = #{fk_boardNo, jdbcType=NUMERIC}
     </delete>
 
 
     <!-- 좋아요 개수 -->
     <select id="getLikeCount" parameterType="long" resultType="int">
         select count(*)
-        from boardLike
-        where fk_boardno = #{boardNo}
+        from BoardLike
+        where fk_boardNo = #{fk_boardNo}
     </select>
 
 </mapper>
