@@ -64,7 +64,7 @@
 .title,content { /* 제목과 내용의 라인을 한줄로 제한하고, 이상이되면 안보이게! */
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    
 }
 </style> 
 
@@ -273,7 +273,7 @@
 		      <div style="display: flex;" onclick="view('${boardDto.boardNo}', '${boardDto.fk_id}')">
 		        <div>
 		       		 <!-- 제목 -->
-		        	<h3 class="title" style="margin-right: 10%">${boardDto.boardName}</h3>
+		        	<h3 class="title" style="margin-right:0">${boardDto.boardName}</h3>
 					<!-- 내용 -->
 		    	 	<div class="content" style="color: grey">${boardDto.textForBoardList}</div>
 		        </div>
@@ -319,9 +319,3 @@
    </div>
    
   </div>   
-
-
-
-
-   
-    

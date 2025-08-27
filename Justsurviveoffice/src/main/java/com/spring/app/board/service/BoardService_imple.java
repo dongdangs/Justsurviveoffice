@@ -116,6 +116,21 @@ public class BoardService_imple implements BoardService {
 		return n;
 	}
 	
+	// 메인페이지 카테고리 자동 불러오기 메서드
+	@Override
+	public List<Map<String, String>> getIndexList(String fk_categoryNo) {
+		List<Map<String, String>> IndexList = boardDao.getIndexList(fk_categoryNo);
+		return IndexList;
+	}
+
+
+	   @Override
+	   public BoardDTO getView(Long boardNo) {
+			BoardDTO boardDto = boardDao.getView(boardNo);
+			
+			return boardDto;
+	   }
+
 	 //내가 작성한 글 목록
     @Override
     public List<BoardDTO> getMyBoards(String fk_id) {
@@ -191,7 +206,6 @@ public class BoardService_imple implements BoardService {
 
 	
 	////////////////////////////////////////////////////////////////////////////////////   
-	
 	
 	// 게시물 좋아요
 	@Override

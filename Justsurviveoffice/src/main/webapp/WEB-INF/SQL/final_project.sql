@@ -129,3 +129,8 @@ desc users;
 update users set email='dbals010321@naver.com' where id='jangym';
 
 commit;
+select * from users;
+
+select to_char(Registerday, 'yyyymmdd'), count(*) from users
+where sysdate - Registerday > 10
+group by rollup(to_char(Registerday, 'yyyymmdd'));

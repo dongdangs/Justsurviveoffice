@@ -67,7 +67,7 @@ public class BoardController {
 		// path 가 첨부파일들을 저장할 WAS(톰캣)의 폴더가 된다.
 			
 		System.out.println("~~~ 확인용 path => " + path);
-//  /Users/dong/git/Justsurviveoffice/Justsurviveoffice/src/main/webapp/resources/photo_upload
+		//  /Users/dong/git/Justsurviveoffice/Justsurviveoffice/src/main/webapp/resources/photo_upload
 		
 		File dir = new File(path);
 		if(!dir.exists()) {
@@ -104,6 +104,7 @@ public class BoardController {
 	}
 // ==================================================================== //
 		
+
 	
 	@GetMapping("write/{category}") // RestAPI
 	public ModelAndView writeBoard(@PathVariable("category") String category,
@@ -112,6 +113,7 @@ public class BoardController {
 		modelview.setViewName("board/write");
 		return modelview;
 	}
+	
 	// 게시글 업로드 메소드
 	@PostMapping("write")
 	public ModelAndView saveBoard(ModelAndView modelview,
@@ -270,7 +272,7 @@ public class BoardController {
 		if(boardDto != null) { // 뒤로가기 혹은 오류가 없는 정상 게시물인 경우 이동.
 			System.out.println(boardDto.getBoardNo());
 			System.out.println(boardDto.getFk_categoryNo());
-// 명심할 점!, 1. 완벽한 조회수 알고리즘은 존재하지 않는다.
+		// 명심할 점!, 1. 완벽한 조회수 알고리즘은 존재하지 않는다.
 		//   2. 방법은 쿠키, 세션, (실무)DB로그, (실무)Redis 가 있다.
 		//	 3. 나는 내가 내가 배운 지식을 재활용하기 위해 세션방식을 해본 후, 쿠키방식을 선택했다..
 		//   4. 세션방식의 단점(세션이 만료되거나 로그아웃 시에는 소용이 없다 + 세션리미트는 하나로 통일됌)을 이해하고 구현한다.
@@ -300,7 +302,7 @@ public class BoardController {
 					) {
 					// 조회수 증가.
 					int n = boardService.updateReadCount(boardDto.getBoardNo());
-//					if(n==1) System.out.println("조회수 증가 완료.");
+			//		if(n==1) System.out.println("조회수 증가 완료.");
 					
 					boardDto.setReadCount(boardDto.getReadCount() + 1);
 					
@@ -319,7 +321,7 @@ public class BoardController {
 					System.out.println("세션 남은 시간: " + remainingMinutes + "초");
 					if(remainingMinutes <= 0) {
 						int n = boardService.updateReadCount(boardDto.getBoardNo());
-//						if(n==1) System.out.println("조회수 증가 완료.");  	   */
+			//			if(n==1) System.out.println("조회수 증가 완료.");  	   */
 				
 				Cookie[] cookies = request.getCookies();
 				boolean isExist = false; // 쿠키에 해당 boardNO 별 ip가 존재하는지 확인
@@ -339,10 +341,19 @@ public class BoardController {
 					setCookieLimit.setMaxAge(1*60); // 1분
 					setCookieLimit.setPath("/"); // 쿠키가 지정 경로에서만 전송된다는 것!(보안)
 					response.addCookie(setCookieLimit);
-// jakarta.servlet.http.Cookie@5f3fcbef{-1173940223_108=yes,{Max-Age=60, Path=/}}
+					// jakarta.servlet.http.Cookie@5f3fcbef{-1173940223_108=yes,{Max-Age=60, Path=/}}
 				}
 				
 			} // 로그인된 유저가 자신의 게시물에 들어갔다면 if문 생략
+			
+			
+			/* null 일시 0값 부여서해서 view.jsp 로 0 값을 보냄 (김예준)*/
+			if(boardDto.getPreNo() == null ) {
+				boardDto.setPreNo("0");
+			}
+			else if(boardDto.getNextNo() == null ) {
+				boardDto.setNextNo("0");
+			}
 			
 			modelview.addObject("hotReadList", boardService.getTopBoardsByViewCount());
 	        modelview.addObject("hotCommentList", boardService.getTopBoardsByCommentCount());
@@ -603,7 +614,3 @@ public class BoardController {
 	
 	
 }
-
-
-
-

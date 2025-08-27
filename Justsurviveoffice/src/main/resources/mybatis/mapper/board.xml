@@ -75,24 +75,50 @@
         order by boardNo desc
     </select>
 
-  	<select id="selectView" parameterType="Long" resultType="BoardDTO">
-    	select boardNo, fk_id, fk_categoryNo,
-               boardName, 
-     		   boardContent, 
-               BoardFileName, BoardFileOriginName, readcount, 
-               to_char(updatedAtBoard, 'yyyy-mm-dd hh24:mi:ss') as updatedAtBoard,
-               case
-		        when (sysdate - updatedAtBoard) * 24 * 60 &lt; 60 
-		            then trunc( (sysdate - updatedAtBoard) * 24 * 60) ||'분 전'
-		        when (sysdate - updatedAtBoard) * 24 &lt; 24
-		            then trunc( (sysdate - updatedAtBoard) * 24 )||'시간 전'
-		        when (sysdate - updatedAtBoard) &lt; 7
-		            then trunc(sysdate - updatedAtBoard)||'일 전'
-		        else to_char(updatedAtBoard, 'yyyy-mm-dd')
-		        end as formattedDate
-				from board join category on fk_categoryNo = categoryNo
-				where boardNo = #{boardNo} and boardDeleted = 0
-  	</select>
+  		<select id="selectView" resultType="BoardDTO" parameterType="long">
+		  SELECT
+		      A.boardNo,
+		      A.fk_id,
+		      A.fk_categoryNo,
+		      A.boardName,
+		      A.boardContent,
+		      A.boardFileName,
+		      A.boardFileOriginName,
+		      A.readCount,
+		      TO_CHAR(A.updatedAtBoard, 'yyyy-mm-dd hh24:mi:ss') AS updatedAtBoard,
+		      CASE
+		          WHEN (SYSDATE - A.updatedAtBoard) * 24 * 60 &lt; 60
+		              THEN TRUNC( (SYSDATE - A.updatedAtBoard) * 24 * 60 ) || '분 전'
+		          WHEN (SYSDATE - A.updatedAtBoard) * 24 &lt; 24
+		              THEN TRUNC( (SYSDATE - A.updatedAtBoard) * 24 ) || '시간 전'
+		          WHEN (SYSDATE - A.updatedAtBoard) &lt; 7
+		              THEN TRUNC( SYSDATE - A.updatedAtBoard ) || '일 전'
+		          ELSE TO_CHAR(A.updatedAtBoard, 'yyyy-mm-dd')
+		      END AS formattedDate,
+		
+		      A.preNo,  A.preName, A.nextNo, A.nextName,
+		      C.categoryName, C.categoryDescribe, C.categoryImagePath
+		  FROM (
+		      SELECT
+		          LEAD(B.boardNo)   OVER (PARTITION BY fk_categoryNo ORDER BY B.boardNo DESC) AS preNo,
+		          LEAD(B.boardName) OVER (PARTITION BY fk_categoryNo ORDER BY B.boardNo DESC) AS preName,
+		          LAG (B.boardNo)   OVER (PARTITION BY fk_categoryNo ORDER BY B.boardNo DESC) AS nextNo,
+		          LAG (B.boardName) OVER (PARTITION BY fk_categoryNo ORDER BY B.boardNo DESC) AS nextName,
+		          B.boardNo,
+		          B.fk_id,
+		          B.fk_categoryNo,
+		          B.boardName,
+		          B.boardContent,
+		          B.BoardFileName,
+		          B.BoardFileOriginName,
+		          B.readCount,
+		          B.updatedAtBoard
+		      FROM board B
+		      WHERE B.boardDeleted = 0
+		  ) A
+		  JOIN category C ON A.fk_categoryNo = C.categoryNo
+		  WHERE A.boardNo = #{boardNo} and A.fk_categoryNo = C.categoryNo
+		</select>
   	
   	<update id="softDeleteBoard" parameterType="Long">
   		update board 
@@ -105,6 +131,55 @@
 		set readCount = readCount + 1 
 		where boardNo = #{boardNo} and boardDeleted = 0
 	</update>
+
+	
+	 <select id="getIndexList" parameterType="string" resultType="map">
+          select
+			    C.categoryNo         AS "categoryNo",
+			    C.categoryName       AS "categoryName",
+			    C.categoryDescribe   AS "categoryDescribe",
+			    C.categoryImagePath  AS "categoryImagePath",
+			    COUNT(B.boardNo)     AS "boardCount"
+			  from category C
+			  left join board B
+			  on B.fk_categoryNo = C.categoryNo
+			  <where>
+			    <if test="_parameter != null and _parameter != ''">
+			      C.categoryNo = #{_parameter}
+			    </if>
+			  </where>
+			  group by
+			    C.categoryNo, C.categoryName, C.categoryDescribe, C.categoryImagePath
+			  order by C.categoryNo
+      </select>
+      
+   
+   <!-- 서브쿼리 쓴 이유 (김예준)
+   		1. SQL은 FROM -> where -> having -> group by ->order by -> select 순이다
+   		2. 그래서 서브쿼리를 안쓰고 where 절 쓸 시 한행만 도출되고 나머진 버려져서 안나옴
+   		
+    -->
+	  <select id="getView" resultType="BoardDTO" parameterType="long">
+		  SELECT
+		      A.preNo, A.preName,
+		      A.nextNo, A.nextName,
+		      A.boardNo, A.boardName, A.boardContent, A.fkId
+		  FROM (
+			      SELECT
+			          LEAD(B.boardNo)   OVER (ORDER BY B.boardNo DESC) AS preNo,
+			          LEAD(B.boardName) OVER (ORDER BY B.boardNo DESC) AS preName,
+			          LAG (B.boardNo)   OVER (ORDER BY B.boardNo DESC) AS nextNo,
+			          LAG (B.boardName) OVER (ORDER BY B.boardNo DESC) AS nextName,
+			          B.boardNo,
+			          B.boardName,
+			          B.boardContent,
+			          B.fk_id AS fkId
+			      FROM board B
+			      JOIN category C ON B.fk_categoryNo = C.categoryNo
+			      WHERE B.boardDeleted = 0
+		  ) A
+		  WHERE A.boardNo = #{boardNo}
+	</select>
 	
 	<!-- ================================================================================= -->
 	<!-- 인기 게시글 리스트 (조회수 많은 순) -->
@@ -175,10 +250,8 @@
 	    where bookmark.fk_id = #{fk_id}
 	    order by bookmark.createdAtMark DESC
 	</select>
+
   	
 </mapper>
-
-
-
 
 

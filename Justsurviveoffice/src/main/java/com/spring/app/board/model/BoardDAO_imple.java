@@ -54,12 +54,25 @@ public class BoardDAO_imple implements BoardDAO {
 	public int updateReadCount(Long boardNo) {
 		return sql.update("board.updateReadCount", boardNo);
 	}
+
+	// 메인페이지 카테고리 리스트 자동 받아오기
+	@Override
+	public List<Map<String, String>> getIndexList(String fk_categoryNo) {
+		List<Map<String, String>> IndexList = sql.selectList("board.getIndexList");
+		return IndexList;
+	}
 	
 	// 내가 작성한 글 목록 
     @Override
     public List<BoardDTO> getMyBoards(String fkId) {
         return sql.selectList("board.getMyBoards", fkId);
     }
+	
+	//페이지내이션 
+	@Override
+	public BoardDTO getView(Long boardNo) {
+		return sql.selectOne("board.getView", boardNo);
+	}   
 	
 	 // 북마크한 게시글 목록 
     @Override
@@ -73,7 +86,6 @@ public class BoardDAO_imple implements BoardDAO {
         return sql.selectOne("boardLike.getLikeCount", boardNo);
 
 	}
-
 
 	////////////////////////////////////////////////////////////////////////////
 	// 인기 게시글 리스트 (조회수 많은 순)
