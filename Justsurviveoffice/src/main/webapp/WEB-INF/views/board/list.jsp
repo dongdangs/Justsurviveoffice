@@ -107,7 +107,7 @@
   position: absolute;
   top: 16px;      /* 상단 여백 */
   right: 16px;    /* 우측 여백 */
-  width: 260px;
+  width: 180px;
   background: rgba(255,255,255,0.35); /* 반투명 */
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 10px;
@@ -360,7 +360,7 @@
 	<div class="keyword-panel">
 	  <div class="keyword-header text-center">TOP 키워드</div>
 	  <div class="keyword-table-wrap">
-	    <table class="keyword-table">
+	    <table class="keyword-table" >
 	      <tbody>
 	        <!-- 컨트롤러에서 List<Map.Entry<String,Integer>> keywordTop 로 전달했다고 가정 -->
 	        <c:if test="${not empty keyword_top}">
