@@ -51,30 +51,22 @@ public interface BoardService {
 	public List<CommentDTO> getCommentList(Long boardNo);
 
 	//게시물 좋아요 여부 확인
-	public boolean isBoardLiked(Long boardNo, String fkId);
+	public boolean isBoardLiked(String fk_id, Long fk_boardNo);
 
 	//게시물 좋아요 취소
-	public void deleteBoardLike(Long boardNo, String fkId);
+	public int deleteBoardLike(String fk_id, Long fk_boardNo);
 
 	//게시물 좋아요
-	public void insertBoardLike(Long boardNo, String fkId);
+	public int insertBoardLike(String fk_id, Long fk_boardNo);
 
     // 좋아요 수 
-	public int getBaordLikeCount(Long boardNo);
-
-	// 게시물 좋아요
-	void boardLike(String fk_id, Long fk_boardNo);
+	public int getBoardLikeCount(Long fk_boardNo);
 
 	// 메인페이지 카테고리 자동 불러오기 메서드
 	public List<Map<String, String>> getIndexList(String fk_categoryNo);
 
 	// 페이지네이션 구현
 	public BoardDTO getView(Long boardNo);
-	
-	// 총 검색된 게시물 건수
-	int searchListCount(Map<String, String> paraMap);
-	
-	// 자동 검색어 완성시키기
-	List<Map<String, String>> getSearchWordList(Map<String, String> paraMap);
+
 	
 }

@@ -73,8 +73,6 @@
             </when>
 		</choose>
         order by boardNo desc
-        offset ((to_number(#{currentShowPageNo}) - 1) * 5) rows
-        fetch next 5 row only
     </select>
 
   		<select id="selectView" resultType="BoardDTO" parameterType="long">
@@ -188,9 +186,9 @@
 	<select id="getTopBoardsByViewCount" resultType="BoardDTO">
 	    select *
 		from(
-		     select ROWNUM as RANK, BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT, FK_ID
+		     select ROWNUM as RANK, BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT
 			 from (
-			       select BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT, FK_ID
+			       select BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT
 			       from BOARD
 			       where CREATEDATBOARD &gt;= ADD_MONTHS(SYSDATE, -1)
 			       order by READCOUNT desc, CREATEDATBOARD desc
@@ -201,37 +199,40 @@
 	    
 	    
 	<!-- 댓글 많은 게시글 리스트 -->
-	<select id="getTopBoardsByCommentCount" resultType="BoardDTO">
-		select B.BOARDNO, B.BOARDNAME, B.FK_CATEGORYNO, C.COMMENTCOUNT
+    <select id="getTopBoardsByCommentCount" resultType="BoardDTO">
+		select B.BOARDNO,
+		       B.BOARDNAME,
+		       B.FK_CATEGORYNO,
+		       C.COMMENTCOUNT, B.createdatboard
 		from BOARD B
-		     join (
+		     inner join (
 		        select FK_BOARDNO, count(*) as COMMENTCOUNT
 		        from COMMENTS
 		        group by FK_BOARDNO
 		     ) C
 		     on B.BOARDNO = C.FK_BOARDNO
 		where B.CREATEDATBOARD &gt;= ADD_MONTHS(SYSDATE, -1)
-		order by C.COMMENTCOUNT desc, readCount desc
-		fetch first 5 rows only
-	</select>
+		order by C.COMMENTCOUNT desc, B.createdatboard desc
+		fetch first 5 rows only       
+    </select>
 	<!-- ================================================================================= -->
 	
   	
   	  <!-- ===== 내가 작성한 글 목록 ===== -->
     <select id="getMyBoards" parameterType="string" resultType="BoardDTO">
         SELECT boardno, fk_categoryno, 
-        	   case
-    		   	  when length(boardName) > 12
-    		      then substr(boardName, 1, 12)
-    		   	  else boardName
-    		   end as boardName, 
-    		   createdatboard, updatedatboard, readcount, fk_id, boardfilename, boardfileoriginname, boarddeleted, 
-    		   case
-    		   	  when length(boardcontent) > 12
-    		   	  then substr(boardcontent, 1, 12)
-    		   	  else boardcontent
-    		   end as boardcontent
-		FROM board
+              case
+                  when length(boardName) &gt; 12
+                then substr(boardName, 1, 12)
+                  else boardName
+             end as boardName, 
+             createdatboard, updatedatboard, readcount, fk_id, boardfilename, boardfileoriginname, boarddeleted, 
+             case
+                  when length(boardcontent) &gt; 12
+                  then substr(boardcontent, 1, 12)
+                  else boardcontent
+             end as boardcontent
+      FROM board
         WHERE fk_id = #{fk_id}
         ORDER BY createdAtBoard DESC
     </select>
@@ -251,80 +252,6 @@
 	    order by bookmark.createdAtMark DESC
 	</select>
 
-
-  	<!-- 총 검색된 게시물 건수 -->
-  	<select id="searchListCount" parameterType="HashMap" resultType="int">
-  		select count(*)
-  		from board
-  		where boardDeleted = 0
-			<if test='categoryNo != ""'>
-				and fk_categoryNo = to_number(#{category})
-			</if>
-		<choose>
-            <when test='searchType == "boardName" and searchWord != ""'>
-                and lower(boardName) like '%'||lower(#{searchWord})||'%'
-            </when>
-            <when test='searchType == "boardContent" and searchWord != ""'>
-                and lower(boardContent) like '%'||lower(#{searchWord})||'%'
-            </when>
-            <when test='searchType == "boardName_boardContent" and searchWord != ""'>
-                and ( lower(boardName) like '%'||lower(#{searchWord})
-               		||'%' or lower(boardContent) like '%'||lower(#{searchWord})||'%' ) 
-            </when>
-            <when test='searchType == "fk_id" and searchWord != ""'>
-            	and lower(fk_id) like '%'||lower(#{searchWord})||'%'
-            </when>
-		</choose>
-  	</select>
-  	
-  	
-  	<!-- 자동 검색어 완성 -->
-  	<select id="getSearchWordList" parameterType="HashMap" resultType="String">
-  		<choose>
-  			<when test='searchType == "boardName" and searchWord != ""' >
-  				select boardname
-  				from board
-  				where boardDeleted = 0
-				<if test='categoryNo != ""'>
-					and fk_categoryNo = to_number(#{category})
-				</if>
-				and lower(boardName) like '%' || lower(#{searchWord}) || '%'
-				order by createdAtBoard
-  			</when>
-  			<when test='searchType == "boardContent" and searchWord != ""'>
-  				select boardname
-  				from board
-  				where boardDeleted = 0
-				<if test='categoryNo != ""'>
-					and fk_categoryNo = to_number(#{category})
-				</if>
-				and lower(boardContent) like '%' || lower(#{searchWord}) || '%'
-				order by createdAtBoard
-  			</when>
-  			<when test='searchType == "boardName_boardContent" and searchWord != ""'>
-  				select boardname
-  				from board
-  				where boardDeleted = 0
-				<if test='categoryNo != ""'>
-					and fk_categoryNo = to_number(#{category})
-				</if>
-				 and ( lower(boardName) like '%'||lower(#{searchWord})
-               		||'%' or lower(boardContent) like '%'||lower(#{searchWord})||'%' ) 
-				order by createdAtBoard
-  			</when>
-  			<when test='searchType == "fk_id" and searchWord != ""'>
-  				SELECT DISTINCT fk_id
-				FROM board 
-				WHERE boardDeleted = 0 
-				<if test='categoryNo != ""'>
-					AND fk_categoryNo = TO_NUMBER(#{category})
-				</if>
-				AND lower(fk_id) LIKE '%' || lower(#{searchWord}) || '%'
-				ORDER BY fk_id
-  			</when>
-  		</choose>
-  	</select>
-  	
   	
 </mapper>
 

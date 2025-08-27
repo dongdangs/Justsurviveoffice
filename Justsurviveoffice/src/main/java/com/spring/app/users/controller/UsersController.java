@@ -111,9 +111,9 @@ public class UsersController {
 	}
 	
 	@PostMapping("registerUser")
-    public String registerUser(@RequestParam("hp1") String hp1,
-                        @RequestParam("hp2") String hp2,
-                        @RequestParam("hp3") String hp3,
+    public String registerUser(@RequestParam(name="hp1") String hp1,
+                        @RequestParam(name="hp2") String hp2,
+                        @RequestParam(name="hp3") String hp3,
                         Users user, 
                         HttpServletRequest request, HttpSession session) {
       // 연락처 합치기
