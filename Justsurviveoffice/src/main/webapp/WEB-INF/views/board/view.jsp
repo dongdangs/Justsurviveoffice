@@ -85,6 +85,24 @@
 	        form.action = "<%= ctxPath%>/comment/writeComment";
 	        form.submit();
 	    });
+		 
+		 //대댓글 작성
+		 $('button#replybtn').click(function(){
+			 const parentNo = $(this).data("parentNo");
+			 
+			// === 댓글내용 유효성 검사 === //
+		        let contentVal = $('textarea[name="content"]').val().trim();
+		        
+		        if(contentVal.length == 0) {
+		        	alert("댓글내용을 입력해주세요 !");
+		        	return; 
+		        }
+		        
+		        const form = document.replyform;
+		        form.method = "post";
+		        form.action = "<%= ctxPath%>/comment/writeReply";
+		        form.submit();
+		 });
 		
 	 <!-- 북마크기능 -->
    function bookmark(boardNo, fk_id, isBookmarked) {
@@ -147,63 +165,6 @@
 	        $(document.body).append(form);
 	        form.submit();
 	    });
-		 
-
-		 //댓글 수정
-		 $(document).on("click", ".update-comment", function () {
-	        const commentDiv = $(this).closest(".comment");
-	        const contentDiv = commentDiv.find(".content");
-	        const textarea = commentDiv.find(".edit-content");
-
-	        contentDiv.hide();
-	        textarea.show().focus();
-
-	        commentDiv.find(".update-comment").hide();
-	        commentDiv.find(".delete-comment").hide();
-	        commentDiv.find(".save-edit").show();
-	        commentDiv.find(".cancel-edit").show();
-	    });
-
-	    //  댓글 수정 취소 
-	    $(document).on("click", ".cancel-edit", function () {
-	        const commentDiv = $(this).closest(".comment");
-	        const contentDiv = commentDiv.find(".content");
-	        const textarea = commentDiv.find(".edit-content");
-
-	        // textarea 숨기고 원래 내용 보이기
-	        textarea.hide();
-	        contentDiv.show();
-
-	        commentDiv.find(".update-comment").show();
-	        commentDiv.find(".delete-comment").show();
-	        commentDiv.find(".save-edit").hide();
-	        commentDiv.find(".cancel-edit").hide();
-	    });
-
-	    // 댓글 수정 저장 
-	    $(document).on("click", ".save-edit", function () {
-	        const commentDiv = $(this).closest(".comment");
-	        const commentNo = $(this).data("id");
-	        const newContent = commentDiv.find(".edit-content").val().trim();
-
-	        if (newContent.length === 0) {
-	            alert("댓글 내용을 입력해주세요!");
-	            return;
-	        }
-
-	        const form = $("<form>", {
-	            method: "post",
-	            action: "<%=ctxPath%>/comment/updateComment"
-	        });
-
-	        form.append($("<input>", { type: "hidden", name: "commentNo", value: commentNo }));
-	        form.append($("<input>", { type: "hidden", name: "content", value: newContent }));
-	        form.append($("<input>", { type: "hidden", name: "fk_boardNo", value: "${boardDto.boardNo}" }));
-	        
-	        $(document.body).append(form);
-	        form.submit();
-	    });
-		 
 		 
 	}); 
 	
@@ -375,11 +336,11 @@ function boardLike(boardNo, fk_id) {
 
         <!-- 버튼 영역 -->
         <div class="comment-buttons mt-2">
+        	<c:if test="${not empty loginUser}">
+                <button type="button" class="btn replybtn" data-id="${comment.commentNo}">답글</button>
+            </c:if>
             <c:if test="${not empty loginUser and loginUser.id == comment.fk_id}">
-                <button type="button" class="btn update-comment" data-id="${comment.commentNo}">수정</button>
                 <button type="button" class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
-                <button type="button" class="btn btn-sm  save-edit" data-id="${comment.commentNo}" style="display:none;">저장</button>
-                <button type="button" class="btn btn-sm  cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
             </c:if>
         </div>
     </div>
@@ -392,6 +353,25 @@ function boardLike(boardNo, fk_id) {
             <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
             <button type="submit" class="btn" id="addComment">댓글 등록</button>
         </form>
+        
+        <!-- 대댓글 입력창 (숨김 기본) -->
+        <div class="replyform" id="reply-form-${comment.commentNo}" style="display: none; margin-top: 5px;">
+            <textarea class="reply-content" id="reply-content-${comment.commentNo}" rows="2" style="width: 90%;"></textarea>
+            <button type="button" class="btn add-reply" data-parent="${comment.commentNo}">등록</button>
+            <button type="button" class="btn cancel-reply" data-parent="${comment.commentNo}">취소</button>
+        </div>
+        
+        <div class="replies" id="replies-${comment.commentNo}" style="margin-left: 30px; margin-top: 5px;">
+            <c:forEach var="reply" items="${comment.replyList}">
+                <div class="reply" style="border-left: 2px solid #ddd; padding-left: 10px; margin-top: 5px;">
+                    <div class="meta">
+                        <span>${reply.fk_id}</span> |
+                        <span>${fn:replace(reply.createdAtComment, "T", " ")}</span>
+                    </div>
+                    <div class="content">${reply.content}</div>
+                </div>
+            </c:forEach>
+        </div>
     </div>
 
     <!-- 목록 버튼 -->

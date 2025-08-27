@@ -15,10 +15,11 @@ public interface CommentDAO {
     // 댓글 삭제
 	int deleteComment(Long commentNo);
 
-    // 댓글 수정
-    int updateComment(Long commentNo, String content, String fk_id);
+	//대댓글 삭제
+	int deleteReply(Long commentNo);
 
-
+	//대댓글 작성
+	int insertReply(CommentDTO comment);
 
     
 }

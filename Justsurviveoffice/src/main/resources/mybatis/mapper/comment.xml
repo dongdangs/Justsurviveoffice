@@ -47,17 +47,37 @@
     <delete id="deleteComment" parameterType="map">
         delete from comments
         where commentNo = #{commentNo}
+        or parentNo = #{commentNo}
     </delete>
 
-    <!-- 댓글 수정 -->
-    <update id="updateComment" parameterType="map">
-        update comments
-        set content = #{content},
-            updatedAtComment = SYSDATE
-        where commentNo = #{commentNo}
-        and fk_id = #{fk_id}
-    </update>
 
    
-
+   <!-- 대댓글 작성 -->
+	<insert id="insertReply" parameterType="map">
+	    insert into comments (
+	        commentNo,
+	        fk_boardNo,
+	        fk_id,
+	        content,
+	        parentNo,
+	        createdAtComment
+	    ) VALUES (
+	        comment_seq.nextval,
+	        #{fk_boardNo},
+	        #{fk_id},
+	        #{content},
+	        #{parentNo},
+	        SYSDATE
+	    )
+	</insert>
+	   
+	<!-- 대댓글 삭제 -->
+	<delete id="deleteReply" parameterType="map">
+	    delete from comment
+	    where commentNo = #{commentNo}
+	      and fk_id = #{fk_id}
+	</delete>
+		
+		
+		
 </mapper>

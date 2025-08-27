@@ -34,13 +34,22 @@ public class CommentService_imple implements CommentService {
     }
 
 
-    //댓글 수정 (본인만 가능)
+    //대댓글 작성
+	@Override
+	public void insertReply(CommentDTO comment) {
+		commentDao.insertReply(comment);
+	}
 
+	//댓글 삭제 (본인만 가능)
     @Override
-    public boolean updateComment(Long commentNo, String content, String fk_id) {
-        return commentDao.updateComment(commentNo, content, fk_id) > 0;
+    public int deleteReply(Long commentNo) {
+        int n =  commentDao.deleteReply(commentNo) ;
+        
+        return n;
     }
 
+
+   
 
 
 }

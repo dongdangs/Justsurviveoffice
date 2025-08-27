@@ -1,11 +1,8 @@
 package com.spring.app.comment.service;
 
-import java.util.List;
+import java.util.Map;
 
 import com.spring.app.comment.domain.CommentDTO;
-import com.spring.app.entity.Board;
-import com.spring.app.entity.Comments;
-import com.spring.app.users.domain.UsersDTO;
 
 public interface CommentService {
 	
@@ -18,18 +15,12 @@ public interface CommentService {
     //댓글삭제
 	int deleteComment(Long commentNo);
 	
-	//댓글수정
-	boolean updateComment(Long commentNo, String newContent, String fk_id);
-
-
-
-
-
-
+	//대댓글 작성
+	void insertReply(CommentDTO comment);
 	
 	
-
-
+	//대댓글삭제
+	int deleteReply(Long commentNo);
 	
 
 

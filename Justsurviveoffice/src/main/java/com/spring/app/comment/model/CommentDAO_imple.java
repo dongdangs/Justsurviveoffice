@@ -34,15 +34,19 @@ public class CommentDAO_imple implements CommentDAO {
         return sql.delete("comments.deleteComment", commentNo);
     }
 
-    // 댓글 수정
-    @Override
-    public int updateComment(Long commentNo, String content, String fk_id) {
-        java.util.Map<String, Object> paramMap = new java.util.HashMap<>();
-        paramMap.put("commentNo", commentNo);
-        paramMap.put("content", content);
-        paramMap.put("fk_id", fk_id);
-        return sql.update("comments.updateComment", paramMap);
-    }
+    
+    //대댓글 삭제
+	@Override
+	public int deleteReply(Long commentNo) {
+        return sql.delete("comments.deleteReply", commentNo);
+	}
 
+	//대댓글 작성
+	@Override
+	public int insertReply(CommentDTO comment) {
+		return sql.insert("comments.insertReply", comment);
+	}
+
+  
   
 }
