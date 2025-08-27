@@ -133,14 +133,14 @@ public class BoardService_imple implements BoardService {
 
 	 //내가 작성한 글 목록
     @Override
-    public List<BoardDTO> getMyBoards(String fkId) {
-        return boardDao.getMyBoards(fkId);
+    public List<BoardDTO> getMyBoards(String fk_id) {
+        return boardDao.getMyBoards(fk_id);
     }
 
     // 북마크한 글 목록
     @Override
-    public List<BoardDTO> getBookmarksById(String fkId) {
-        return boardDao.getBookmarksById(fkId);
+    public List<BoardDTO> getBookmarksById(String fk_id) {
+        return boardDao.getBookmarksById(fk_id);
     }
 
     
@@ -153,11 +153,11 @@ public class BoardService_imple implements BoardService {
 	
 	//게시글 좋아요 여부
 	@Override
-	public boolean isBoardLiked(Long boardNo, String fkId) {
+	public boolean isBoardLiked(Long boardNo, String fk_id) {
 		 
 		Map<String, Object> boardLike = new HashMap<>();
 		
-		boardLike.put("fkId", fkId);
+		boardLike.put("fkId", fk_id);
 		boardLike.put("boardNo", boardNo);
 		return false;
 		
