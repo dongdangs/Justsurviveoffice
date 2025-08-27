@@ -7,67 +7,57 @@
     //     /myspring 
 %>
 <jsp:include page="../header/header1.jsp" /> 
-<html>
-<style>
-    .board-container {
-        width: 80%;
-        margin: 20px auto;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 20px;
-    }
-    .board-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .board-header h2 {
-        margin: 0;
-    }
-    .board-meta {
-        font-size: 0.9em;
-        color: #666;
-    }
-    .board-content {
-        margin: 15px 0;
-    }
-    .board-file img {
-        max-width: 300px;
-        margin-top: 10px;
-    }
-    .board-actions {
-        margin-top: 10px;
-    }
-    .comment-section {
-        margin-top: 30px;
-    }
-    .comment {
-        border-top: 1px solid #eee;
-        padding: 10px 0;
-    }
-    .comment .meta {
-        font-size: 0.8em;
-        color: #555;
-    }
-    .btn {
-        padding: 5px 10px;
-        border: 1px solid #ccc;
-        background: #f9f9f9;
-        cursor: pointer;
-    }
-    .btn:hover {
-        background: #eee;
-    } .zip
-.content {  /* 내용: 줄바꿈 보존하기!! */
-    white-space: pre-wrap;    
-    }
-/* .content {  /* 내용: 줄바꿈 보존하기!! */
-    white-space: pre-wrap; */   
-    
-     
+<html><style>
+  .board-container {
+    width: 80%;
+    margin: 20px auto;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+  }
+  .board-header { display:flex; justify-content:space-between; align-items:center; }
+  .board-header h2 { margin:0; }
+  .board-meta { font-size:0.9em; color:#666; }
+  .board-content { margin:15px 0; white-space: pre-wrap; word-break: break-word; }
+  .board-file img { max-width:300px; margin-top:10px; }
+  .board-actions { margin-top:10px; }
+  .comment-section { margin-top:30px; }
+  .comment { border-top:1px solid #eee; padding:10px 0; }
+  .comment .meta { font-size:0.8em; color:#555; }
+  .btn { padding:5px 10px; border:1px solid #ccc; background:#f9f9f9; cursor:pointer; }
+  .btn:hover { background:#eee; }
+
+  /* << 핵심: 본문 내 삽입 미디어 크기 제한 >> */
+  .board-content img,
+  .board-content video,
+  .board-content iframe {
+    max-width: 100% !important;  /* 컨테이너 너비를 넘지 않도록 */
+    height: auto !important;     /* 비율 유지 */
+    display: block;
+    margin: 0 auto;              /* 가운데 정렬(옵션) */
+  }
+.comment img,
+.comment video,
+.comment iframe {
+  max-width: 100% !important;
+  height: auto !important;
 }
+  
 </style>
+
 <script type="text/javascript">
 	$(function() {
+		
+		const nextVals = ${boardDto.nextNo};
+		
+		if(nextVals == 0) {
+			$('div#nextBtn').hide();
+		}
+		
+		const preVals = ${boardDto.preNo};
+		
+		if(preVals == 0) {
+			$('div#prevBtn').hide();
+		}
 		
 		 // 댓글작성
 	    $('button#addComment').click(function(){
@@ -86,43 +76,40 @@
 	        form.submit();
 	    });
 		
-	 <!-- 북마크기능 -->
-   function bookmark(boardNo, fk_id, isBookmarked) {
-	    const url = isBookmarked
-	        ? "<%= ctxPath%>/bookmark/remove"
-	        : "<%= ctxPath%>/bookmark/add";
-
-	    $.ajax({
-	        url: url,
-	        type: "POST",
-	        data: { fk_boardNo: boardNo },
-	        success: function(json) {
-	            const icon = $(`#bookmark-icon-${boardNo}`);
-
-	            if (json.success) {
-	            	icon.removeClass("fa-solid fa-regular text-warning");
-	            	if (isBookmarked) {
-	            	    // 해제된 상태로 변경
-	            	    icon.addClass("fa-regular fa-bookmark");
-	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
-	            	} else {
-	            	    // 추가된 상태로 변경
-	            	    icon.addClass("fa-solid fa-bookmark text-warning");
-	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
-	            	}
-
-	            } else {
-	                alert(json.message);
-	            }
-	        },
-	        error: function(request, status, error) {
-	            alert("code:" + request.status + "\nmessage:" + request.responseText);
-	        }
-	    });
-	}// end of function Bookmark(boardNo,fk_id)———————————
-
-	   
-		 
+		 <!-- 북마크기능 -->
+   		function bookmark(boardNo, fk_id, isBookmarked) {
+		    const url = isBookmarked
+		        ? "<%= ctxPath%>/bookmark/remove"
+		        : "<%= ctxPath%>/bookmark/add";
+	
+		    $.ajax({
+		        url: url,
+		        type: "POST",
+		        data: { fk_boardNo: boardNo },
+		        success: function(json) {
+		            const icon = $(`#bookmark-icon-${boardNo}`);
+	
+		            if (json.success) {
+		            	icon.removeClass("fa-solid fa-regular text-warning");
+		            	if (isBookmarked) {
+		            	    // 해제된 상태로 변경
+		            	    icon.addClass("fa-regular fa-bookmark");
+		            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+		            	} else {
+		            	    // 추가된 상태로 변경
+		            	    icon.addClass("fa-solid fa-bookmark text-warning");
+		            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+		            	}
+	
+		            } else {
+		                alert(json.message);
+		            }
+		        },
+		        error: function(request, status, error) {
+		            alert("code:" + request.status + "\nmessage:" + request.responseText);
+		        }
+		    });
+		}// end of function Bookmark(boardNo,fk_id)———————————
 
 		 // 댓글 삭제 
 	    $(document).on("click", ".delete-comment", function () {
@@ -209,15 +196,25 @@
 	}); 
 	
 	
-	
 	// 글 삭제
 	function del() {
 		if(!confirm("정말로 삭제하시겠습니까?")) {
 			return alert("삭제가 취소되었습니다.");
 		}
-		const form = document.deleteForm;
+		const form = document.delnEditForm;
 		form.method = "post";
 		form.action = "<%=ctxPath%>/board/delete";
+		form.submit();
+	}
+	
+	// 글 수정하기 >> restAPI
+	function edit() {
+		if(!confirm("수정하시겠습니까?")) {
+			return alert("취소되었습니다.");
+		}
+		const form = document.delnEditForm;
+		form.method = "get";
+		form.action = "<%=ctxPath%>/board/edit";
 		form.submit();
 	}
 	
@@ -256,10 +253,28 @@
 	    });
 	}
 	
-</script>
+	function goViewA(){
+		 const frm = document.goViewFrm;
+		 frm.boardNo.value = ${boardDto.preNo};
+		 
+		 frm.method = "post";
+		 frm.action = "<%= ctxPath%>/board/view";
+		 frm.submit();
+	}
 
- <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; background-image: url('<%= ctxPath %>/images/background.png');">
-	<div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray">
+	function goViewB(){
+		 const frm = document.goViewFrm;
+		 frm.boardNo.value = ${boardDto.nextNo};
+		 
+		 frm.method = "post";
+		 frm.action = "<%= ctxPath%>/board/view";
+		 frm.submit();
+	}
+	
+</script>
+<body style="background-image: url('<%= ctxPath %>/images/background.png'); "></body>
+ <div class="col-md-9" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; ">
+	<div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray;">
 		<input name="fk_categoryNo" style="display: none;"
 				    value="${boardDto.fk_categoryNo}"/>
 		<c:if test="${boardDto.fk_categoryNo eq 1}">
@@ -288,15 +303,18 @@
         <span>${boardDto.formattedDate}</span> |
         <span>조회수: ${boardDto.readCount}</span>
     </div>
-    <!-- 첨부 파일 -->
-    <c:if test="${boardDto.boardFileName ne null}">
-   		 ${boardDto.boardFileName}
-         <img src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}" class="thumbnail" style="margin-left: auto;"/>
-	</c:if>
+	<!-- 첨부 파일 -->
+	<div style="min-height: 20%; max-width: 100%; overflow: hidden;">
+	    <c:if test="${boardDto.boardFileName ne null}">
+	        ${boardDto.boardFileName}
+	        <img src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}" 
+	             class="thumbnail" 
+	             style="max-width: 100%; height: auto; display: block; margin: 0 auto;" />
+	    </c:if>
+	</div>
     <!-- 본문 내용 -->
     <div class="board-content" style="white-space: pre-wrap;"
     	>${boardDto.boardContent}</div>
-
 
     <!-- 좋아요 , 공유/신고/북마크 --> 
 	<div class="board-actions d-flex justify-content-between align-items-center">
@@ -328,13 +346,15 @@
 			    </i>
 			</form> 
 			
-	        <form name="deleteForm" method="post" style="display:inline;margin: auto; ">
+	        <form name="delnEditForm" method="post" style="display:inline;margin: auto; ">
 		        <c:if test="${loginUser.id eq boardDto.fk_id}">
 		        	<input name="fk_categoryNo" style="display: none;" value="${boardDto.fk_categoryNo}"/>
 		        	<input type="hidden" name="boardNo" value="${boardDto.boardNo}">
 	           		<input type="hidden" name="fk_id" value="${boardDto.fk_id}">
 		            <button class="btn" onclick="del()" style="background-color: white;"
 		              >글 삭제</button>
+		            <button class="btn" onclick="edit()" style="background-color: white;"
+		              >수정하기</button>
 		        </c:if>
 	         </form>
 	    </div>
@@ -375,22 +395,31 @@
                 <button type="button" class="btn btn-sm  cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
             </c:if>
         </div>
-    </div>
-</c:forEach>
+	    </div>
+		</c:forEach>
+	       <!-- 댓글 작성 -->
+	       <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
+	           <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+	           <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+	           <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
+	           <button type="submit" class="btn" id="addComment">댓글 등록</button>
+	       </form>
+	    </div>
+	    <!-- 목록 버튼 -->
+	    <div style="margin-top:1px;">
+	        <a href="<%=ctxPath %>/board/list/${boardDto.fk_categoryNo}" class="btn">목록</a>
+	    </div>
+	    <div class="Boardpagination">
+			<div id="prevBtn" class="prevBtn" onclick="goViewA('${boardDto.preNo}')" style="cursor:pointer;">이전글: ${boardDto.preName}</div>
+			<div id="nextBtn" class="nextBtn" onclick="goViewB('${boardDto.nextNo}')" style="cursor:pointer;">다음글: ${boardDto.nextName}</div>
+		</div>
+	</div>
 
-        <!-- 댓글 작성 -->
-        <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
-            <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
-            <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
-            <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
-            <button type="submit" class="btn" id="addComment">댓글 등록</button>
-        </form>
-    </div>
-
-    <!-- 목록 버튼 -->
-    <div style="margin-top:20px;">
-        <a href="<%=ctxPath %>/board/list?category=${boardDto.fk_categoryNo}" class="btn">목록</a>
-    </div>
-
+	<form name="goViewFrm">
+	    <input type="hidden" name="boardNo" />
+		<input type="hidden" name="boardWritt" />
+	</form>
+	<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
+	<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
 </div>
 </html>

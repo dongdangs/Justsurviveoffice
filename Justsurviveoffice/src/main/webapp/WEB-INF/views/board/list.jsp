@@ -64,7 +64,7 @@
 .title,content { /* 제목과 내용의 라인을 한줄로 제한하고, 이상이되면 안보이게! */
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    
 }
 </style> 
 
@@ -224,7 +224,7 @@
       const form = document.searchForm;
    <%--  
       form.method = "get";
-      form.action = "<%= ctxPath%>/board/list?category=?&...";
+      form.action = "<%= ctxPath%>/board/list/1&...";
    --%>      
       form.submit();
    }
@@ -245,7 +245,7 @@
           <input type="text" style="display: none;"/> <%-- form 태그내에 input 태그가 오로지 1개 뿐일경우에는 엔터를 했을 경우 검색이 되어지므로 이것을 방지하고자 만든것이다. --%>  
       <button type="button" class="btn btn-secondary btn-sm" onclick="searchBoard()">검색</button> 
       
-      <span><a href="<%=ctxPath %>/board/write?category=${category}" class="btn btn-secondary btn-sm" 
+      <span><a href="<%=ctxPath %>/board/write/${category}" class="btn btn-secondary btn-sm" 
             style="background-color: navy;">글쓰기</a></span>
       <span><input name="category" style="display: none" value="${category}"/></span>
    </form> 
@@ -273,7 +273,7 @@
 		      <div style="display: flex;" onclick="view('${boardDto.boardNo}', '${boardDto.fk_id}')">
 		        <div>
 		       		 <!-- 제목 -->
-		        	<h3 class="title" style="margin-right: 10%">${boardDto.boardName}</h3>
+		        	<h3 class="title" style="margin-right:0">${boardDto.boardName}</h3>
 					<!-- 내용 -->
 		    	 	<div class="content" style="color: grey">${boardDto.textForBoardList}</div>
 		        </div>
@@ -319,9 +319,3 @@
    </div>
    
   </div>   
-
-
-
-
-   
-    

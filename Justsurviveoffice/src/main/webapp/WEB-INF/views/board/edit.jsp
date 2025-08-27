@@ -8,10 +8,6 @@
     //     /myspring
 %>   
 
-<!DOCTYPE html>
-<html>
-<head>
-
  <%-- Bootstrap CSS --%>
  <link rel="stylesheet" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" type="text/css">
 
@@ -72,7 +68,7 @@
 	        // 폼(form)을 전송(submit)
 	        const form = document.writeForm;
 	        form.method = "post";
-	        form.action = "<%= ctxPath%>/board/write";
+	        form.action = "<%= ctxPath%>/board/edit";
 	        form.submit();
 	    });
 
@@ -86,6 +82,9 @@
        if (file) {
            const reader = new FileReader();
            reader.onload = function(e) {
+               $('#oldpreview').hide(); // 이전 이미지는 숨기고,
+        	   $('#oldFileOriginName').html(file.name); // 바뀐 이미지명으로!
+        	   
                preview.src = e.target.result;
                preview.style.display = "block";
            }
@@ -97,6 +96,7 @@
    }
   
 </script>
+<head>
  <style type="text/css">
 .post-card { 
   min-width: 750px;  
@@ -188,28 +188,33 @@
         <div class="post-card">
   
 		  <div class="post-header">
-		    <div class="">새 게시글</div>
+		    <div class="">게시글 수정</div>
+		     <input class="boardNo" style="display: none"
+		    	 name="boardNo" value="${requestScope.boardDto.boardNo}"/>
 		    <input class="fk_id" style="display: none"
-		    	 name="fk_id" value="${sessionScope.loginUser.id}"/>
+		    	 name="fk_id" value="${sessionScope.boardDto.fk_id}"/>
    		    <input class="fk_categoryNo" style="display: none"
-		    	 name="fk_categoryNo" value="${requestScope.category}"/>
+		    	 name="fk_categoryNo" value="${requestScope.boardDto.fk_categoryNo}"/>
 		  </div>
 		  <!-- 업로드한 이미지 미리보기 --> 
 		  <img id="preview" class="preview" style="display:none;"> 
+		  <img id="oldpreview" class="preview" src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}"/>
 		  <!-- 파일 업로드 -->
 		  <input type="file" name="attach" id="fileUpload" class="file-upload" 
 		       accept="image/*" onchange="previewImage(event)" />
-	       <!-- 라벨을 버튼처럼 --><br>
-		  <label for="fileUpload" class="file-label">첨부 파일</label>
+	      <!-- 라벨을 버튼처럼 --><br>
+		  <label for="fileUpload" class="file-label" >첨부 파일</label>
+		  <span id="oldFileOriginName">&nbsp;${boardDto.boardFileOriginName}</span>
 		  <br><br>
   		  
 		  <!-- 제목 -->
 		  <input type="text" name="boardName" placeholder="제목을 입력하세요" 
-     			  class="form-control mb-2" maxlength="100">	  
+     			  class="form-control mb-2" maxlength="100"
+     			  value="${requestScope.boardDto.boardName}" readonly>	  
 		  <!-- 내용 (스마트에디터 들어가는 textarea) -->
 		  <div class="post-body">
 		    <textarea name="boardContent" id="boardContent" 
-		    		  placeholder="   무슨 생각을 하고 계신가요?"></textarea>
+		    		  placeholder="   무슨 생각을 하고 계신가요?">${requestScope.boardDto.boardContent}</textarea>
 		  </div>
 		  
 		  <!-- 버튼 -->
@@ -222,6 +227,7 @@
    
    </div>
 </div>
+
 
 
 

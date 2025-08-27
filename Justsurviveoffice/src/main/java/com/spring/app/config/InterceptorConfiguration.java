@@ -45,8 +45,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 		registry.addInterceptor(adminLoginCheckInterceptor)
 		.addPathPatterns("/admin/**")
 		.excludePathPatterns(
-    // Interceptor 가 /css/*, /js/**, /images/** 등의 정적 자원까지 가로채고, 
-    // 로그인하지 않은 사용자는 이런 리소스에 접근할 수 없게 되었기 때문에 반드시 포함.
+				// Interceptor 가 /css/*, /js/**, /images/** 등의 정적 자원까지 가로채고, 
+				// 로그인하지 않은 사용자는 이런 리소스에 접근할 수 없게 되었기 때문에 반드시 포함.
 	        		         "/bootstrap-4.6.2-dist/**",
 	        		         "/js/**",
 	        		         "/css/**",

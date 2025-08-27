@@ -35,6 +35,9 @@ public interface BoardService {
 	// 게시물 삭제하기 == boardDeleted = 0 으로 전환하기 == update
 	public int deleteBoard(Long boardNo);
 	
+	// 게시물 수정하기 
+	public int updateBoard(BoardDTO boardDto);
+	
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	public int updateReadCount(Long boardNo);
 	
@@ -58,12 +61,14 @@ public interface BoardService {
 
     // 좋아요 수 
 	public int getBaordLikeCount(Long boardNo);
-	
-	
 
 	// 게시물 좋아요
 	void boardLike(String fk_id, Long fk_boardNo);
-	
-	
 
+	// 메인페이지 카테고리 자동 불러오기 메서드
+	public List<Map<String, String>> getIndexList(String fk_categoryNo);
+
+	// 페이지네이션 구현
+	public BoardDTO getView(Long boardNo);
+	
 }
