@@ -75,41 +75,6 @@
 	        form.action = "<%= ctxPath%>/comment/writeComment";
 	        form.submit();
 	    });
-		
-		 <!-- 북마크기능 -->
-   		function bookmark(boardNo, fk_id, isBookmarked) {
-		    const url = isBookmarked
-		        ? "<%= ctxPath%>/bookmark/remove"
-		        : "<%= ctxPath%>/bookmark/add";
-	
-		    $.ajax({
-		        url: url,
-		        type: "POST",
-		        data: { fk_boardNo: boardNo },
-		        success: function(json) {
-		            const icon = $(`#bookmark-icon-${boardNo}`);
-	
-		            if (json.success) {
-		            	icon.removeClass("fa-solid fa-regular text-warning");
-		            	if (isBookmarked) {
-		            	    // 해제된 상태로 변경
-		            	    icon.addClass("fa-regular fa-bookmark");
-		            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
-		            	} else {
-		            	    // 추가된 상태로 변경
-		            	    icon.addClass("fa-solid fa-bookmark text-warning");
-		            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
-		            	}
-	
-		            } else {
-		                alert(json.message);
-		            }
-		        },
-		        error: function(request, status, error) {
-		            alert("code:" + request.status + "\nmessage:" + request.responseText);
-		        }
-		    });
-		}// end of function Bookmark(boardNo,fk_id)———————————
 
 		 // 댓글 삭제 
 	    $(document).on("click", ".delete-comment", function () {
@@ -192,6 +157,12 @@
 	        form.submit();
 	    });
 		 
+	    $('#download').click(function(){
+	        const form = document.downloadForm;
+	        form.method = "post";
+	        form.action =  "<%= ctxPath%>/board/download";
+	        form.submit();
+	    });
 		 
 	}); 
 	
@@ -242,7 +213,6 @@
 	            	    icon.addClass("fa-solid fa-bookmark text-warning");
 	            	    icon.attr("onclick", `boardLike(${boardNo}, '${fk_id}', true)`);
 	            	}
-	
 	            } else {
 	                alert(json.message);
 	            }
@@ -252,6 +222,40 @@
 	        }
 	    });
 	}
+	<!-- 북마크기능 -->
+    function bookmark(boardNo, fk_id, isBookmarked) {
+	    const url = isBookmarked
+	        ? "<%= ctxPath%>/bookmark/remove"
+	        : "<%= ctxPath%>/bookmark/add";
+
+	    $.ajax({
+	        url: url,
+	        type: "POST",
+	        data: { fk_boardNo: boardNo },
+	        success: function(json) {
+	            const icon = $(`#bookmark-icon-${boardNo}`);
+
+	            if (json.success) {
+	            	icon.removeClass("fa-solid fa-regular text-warning");
+	            	if (isBookmarked) {
+	            	    // 해제된 상태로 변경
+	            	    icon.addClass("fa-regular fa-bookmark");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', false)`);
+	            	} else {
+	            	    // 추가된 상태로 변경
+	            	    icon.addClass("fa-solid fa-bookmark text-warning");
+	            	    icon.attr("onclick", `bookmark(${boardNo}, '${fk_id}', true)`);
+	            	}
+
+	            } else {
+	                alert(json.message);
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	 }// end of function Bookmark(boardNo,fk_id)———————————
 	
 	function goViewA(){
 		 const frm = document.goViewFrm;
@@ -303,15 +307,24 @@
         <span>${boardDto.formattedDate}</span> |
         <span>조회수: ${boardDto.readCount}</span>
     </div>
-	<!-- 첨부 파일 -->
-	<div style="min-height: 20%; max-width: 100%; overflow: hidden;">
-	    <c:if test="${boardDto.boardFileName ne null}">
-	        ${boardDto.boardFileName}
-	        <img src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}" 
+     <!-- 첨부파일 다운 -->
+     <c:if test="${boardDto.boardFileOriginName ne null}">
+      <div class="d-flex justify-content-end">
+        <div class="file-box border rounded d-flex align-items-center" style="font-size: 9pt;">
+          <form name="downloadForm">
+            <div id="download" class="text-dark">${boardDto.boardFileOriginName} 다운로드</div>
+          	<input type="hidden" name="boardFileName" value="${boardDto.boardFileName}"/>
+          	<input type="hidden" name="boardFileOriginName" value="${boardDto.boardFileOriginName}"/>
+          </form>
+        </div>
+      </div>
+<%--  <div style="min-height: 20%; max-width: 100%; overflow: hidden;">
+        <img src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}" 
 	             class="thumbnail" 
 	             style="max-width: 100%; height: auto; display: block; margin: 0 auto;" />
-	    </c:if>
-	</div>
+	  </div> --%>
+    </c:if>
+    
     <!-- 본문 내용 -->
     <div class="board-content" style="white-space: pre-wrap;"
     	>${boardDto.boardContent}</div>
@@ -371,7 +384,8 @@
             	<span class="comment-date">
 		    	<c:choose>
 		        <c:when test="${not empty comment.updatedAtComment}">
-		            ${fn:replace(comment.updatedAtComment, "T", " ")} <span style="color:gray;">(수정됨)</span>
+		            ${fn:replace(comment.updatedAtComment, "T", " ")} 
+		            <span style="color:gray;">(수정됨)</span>
 		        </c:when>
 		        <c:otherwise>
 		            ${fn:replace(comment.createdAtComment, "T", " ")}
@@ -405,21 +419,22 @@
 	           <button type="submit" class="btn" id="addComment">댓글 등록</button>
 	       </form>
 	    </div>
-	    <!-- 목록 버튼 -->
-	    <div style="margin-top:1px;">
+	    <!-- 목록 버튼, 이전글 다음글 -->
+	    <div style="display:flex; margin-top:3px;"> 
+	    <div class="mr-3">
 	        <a href="<%=ctxPath %>/board/list/${boardDto.fk_categoryNo}" class="btn">목록</a>
 	    </div>
-	    <div class="Boardpagination">
-			<div id="prevBtn" class="prevBtn" onclick="goViewA('${boardDto.preNo}')" style="cursor:pointer;">이전글: ${boardDto.preName}</div>
-			<div id="nextBtn" class="nextBtn" onclick="goViewB('${boardDto.nextNo}')" style="cursor:pointer;">다음글: ${boardDto.nextName}</div>
+	    <div class="Boardpagination mt-1">
+			<div id="nextBtn" class="" onclick="goViewB('${boardDto.nextNo}')" style="cursor:pointer;">다음글: ${boardDto.nextName}</div>
+			<div id="prevBtn" class="" onclick="goViewA('${boardDto.preNo}')" style="cursor:pointer;">이전글: ${boardDto.preName}</div>
+		</div>
+		<form name="goViewFrm">
+	   	 	<input type="hidden" name="boardNo" />
+			<input type="hidden" name="boardWritt" />
+		</form>
+		<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
+		<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
 		</div>
 	</div>
 
-	<form name="goViewFrm">
-	    <input type="hidden" name="boardNo" />
-		<input type="hidden" name="boardWritt" />
-	</form>
-	<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
-	<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
-</div>
 </html>
