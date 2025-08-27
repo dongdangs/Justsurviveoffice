@@ -24,17 +24,6 @@ public class BookmarkService_imple implements BookmarkService {
         return bookMarkDao.removeBookmark(fk_id, fk_boardNo);
     }
 
-    @Override
-    public boolean toggleBookmark(String fk_id, Long fk_boardNo) {
-        int exists = bookMarkDao.checkBookmark(fk_id, fk_boardNo);
-        if (exists > 0) {
-        	bookMarkDao.removeBookmark(fk_id, fk_boardNo);
-            return false;
-        } else {
-        	bookMarkDao.addBookmark(fk_id, fk_boardNo);
-            return true;
-        }
-    }
 
     @Override
     public List<BookMarkDTO> getUserBookmarks(String fk_id) {
