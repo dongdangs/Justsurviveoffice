@@ -43,6 +43,13 @@ public class CommentDAO_imple implements CommentDAO {
         paramMap.put("fk_id", fk_id);
         return sql.update("comments.updateComment", paramMap);
     }
+    
+    // 유저가 하루동안 쓴 댓글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
+	@Override
+	public int getCreatedAtCommentCnt(String id) {
+		int n = sql.selectOne("comments.getCreatedAtCommentCnt", id);
+		return n;
+	}
 
   
 }

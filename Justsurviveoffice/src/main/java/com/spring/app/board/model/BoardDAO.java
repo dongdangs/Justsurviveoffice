@@ -58,8 +58,25 @@ public interface BoardDAO {
 	//게시글 좋아요 취소
 	public int deleteBoardLike(String fk_id, Long fk_boardNo);
 	// 게시물 좋아요
-	public int insertBoardLike(String fk_id, Long fk_boardNo);
+
+	public int insertBoardLike(String fk_id, Long fk_boardNo);;
+	
 	//게시글 좋아요 수
 	public int getLikeCount(Long boardNo);
 
+	
+	// =====================0827 rdg7203 수정 시작 =============================== //
+	// 총 검색된 게시물 건수
+	public int searchListCount(Map<String, String> paraMap);
+	
+	// 자동 검색어 완성
+	public List<String> getSearchWordList(Map<String, String> paraMap);
+	
+	// 보드 테이블에서 제목과 내용 가져오기(DB)
+	public List<BoardDTO> getBoardContents(String category);
+	// =====================0827 rdg7203 수정 끝 =============================== //
+
+//	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
+//	public int getCreatedAtBoardCnt(String id);
+	
 }

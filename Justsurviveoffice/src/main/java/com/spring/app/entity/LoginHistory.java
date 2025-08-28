@@ -29,7 +29,6 @@ import lombok.ToString;
 @Builder
 @ToString
 public class LoginHistory {
-	/* 250818 GIT 김예준 오후 14:00 git 업데이트 전 시작 v1*/
 	@Id
 	@SequenceGenerator(
 	  name = "SEQ_LOGIN_HISTORY_GENERATOR",
@@ -48,7 +47,6 @@ public class LoginHistory {
 	@Column(nullable = false)
 	private String ip;
 
-	/* 250818 GIT 김예준 오후 14:00 git 업데이트 전 중간 v1*/
 	
 	@ManyToOne 
 	@JoinColumn(name = "FK_ID", referencedColumnName = "id", nullable = true)
@@ -62,6 +60,5 @@ public class LoginHistory {
 							  .users(this.users)
 							  .build();
 	}
-	/* 250818 GIT 김예준 오후 14:00 git 업데이트 전 끝 v1*/
 	
 }

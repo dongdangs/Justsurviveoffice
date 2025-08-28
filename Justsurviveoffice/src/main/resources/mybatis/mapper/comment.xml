@@ -54,6 +54,9 @@
         and fk_id = #{fk_id}
     </update>
 
-   
+   <select id="getCreatedAtCommentCnt" parameterType="String" resultType="Int">
+  		select count(*) from comments
+		where fk_id = #{id} and (sysdate - createdAtComment) &lt;= 1
+  	</select>
 
 </mapper>

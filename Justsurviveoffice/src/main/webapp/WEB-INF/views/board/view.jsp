@@ -45,8 +45,8 @@
 </style>
 
 <script type="text/javascript">
+
 	$(function() {
-		
 		const nextVals = ${boardDto.nextNo};
 		if(nextVals == 0) {
 			$('div#nextBtn').hide();
@@ -63,7 +63,6 @@
 	        	alert("댓글내용을 입력해주세요.");
 	        	return;
 	        }
-	        
 	        const form = document.commentform;
 	        form.method = "post";
 	        form.action = "<%= ctxPath%>/comment/writeComment";
@@ -155,7 +154,6 @@
 		 
 	}); 
 	
-	
 	// 글 삭제
 	function del() {
 		if(!confirm("정말로 삭제하시겠습니까?")) {
@@ -224,17 +222,19 @@
 	        type: "POST",
 	        data: { fk_boardNo: boardNo },
 	        success: function(json) {
-	            const icon = $('#bookmark-icon-'+boardNo);
+	            const icon = $('#bookmark-icon-'+boardNo); // 북마크 아이콘 지정
 	            if (json.success) {
 	            	icon.removeClass("fa-solid fa-bookmark text-warning fa-regular");
 	            	if (isBookmarked) {
 	            	    // 해제된 상태로 변경
 	            	    icon.addClass("fa-regular fa-bookmark");
 	            	    icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', false)");
+	            		$('input[name="bookmarked"]').value = false;
 	            	} else {
 	            	    // 추가된 상태로 변경
 	            	    icon.addClass("fa-solid fa-bookmark text-warning");
 	            	    icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', true)");
+	            		$('input[name="bookmarked"]').value = true;
 	            	}
 	            } else {
 	                alert(json.message);
@@ -243,6 +243,9 @@
 	        },
 	        error: function(request, status, error) {
 	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	            alert("뒤로가기 오류입니다.");
+	            window.location.href = "<%=ctxPath%>/index";
+	            // 일단 임시로 오류시 main으로 전환시키기
 	        }
 	    });
 	 }// end of function Bookmark(boardNo,fk_id)———————————
@@ -356,6 +359,7 @@
 		        	<input name="fk_categoryNo" style="display: none;" value="${boardDto.fk_categoryNo}"/>
 		        	<input type="hidden" name="boardNo" value="${boardDto.boardNo}">
 	           		<input type="hidden" name="fk_id" value="${boardDto.fk_id}">
+	           		<input type="hidden" name="bookmarked" value="${boardDto.bookmarked}"/>
 		            <button class="btn" onclick="del()" style="background-color: white;"
 		              >글 삭제</button>
 		            <button class="btn" onclick="edit()" style="background-color: white;"
@@ -422,8 +426,8 @@
    	 	<input type="hidden" name="boardNo" />
 		<input type="hidden" name="boardWritt" />
 	</form>
-	<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
-	<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
+	<input type="hidden" id="preNo" name="preNo"  value="${boardDto.preNo}" />
+	<input type="hidden" id="NextNo" name="nextNo" value="${boardDto.nextNo}" />
 	</div>
 </div>
 

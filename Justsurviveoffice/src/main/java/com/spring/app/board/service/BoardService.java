@@ -2,6 +2,7 @@ package com.spring.app.board.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.cache.annotation.Cacheable;
 
@@ -12,15 +13,15 @@ public interface BoardService {
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Hot 게시글 전체 리스트 (조회수 많은 순)
-	List<BoardDTO> hotAll();
+	public List<BoardDTO> hotAll();
 		
 	// 인기 게시글 리스트 (조회수 많은 순)
 	@Cacheable("hotReadList")
-	List<BoardDTO> getTopBoardsByViewCount();
+	public List<BoardDTO> getTopBoardsByViewCount();
 	
 	// 댓글 많은 게시글 리스트
 	@Cacheable("hotCommentList")
-	List<BoardDTO> getTopBoardsByCommentCount();
+	public List<BoardDTO> getTopBoardsByCommentCount();
 	//////////////////////////////////////////////////////////////////////////
 
 	// 게시글 업로드 메소드
@@ -43,10 +44,10 @@ public interface BoardService {
 	
     
     // 내가 작성한 글 목록
-    List<BoardDTO> getMyBoards(String fkId);
+	public List<BoardDTO> getMyBoards(String fkId);
 
     // 북마크한 게시글 목록
-    List<BoardDTO> getBookmarksById(String fkId);
+    public List<BoardDTO> getBookmarksById(String fkId);
 
 	public List<CommentDTO> getCommentList(Long boardNo);
 
@@ -68,5 +69,16 @@ public interface BoardService {
 	// 페이지네이션 구현
 	public BoardDTO getView(Long boardNo);
 
+	// 총 검색된 게시물 건수
+	public int searchListCount(Map<String, String> paraMap);
 	
+	// 자동 검색어 완성시키기
+	public List<Map<String, String>> getSearchWordList(Map<String, String> paraMap);
+	
+	// == 키워드 메소드 작성 해봄 == // 
+	public List<Entry<String, Integer>> getKeyWord(String category);
+
+//	
+//	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
+//	public int getCreatedAtBoardCnt(String id);
 }
