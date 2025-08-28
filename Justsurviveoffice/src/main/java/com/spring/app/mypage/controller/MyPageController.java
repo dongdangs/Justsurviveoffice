@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.users.domain.BookMarkDTO;
+import com.spring.app.admin.service.AdminService;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -28,6 +31,9 @@ public class MyPageController {
 
     private final UsersService usersService;
     private final BoardService boardService;
+    
+    
+    private final AdminService adminService;
 
     // 내정보 화면
     @GetMapping("info")
@@ -98,4 +104,27 @@ public class MyPageController {
         boolean duplicated = usersService.isEmailDuplicated(email);
         return Map.of("duplicated", duplicated);
     }
+    
+    
+    // 마이페이지 내 통계로 이동
+    @GetMapping("chart")
+    public String chartForm() {
+        return "users/mypage/chart";
+    }
+    
+	
+	// 카테고리별 게시물 통계
+    @PostMapping("chart/categoryByBoard")
+    @ResponseBody 
+    public List<CategoryDTO> categoryByBoard() {
+    	List<CategoryDTO> boardPercentageList = usersService.categoryByBoard(); 
+    	return boardPercentageList;
+    }
+	 
+    
+    
+    
+	   
+    
+    
 }

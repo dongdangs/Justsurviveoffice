@@ -5,7 +5,7 @@ spring: # 주의할 점은 내용작성시 들여쓰기 내어쓰기시 공백�
   mail:
     host: smtp.gmail.com
     port: 9089
-    username: jangym@gmail.com
+    username: jangym0321@gmail.com
     password: jym010321@
     properties:
       mail:

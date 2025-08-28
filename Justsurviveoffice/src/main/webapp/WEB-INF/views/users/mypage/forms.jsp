@@ -52,36 +52,36 @@ body {
 
 <script type="text/javascript">
 $(function(){
-   
+	
 
     // 회원탈퇴
     $("#btnQuit").on("click", function(e) {
         e.preventDefault();
 
-       if(confirm(`정말로 탈퇴하시겠습니까?`)) {
-          
-          $.ajax({
-             url:"<%= ctxPath%>/mypage/quit",
-             type:"post",
-             data:{id:"${sessionScope.loginUser.id}" },
-             dataType:"json",
-             success:function(json){
-                console.log(JSON.stringify(json));
-                // {"n":1}
-                
-                if(json.n == 1) {
-                   alert(`탈퇴되었습니다.`);
-                   location.href="<%= ctxPath%>/index";
-                } else {
-                   alert(`탈퇴실패`);
-                }
-             },
-             error: function(request, status, error){
-                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-             }
-          });
-       }
-       
+    	if(confirm(`정말로 탈퇴하시겠습니까?`)) {
+ 		   
+ 		   $.ajax({
+ 			   url:"<%= ctxPath%>/mypage/quit",
+ 			   type:"post",
+ 			   data:{id:"${sessionScope.loginUser.id}" },
+ 			   dataType:"json",
+ 			   success:function(json){
+ 				   console.log(JSON.stringify(json));
+ 				   // {"n":1}
+ 				   
+ 				   if(json.n == 1) {
+ 					   alert(`탈퇴되었습니다.`);
+ 					   location.href="<%= ctxPath%>/index";
+ 				   } else {
+ 					   alert(`탈퇴실패`);
+ 				   }
+ 			   },
+ 			   error: function(request, status, error){
+ 				   alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+ 			   }
+ 		   });
+ 	   }
+ 	   
     }// end of 회원탈퇴 --------------------------
     
 });
@@ -122,50 +122,34 @@ $(function(){
                 <hr>
 
                <c:choose>
-           <c:when test="${empty myBoards}">
-             <div class="alert alert-secondary text-center">
-               작성한 글이 없습니다.
-             </div>
-           </c:when>
-           <c:otherwise>
-             <table class="table table-hover">
-               <thead class="thead-light">
-                 <tr style="text-align: center;">
-                   <th>번호</th>
-                   <th>제목</th>
-                   <th>작성일</th>
-                   <th>조회수</th>
-                   <th>삭제여부</th>
-                 </tr>
-               </thead>
-               <tbody>
-                 <c:forEach var="board" items="${myBoards}" varStatus="st">
-                   <form id="viewForm${board.boardNo}" 
-					      action="<%= ctxPath %>/board/view" 
-					      method="post" 
-					      style="display:none;">
-					    <input type="hidden" name="category" value="${board.fk_categoryNo}">
-					    <input type="hidden" name="boardNo" value="${board.boardNo}">
-				   </form>	
-                 
-                   <tr style="text-align: center;">
-                     <td>${st.count}</td>
-                     <td>
-			            <a href="javascript:void(0);" 
-				           onclick="document.getElementById('viewForm${board.boardNo}').submit();" 
-				           style="color: #000;">
-				            ${board.boardName}
-				        </a>
-			         </td>
-                     <td>${fn:substring(board.createdAtBoard, 0, 10)}</td>
-                     <td>${board.readCount}</td>
-                     <td>${board.boardDeleted}</td>
-                   </tr>
-                 </c:forEach>
-               </tbody>
-             </table>
-           </c:otherwise>
-         </c:choose>
+			  <c:when test="${empty myBoards}">
+			    <div class="alert alert-secondary text-center">
+			      작성한 글이 없습니다.
+			    </div>
+			  </c:when>
+			  <c:otherwise>
+			    <table class="table table-hover">
+			      <thead class="thead-light">
+			        <tr>
+			          <th>번호</th>
+			          <th>제목</th>
+			          <th>작성일</th>
+			          <th>조회수</th>
+			        </tr>
+			      </thead>
+			      <tbody>
+			        <c:forEach var="board" items="${myBoards}" varStatus="st">
+			          <tr>
+			            <td>${st.count}</td>
+			            <td>${board.boardName}</td>
+			            <td>${fn:substring(board.createdAtBoard, 0, 10)}</td>
+			            <td>${board.readCount}</td>
+			          </tr>
+			        </c:forEach>
+			      </tbody>
+			    </table>
+			  </c:otherwise>
+			</c:choose>
 
             </div>
         </div>

@@ -1,7 +1,9 @@
 package com.spring.app.users.service;
 
+import java.util.List;
 import java.util.Map;
 
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.entity.Users;
 import com.spring.app.users.domain.LoginHistoryDTO;
 import com.spring.app.users.domain.UsersDTO;
@@ -49,6 +51,9 @@ public interface UsersService {
 	// 저장된 id에게 저장된 point만큼 point를 증가시키는 메소드.
 	void getPoint(Map<String, String> paraMap); 
 	// 게시물 업로드시, 1000p, 좋아요 누를시 500p, 댓글 500p
+
+	// 카테고리별 게시물 통계
+	List<CategoryDTO> categoryByBoard();
 
 
 }

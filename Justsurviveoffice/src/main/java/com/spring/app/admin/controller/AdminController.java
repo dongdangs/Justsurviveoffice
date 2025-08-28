@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spring.app.common.MyUtil;
 import com.spring.app.entity.Users;
 import com.spring.app.admin.service.AdminService;
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.users.domain.UsersDTO;
 
 import jakarta.servlet.http.Cookie;
@@ -175,8 +176,8 @@ public class AdminController {
    
    @GetMapping("chart/categoryChart")
    @ResponseBody
-   public List<Map<String, String>> categoryChart() {
-	   List<Map<String, String>> categoryChart = adminService.categoryChart();
+   public List<CategoryDTO> categoryChart() {
+	   List<CategoryDTO> categoryChart = adminService.categoryChart();
 	   return categoryChart;
    }
    

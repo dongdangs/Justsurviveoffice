@@ -15,15 +15,15 @@ import com.spring.app.entity.Users;
 public interface AdminRepository extends JpaRepository<Users, String> {
 
 	// 카테고리별 인원 통계
-	@Query(value = "SELECT COALESCE(c.categoryNo, 0) AS categoryNo, " +
-            "       COALESCE(c.categoryName, '미분류') AS categoryName, " +
-            "       COUNT(*) AS cnt, " +
-            "       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM users), 2) AS percentage " +
-            "FROM users u " +
-            "LEFT JOIN category c ON u.fk_categoryNo = c.categoryNo " +
-            "GROUP BY c.categoryNo, c.categoryname",
-            nativeQuery = true)
-	List<CategoryDTO> getCategoryChart();
+	@Query(
+	        value = "select COALESCE(c.categoryname, '미분류') AS categoryName, \n"
+	        		+ "       count(*) as cnt,\n"
+	        		+ "       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM users), 2) AS percentage\n"
+	        		+ "from users U LEFT JOIN category C\n"
+	        		+ "ON U.fk_categoryNo = C.categoryNo\n"
+	        		+ "group by categoryNo, categoryName",
+	        nativeQuery = true)
+	List<Object[]> getCategoryChart();
 	
 }
 

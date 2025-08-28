@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.spring.app.entity.Users;
 
@@ -37,6 +38,15 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 
 	// 비밀번호 찾기
 	Users findByIdAndEmail(String id, String email);
+
+	// 카테고리별 게시물 수 통계
+	@Query(value = "select categoryName, categoryImagePath, count(*) as cnt, \n"
+				 + "       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM board), 2) AS percentage \n"
+				 + "from board b join category c\n"
+				 + "on b.fk_categoryNo = c.categoryNo\n"
+				 + "group by categoryName, categoryImagePath",
+		   nativeQuery = true)
+	List<Object[]> categoryByBoard();
 
 	
 	

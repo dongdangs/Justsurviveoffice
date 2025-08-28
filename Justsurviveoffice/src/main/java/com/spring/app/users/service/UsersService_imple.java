@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -11,6 +13,7 @@ import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.common.AES256;
 
 import com.spring.app.common.SecretMyKey;
@@ -31,6 +34,7 @@ public class UsersService_imple implements UsersService {
 
    private final UsersRepository usersRepository;
    private final HistoryRepository historyRepository;
+   
 
    private AES256 aes;
 
@@ -270,6 +274,26 @@ public class UsersService_imple implements UsersService {
 			usersRepository.save(users);
 		}
 		else System.out.println("유저를 찾지못함. 포인트업로드 오류!");
+	}
+
+
+	// 카테고리별 게시물 통계
+	@Override
+	public List<CategoryDTO> categoryByBoard() {
+		List<Object[]> boardPercentageList = usersRepository.categoryByBoard();
+   		
+   		List<CategoryDTO> result = new ArrayList<>();
+   		for(Object[] obj : boardPercentageList) {
+   			CategoryDTO categoryDto = CategoryDTO.builder()
+   					.categoryName(String.valueOf(obj[0]))
+   					.categoryImagePath(String.valueOf(obj[1]))
+   					.cnt(((Number) obj[2]).longValue())
+   					.percentage(((Number) obj[3]).doubleValue())
+   					.build();
+   			result.add(categoryDto);
+   		}
+   		
+   		return result;
 	}
 
 
