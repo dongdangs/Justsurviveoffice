@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("categoryTest/")
+@RequestMapping("categoryTest/rdg/")
 public class SurveyController {
 	
 	private final SurveyService surveyService;

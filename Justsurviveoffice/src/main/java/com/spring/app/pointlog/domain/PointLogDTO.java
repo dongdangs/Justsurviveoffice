@@ -1,4 +1,4 @@
-package com.spring.app.users.domain;
+package com.spring.app.pointlog.domain;
 
 import java.time.LocalDateTime;
 
@@ -15,12 +15,13 @@ import lombok.Setter;
 @AllArgsConstructor   // 모든 필드 값을 파라미터로 받는 생성자를 만들어주는 것
 @NoArgsConstructor    // 파라미터가 없는 기본생성자를 만들어주는 것
 @Builder              // 생성자 대신, 필요한 값만 선택해서 체이닝 방식으로 객체를 만들 수 있게 해주는 것.
-public class LoginHistoryDTO {
+public class PointLogDTO {
 	
-	private Long loginHistoryNo;
-	private LocalDateTime lastLogin;
-	private String ip;
+	private Long pointLogNo;
+	private String fk_id;
+	private int points;
+	private String pointType;
+	private LocalDateTime createdAtLog;
 	
 	private Users users;
-	
 }

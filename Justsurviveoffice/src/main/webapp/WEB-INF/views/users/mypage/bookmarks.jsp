@@ -200,7 +200,7 @@ $(function () {
                 </div>
                 <hr>
                 <div class="sidebar-menu text-left">
-               	    <a href="<%=ctxPath%>/login/logout">로그아웃</a>
+               	    <a href="<%=ctxPath%>/users/logout">로그아웃</a>
                     <a href="#" id="btnQuit">탈퇴하기</a>
                     <a href="javascript:history.back()">이전 페이지</a>
                 </div>

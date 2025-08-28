@@ -90,6 +90,7 @@
            }
            reader.readAsDataURL(file);
        } else {
+    	   $('#oldFileOriginName').html("");
            preview.style.display = "none";
            preview.src = "";
        }
@@ -205,8 +206,8 @@
 	      <!-- 라벨을 버튼처럼 --><br>
 		  <label for="fileUpload" class="file-label" >첨부 파일</label>
 		  <span id="oldFileOriginName">&nbsp;${boardDto.boardFileOriginName}</span>
+		  <input name="oldBoardFileName" type="hidden" value="${boardDto.boardFileName}"/> 
 		  <br><br>
-  		  
 		  <!-- 제목 -->
 		  <input type="text" name="boardName" placeholder="제목을 입력하세요" 
      			  class="form-control mb-2" maxlength="100"
