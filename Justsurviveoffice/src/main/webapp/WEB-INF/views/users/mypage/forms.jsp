@@ -115,6 +115,7 @@ $(function(){
                     <li class="nav-item"><a class="nav-link" href="<%= ctxPath%>/mypage/info">내 정보</a></li>
                     <li class="nav-item"><a class="nav-link active" href="<%= ctxPath%>/mypage/forms">내가 쓴 글</a></li>
                     <li class="nav-item"><a class="nav-link" href="<%= ctxPath%>/mypage/bookmarks">내 북마크</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<%= ctxPath%>/mypage/chart">통계</a></li>
                 </ul>
 
                 <!-- 작성한 글 목록 -->

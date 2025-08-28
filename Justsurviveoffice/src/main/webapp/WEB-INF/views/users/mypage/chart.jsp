@@ -29,62 +29,35 @@
 <script src="<%= ctxPath%>/Highcharts-10.3.1/code/modules/drilldown.js"></script>
 
 
-<style>
-    body {
-        background: #f7f7fb;
-    }
-    .sidebar {
-        background: #fff;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 8px 24px rgba(0,0,0,.06);
-    }
-    .sidebar img {
-        max-width: 100%;
-        border-radius: 10px;
-    }
-    .sidebar-menu a {
-        display: block;
-        padding: 8px 0;
-        color: #333;
-        text-decoration: none;
-    }
-    .sidebar-menu a:hover {
-        color: #6c63ff;
-    }
-    .content {
-        background: #fff;
-        border-radius: 12px;
-        padding: 24px;
-        box-shadow: 0 8px 24px rgba(0,0,0,.06);
-    }
-    
-    .row{
-    	display:flex;
-    	align-items: stretch;
-   	}
-   	.sidebar,
-   	.content {
-   		height : 100% ;
-   	}
+<style type="text/css">
+	
+	/* 사이드바 */
+	body { background: #f7f7fb; font-family: 'Noto Sans KR', sans-serif; }
+	.sidebar { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+	.sidebar img { max-width: 100%; border-radius: 10px; margin-bottom: 10px; }
+	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none; font-weight: 500; 
+					  transition: all 0.2s ease-in-out; }
+	.sidebar-menu a:hover { color: #6c63ff; padding-left: 5px; }
+	.content { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
    	
-   	.highcharts-figure,
-   .highcharts-data-table table { min-width:320px; max-width:800px; margin:1em auto; }
-   div#chart_container { height: 400px; }
-   .highcharts-data-table table {
-       font-family: Verdana, sans-serif; border-collapse: collapse; border: 1px solid #ebebeb;
-       margin: 10px auto; text-align: center; width: 100%; max-width: 500px;
-   }
-   .highcharts-data-table caption { padding: 1em 0; font-size: 1.2em; color: #555; }
-   .highcharts-data-table th { font-weight: 600; padding: 0.5em; }
-   .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption { padding: 0.5em; }
-   .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) { background: #f8f8f8; }
-   .highcharts-data-table tr:hover { background: #f1f7ff; }
-   input[type="number"] { min-width: 50px; }
+   	/* 차트 */
+   	.highcharts-figure, .highcharts-data-table table { min-width:320px; max-width:800px; margin:1em auto; }
+   	div#chart_container { height: 400px; }
+   	.highcharts-data-table table {
+       	font-family: Verdana, sans-serif; border-collapse: collapse; border: 1px solid #ebebeb;
+       	margin: 10px auto; text-align: center; width: 100%; max-width: 500px;
+   	}
+   	.highcharts-data-table caption { padding: 1em 0; font-size: 1.2em; color: #555; }
+   	.highcharts-data-table th { font-weight: 600; padding: 0.5em; }
+   	.highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption { padding: 0.5em; }
+   	.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) { background: #f8f8f8; }
+   	.highcharts-data-table tr:hover { background: #f1f7ff; }
+   	input[type="number"] { min-width: 50px; }
 
-   div#table_container table { width:100% }
-   div#table_container th, div#table_container td { border: 1px solid gray; text-align:center; }
-   div#table_container th { background-color:#595959; color: white; }
+   	div#table_container table { width:100% }
+   	div#table_container th, div#table_container td { border: 1px solid gray; text-align:center; }
+   	div#table_container th { background-color:#595959; color: white; }
+   	
 </style>
 
 <script type="text/javascript">
@@ -104,7 +77,7 @@
 	function func_choice(searchTypeVal){
 		
 		switch (searchTypeVal) {
-			case "category":
+			case "category": // 카테고리별 게시글 수
 				
 				$.ajax({
 	                url: "<%= ctxPath%>/mypage/chart/categoryByBoard",
@@ -113,7 +86,7 @@
 	                success: function (json) {
 	                    $("div#chart_container").empty();
 	                    $("div#table_container").empty();
-	
+	                    
 	              let resultArr = [];
 	              
 	              for(let i=0; i<json.length; i++) {
@@ -125,15 +98,18 @@
 	                            y: Number(json[i].percentage),
 	                            sliced: true,
 	                            selected: true,
+	                            image: "<%= ctxPath%>/images/" + json[i].categoryImagePath
 	                            };
+	                    console.log("이미지 경로:", obj.image);
 	                 }
 	                 else {
 	                    obj = {name: json[i].categoryName,
-	                            y: Number(json[i].percentage)};
+	                            y: Number(json[i].percentage),
+	                            image: "<%= ctxPath%>/images/" + json[i].categoryImagePath};
 	                 }
 	                 
-	                 resultArr.push(obj); // 배열속에 객체를 넣기
-	                 
+	                 resultArr.push(obj);
+	                 	                 
 	              } // end of for
 	              
 	              // ====================================================== //
@@ -148,7 +124,16 @@
 	                      text: '카테고리별 게시글 통계'
 	                  },
 	                  tooltip: {
-	                      pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+	                	  useHTML: true,
+	                      formatter: function () {
+	                          return `
+	                              <div style="text-align:center;">
+	                                  <img src="\${this.point.image}" width="50" height="50"
+	                                       style="display:block; margin:0 auto 5px;" />
+	                                  <b>\${this.point.name}</b>: \${this.percentage.toFixed(2)}%
+	                              </div>
+	                          `;
+	                      }
 	                  },
 	                  accessibility: {
 	                      point: {
@@ -160,8 +145,16 @@
 	                          allowPointSelect: true,
 	                          cursor: 'pointer',
 	                          dataLabels: {
+	                              useHTML: true,
 	                              enabled: true,
-	                              format: '<b>{point.name}</b>: {point.percentage:.2f} %'
+	                              distance: 20,
+	                              formatter: function () {
+	                                  return `
+	                                      <img src="\${this.point.image}" width="50" height="50"
+	                                           style="vertical-align:middle; margin-right:5px;" />
+	                                      <b>\${this.point.name}</b> \${this.percentage.toFixed(2)}%
+	                                  `;
+	                              }
 	                          }
 	                      }
 	                  },
@@ -235,18 +228,10 @@
 
                 	<!-- 탭 메뉴 -->
                 	<ul class="nav nav-tabs mb-3">
-                    	<li class="nav-item">
-                        	<a class="nav-link" href="<%= ctxPath%>/mypage/info">내 정보</a>
-                    	</li>
-                    	<li class="nav-item">
-                        	<a class="nav-link" href="<%= ctxPath%>/mypage/forms">내가 쓴 글</a>
-                    	</li>
-	                    <li class="nav-item">
-	                        <a class="nav-link" href="<%= ctxPath%>/mypage/bookmarks">내 북마크</a>
-	                    </li>
-	                    <li class="nav-item">
-	                        <a class="nav-link active" href="<%= ctxPath%>/mypage/chart">통계</a>
-	                    </li>
+                    	<li class="nav-item"><a class="nav-link" href="<%= ctxPath%>/mypage/info">내 정보</a></li>
+	                    <li class="nav-item"><a class="nav-link" href="<%= ctxPath%>/mypage/forms">내가 쓴 글</a></li>
+	                    <li class="nav-item"><a class="nav-link" href="<%= ctxPath%>/mypage/bookmarks">내 북마크</a></li>
+	                    <li class="nav-item"><a class="nav-link active" href="<%= ctxPath%>/mypage/chart">통계</a></li>
                 	</ul>
                 	
                 	<h2>대사살 통계정보(차트)</h2>
