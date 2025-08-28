@@ -1,11 +1,38 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<%-- 250828 웹 채팅시 IP필요해서 java.net 가져옴!!!!!!!!!!!!  --%>
+<%@ page import="java.net.InetAddress" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%
     String ctxPath = request.getContextPath();
 	// /justsurviveoffice
+%>
+
+<% 
+	// === (#웹채팅관련2) === //	
+		
+	// === 서버 IP 주소 알아오기(사용중인 IP주소가 유동IP 이라면 IP주소를 알아와야 한다.) === 
+    InetAddress inet = InetAddress.getLocalHost();
+    String serverIP = inet.getHostAddress();
+    
+ 	// System.out.println("serverIP : " + serverIP);
+    // serverIP : 192.168.0.219
+    
+    // String serverIP = "192.168.10.213";
+ 	// String serverIP = "43.203.242.79"; 
+    // 자신의 EC2 퍼블릭 IPv4 주소임. // 아마존(AWS)에 배포를 하기 위한 것임. 
+    // 만약에 사용중인 IP주소가 고정IP 이라면 IP주소를 직접입력해주면 된다. 
+    
+    // === 서버 포트번호 알아오기 === //
+    int portnumber = request.getServerPort();
+ 	System.out.println("portnumber : " + portnumber);
+ 	// portnumber : 9089
+ 	
+ 	String serverName = "http://"+serverIP+":"+portnumber;
+ 	System.out.println("serverName : " + serverName);
+ 	// serverName : http://192.168.10.213:9089
 %>
 
 <style>
@@ -21,15 +48,7 @@
 }
 </style>
 
-<script>
-  /* const menuToggle = document.getElementById('menuToggle');
-  const mainNav = document.getElementById('mainNav');
-
-  menuToggle.addEventListener('click', () => {
-    const isShown = mainNav.classList.toggle('show');
-    menuToggle.setAttribute('aria-expanded', isShown);
-  }); */
-  
+<script>  
   // === 전체 글목록 검색하기 요청 === //
   function searchBoardAll() {
 	   const form = document.searchAllForm;
@@ -50,15 +69,9 @@
   <nav id="mainNav" class="hidden">
     <ul class="mainUl">
       <li><a href="<%=ctxPath%>/menu1">전체게시판</a></li>
-      <li>
-	<%-- 	 <div class="input-group">
-			<form name="searchAllForm" id="searchAllForm" method="get" action="<%=ctxPath%>/board/list" style="display:flex;">
-			    <input name="searchType" type="hidden" value="boardName_boardContent"/>
-			    <input type="text" name="searchWord" id="searchWord" placeholder="검색어를 입력하세요" />
-			    <i class="btn fas fa-search" onclick="document.searchAllForm.submit()" id="searchIco"></i>
-			</form>
-		 </div> --%>
-	  </li>
+      <c:if test="${not empty sessionScope.loginUser}">
+      	<li><a href="<%=ctxPath%>/chatting/multichat">대화방</a></li>
+      </c:if>
       <c:if test="${empty sessionScope.loginUser}">
         <li><a href="<%=ctxPath%>/users/loginForm">로그인</a></li>
       </c:if>
