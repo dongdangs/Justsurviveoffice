@@ -17,13 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
+import com.spring.app.admin.controller.AdminController;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
 import com.spring.app.model.HistoryRepository;
+import com.spring.app.pointlog.model.PointLogDAO;
 import com.spring.app.users.domain.CommentDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
@@ -39,6 +40,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardController {
 
+    private final AdminController adminController;
+
     private final Datasource_final_orauser_Configuration datasource_final_orauser_Configuration;
 
     private final HistoryRepository historyRepository;
@@ -47,6 +50,7 @@ public class BoardController {
 	private final UsersService usersService;
 	private final BoardService boardService;
 	private final BookmarkService bookmarkService;
+	private final PointLogDAO pointLogDao;
 	
 	private final FileManager fileManager;
 	
@@ -124,7 +128,7 @@ public class BoardController {
 		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
 		
 		MultipartFile attach = boardDto.getAttach();
-	// 1번. 일반 파일 업로드 해보기.	
+	// 1번. 일반 파일 (첨부파일로) 업로드 해보기.	
 /*  	주요 메소드:	getOriginalFilename() → 원본 파일명
 					getSize() → 파일 크기
 					getBytes() → 파일 내용을 바이트 배열로
@@ -168,21 +172,23 @@ public class BoardController {
 			modelview.addObject("loc", "javascript:history.back()");
 			modelview.setViewName("msg");
 		}
-		try {
+		int cnt = pointLogDao.getCreatedAtLogBoardCnt(loginUser.getId());
+		
+		if(cnt < 3) { // 유저가 하루동안 쓴 글이 3개 이하면 pointUp
 			paraMap.put("id", boardDto.getFk_id());
 			paraMap.put("point", "1000");
 			
 			// paraMap에 저장한 해쉬맵정보는, users용이기 때문에... 레포지토리로 보내야함.
-			usersService.getPoint(paraMap); // 게시물 업로드는 1000 point
+			usersService.getPoint(paraMap); // 1000point만큼 user 업데이트!
+			pointLogDao.insertPointLogBoard(paraMap); // log 도 남기기!
 			
+			// DB에 각각 update, insert가 끝났다면, 세션까지 포인트 바꿔주기!
 			loginUser.setPoint(loginUser.getPoint()+1000);
 			session.setAttribute("loginUser", loginUser);
 			
 			System.out.println(loginUser.getPoint());
-		} catch (Exception e) {
-			System.err.println("point업데이트 오류가 발생하였습니다");
-		}
-		
+		} 
+		else System.out.println(cnt+"만큼 작성하셨네요! 포인트 stop");
 		return modelview;
 	}
 	
@@ -355,11 +361,9 @@ public class BoardController {
 					response.addCookie(setCookieLimit);
 					// jakarta.servlet.http.Cookie@5f3fcbef{-1173940223_108=yes,{Max-Age=60, Path=/}}
 				}
-				
 			} // 로그인된 유저가 자신의 게시물에 들어갔다면 if문 생략
 			
-			
-			/* null 일시 0값 부여서해서 view.jsp 로 0 값을 보냄 (김예준)*/
+		/* null 일시 0값 부여서해서 view.jsp 로 0 값을 보냄 (김예준)*/
 			if(boardDto.getPreNo() == null ) {
 				boardDto.setPreNo("0");
 			}
@@ -369,8 +373,8 @@ public class BoardController {
 			
 			modelview.addObject("hotReadList", boardService.getTopBoardsByViewCount());
 	        modelview.addObject("hotCommentList", boardService.getTopBoardsByCommentCount());
-
-			if(loginUser != null) {
+	    // 로그인된 유저가 북마크 혹은 좋아요를 눌렀을 경우, boardDto 객체에 같이 저장해주어야함!
+			if(loginUser != null) { 
 				boardDto.setBookmarked(bookmarkService.isBookmarked(
 						loginUser.getId(), 
 						boardDto.getBoardNo())); 
@@ -416,6 +420,10 @@ public class BoardController {
 				modelview.addObject("message", "글이 삭제되었습니다.");
 				modelview.addObject("loc", "list/"+boardDto.getFk_categoryNo());
 				modelview.setViewName("msg");
+			// 선택된 게시물(1개)이 삭제되었고, 해당 게시물이 북마크가 되어있는 경우라면 삭제!
+				if(boardDto.getBookmarked()) {
+					bookmarkService.removeBookmark(boardDto.getFk_id(), boardDto.getBoardNo());
+				}else System.out.println("북마크가 없다고?!");
 			}
 			else {
 				modelview.addObject("message", "이미 삭제된 게시물입니다.");
@@ -427,7 +435,6 @@ public class BoardController {
 			modelview.addObject("message", "접근 불가능한 경로입니다.");
 			modelview.addObject("loc", "javascript:history.back()");
 			modelview.setViewName("msg");
-
 		}
 		return modelview;
 	}
@@ -467,27 +474,34 @@ public class BoardController {
 								  Map<String, String> paraMap,
 								  BoardDTO boardDto,
 								  HttpServletRequest request,
-								  HttpSession session) {
+								  HttpSession session,
+								  @RequestParam(name="oldBoardFileName", defaultValue = "") 
+										String oldBoardFileName) {
+		
 		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
 		
 		MultipartFile attach = boardDto.getAttach();
-	// 1번. 일반 파일 업로드 해보기.	
-/*  	주요 메소드:	getOriginalFilename() → 원본 파일명
-					getSize() → 파일 크기
-					getBytes() → 파일 내용을 바이트 배열로
-					transferTo(File dest) → 실제 서버에 저장 */
-		// 파일이 있는 경우 해당 파일을 저장해줄 부분.
+
+		session = request.getSession(); // WAS(톰캣)의 절대경로 알아오기.
+		String root = session.getServletContext().getRealPath("/");
+		String path = root+"resources"+File.separator+"files";
+///Users/dong/git/Justsurviveoffice/Justsurviveoffice/src/main/webapp/resources/files		
+		
+		if(!oldBoardFileName.isEmpty()) { // 이전 파일이 있는 경우 삭제.
+			try { // 이전 파일 삭제해주기!
+				fileManager.doFileDelete(oldBoardFileName, path);
+				boardDto.setBoardFileName(null);
+				boardDto.setBoardFileOriginName(null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}  // 새로운 파일이 있다면 저장.
 		if(attach != null && !attach.isEmpty()) { 
-			session = request.getSession(); // WAS(톰캣)의 절대경로 알아오기.
-			String root = session.getServletContext().getRealPath("/");
-			String path = root+"resources"+File.separator+"files";
-//				System.out.println(path);
-// /Users/dong/git/Justsurviveoffice/Justsurviveoffice/src/main/webapp/resources/files
 			String boardFileName = ""; //WAS(톰캣)의 디스크에 저장될 파일명
 			
 			byte[] bytes = null; // 첨부파일의 내용물을 담는 예정.
 
-			try {//boardFileName
+			try { 
 				bytes = attach.getBytes(); //첨부파일의 내용물을 읽기.
 				String boardFileOriginName = attach.getOriginalFilename();
 				

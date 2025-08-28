@@ -224,17 +224,19 @@
 	        type: "POST",
 	        data: { fk_boardNo: boardNo },
 	        success: function(json) {
-	            const icon = $('#bookmark-icon-'+boardNo);
+	            const icon = $('#bookmark-icon-'+boardNo); // 북마크 아이콘 지정
 	            if (json.success) {
 	            	icon.removeClass("fa-solid fa-bookmark text-warning fa-regular");
 	            	if (isBookmarked) {
 	            	    // 해제된 상태로 변경
 	            	    icon.addClass("fa-regular fa-bookmark");
 	            	    icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', false)");
+	            		$('input[name="bookmarked"]').value = false;
 	            	} else {
 	            	    // 추가된 상태로 변경
 	            	    icon.addClass("fa-solid fa-bookmark text-warning");
 	            	    icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', true)");
+	            		$('input[name="bookmarked"]').value = true;
 	            	}
 	            } else {
 	                alert(json.message);
@@ -356,6 +358,7 @@
 		        	<input name="fk_categoryNo" style="display: none;" value="${boardDto.fk_categoryNo}"/>
 		        	<input type="hidden" name="boardNo" value="${boardDto.boardNo}">
 	           		<input type="hidden" name="fk_id" value="${boardDto.fk_id}">
+	           		<input type="hidden" name="bookmarked" value="${boardDto.bookmarked}"/>
 		            <button class="btn" onclick="del()" style="background-color: white;"
 		              >글 삭제</button>
 		            <button class="btn" onclick="edit()" style="background-color: white;"

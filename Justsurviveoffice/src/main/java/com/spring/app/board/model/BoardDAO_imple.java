@@ -155,6 +155,12 @@ public class BoardDAO_imple implements BoardDAO {
 		List<BoardDTO> boardListKey = sql.selectList("board.getBoardContents", category);
 		return boardListKey;
 	}
-	// =====================0827 rdg7203 수정 끝 =============================== //
+	
+//	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
+//	@Override
+//	public int getCreatedAtBoardCnt(String id) {
+//		int n = sql.selectOne("board.getCreatedAtBoardCnt", id);
+//		return n;
+//	}
 	
 }

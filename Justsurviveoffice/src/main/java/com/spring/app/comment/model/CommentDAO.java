@@ -18,6 +18,9 @@ public interface CommentDAO {
     // 댓글 수정
     int updateComment(Long commentNo, String content, String fk_id);
 
+    // 유저가 하루동안 쓴 댓글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
+	int getCreatedAtCommentCnt(String id);
+
 
 
     

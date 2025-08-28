@@ -72,5 +72,8 @@ public interface BoardDAO {
 	// 보드 테이블에서 제목과 내용 가져오기(DB)
 	public List<BoardDTO> getBoardContents(String category);
 	// =====================0827 rdg7203 수정 끝 =============================== //
+
+//	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
+//	public int getCreatedAtBoardCnt(String id);
 	
 }
