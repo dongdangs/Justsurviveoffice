@@ -380,6 +380,7 @@ public class BoardController {
 			modelview.addObject("boardDto", boardDto);
 			// 댓글 목록 조회
 	        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
+	      //  List<CommentDTO> replyList = boardService.getReplyList(boardDto.getBoardNo());
 
 	modelview.addObject("commentList", commentList);
 	       
@@ -656,14 +657,5 @@ public class BoardController {
         return result;
     }
 	
-    
-    // === 댓글에 딸린 댓글들을 조회해오기 (댓글의 답글 즉, 대댓글 읽어오기) === //
-//    @GetMapping("reply")
-//    @ResponseBody
-//    public List<Map<String, String>> replytList(@RequestParam(name="parentNo") int parentNo) {
-//    	
-//    	
-//    	return replytList;
-//    }
-	
+
 }

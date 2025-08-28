@@ -145,7 +145,14 @@ public class BoardService_imple implements BoardService {
     // 댓글목록
 	@Override
 	public List<CommentDTO> getCommentList(Long boardNo) {
-	    return commentDao.getCommentList(boardNo);
+		 List<CommentDTO> commentList = commentDao.getCommentList(boardNo);
+		 
+		 for (CommentDTO comment : commentList) {
+		        List<CommentDTO> replies = commentDao.getRepliesByParentNo(comment.getCommentNo());
+		        comment.setReplyList(replies);
+		    }
+
+		    return commentList;
 	}
 
 	

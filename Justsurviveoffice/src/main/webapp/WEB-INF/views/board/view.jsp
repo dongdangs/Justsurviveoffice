@@ -3,8 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
-	String ctxPath = request.getContextPath();
-    //     /myspring 
+    String ctxPath = request.getContextPath();
 %>
 <jsp:include page="../header/header1.jsp" /> 
 <html><style>
@@ -41,7 +40,7 @@
   max-width: 100% !important;
   height: auto !important;
 }
-  
+
 </style>
 
 <script type="text/javascript">
@@ -69,31 +68,104 @@
 	        form.submit();
 	    });
 		 
-		 //대댓글 입력창
-		 $('button#replybtn').click(function(){
-			 const parentNo = $(this).data("commentNo");
-			 
-			  $(`#reply-form-${parentNo}`).toggle();
-		        $(`#reply-content-${parentNo}`).focus();
+			//대댓글 입력
+		    $(document).on("click", ".reply-btn", function() {
+			 const parentNo = $(this).data("id"); //data-id="${comment.commentNo}"라고 아래에 button 속성 지정해놨음
+			 console.log("reply-btn 클릭됨, parentNo=", parentNo); 
+
+		        const form = $('#reply-form-'+parentNo);
+		        	$(".reply-form").hide();
+		        	form.show();
+		            $(`#reply-content-${parentNo}`).focus();
 		   });  
 			 
 			// 대댓글 작성
-			$('button#add-reply').click(function(){
-				
-				 let contentVal = $('textarea[name="content"]').val().trim();
-			        
-			        if(contentVal.length == 0) {
+   			 $(document).on("click", ".add-reply", function() {
+		        const parentNo = $(this).data("parent"); //data-parent로 "${comment.commentNo}" 지정해놨음
+		        const content = $('#reply-content-'+parentNo).val().trim();  
+		        
+		        console.log("parentNo 뭔데 : "+parentNo);
+		        
+			        if(content.length == 0) {
 			        	alert("댓글내용을 입력해주세요 !");
 			        	return; 
 			        }
 			        
-			        const form = document.replyform;
-			        form.method = "post";
-			        form.action = "<%= ctxPath%>/comment/writeReply";
-			        form.submit();
-				
-			});
+			        $.ajax({
+			            url: "<%= ctxPath%>/comment/writeReply",
+			            type: "POST",
+			            dataType:"json",
+			            data: { 
+			            	fk_boardNo: "${boardDto.boardNo}",
+			                content: content,
+			                parentNo: parentNo
+						},
+			            success: function(json) {
+			            	  
+			                if (json.success) {
+			                	// 대댓글 리스트에 새로 추가
+			                	const reply = json.reply;
+			                	const html = `
+			                        <div class="reply" id="reply-${reply.commentNo}">
+			                            <div class="meta">
+		                                <span>${reply.fk_id}</span> |
+			                                <span>${reply.createdAtComment}</span>
+			                            </div>
+			                            <div class="content">${reply.content||''}</div>
+			                            <button class="btn delete-reply" data-id="${reply.commentNo}" data-parent="${parentNo}">삭제</button>
+			                        </div>`;
+			                    $('#replies-'+parentNo).append(html);
+
+			                    // 입력창 초기화 및 숨김
+			                    $('#reply-content-'+parentNo).val("");
+			                    $('#reply-form-'+parentNo).hide();
+			                } else {
+			                    alert(json.message);
+			                }
+			            },
+			            error: function(request, status, error) {
+			                alert("code:" + request.status + "\nmessage:" + request.responseText);
+			            }
+			        });
+			        
+			}); // end of $('button#replybtn').click(function(){});
 		       
+			 // 대댓글 작성 취소버튼
+		    $(document).on("click", ".cancel-reply", function() {
+		        const parentNo = $(this).data("parent");
+		    	
+		        $('#reply-content-'+parentNo).val("");
+		        $('#reply-form-'+parentNo).hide();
+		        
+		    });
+
+		    // 대댓글 삭제
+		    $(document).on("click", ".delete-reply", function() {
+		        if (!confirm("정말 삭제하시겠습니까?")) return;
+
+		        const commentNo = $(this).data("id");
+		        const parentNo = $(this).data("parent");
+		        const fkId = "${sessionScope.loginUser.id}"
+
+		        $.ajax({
+		            url: "<%= ctxPath %>/comment/deleteReply",
+		            type: "POST",
+		            dataType:"json",
+		            data: {commentNo:commentNo,
+		            	fk_id: fkId
+		            },
+		            success: function(json) {
+		                if (json.success) {
+		                    $('#reply-'+commentNo).remove();
+		                } else {
+		                    alert(json.message);
+		                }
+		            },
+		            error: function(request, status, error) {
+		                alert("code:" + request.status + "\nmessage:" + request.responseText);
+		            }
+		        });
+		    });
 		 
 		
 		 // 댓글 삭제 
@@ -305,12 +377,12 @@ function boardLike(boardNo, fk_id) {
 			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
 			
 			    <i id="boardLike-icon-${boardDto.boardNo}"
-   class="fa-thumbs-up ${boardDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
-   style="cursor: pointer; font-size: 20px;"
-   data-liked="${boardDto.boardLiked}"
-   onclick="boardLike(${boardDto.boardNo}, '${sessionScope.loginUser.id}')">
-</i>
-<span id="likeCount">${likeCount}</span>
+				   class="fa-thumbs-up ${boardDto.boardLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+				   style="cursor: pointer; font-size: 20px;"
+				   data-liked="${boardDto.boardLiked}"
+				   onclick="boardLike(${boardDto.boardNo}, '${sessionScope.loginUser.id}')">
+				</i>
+				<span id="likeCount">${likeCount}</span>
 			</form>
 	    </div>
 	    
@@ -342,60 +414,63 @@ function boardLike(boardNo, fk_id) {
 	    </div>
 	</div>
 	
-	<!-- 댓글 영역 -->
-    <div class="comment-section">
-	  <h3 style="font-weight: bold;">댓글<span>${fn:length(commentList)}</span></h3>
-        <c:forEach var="comment" items="${commentList}">
+	<!-- ======== 댓글 목록 ======== -->
+<div class="comment-section">
+    <h3 style="font-weight: bold;">댓글 <span>${fn:length(commentList)}</span></h3>
+    
+    <c:forEach var="comment" items="${commentList}">
+    <!-- 원댓글 -->
+    <div class="comment" id="comment-${comment.commentNo}">
+        <div class="meta">
+            <span>${comment.fk_id}</span> |
+            <span>${fn:replace(comment.createdAtComment, "T", " ")}</span>
+        </div>
+        <div class="content">${comment.content}</div>
 
-	    <div class="comment">
-	        <div class="meta">
-	            <span>${comment.fk_id}</span> | 
-	            	<span class="comment-date">
-			            ${fn:replace(comment.createdAtComment, "T", " ")}
-				</span>
-	        </div>
-	        <!-- 댓글 내용 -->
-	        <div class="content">${comment.content}</div>
-	        
-	        <!-- 버튼 영역 -->
-	            <c:if test="${not empty loginUser and loginUser.id == comment.fk_id}">
-	                <button type="button" class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
-	            </c:if>
-				<c:if test="${not empty loginUser}">
-                <button type="button" class="btn replybtn" data-id="${comment.commentNo}">답글</button>	
-           	 </c:if>	            
-	    </div>
-		</c:forEach>
-	      
+        <!-- 원댓글 액션 버튼 -->
+        <div class="actions">
+            <c:if test="${not empty loginUser}">
+                <button class="btn reply-btn" data-id="${comment.commentNo}">답글</button>
+            </c:if>
+            <c:if test="${loginUser.id == comment.fk_id}">
+                <button class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
+            </c:if>
+        </div>
 
-
-        <!-- 댓글 작성 -->
-        <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
-            <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
-            <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
-            <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
-            <button type="submit" class="btn" id="addComment">댓글 등록</button>
-        </form>
-        
-        <!-- 대댓글 입력창 (숨김 기본) -->
-        <div class="replyform" id="reply-form-${comment.commentNo}" style="display: none; margin-top: 5px;">
-            <textarea class="reply-content" id="reply-content-${comment.commentNo}" rows="2" style="width: 90%;"></textarea>
+        <!-- 대댓글 입력 폼 -->
+        <div class="reply-form" id="reply-form-${comment.commentNo}" style="display:none; margin-top:5px;">
+            <textarea id="reply-content-${comment.commentNo}" rows="2" style="width:80%;" placeholder="대댓글을 입력하세요"></textarea>
             <button type="button" class="btn add-reply" data-parent="${comment.commentNo}">등록</button>
             <button type="button" class="btn cancel-reply" data-parent="${comment.commentNo}">취소</button>
         </div>
-        
-        <!--대댓글 리스트-->
-        <div class="replies" id="replies-${comment.commentNo}" style="margin-left: 30px; margin-top: 5px;">
+
+        <!-- 대댓글 리스트 -->
+        <div class="replies" id="replies-${comment.commentNo}" style="margin-left:20px; margin-top:10px;">
             <c:forEach var="reply" items="${comment.replyList}">
-                <div class="reply" style="border-left: 2px solid #ddd; padding-left: 10px; margin-top: 5px;">
+                <div class="reply" id="reply-${reply.commentNo}">
                     <div class="meta">
                         <span>${reply.fk_id}</span> |
                         <span>${fn:replace(reply.createdAtComment, "T", " ")}</span>
                     </div>
                     <div class="content">${reply.content}</div>
+                    <c:if test="${loginUser.id == reply.fk_id}">
+                        <button class="btn delete-reply" data-id="${reply.commentNo}" data-parent="${comment.commentNo}">삭제</button>
+                    </c:if>
                 </div>
             </c:forEach>
         </div>
+    </div>
+</c:forEach>
+</div>
+
+<!-- ======== 댓글 작성 폼 ======== -->
+<form id="commentForm" action="<%= ctxPath%>/comment/writeComment" method="post" style="margin-top:15px;">
+    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+    <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
+    <button type="submit" class="btn" id="addComment">댓글 등록</button>
+</form>  
+       
     <!-- 목록 버튼, 이전글 다음글 -->
     <div style="display:flex; margin-top:3px;"> 
     <div class="mr-3">

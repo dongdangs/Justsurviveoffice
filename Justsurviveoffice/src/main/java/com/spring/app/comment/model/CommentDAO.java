@@ -21,5 +21,15 @@ public interface CommentDAO {
 	//대댓글 작성
 	int insertReply(CommentDTO comment);
 
+	//대댓글 목록
+	List<CommentDTO> getRepliesByParentNo(Long commentNo);
+
+	//대댓글조회
+	CommentDTO getReplyById(Long commentNo);
+
+
+
+
+
     
 }

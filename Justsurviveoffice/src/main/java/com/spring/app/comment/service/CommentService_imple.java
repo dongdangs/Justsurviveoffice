@@ -1,6 +1,7 @@
 package com.spring.app.comment.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -36,11 +37,11 @@ public class CommentService_imple implements CommentService {
 
     //대댓글 작성
 	@Override
-	public void insertReply(CommentDTO comment) {
-		commentDao.insertReply(comment);
+	public int insertReply(CommentDTO comment) {
+		return commentDao.insertReply(comment);
 	}
 
-	//댓글 삭제 (본인만 가능)
+	//대댓글 삭제 (본인만 가능)
     @Override
     public int deleteReply(Long commentNo) {
         int n =  commentDao.deleteReply(commentNo) ;
@@ -48,6 +49,18 @@ public class CommentService_imple implements CommentService {
         return n;
     }
 
+
+    //대댓글 목록 조회
+	@Override
+	public CommentDTO getReplyById(Long commentNo) {
+		return commentDao.getReplyById(commentNo);
+	}
+
+
+    
+
+
+	
 
    
 

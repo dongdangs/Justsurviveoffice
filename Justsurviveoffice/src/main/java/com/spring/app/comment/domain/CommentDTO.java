@@ -1,6 +1,7 @@
 package com.spring.app.comment.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.spring.app.entity.Board;
 import com.spring.app.entity.Users;
@@ -36,6 +37,10 @@ public class CommentDTO {
 	private Users users;
 	
 	private Board board;
+	
+
+    // 대댓글 리스트 추가
+    private List<CommentDTO> replyList;
 	
 
 }

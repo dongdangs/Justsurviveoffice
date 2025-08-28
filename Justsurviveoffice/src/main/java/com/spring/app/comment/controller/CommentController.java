@@ -1,10 +1,10 @@
 package com.spring.app.comment.controller;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -79,55 +79,70 @@ public class CommentController {
     }
     
     //대댓글 작성
-    @PostMapping("writeReply")
- 	public String writeReply(ModelAndView modelview, CommentDTO comment,
- 	                         	HttpSession session) {
+    @PostMapping("/writeReply")
+    @ResponseBody
+    public Map<String, Object> writeReply(CommentDTO comment, HttpSession session) {
+
+        Map<String, Object> result = new HashMap<>();
 
  	    UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+ 	    
  	    if (loginUser == null) {
- 	        return "redirect:/login";
+ 	    	 result.put("success", false);
+ 	        result.put("message", "로그인이 필요합니다.");
+ 	        return result;
  	    }
 
  	    comment.setFk_id(loginUser.getId());
  	    comment.setFk_name(loginUser.getName());
+ 
+ 	    int n = commentService.insertReply(comment);
 
- 	    commentService.insertReply(comment);
+ 	    if (n == 1) {
+ 	    //  새로 생성된 commentNo 가져오기
+ 	        Long newCommentNo = comment.getCommentNo();
+ 	    	
+ 	        CommentDTO savedReply = commentService.getReplyById(newCommentNo);
+ 	    	
+ 	        result.put("success", true);
+ 	        result.put("message", "대댓글 작성 성공!");
+ 	        result.put("reply", savedReply);
+ 	    } else {
+ 	        result.put("success", false);
+ 	        result.put("message", "대댓글 작성 실패!");
+ 	    }
 
- 	    return "redirect:/board/view?boardNo=" + comment.getFk_boardNo();
+ 	    return result;
  	}
 
     
     
-    //댓글삭제
+    //대댓글삭제
     @PostMapping("deleteReply")
     @ResponseBody
-    public ModelAndView deleteReply(ModelAndView modelview, 
-    								 CommentDTO commentDto, HttpSession session) {
+    public Map<String, Object> deleteReply(@RequestParam(name="commentNo") Long commentNo,
+    								@RequestParam(name="fk_id") String fk_id,
+    								HttpSession session) {
     	
+    	Map<String, Object> result = new HashMap<>();
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        if (loginUser == null) {
+	    	 result.put("success", false);
+	        result.put("message", "로그인이 필요합니다.");
+	        return result;
+	    }
         
-        if(loginUser.getId().equals(commentDto.getFk_id())) {
-        	
-        	int n = commentService.deleteReply(commentDto.getCommentNo());
+        	int n = commentService.deleteReply(commentNo);
         	
         	if(n == 1) {
-        		modelview.addObject("message", "댓글이 삭제되었습니다");
-        	} else {
-        		modelview.addObject("message", "이미 삭제된 댓글입니다.");
-        	}
-            String ctxPath = session.getServletContext().getContextPath();
-        	
-            modelview.addObject("loc", ctxPath + "/board/view?boardNo=" + commentDto.getFk_boardNo());
-            modelview.setViewName("msg");
-
-        	
-        } else {
-        	modelview.addObject("message", "접근 불가능한 경로입니다.");
-			modelview.addObject("loc", "javascript:history.back()");
-			modelview.setViewName("msg");
-
-		}
-        return modelview;  
+        		 result.put("success", true);
+      	         result.put("message", "대댓글이 삭제되었습니다.");
+      	    } else {
+      	    	 result.put("success", false);
+      	        result.put("message", "이미 삭제되었거나 존재하지 않는 댓글입니다.");
+      	    }
+            
+        return result;  
 	    
     }
     

@@ -67,5 +67,7 @@ public interface BoardService {
 
 	// 페이지네이션 구현
 	public BoardDTO getView(Long boardNo);
+
+	
 	
 }
