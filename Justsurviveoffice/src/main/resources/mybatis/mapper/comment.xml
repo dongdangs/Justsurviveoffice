@@ -67,9 +67,9 @@
 </insert>
 	   
 	<!-- 대댓글 삭제 -->
-	<delete id="deleteReply" parameterType="map">
+	<delete id="deleteReply" parameterType="long">
 	    delete from comments
-	    where parentNo = #{parentNo, jdbcType=NUMERIC}
+    	where commentNo = #{commentNo}
 	</delete>
 	
 	<!-- 특정 댓글의 대댓글 리스트 조회 -->

@@ -109,13 +109,15 @@
 			                        <div class="reply" id="reply-${reply.commentNo}">
 			                            <div class="meta">
 		                                <span>${reply.fk_id}</span> |
+		                                <span>${reply.fk_name}</span> |
 			                                <span>${reply.createdAtComment}</span>
 			                            </div>
 			                            <div class="content">${reply.content||''}</div>
-			                            <button class="btn delete-reply" data-id="${reply.commentNo}" data-parent="${parentNo}">삭제</button>
+			                            <button class="btn delete-reply" data-id="${reply.commentNo}">삭제</button>
 			                        </div>`;
-			                    $('#replies-'+parentNo).append(html);
-
+			                       // $('#replies-' + parentNo).append(html);
+									 location.reload(); 
+			                       
 			                    // 입력창 초기화 및 숨김
 			                    $('#reply-content-'+parentNo).val("");
 			                    $('#reply-form-'+parentNo).hide();
@@ -144,15 +146,12 @@
 		        if (!confirm("정말 삭제하시겠습니까?")) return;
 
 		        const commentNo = $(this).data("id");
-		        const parentNo = $(this).data("parent");
-		        const fkId = "${sessionScope.loginUser.id}"
 
 		        $.ajax({
 		            url: "<%= ctxPath %>/comment/deleteReply",
 		            type: "POST",
 		            dataType:"json",
 		            data: {commentNo:commentNo,
-		            	fk_id: fkId
 		            },
 		            success: function(json) {
 		                if (json.success) {

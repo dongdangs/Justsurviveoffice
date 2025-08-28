@@ -103,6 +103,11 @@ public class CommentController {
  	        Long newCommentNo = comment.getCommentNo();
  	    	
  	        CommentDTO savedReply = commentService.getReplyById(newCommentNo);
+ 	        
+ 	       if(savedReply.getContent() == null) {
+ 	    	    savedReply.setContent("");
+ 	    	}
+ 	        
  	    	
  	        result.put("success", true);
  	        result.put("message", "대댓글 작성 성공!");
@@ -121,7 +126,6 @@ public class CommentController {
     @PostMapping("deleteReply")
     @ResponseBody
     public Map<String, Object> deleteReply(@RequestParam(name="commentNo") Long commentNo,
-    								@RequestParam(name="fk_id") String fk_id,
     								HttpSession session) {
     	
     	Map<String, Object> result = new HashMap<>();
