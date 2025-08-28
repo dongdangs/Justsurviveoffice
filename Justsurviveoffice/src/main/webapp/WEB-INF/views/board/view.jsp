@@ -45,8 +45,8 @@
 </style>
 
 <script type="text/javascript">
+
 	$(function() {
-		
 		const nextVals = ${boardDto.nextNo};
 		if(nextVals == 0) {
 			$('div#nextBtn').hide();
@@ -63,7 +63,6 @@
 	        	alert("댓글내용을 입력해주세요.");
 	        	return;
 	        }
-	        
 	        const form = document.commentform;
 	        form.method = "post";
 	        form.action = "<%= ctxPath%>/comment/writeComment";
@@ -155,7 +154,6 @@
 		 
 	}); 
 	
-	
 	// 글 삭제
 	function del() {
 		if(!confirm("정말로 삭제하시겠습니까?")) {
@@ -245,6 +243,9 @@
 	        },
 	        error: function(request, status, error) {
 	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	            alert("뒤로가기 오류입니다.");
+	            window.location.href = "<%=ctxPath%>/index";
+	            // 일단 임시로 오류시 main으로 전환시키기
 	        }
 	    });
 	 }// end of function Bookmark(boardNo,fk_id)———————————
