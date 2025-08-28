@@ -297,16 +297,16 @@ public class UsersService_imple implements UsersService {
 
 	 @Override
 	    public List<Map<String, String>> registerChartday(int month) {
-	        int[] bucket = new int[12];
+	        int[] bucket = new int[31];
 	        List<UsersRepository.DayCount> rows = usersRepository.findBydayRegister(month);
-
+	        
 	        for (UsersRepository.DayCount r : rows) {
-	            int idx = Integer.parseInt(r.getDd()) - 1; // "01" -> 0
+	            int idx = Integer.parseInt(r.getDd()); // "01" -> 0
 	            bucket[idx] = r.getCnt().intValue();
 	        }
 
-	        List<Map<String, String>> result = new ArrayList<>(12);
-	        for (int i = 1; i <= 12; i++) {
+	        List<Map<String, String>> result = new ArrayList<>(31);
+	        for (int i = 1; i <= 31; i++) {
 	            Map<String, String> row = new LinkedHashMap<>();
 	            row.put("dd", String.format("%02d", i));
 	            row.put("cnt", String.valueOf(bucket[i - 1]));

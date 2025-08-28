@@ -52,7 +52,8 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 
 	    @Query(value = """
 	        SELECT TO_CHAR(u.registerday, 'MM') AS mm,
-	               COUNT(*)                      AS cnt
+	               COUNT(*)                      AS cnt,
+	               TO_CHAR(sysdate,'YYYY') AS nowyear
 	          FROM users u
 	         WHERE EXTRACT(YEAR FROM u.registerday) = :year
 	         GROUP BY TO_CHAR(u.registerday, 'MM')
@@ -60,10 +61,11 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 	    List<MonthCount> findByMonthRegister(@Param("year") int year);
 
 	    @Query(value = """
-	    	   select TO_CHAR(u.registerday,'dd') AS dd,
-	    		  	  count(*)					  AS cnt
+	    	   SELECT TO_CHAR(u.registerday,'dd') AS dd,
+	    		  	  count(*)					  AS cnt,
+	    		  	  TO_CHAR(sysdate,'MM') AS nowmonth
 	    		 FROM users u
-	    		 WHERE EXTRACT(MONTH FROM u.registerday) = :month
+	    		 WHERE EXTRACT(MONTH FROM u.registerday) =:month
 	    		 GROUP BY TO_CHAR(u.registerday,'dd')
 	    		""", nativeQuery = true)
 		List<DayCount> findBydayRegister(@Param("month") int month);

@@ -183,7 +183,7 @@ public class AdminController {
       return categoryChart;
    } 
    
-   /*
+   
    @GetMapping(value = "/chart/registerChartday", produces = "application/json; charset=UTF-8")
    @ResponseBody
    public List<Map<String,String>> registerChartday(
@@ -191,5 +191,5 @@ public class AdminController {
        	   return (month == null) ? usersService.registerChartday()
        			   				  : usersService.registerChartday(month);
    }
-   */
+   
 }
