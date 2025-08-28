@@ -26,4 +26,7 @@ public class CategoryDTO {
 
 	private String categoryImagePath;
 
+	// 카테고리별 인원수 select 용
+	private Long cnt;
+	private Double percentage;
 }

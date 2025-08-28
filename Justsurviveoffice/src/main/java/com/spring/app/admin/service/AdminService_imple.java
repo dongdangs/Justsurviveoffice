@@ -3,6 +3,7 @@ package com.spring.app.admin.service;
 import static com.spring.app.entity.QCategory.category;
 import static com.spring.app.entity.QUsers.users;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -22,6 +23,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.app.entity.Users;
 import com.spring.app.admin.model.AdminRepository;
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.common.AES256;
 import com.spring.app.common.SecretMyKey;
 import com.spring.app.users.domain.UsersDTO;
@@ -156,13 +158,24 @@ public class AdminService_imple implements AdminService {
       
       return usersDto;
    }
-
+   
+   // 카테고리별 인원 통계
    @Override
-   public List<Map<String, String>> registerChart() {
-		return null;
-				//adminRepository.findAll();
+   public List<CategoryDTO> categoryChart() {
+      List<Object[]> categoryPercentageList = adminRepository.getCategoryChart();
+      
+      List<CategoryDTO> result = new ArrayList<>();
+      for(Object[] obj : categoryPercentageList) {
+         CategoryDTO categoryDto = CategoryDTO.builder()
+               .categoryName(String.valueOf(obj[0]))
+               .cnt(((Number) obj[1]).longValue())
+               .percentage(((Number) obj[2]).doubleValue())
+               .build();
+         result.add(categoryDto);
+      }
+      
+      return result;
    }
-   
-   
-   
+
+
 }

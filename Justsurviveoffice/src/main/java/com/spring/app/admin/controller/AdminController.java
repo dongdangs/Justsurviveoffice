@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spring.app.common.MyUtil;
 import com.spring.app.entity.Users;
 import com.spring.app.admin.service.AdminService;
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -161,20 +162,34 @@ public class AdminController {
       return "admin/usersDetail";
    }
    
-   // 뷰 반환: /admin/chart
    @GetMapping("/chart")
    public String chart() {
-       return "admin/chart";  // /WEB-INF/views/admin/chart.jsp
+       return "admin/chart";  
    }
 
-   // JSON 반환: /admin/chart/registerChart
    @GetMapping(value = "/chart/registerChart", produces = "application/json; charset=UTF-8")
    @ResponseBody
    public List<Map<String,String>> registerChart(
-           @RequestParam(name = "year", required = false) Integer year // ★ name 명시!
-   ) {
-       return (year == null) ? usersService.registerChart()
-                             : usersService.registerChart(year);
+           @RequestParam(name = "year", required = false) Integer year) {
+       	   return (year == null) ? usersService.registerChart()
+       			   				 : usersService.registerChart(year);
    }
    
+   // 카테고리 차트 관련 코드 (장유민)
+   @GetMapping("chart/categoryChart")
+   @ResponseBody
+   public List<CategoryDTO> categoryChart() {
+      List<CategoryDTO> categoryChart = adminService.categoryChart();
+      return categoryChart;
+   } 
+   
+   /*
+   @GetMapping(value = "/chart/registerChartday", produces = "application/json; charset=UTF-8")
+   @ResponseBody
+   public List<Map<String,String>> registerChartday(
+           @RequestParam(name = "month", required = false) Integer month) {
+       	   return (month == null) ? usersService.registerChartday()
+       			   				  : usersService.registerChartday(month);
+   }
+   */
 }

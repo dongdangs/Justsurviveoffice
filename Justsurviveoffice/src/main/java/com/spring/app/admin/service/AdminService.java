@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.users.domain.UsersDTO;
 
 public interface AdminService {
@@ -16,7 +17,7 @@ public interface AdminService {
 	// 특정 회원 1명 상세보기(Detail)
 	UsersDTO getUsers(String id);
 
-	List<Map<String, String>> registerChart();
-	
+	// 카테고리별 인원 통계 (장유민 제작)
+	List<CategoryDTO> categoryChart();
 
 }

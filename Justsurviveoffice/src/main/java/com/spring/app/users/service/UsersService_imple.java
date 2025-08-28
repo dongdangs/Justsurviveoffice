@@ -295,6 +295,25 @@ public class UsersService_imple implements UsersService {
 	        return result;
 	    }
 
+	 @Override
+	    public List<Map<String, String>> registerChartday(int month) {
+	        int[] bucket = new int[12];
+	        List<UsersRepository.DayCount> rows = usersRepository.findBydayRegister(month);
+
+	        for (UsersRepository.DayCount r : rows) {
+	            int idx = Integer.parseInt(r.getDd()) - 1; // "01" -> 0
+	            bucket[idx] = r.getCnt().intValue();
+	        }
+
+	        List<Map<String, String>> result = new ArrayList<>(12);
+	        for (int i = 1; i <= 12; i++) {
+	            Map<String, String> row = new LinkedHashMap<>();
+	            row.put("dd", String.format("%02d", i));
+	            row.put("cnt", String.valueOf(bucket[i - 1]));
+	            result.add(row);
+	        }
+	        return result;
+	    }
 
    
 }

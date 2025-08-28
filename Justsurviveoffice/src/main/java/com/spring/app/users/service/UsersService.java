@@ -53,9 +53,20 @@ public interface UsersService {
 
 	// 250828 01:30 차트 수정
 	 List<Map<String,String>> registerChart(int year);
-	    default List<Map<String,String>> registerChart() {
-	        return registerChart(java.time.LocalDate.now().getYear());
+	 
+	 default List<Map<String,String>> registerChart() {
+	     return registerChart(java.time.LocalDate.now().getYear());
 	  }
+	 
+	List<Map<String, String>> registerChartday(int month);
+
+	// 차트 월 - 일자별 보이도록
+	 default List<Map<String, String>> registerChartday(){
+		 return registerChartday(java.time.LocalDate.now().getMonthValue());
+	 }
+	 
+
+		
 
 
 }

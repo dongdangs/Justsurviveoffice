@@ -40,7 +40,15 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 	// 비밀번호 찾기
 	Users findByIdAndEmail(String id, String email);
 
-	 interface MonthCount { String getMm(); Long getCnt(); }
+	interface MonthCount { 
+		String getMm(); 
+		Long getCnt(); 
+	}
+	
+	interface DayCount { 
+		String getDd(); 
+		Long getCnt(); 
+	}
 
 	    @Query(value = """
 	        SELECT TO_CHAR(u.registerday, 'MM') AS mm,
@@ -50,6 +58,15 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 	         GROUP BY TO_CHAR(u.registerday, 'MM')
 	    """, nativeQuery = true)
 	    List<MonthCount> findByMonthRegister(@Param("year") int year);
+
+	    @Query(value = """
+	    	   select TO_CHAR(u.registerday,'dd') AS dd,
+	    		  	  count(*)					  AS cnt
+	    		 FROM users u
+	    		 WHERE EXTRACT(MONTH FROM u.registerday) = :month
+	    		 GROUP BY TO_CHAR(u.registerday,'dd')
+	    		""", nativeQuery = true)
+		List<DayCount> findBydayRegister(@Param("month") int month);
 	
 }
 

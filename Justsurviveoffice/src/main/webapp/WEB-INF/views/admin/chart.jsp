@@ -43,6 +43,7 @@
       <select name="searchType" id="searchType" style="height:30px;">
         <option value="">통계선택하세요</option>
         <option value="register">회원가입 인원통계(월별)</option>
+        <option value="category">카테고리 인원통계</option>
         <%-- 향후 확장: <option value="register7d">회원가입 인원통계(최근 7일)</option> --%>
       </select>
     </form>
@@ -88,10 +89,10 @@
 
 		      const total = data.reduce((a,b)=>a+b, 0);
 
-		      // 3) Highcharts: 세로 막대(컬럼). 가로 막대 원하면 type: 'bar'
+		      // 3) Highcharts: 세로 막대(컬럼). 가로 막대 원하면 type: 'bar' 로 설정 하면됨
 		      Highcharts.chart('chart_container', {
-		        chart: { type: 'column' }, // ← 'bar'로 바꾸면 가로 막대
-		        title: { text: '월별 가입자 수' },
+		        chart: { type: 'column' }, // 'bar'로 바꾸면 가로 막대임
+		        title: { text: '2025년 월별 가입자 수' },
 		        xAxis: { categories: labelsFixed, title: { text: '월' } },
 		        yAxis: { min: 0, allowDecimals: false, title: { text: '가입자 수(명)' } },
 		        tooltip: {
@@ -109,8 +110,7 @@
 		        },
 		        series: [{ name: '가입자 수', data }]
 		      });
-
-		      // 4) 표 렌더링 (월은 고정 라벨 기준으로)
+		      
 		      let v_html = `<table class="table table-sm table-bordered">
 		          <thead class="thead-light">
 		            <tr>
@@ -145,11 +145,100 @@
 		    }
 		  });
 		  break;
+	
+	      // ===== 카테고리는 장유민이 제작함 ===== //
+		case "category":
+            $.ajax({
+                url: "<%= ctxPath%>/admin/chart/categoryChart",
+                dataType: "json",
+                success: function (json) {
+                    $("div#chart_container").empty();
+                    $("div#table_container").empty();
 
-      // === 확장 예시 ===
-      // case "register7d":
-      //   $.ajax({ url: "<%= ctxPath%>/adm/chart/registerChart7d", dataType:"json", success: ... });
-      //   break;
+              let resultArr = [];
+              
+              for(let i=0; i<json.length; i++) {
+                 
+                 let obj;
+                 
+                 if(i==0) {
+                    obj = {name: json[i].categoryName,
+                            y: Number(json[i].percentage),
+                            sliced: true,
+                            selected: true};
+                 }
+                 else {
+                    obj = {name: json[i].categoryName,
+                            y: Number(json[i].percentage)};
+                 }
+                 
+                 resultArr.push(obj); // 배열속에 객체를 넣기
+                 
+              } // end of for
+              
+              // ====================================================== //
+              Highcharts.chart('chart_container', {
+                  chart: {
+                      plotBackgroundColor: null,
+                      plotBorderWidth: null,
+                      plotShadow: false,
+                      type: 'pie'
+                  },
+                  title: {
+                      text: '카테고리별 인원통계'
+                  },
+                  tooltip: {
+                      pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+                  },
+                  accessibility: {
+                      point: {
+                          valueSuffix: '%'
+                      }
+                  },
+                  plotOptions: {
+                      pie: {
+                          allowPointSelect: true,
+                          cursor: 'pointer',
+                          dataLabels: {
+                              enabled: true,
+                              format: '<b>{point.name}</b>: {point.percentage:.2f} %'
+                          }
+                      }
+                  },
+                  series: [{
+                      name: '인원비율',
+                      colorByPoint: true,
+                      data: resultArr
+                  }]
+              });                  
+              // ====================================================== //
+              
+              let v_html = `<table>
+                           <tr>
+                              <th>카테고리</th>
+                              <th>인원수</th>
+                              <th>퍼센티지</th>
+                           </tr>`;
+                           
+              $.each(json, function(index, item){
+                 v_html += `<tr>
+                            <td>\${item.categoryName}</td>
+                            <td>\${item.cnt}</td>
+                            <td>\${item.percentage}</td>
+                          </tr>`;
+              });             
+                           
+              v_html += `</table>`;
+              
+              $('div#table_container').html(v_html);         
+              
+           },
+           error: function(request, status, error){
+                    alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+                 }
+        });
+       break;
+       
     }
   }
 </script>
