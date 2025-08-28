@@ -100,6 +100,84 @@
 #displayList .result:hover{ background:#f5f7fa; }
 #displayList .result span{ color:#d00; font-weight:600; } /* 강조색 */
 
+
+/* ------------------------------------------------  */
+.col-md-9 { position: relative; } /* 패널 absolute 배치를 위한 기준 */
+.keyword-panel {
+  position: absolute;
+  top: 16px;      /* 상단 여백 */
+  right: 16px;    /* 우측 여백 */
+  width: 180px;
+  background: rgba(255,255,255,0.35); /* 반투명 */
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  backdrop-filter: blur(4px);         /* 지원 브라우저에서 유리 느낌 */
+  -webkit-backdrop-filter: blur(4px);
+  overflow: hidden;
+  z-index: 5;                         /* 상단 레이어 */
+}
+
+.keyword-header {
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #333;
+  background: rgba(255,255,255,0.25);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.keyword-table-wrap {
+  max-height: 260px;      /* 스크롤 높이 */
+  overflow: auto;
+}
+
+/* 테이블을 “투명 스타일”로 */
+.keyword-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.92rem;
+  color: #222;
+}
+
+.keyword-table th, .keyword-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  background: transparent;  /* 투명 */
+}
+
+.keyword-table th {
+  text-align: left;
+  color: #444;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.28); /* 헤더만 약간 더 보이게 */
+  backdrop-filter: blur(4px);
+}
+
+.keyword-table td:nth-child(2) {
+  text-align: right;
+  width: 64px;
+  color: #555;
+}
+
+/* 행 hover */
+.keyword-table tbody tr:hover {
+  background: rgba(0,0,0,0.035);
+}
+
+/* 너무 긴 키워드는 말줄임 */
+.keyword-word {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 160px;
+  display: inline-block;
+}
+
+
 </style> 
 
 <script type="text/javascript">
@@ -186,7 +264,7 @@
 	   
 	   <%-- === 검색어 입력시 자동글 완성하기  === --%>
 	   $(document).on('click', 'span.result', function(e){
-		    const word = $(e.target).text();
+		    const word = $(this).text()
 		    $('input[name="searchWord"]').val(word); // 텍스트박스에 검색된 결과의 문자열을 입력해준다.
 		    $('div#displayList').hide();
 		    searchBoard(); // 글목록 검색하기 요청
@@ -278,6 +356,34 @@
 			<span>금쪽이들의&nbsp;</span></c:if>
 		<span>생존 게시판</span>
 	</div>
+	
+	<!-- === 키워드 패널 (우측 상단) === -->
+	<div class="keyword-panel">
+	  <div class="keyword-header text-center">TOP 키워드</div>
+	  <div class="keyword-table-wrap">
+	    <table class="keyword-table" >
+	      <tbody>
+	        <!-- 컨트롤러에서 List<Map.Entry<String,Integer>> keywordTop 로 전달했다고 가정 -->
+	        <c:if test="${not empty keyword_top}">
+	          <c:forEach var="e" items="${keyword_top}">
+	            <tr>
+	              <td><span class="keyword-word">${e.key}</span></td>
+	              <td>${e.value}</td>
+	            </tr>
+	          </c:forEach>
+	        </c:if>
+	
+	        <!-- 데이터 없을 때 기본 틀(placeholder) -->
+	        <c:if test="${empty keyword_top}">
+	          <tr><td><span class="keyword-word">데이터 없음</span></td><td>0</td></tr>
+	          <tr><td><span class="keyword-word">—</span></td><td>0</td></tr>
+	          <tr><td><span class="keyword-word">—</span></td><td>0</td></tr>
+	        </c:if>
+	      </tbody>
+	    </table>
+	  </div>
+	</div>
+	
    <h2 style="margin-bottom: 30px; font-size: 25pt; font-weight: bold;">글목록</h2>
    <%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
    <form name="searchForm" style="margin-top: 20px;">

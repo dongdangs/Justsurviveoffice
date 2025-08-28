@@ -205,6 +205,7 @@
 	      <!-- 라벨을 버튼처럼 --><br>
 		  <label for="fileUpload" class="file-label" >첨부 파일</label>
 		  <span id="oldFileOriginName">&nbsp;${boardDto.boardFileOriginName}</span>
+		  <input name="oldFileOriginName"/> 
 		  <br><br>
   		  
 		  <!-- 제목 -->

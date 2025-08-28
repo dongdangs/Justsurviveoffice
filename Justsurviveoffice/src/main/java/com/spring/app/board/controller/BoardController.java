@@ -187,7 +187,7 @@ public class BoardController {
 	}
 	
 	
-	
+	  
  // 각 카테고리 게시판에 들어가기!
 	//또는 전체 게시물 검색!
 	@GetMapping("list/{category}") // RestAPI
@@ -238,6 +238,11 @@ public class BoardController {
 		modelview.addObject("category", category);
 		
 		modelview.setViewName("board/list");
+		
+		// == 키워드 메소드 작성 해봄 == // 
+		List<Map.Entry<String,Integer>> keyword_top = boardService.getKeyWord(category);	// 서비스에서 구현
+		modelview.addObject("keyword_top", keyword_top);
+		
 		
 		return modelview;
 	}
@@ -510,9 +515,9 @@ public class BoardController {
 	// 첨부파일 다운받기!
 	@PostMapping("download")
     public void download(HttpServletRequest request,  
-		   				 HttpServletResponse response,
-		   				 @RequestParam(name="boardFileName") String boardFileName,
-		   				 @RequestParam(name="boardFileOriginName") String boardFileOriginName) {
+		   				HttpServletResponse response,
+		   				@RequestParam(name = "boardFileName") String boardFileName,
+		   				@RequestParam(name = "boardFileOriginName") String boardFileOriginName) {
       
       // HttpServletResponse response -> 서버가 클라이언트(웹브라우저)로 보내는 응답 객체
       response.setContentType("text/html; charset=UTF-8");   // 브라우저가 응답을 HTML로 이해하도록 미리 Content-Type을 "text/html; charset=UTF-8"로 지정

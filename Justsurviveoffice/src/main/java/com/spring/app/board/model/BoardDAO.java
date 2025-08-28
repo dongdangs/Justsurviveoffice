@@ -61,5 +61,16 @@ public interface BoardDAO {
 	public int insertBoardLike(String fk_id, Long fk_boardNo);
 	//게시글 좋아요 수
 	public int getLikeCount(Long boardNo);
-
+	
+	// =====================0827 rdg7203 수정 시작 =============================== //
+	// 총 검색된 게시물 건수
+	public int searchListCount(Map<String, String> paraMap);
+	
+	// 자동 검색어 완성
+	public List<String> getSearchWordList(Map<String, String> paraMap);
+	
+	// 보드 테이블에서 제목과 내용 가져오기(DB)
+	public List<BoardDTO> getBoardContents(String category);
+	// =====================0827 rdg7203 수정 끝 =============================== //
+	
 }
