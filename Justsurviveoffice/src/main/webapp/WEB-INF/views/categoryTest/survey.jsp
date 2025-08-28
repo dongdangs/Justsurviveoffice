@@ -137,12 +137,17 @@
 					v_html += `
 						<div class="slide" style="min-width:100%; padding:10px 20px; box-sizing:border-box;">
 							<div class="QNo mt-5 text-danger font-weight-bold" style="font-size: 20pt;">Q\${index + 1}</div>
-							<div class="QText my-5 font-weight-bold" style="font-size:1.2rem;">\${item.questionContent}</div>
+							<div class="QText my-5 font-weight-bold" style="font-size:1.2rem;">\${item.text}</div>
 					`;
 					
 					$.each(item.options, function(opt_index, opt_item){
 						v_html += `
-							<button class="opt-btn btn btn-danger btn-lg btn-block my-5" data-qstno="\${index}" data-opt="\${opt_item.optionNo}">\${opt_item.optionText}</button>
+							<button class="opt-btn btn btn-danger btn-lg btn-block my-5" 
+										data-qstno="\${index}" 
+										data-opt="\${opt_index + 1}"
+										data-cat="\${opt_item.categoryNo}">
+								\${opt_item.text}
+							</button>
 						`;
 					});
 					
@@ -164,7 +169,7 @@
 				$('div.survey-container').on('click', '.opt-btn', function(){
 					
 					const qstno = Number($(this).data('qstno'));	// 몇 번째 질문인지 체크
-					const optionNo = Number($(this).data('opt'));	// 선택한 옵션번호
+					const optionNo = Number($(this).data('cat'));	// 선택한 옵션번호 에 달려있는 카테고리 번호
 					answer_arr[qstno] = optionNo;
 					
 					if(qstno < total - 1){	// 문제에서 버튼 클릭시 다음 슬라이드
