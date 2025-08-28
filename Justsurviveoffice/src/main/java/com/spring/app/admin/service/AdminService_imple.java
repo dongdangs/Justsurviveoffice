@@ -177,5 +177,4 @@ public class AdminService_imple implements AdminService {
       return result;
    }
 
-
 }

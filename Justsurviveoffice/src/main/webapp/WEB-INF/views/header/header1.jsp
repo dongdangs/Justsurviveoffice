@@ -42,7 +42,7 @@
       </div>
       
       <div id="mycontent"">
-         <div class="row"> 
+         <div class="row" style="margin:0 auto;"> 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
             <c:if test="${not empty sessionScope.loginUser}">   
                <div>
@@ -79,7 +79,7 @@
 							           style="color: #000;">
 							            ${hotRead.boardName}
 							        </a>
-							        <span class="fa-regular fa-eye text-muted" style="font-size: 8pt;">
+							        <span class="fa-regular fa-eye text-muted" style="font-size: 8pt; color:#fff !important">
 							            (${hotRead.readCount})
 							        </span>
 							    </td>
@@ -113,7 +113,7 @@
 							           style="color: #000;">
 							            ${hotComment.boardName}
 							        </a>
-							        <span class="fa-regular fa-eye text-muted" style="font-size: 8pt;">
+							        <span class="fa-regular fa-eye text-muted" style="font-size: 8pt; color:#fff !important">
 							            (${hotComment.commentCount})
 							        </span>
 							    </td>

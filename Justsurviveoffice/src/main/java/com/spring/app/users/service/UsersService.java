@@ -65,8 +65,4 @@ public interface UsersService {
 		 return registerChartday(java.time.LocalDate.now().getMonthValue());
 	 }
 	 
-
-		
-
-
 }

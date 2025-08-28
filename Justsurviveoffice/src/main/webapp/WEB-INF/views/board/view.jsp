@@ -41,7 +41,7 @@
   max-width: 100% !important;
   height: auto !important;
 }
-  
+    .row {margin:0;}
 </style>
 
 <script type="text/javascript">

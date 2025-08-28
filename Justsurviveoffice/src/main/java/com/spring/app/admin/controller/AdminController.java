@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.app.common.MyUtil;
 import com.spring.app.entity.Users;
+import com.spring.app.model.UsersRepository;
 import com.spring.app.admin.service.AdminService;
 import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.users.domain.UsersDTO;
@@ -26,13 +27,13 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor  // @RequiredArgsConstructor는 Lombok 라이브러리에서 제공하는 애너테이션으로, final 필드 또는 @NonNull이 붙은 필드에 대해 생성자를 자동으로 생성해준다.
-@RequestMapping("admin/")
+@RequestMapping("/admin/")
 public class AdminController {
    
    // === 생성자 주입(Constructor Injection) === //
    private final AdminService adminService;
    private final UsersService usersService;
-   
+
    @GetMapping("/adm")
    public String adminIndex() {
 	   return "admin/adm";
@@ -191,5 +192,4 @@ public class AdminController {
        	   return (month == null) ? usersService.registerChartday()
        			   				  : usersService.registerChartday(month);
    }
-   
 }
