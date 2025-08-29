@@ -1,12 +1,13 @@
 package com.spring.app.comment.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.comment.model.CommentDAO;
-import com.spring.app.users.domain.CommentDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,13 +35,34 @@ public class CommentService_imple implements CommentService {
     }
 
 
-    //댓글 수정 (본인만 가능)
+    //대댓글 작성
+	@Override
+	public int insertReply(CommentDTO comment) {
+		return commentDao.insertReply(comment);
+	}
 
+	//대댓글 삭제 (본인만 가능)
     @Override
-    public boolean updateComment(Long commentNo, String content, String fk_id) {
-        return commentDao.updateComment(commentNo, content, fk_id) > 0;
+    public int deleteReply(Long commentNo) {
+        int n =  commentDao.deleteReply(commentNo) ;
+        
+        return n;
     }
 
+
+    //대댓글 목록 조회
+	@Override
+	public CommentDTO getReplyById(Long commentNo) {
+		return commentDao.getReplyById(commentNo);
+	}
+
+
+    
+
+
+	
+
+   
 
 
 }

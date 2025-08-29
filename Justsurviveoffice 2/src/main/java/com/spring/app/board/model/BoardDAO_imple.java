@@ -1,5 +1,6 @@
 package com.spring.app.board.model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,34 +44,103 @@ public class BoardDAO_imple implements BoardDAO {
 	public int softDeleteBoard(Long boardNo) {
 		return sql.update("board.softDeleteBoard", boardNo);
 	}
+	// 게시물 수정하기, 수정시 기존 파일은 삭제!
+	@Override
+	public int updateBoard(BoardDTO boardDto) {
+		return sql.update("board.updateBoard", boardDto);
+	}
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	@Override
 	public int updateReadCount(Long boardNo) {
 		return sql.update("board.updateReadCount", boardNo);
 	}
+
+	// 메인페이지 카테고리 리스트 자동 받아오기
+	@Override
+	public List<Map<String, String>> getIndexList(String fk_categoryNo) {
+		List<Map<String, String>> IndexList = sql.selectList("board.getIndexList");
+		return IndexList;
+	}
 	
 	// 내가 작성한 글 목록 
     @Override
-    public List<BoardDTO> getMyBoards(String fkId) {
-        return sql.selectList("board.getMyBoards", fkId);
+    public List<BoardDTO> getMyBoards(String fk_id) {
+        return sql.selectList("board.getMyBoards", fk_id);
     }
+	
+	//페이지내이션 
+	@Override
+	public BoardDTO getView(Long boardNo) {
+		return sql.selectOne("board.getView", boardNo);
+	}   
 	
 	 // 북마크한 게시글 목록 
     @Override
-    public List<BoardDTO> getBookmarksById(String fkId) {
-    	return sql.selectList("board.getBookmarksById", fkId);
+    public List<BoardDTO> getBookmarksById(String fk_id) {
+    	return sql.selectList("board.getBookmarksById", fk_id);
     }
     
-    //게시글 좋아요 수
+   
+
+	////////////////////////////////////////////////////////////////////////////
+	// 인기 게시글 리스트 (조회수 많은 순)
 	@Override
-	public int getLikeCount(Long boardNo) {
-        return sql.selectOne("boardLike.getLikeCount", boardNo);
-
+	public List<BoardDTO> getTopBoardsByViewCount() {
+		List<BoardDTO> hotReadList = sql.selectList("board.getTopBoardsByViewCount");
+		return hotReadList;
 	}
-
-
+	
+	// 댓글 많은 게시글 리스트
+	@Override
+	public List<BoardDTO> getTopBoardsByCommentCount() {
+		List<BoardDTO> hotCommentList = sql.selectList("board.getTopBoardsByCommentCount");
+		return hotCommentList;
+	}	
+	
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	@Override
+	public List<BoardDTO> hotAll() {
+		List<BoardDTO> hotAllList = sql.selectList("board.hotAll");
+		return hotAllList;
+	}
 	
 	
+	////////////////////////////////////////////////////////////////////////////
+	
+	
+	 
+	// 게시글 좋아요 취소
+	@Override
+	public int deleteBoardLike(String fk_id, Long fk_boardNo) {
+		Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("fk_id", fk_id);
+        paramMap.put("fk_boardNo", fk_boardNo);
+		return sql.delete("boardLike.deleteBoardLike", paramMap);
+	}
+	
+	//게시글 좋아요 추가
+	@Override
+	public int insertBoardLike(String fk_id, Long fk_boardNo) {
+		Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("fk_id", fk_id);
+        paramMap.put("fk_boardNo", fk_boardNo);
+        return sql.insert("boardLike.insertBoardLike", paramMap); 
+		
+	}
+	
+	
+	 //게시글 좋아요 수
+		@Override
+		public int getLikeCount(Long boardNo) {
+	        return sql.selectOne("boardLike.getLikeCount", boardNo);
+	
+		}
+		
+		
+		//좋아요 여부
+		@Override
+		public int isBoardLiked(Map<String, Object> paramMap) {
+		    return sql.selectOne("boardLike.isBoardLiked", paramMap);
+		}
+		
 }
-
-

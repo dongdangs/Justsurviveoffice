@@ -3,8 +3,10 @@ package com.spring.app.board.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.safety.Safelist;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -12,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.model.BoardDAO;
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.comment.model.CommentDAO;
 import com.spring.app.common.FileManager;
-import com.spring.app.users.domain.CommentDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +37,7 @@ public class BoardService_imple implements BoardService {
 	public int insertBoard(BoardDTO boardDto) {
 		
 		int result = 0;
-		
+		// SQL문 if 처리해도 되지만, service 단에서 처리하는 실무연습.
 		if(boardDto.getBoardFileName() == null ||
 			"".equals(boardDto.getBoardFileName())) {
 			// 파일첨부 안 된 경우.
@@ -45,7 +47,6 @@ public class BoardService_imple implements BoardService {
 			// 파일첨부 된 경우.
 			result = boardDao.insertBoardWithFile(boardDto);
 		}
-		
 		return result;
 	}
 
@@ -54,6 +55,25 @@ public class BoardService_imple implements BoardService {
 	public List<BoardDTO> boardList(Map<String, String> paraMap) {
 		
 		List<BoardDTO> boardList = boardDao.selectBoardList(paraMap);
+		
+		for(BoardDTO dto : boardList) {
+			// 1. 텍스트 변환
+			String textForBoardList = Jsoup.clean(dto.getBoardContent()
+					.replaceAll("(?i)<br\\s*/?>", "\n")	// 대소문자 구분 없이, <br>, <br/>, <br >, <BR/> 같은 줄바꿈 태그를 전부 찾기, 및 공백 변환
+					.replace("&nbsp;", " "), Safelist.none());
+			dto.setTextForBoardList(textForBoardList.length() > 20
+									? textForBoardList.substring(0,20) + "..."
+									: textForBoardList);
+			// 2. 이미지 체크 및 추출
+			Element img = Jsoup.parse(dto.getBoardContent()).selectFirst("img[src]");	// import org.jsoup.nodes.Element;
+			if (img != null) {
+				String imgForBoardList = img.attr("src");
+				dto.setImgForBoardList(imgForBoardList);
+				System.out.println("스마트에디터이미지는 경로 >> " +imgForBoardList);
+				System.out.println("첨부이미지는 경로 >> " +dto.getBoardFileName());
+			}
+		}
+		//이렇게 하지않으면, JSP가 HTML 스마트 에디터의 태그까지 문자열로 찍어주기 때문에 레이아웃이 깨짐!
 
 		return boardList;
 	}
@@ -85,58 +105,122 @@ public class BoardService_imple implements BoardService {
 		return n;
 	}
 
+	// 게시물 수정하기, 수정시 기존 파일은 삭제!
+	@Override
+	public int updateBoard(BoardDTO boardDto) {
+		
+		int n = boardDao.updateBoard(boardDto);
+
+		return n;
+	}
+	
+	// 메인페이지 카테고리 자동 불러오기 메서드
+	@Override
+	public List<Map<String, String>> getIndexList(String fk_categoryNo) {
+		List<Map<String, String>> IndexList = boardDao.getIndexList(fk_categoryNo);
+		return IndexList;
+	}
+
+
+	   @Override
+	   public BoardDTO getView(Long boardNo) {
+			BoardDTO boardDto = boardDao.getView(boardNo);
+			
+			return boardDto;
+	   }
 
 	 //내가 작성한 글 목록
     @Override
-    public List<BoardDTO> getMyBoards(String fkId) {
-        return boardDao.getMyBoards(fkId);
+    public List<BoardDTO> getMyBoards(String fk_id) {
+        return boardDao.getMyBoards(fk_id);
     }
 
     // 북마크한 글 목록
     @Override
-    public List<BoardDTO> getBookmarksById(String fkId) {
-        return boardDao.getBookmarksById(fkId);
+    public List<BoardDTO> getBookmarksById(String fk_id) {
+        return boardDao.getBookmarksById(fk_id);
     }
 
     
     // 댓글목록
 	@Override
 	public List<CommentDTO> getCommentList(Long boardNo) {
-	    return commentDao.getCommentList(boardNo);
-	}
-
-	
-	//게시글 좋아요 여부
-	@Override
-	public boolean isBoardLiked(Long boardNo, String fkId) {
+		 List<CommentDTO> commentList = commentDao.getCommentList(boardNo);
 		 
-		Map<String, Object> boardLike = new HashMap<>();
-		
-		boardLike.put("fkId", fkId);
-		boardLike.put("boardNo", boardNo);
-		return false;
-		
+		 for (CommentDTO comment : commentList) {
+		        List<CommentDTO> replies = commentDao.getRepliesByParentNo(comment.getCommentNo());
+		        comment.setReplyList(replies);
+		    }
+
+		    return commentList;
 	}
 
+	
+	////////////////////////////////////////////////////////////////////////////////////
+	// 인기 게시글 리스트 (조회수 많은 순)
 	@Override
-	public void deleteBoardLike(Long boardNo, String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void insertBoardLike(Long boardNo, String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getBaordLikeCount(Long boardNo) {
-		return boardDao.getLikeCount(boardNo);
+	public List<BoardDTO> getTopBoardsByViewCount() {
+		List<BoardDTO> hotReadList = boardDao.getTopBoardsByViewCount();
+		return hotReadList;
 	}
 	
-    
-    
+	
+	// Hot 게시글 전체 리스트 (조회수 많은 순)
+	@Override
+	public List<BoardDTO> hotAll() {
+		List<BoardDTO> hotAllList = boardDao.hotAll();
+		return hotAllList;
+	}
+	
+	
+	// 댓글 많은 게시글 리스트
+	@Override
+	public List<BoardDTO> getTopBoardsByCommentCount() {
+		List<BoardDTO> hotCommentList = boardDao.getTopBoardsByCommentCount();
+		return hotCommentList;
+	}
+
+	
+	////////////////////////////////////////////////////////////////////////////////////   
+	
+	
+		//게시글 좋아요 여부
+		@Override
+		public boolean isBoardLiked(String fk_id, Long fk_boardNo) {
+			 
+			Map<String, Object> paramMap = new HashMap<>();
+			
+			paramMap.put("fk_id", fk_id);
+			paramMap.put("fk_boardNo", fk_boardNo);
+			
+			int count = boardDao.isBoardLiked(paramMap);
+		    return count > 0; // 좋아요가 존재하면 true			
+		}
+
+		//게시글 좋아요 취소
+		@Override
+		public int deleteBoardLike(String fk_id, Long fk_boardNo) {
+		    return boardDao.deleteBoardLike(fk_id, fk_boardNo);
+
+			
+		}
+
+		//게시글 좋아요 추가
+		@Override
+		public int insertBoardLike(String fk_id, Long fk_boardNo) {
+			int n = boardDao.insertBoardLike( fk_id,fk_boardNo );
+			return n;
+		}
+		
+
+		//게시글 좋아요 수
+		@Override
+		public int getBaordLikeCount(Long fk_boardNo) {
+			return boardDao.getLikeCount(fk_boardNo);
+		}
+
+	
+
 	
 }
 

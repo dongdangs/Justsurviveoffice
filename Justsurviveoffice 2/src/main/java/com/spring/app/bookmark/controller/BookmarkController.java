@@ -7,8 +7,9 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.spring.app.users.domain.BookMarkDTO;
+import com.spring.app.bookmark.domain.BookMarkDTO;
 import com.spring.app.bookmark.service.BookmarkService;
 import com.spring.app.users.domain.UsersDTO;
 
@@ -17,33 +18,37 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/bookmark")
+@RequestMapping("/bookmark/")
 public class BookmarkController {
 
     private final BookmarkService bookMarkService;
 
     // 북마크 추가
-    @PostMapping("/add")
-    @ResponseBody
-    public Map<String, Object> addBookmark(@RequestParam(name="fk_boardNo") Long fk_boardNo, HttpSession session) {
+    @ResponseBody // JSON 으로 전달할 경우, key value 로 전달하기 위해 어노테이션 필수!
+    @PostMapping("add")
+    public Map<String, Object> addBookmark(@RequestParam(name="fk_boardNo") Long fk_boardNo,
+    								HttpSession session) {
         Map<String, Object> result = new HashMap<>();
-
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        
         if (loginUser == null) {
             result.put("success", false);
-            result.put("message", "로그인이 필요합니다.");
+            result.put("message", "로그인이 필요한 서비스입니다.");
             return result;
         }
-
-        bookMarkService.addBookmark(loginUser.getId(), fk_boardNo);
-        result.put("success", true);
-        result.put("message", "북마크가 추가되었습니다.");
+    	
+        int n = bookMarkService.addBookmark(loginUser.getId(), fk_boardNo);
+        
+    	if(n==1) {
+        	result.put("success", true);
+            //result.put("message", "북마크가 추가되었습니다.");
+		}
         return result;
     }
 
     // 북마크 삭제
-    @PostMapping("/remove")
-    @ResponseBody
+    @ResponseBody // JSON 으로 전달할 경우, key value 로 전달하기 위해 어노테이션 필수!
+    @PostMapping("remove")
     public Map<String, Object> removeBookmark(@RequestParam(name="fk_boardNo") Long fk_boardNo,
                                              HttpSession session) {
         Map<String, Object> result = new HashMap<>();
@@ -54,17 +59,17 @@ public class BookmarkController {
             result.put("message", "로그인이 필요합니다.");
             return result;
         }
-
-        long deleted = bookMarkService.removeBookmark(loginUser.getId(), fk_boardNo);
-        result.put("success", deleted > 0);
-        if (deleted == 0) {
-            result.put("message", "삭제할 북마크가 없습니다.");
+        
+        int n = bookMarkService.removeBookmark(loginUser.getId(), fk_boardNo);
+        
+        if(n==1) {
+        	result.put("success", true);
         }
         return result;
     }
 
     // 마이페이지 북마크 목록
-    @GetMapping("/mypage")
+    @GetMapping("mypage")
     public String getBookmarks(HttpSession session, Model model) {
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         if (loginUser == null) return "login/loginForm";

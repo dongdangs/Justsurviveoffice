@@ -2,7 +2,7 @@ package com.spring.app.entity;
 
 import java.time.LocalDateTime;
 
-import com.spring.app.users.domain.BookMarkDTO;
+import com.spring.app.bookmark.domain.BookMarkDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
