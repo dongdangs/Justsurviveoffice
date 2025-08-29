@@ -80,14 +80,18 @@ public class UsersController {
 
 	    HttpSession session = request.getSession();
 	    session.setAttribute("loginUser", usersDto);
+	    
+	    UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+	    
 
 	    LoginHistoryDTO loginHistoryDTO = LoginHistoryDTO.builder()
-							            .lastLogin(LocalDateTime.now())
-							            .ip(request.getRemoteAddr())
-							            .users(usersService.toEntity(usersDto))
-							            .build();
+							             .lastLogin(LocalDateTime.now())
+							             .ip(request.getRemoteAddr())
+							             .users(usersService.toEntity(usersDto))
+							             .build();
+	    
 	    usersService.saveLoginHistory(loginHistoryDTO);
-
+	    System.out.println("로그인 아이디 : " + loginUser.getId());
 	    return "redirect:/index";
 	}
 	

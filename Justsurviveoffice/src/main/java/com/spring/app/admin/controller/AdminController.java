@@ -175,16 +175,7 @@ public class AdminController {
        	   return (year == null) ? usersService.registerChart()
        			   				 : usersService.registerChart(year);
    }
-   
-   // 카테고리 차트 관련 코드 (장유민)
-   @GetMapping("chart/categoryChart")
-   @ResponseBody
-   public List<CategoryDTO> categoryChart() {
-      List<CategoryDTO> categoryChart = adminService.categoryChart();
-      return categoryChart;
-   } 
-   
-   
+     
    @GetMapping(value = "/chart/registerChartday", produces = "application/json; charset=UTF-8")
    @ResponseBody
    public List<Map<String,String>> registerChartday(
