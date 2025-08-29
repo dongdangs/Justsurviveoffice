@@ -189,6 +189,62 @@
 	        $(document.body).append(form);
 	        form.submit();
 	    });
+		 
+
+		 //댓글 수정
+		 $(document).on("click", ".update-comment", function () {
+	        const commentDiv = $(this).closest(".comment");
+	        const contentDiv = commentDiv.find(".content");
+	        const textarea = commentDiv.find(".edit-content");
+
+	        contentDiv.hide();
+	        textarea.show().focus();
+
+	        commentDiv.find(".update-comment").hide();
+	        commentDiv.find(".delete-comment").hide();
+	        commentDiv.find(".save-edit").show();
+	        commentDiv.find(".cancel-edit").show();
+	    });
+
+	    //  댓글 수정 취소 
+	    $(document).on("click", ".cancel-edit", function () {
+	        const commentDiv = $(this).closest(".comment");
+	        const contentDiv = commentDiv.find(".content");
+	        const textarea = commentDiv.find(".edit-content");
+
+	        // textarea 숨기고 원래 내용 보이기
+	        textarea.hide();
+	        contentDiv.show();
+	        
+	        commentDiv.find(".update-comment").show();
+	        commentDiv.find(".delete-comment").show();
+	        commentDiv.find(".save-edit").hide();
+	        commentDiv.find(".cancel-edit").hide();
+	    });
+
+	    // 댓글 수정 저장 
+	    $(document).on("click", ".save-edit", function () {
+	        const commentDiv = $(this).closest(".comment");
+	        const commentNo = $(this).data("id");
+	        const newContent = commentDiv.find(".edit-content").val().trim();
+
+	        if (newContent.length === 0) {
+	            alert("댓글 내용을 입력해주세요!");
+	            return;
+	        }
+	        const form = $("<form>", {
+	            method: "post",
+	            action: "<%=ctxPath%>/comment/updateComment"
+	        });
+	        form.append($("<input>", { type: "hidden", name: "commentNo", value: commentNo }));
+	        form.append($("<input>", { type: "hidden", name: "content", value: newContent }));
+	        form.append($("<input>", { type: "hidden", name: "fk_boardNo", value: "${boardDto.boardNo}" }));
+	        
+	        $(document.body).append(form);
+	        form.submit();
+	    });
+		 
+		 
 
 		 $('#download').click(function(){
 	        const form = document.downloadForm;
