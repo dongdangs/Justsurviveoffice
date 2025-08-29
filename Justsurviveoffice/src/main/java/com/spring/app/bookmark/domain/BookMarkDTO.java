@@ -24,6 +24,8 @@ public class BookMarkDTO {
 	private LocalDateTime createdAtMark;
 	
 	
+	private Long fk_categoryNo;
+	
 	private String boardName;        
 	private LocalDateTime createdAtBoard; // 게시글 작성일
 	private int readCount;           // 게시글 조회수
