@@ -7,14 +7,11 @@ import java.util.Map.Entry;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.spring.app.board.domain.BoardDTO;
-import com.spring.app.users.domain.CommentDTO;
+import com.spring.app.comment.domain.CommentDTO;
 
 public interface BoardService {
 	
 	//////////////////////////////////////////////////////////////////////////
-	// Hot 게시글 전체 리스트 (조회수 많은 순)
-	public List<BoardDTO> hotAll();
-		
 	// 인기 게시글 리스트 (조회수 많은 순)
 	@Cacheable("hotReadList")
 	public List<BoardDTO> getTopBoardsByViewCount();
@@ -44,21 +41,21 @@ public interface BoardService {
 	
     
     // 내가 작성한 글 목록
-	public List<BoardDTO> getMyBoards(String fkId);
+	public List<BoardDTO> getMyBoards(String fk_id);
 
     // 북마크한 게시글 목록
-    public List<BoardDTO> getBookmarksById(String fkId);
+    public List<BoardDTO> getBookmarksById(String fk_id);
 
 	public List<CommentDTO> getCommentList(Long boardNo);
 
 	//게시물 좋아요 여부 확인
-	public boolean isBoardLiked(String fk_id, Long fk_boardNo);
+	public boolean isBoardLiked(String fk_id, Long fk_boardNo) ;
 
 	//게시물 좋아요 취소
-	public int deleteBoardLike(String fk_id, Long fk_boardNo);
+	public int deleteBoardLike(String fk_id, Long fk_boardNo) ;
 
 	//게시물 좋아요
-	public int insertBoardLike(String fk_id, Long fk_boardNo);
+	public int insertBoardLike(String fk_id, Long fk_boardNo) ;
 
     // 좋아요 수 
 	public int getBoardLikeCount(Long fk_boardNo);
@@ -77,6 +74,7 @@ public interface BoardService {
 	
 	// == 키워드 메소드 작성 해봄 == // 
 	public List<Entry<String, Integer>> getKeyWord(String category);
+
 
 //	
 //	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
