@@ -589,4 +589,5 @@ function boardLike(boardNo, fk_id) {
 	</div>
 </div>
 
+
 </html>
