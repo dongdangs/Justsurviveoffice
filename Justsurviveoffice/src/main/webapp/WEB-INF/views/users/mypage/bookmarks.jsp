@@ -22,6 +22,7 @@ body {
     font-family: 'Noto Sans KR', sans-serif;
 }
 
+
 .sidebar {
     background: #fff;
     border-radius: 12px;
