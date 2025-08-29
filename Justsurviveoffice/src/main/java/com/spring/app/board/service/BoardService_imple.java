@@ -346,6 +346,12 @@ public class BoardService_imple implements BoardService {
 	}
 
 
+//	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
+//	@Override
+//	public int getCreatedAtBoardCnt(String id) {
+//		return boardDao.getCreatedAtBoardCnt(id);
+//	}
+
 	
 	
 }

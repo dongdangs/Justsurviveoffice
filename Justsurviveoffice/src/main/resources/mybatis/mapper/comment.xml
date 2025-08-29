@@ -40,7 +40,6 @@
     </delete>
 
 
-   
    <!-- 대댓글 작성 -->
 	<insert id="insertReply" parameterType="com.spring.app.comment.domain.CommentDTO">
     <selectKey keyProperty="commentNo" resultType="long" order="BEFORE">
@@ -95,4 +94,9 @@
     where commentNo = #{commentNo, jdbcType=NUMERIC}
 	</select>
 		
+   <select id="getCreatedAtCommentCnt" parameterType="String" resultType="Int">
+  		select count(*) from comments
+		where fk_id = #{id} and (sysdate - createdAtComment) &lt;= 1
+  	</select>
+
 </mapper>

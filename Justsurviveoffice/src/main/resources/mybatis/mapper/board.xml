@@ -25,6 +25,10 @@
     <update id="updateBoard" parameterType="BoardDTO">
     	update Board
     	set boardName = #{boardName}, boardContent = #{boardContent}
+    	<if test="boardFileName == null">
+    		,boardFileName = null
+    		,boardFileOriginName = null
+    	</if>
     	<if test="boardFileName != null">
     		,boardFileName = #{boardFileName}
     		,boardFileOriginName = #{boardFileOriginName}
@@ -336,7 +340,10 @@
 		WHERE boardDeleted = 0 AND fk_categoryNo = TO_NUMBER(#{category})
   	</select>
   	
-  	
+  	<select id="getCreatedAtBoardCnt" parameterType="String" resultType="Int">
+  		select count(*) from board
+		where fk_id = #{id} and (sysdate - createdAtBoard) &lt;= 1
+  	</select>
   	
 </mapper>
 

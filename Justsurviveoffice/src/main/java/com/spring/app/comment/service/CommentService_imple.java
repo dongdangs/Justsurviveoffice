@@ -49,11 +49,25 @@ public class CommentService_imple implements CommentService {
         return n;
     }
 
+    // 유저가 하루동안 쓴 댓글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
+	@Override
+	public int getCreatedAtCommentCnt(String id) {
+		int n = commentDao.getCreatedAtCommentCnt(id);
+		return n;
+	}
+
 
     //대댓글 목록 조회
 	@Override
 	public CommentDTO getReplyById(Long commentNo) {
 		return commentDao.getReplyById(commentNo);
+	}
+
+
+	@Override
+	public boolean updateComment(Long commentNo, String newContent, String fk_id) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 
