@@ -535,18 +535,11 @@ function boardLike(boardNo, fk_id) {
            <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
            <button type="button" class="btn" id="addComment">댓글 등록</button>
        </form>
->>>>>>> refs/heads/main
     </div>
 </c:forEach>
 </div>
 
-<!-- ======== 댓글 작성 폼 ======== -->
-<form id="commentForm" action="<%= ctxPath%>/comment/writeComment" method="post" style="margin-top:15px;">
-    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
-    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
-    <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
-    <button type="submit" class="btn" id="addComment">댓글 등록</button>
-</form>  
+ 
        
     <!-- 목록 버튼, 이전글 다음글 -->
     <div style="display:flex; margin-top:3px;"> 
