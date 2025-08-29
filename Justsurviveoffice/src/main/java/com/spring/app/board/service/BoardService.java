@@ -61,7 +61,7 @@ public interface BoardService {
 	public int insertBoardLike(String fk_id, Long fk_boardNo) ;
 
     // 좋아요 수 
-	public int getBaordLikeCount(Long fk_boardNo);
+	public int getBoardLikeCount(Long fk_boardNo);
 
 	// 메인페이지 카테고리 자동 불러오기 메서드
 	public List<Map<String, String>> getIndexList(String fk_categoryNo);
@@ -78,7 +78,6 @@ public interface BoardService {
 	// == 키워드 메소드 작성 해봄 == // 
 	public List<Entry<String, Integer>> getKeyWord(String category);
 
-	public int getBoardLikeCount(Long boardNo);
 
 //	
 //	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)

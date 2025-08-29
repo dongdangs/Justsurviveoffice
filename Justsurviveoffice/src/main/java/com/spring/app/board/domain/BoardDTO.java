@@ -69,5 +69,6 @@ public class BoardDTO {
 	private String nextNo;         // 다음글번호
 	private String nextName;     // 다음글제목 
 	
+	
 
 }

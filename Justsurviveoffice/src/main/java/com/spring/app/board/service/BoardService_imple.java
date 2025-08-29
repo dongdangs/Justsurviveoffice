@@ -219,7 +219,7 @@ public class BoardService_imple implements BoardService {
 
 		//게시글 좋아요 수
 		@Override
-		public int getBaordLikeCount(Long fk_boardNo) {
+		public int getBoardLikeCount(Long fk_boardNo) {
 			return boardDao.getLikeCount(fk_boardNo);
 		}
 		
