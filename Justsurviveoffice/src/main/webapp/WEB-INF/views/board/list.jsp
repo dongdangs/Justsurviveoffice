@@ -64,8 +64,120 @@
 .title,content { /* 제목과 내용의 라인을 한줄로 제한하고, 이상이되면 안보이게! */
     white-space: nowrap;
     overflow: hidden;
-    
 }
+
+
+/* 입력창-자동완성 래퍼 */
+.autocomplete { position: relative; display: inline-block; }
+
+/* 자동검색 박스 */
+#displayList{
+  position: absolute;        /* 입력창 바로 아래 붙이기 */
+  top: 100%;
+  left: 0; right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  z-index: 1000;
+  display: none;
+  max-height: 180px;         /* 대략 6줄 */
+  overflow-y: auto;          /* 넘치면 스크롤 */
+  overflow-x: hidden;
+  border-radius: 0 0 6px 6px;
+}
+
+/* 항목 스타일 */
+#displayList .result{
+  display: block;            /* 줄바꿈 대신 블록으로 */
+  padding: 6px 8px;
+  line-height: 24px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+}
+#displayList .result:hover{ background:#f5f7fa; }
+#displayList .result span{ color:#d00; font-weight:600; } /* 강조색 */
+
+
+/* ------------------------------------------------  */
+.col-md-9 { position: relative; } /* 패널 absolute 배치를 위한 기준 */
+.keyword-panel {
+  position: absolute;
+  top: 16px;      /* 상단 여백 */
+  right: 16px;    /* 우측 여백 */
+  width: 180px;
+  background: rgba(255,255,255,0.35); /* 반투명 */
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  backdrop-filter: blur(4px);         /* 지원 브라우저에서 유리 느낌 */
+  -webkit-backdrop-filter: blur(4px);
+  overflow: hidden;
+  z-index: 5;                         /* 상단 레이어 */
+}
+
+.keyword-header {
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #333;
+  background: rgba(255,255,255,0.25);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.keyword-table-wrap {
+  max-height: 260px;      /* 스크롤 높이 */
+  overflow: auto;
+}
+
+/* 테이블을 “투명 스타일”로 */
+.keyword-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.92rem;
+  color: #222;
+}
+
+.keyword-table th, .keyword-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  background: transparent;  /* 투명 */
+}
+
+.keyword-table th {
+  text-align: left;
+  color: #444;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.28); /* 헤더만 약간 더 보이게 */
+  backdrop-filter: blur(4px);
+}
+
+.keyword-table td:nth-child(2) {
+  text-align: right;
+  width: 64px;
+  color: #555;
+}
+
+/* 행 hover */
+.keyword-table tbody tr:hover {
+  background: rgba(0,0,0,0.035);
+}
+
+/* 너무 긴 키워드는 말줄임 */
+.keyword-word {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 160px;
+  display: inline-block;
+}
+
+
 </style> 
 
 <script type="text/javascript">
@@ -94,7 +206,7 @@
 	   
 	   
 	   
-	   <%-- === 검색어 입력시 자동글 완성하기 2 === --%>
+	   <%-- === 검색어 입력시 자동글 완성하기 === --%>
 	   $('div#displayList').hide();
 	   
 	   $('input[name="searchWord"]').keyup(function(){
@@ -109,16 +221,19 @@
 		   
 		   else {
 			   if( $('select[name="searchType"]').val() == "boardName" || 
-				   $('select[name="searchType"]').val() == "fk_id" ) {
+				   $('select[name="searchType"]').val() == "boardContent" || 
+				   $('select[name="searchType"]').val() == "boardName_boardContent" ||
+				   $('select[name="searchType"]').val() == "fk_id") {
 				   
 				   $.ajax({
 					   url:"<%= ctxPath%>/board/wordSearchShow",
 					   type:"get",
 					   data:{"searchType":$('select[name="searchType"]').val()
-						    ,"searchWord":$('input[name="searchWord"]').val()},
+						    ,"searchWord":$('input[name="searchWord"]').val()
+						    ,"category":${category}},
 					   dataType:"json",
 					   success:function(json){
-						   <%-- === 검색어 입력시 자동글 완성하기 7 === --%>
+						  
 						   if(json.length > 0) {
 							   // 검색된 데이터가 있는 경우임.
 							   let v_html = ``;
@@ -129,7 +244,7 @@
 								   const idx = word.toLowerCase().indexOf($('input[name="searchWord"]').val().toLowerCase());
 								   const len = $('input[name="searchWord"]').val().length;
 							       const result = word.substring(0, idx) + "<span style='color:red;'>"+word.substring(idx, idx+len)+"</span>" + word.substring(idx+len);
-							       v_html += `<span style='cursor:pointer;' class='result'>\${result}</span><br>`;
+							       v_html += `<span class='result'>\${result}</span>`;
 							   });// end of $.each(json, function(index, item){})-------------------
 							   
 							   const input_width = $('input[name="searchWord"]').css("width"); // 검색어 input 태그 width 값 알아오기 
@@ -147,9 +262,9 @@
 		   }
 	   });// end of $('input[name="searchWord"]').keyup(function(){})-----------------
 	   
-	   <%-- === 검색어 입력시 자동글 완성하기 8 === --%>
+	   <%-- === 검색어 입력시 자동글 완성하기  === --%>
 	   $(document).on('click', 'span.result', function(e){
-		    const word = $(e.target).text();
+		    const word = $(this).text()
 		    $('input[name="searchWord"]').val(word); // 텍스트박스에 검색된 결과의 문자열을 입력해준다.
 		    $('div#displayList').hide();
 		    searchBoard(); // 글목록 검색하기 요청
@@ -190,6 +305,7 @@
 	        data: { fk_boardNo: boardNo },
 	        success: function(json) {
 	            const icon = $('#bookmark-icon-'+boardNo);
+	            
 	            if (json.success) {
 	            	icon.removeClass("fa-solid fa-bookmark text-warning fa-regular");
 	            	if (isBookmarked) {
@@ -203,7 +319,7 @@
 	            	}
 	            } else {
 	                alert(json.message);
-	                window.location.href = "<%=ctxPath%>/login/loginForm";
+	                window.location.href = "<%=ctxPath%>/users/loginForm";
 	            }
 	        },
 	        error: function(request, status, error) {
@@ -217,10 +333,10 @@
    // === 글목록 검색하기 요청 === //
    function searchBoard() {
       const form = document.searchForm;
-   <%--  
+     
       form.method = "get";
-      form.action = "<%= ctxPath%>/board/list/1&...";
-   --%>      
+      form.action = "<%= ctxPath%>/board/list/${category}";
+        
       form.submit();
    }
    
@@ -240,6 +356,34 @@
 			<span>금쪽이들의&nbsp;</span></c:if>
 		<span>생존 게시판</span>
 	</div>
+	
+	<!-- === 키워드 패널 (우측 상단) === -->
+	<div class="keyword-panel">
+	  <div class="keyword-header text-center">TOP 키워드</div>
+	  <div class="keyword-table-wrap">
+	    <table class="keyword-table" >
+	      <tbody>
+	        <!-- 컨트롤러에서 List<Map.Entry<String,Integer>> keywordTop 로 전달했다고 가정 -->
+	        <c:if test="${not empty keyword_top}">
+	          <c:forEach var="e" items="${keyword_top}">
+	            <tr>
+	              <td><span class="keyword-word">${e.key}</span></td>
+	              <td>${e.value}</td>
+	            </tr>
+	          </c:forEach>
+	        </c:if>
+	
+	        <!-- 데이터 없을 때 기본 틀(placeholder) -->
+	        <c:if test="${empty keyword_top}">
+	          <tr><td><span class="keyword-word">데이터 없음</span></td><td>0</td></tr>
+	          <tr><td><span class="keyword-word">—</span></td><td>0</td></tr>
+	          <tr><td><span class="keyword-word">—</span></td><td>0</td></tr>
+	        </c:if>
+	      </tbody>
+	    </table>
+	  </div>
+	</div>
+	
    <h2 style="margin-bottom: 30px; font-size: 25pt; font-weight: bold;">글목록</h2>
    <%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
    <form name="searchForm" style="margin-top: 20px;">
@@ -249,19 +393,21 @@
          <option value="boardName_boardContent">글제목+글내용</option>
          <option value="fk_id">글쓴이</option>
       </select>
-      <input type="text" name="searchWord" size="50" autocomplete="off" /> 
-          <input type="text" style="display: none;"/> <%-- form 태그내에 input 태그가 오로지 1개 뿐일경우에는 엔터를 했을 경우 검색이 되어지므로 이것을 방지하고자 만든것이다. --%>  
+      
+       <!-- 입력창 + 자동완성 드롭다운을 한 박스로 묶기 -->
+      <span class="autocomplete">
+      	<input id="searchWord" type="text" name="searchWord" size="50" autocomplete="off" />
+      	<div id="displayList"></div>
+      </span>
+       
+      <input type="text" style="display: none;"/> <%-- form 태그내에 input 태그가 오로지 1개 뿐일경우에는 엔터를 했을 경우 검색이 되어지므로 이것을 방지하고자 만든것이다. --%>  
       <button type="button" class="btn btn-secondary btn-sm" onclick="searchBoard()">검색</button> 
       
       <span><a href="<%=ctxPath %>/board/write/${category}" class="btn btn-secondary btn-sm" 
             style="background-color: navy;">글쓰기</a></span>
-      <span><input name="category" style="display: none" value="${category}"/></span>
+      <!-- <span><input type="hidden" name="category"/></span> -->
    </form> 
    
-   
-   <%-- === 검색어 입력시 자동글 완성하기 1 === --%>
-   <div id="displayList" style="border:solid 1px gray; border-top:0px; height:100px; margin-left:8.7%; margin-top:-1px; margin-bottom:30px; overflow:auto;">
-    </div>
    
    <%--  특정 글제목을 클릭했을때, 특정 글1개를 보여줄때 POST 방식으로 넘기기 위해 form 태그를 만들겠다. --%>
    <form name="viewForm">
@@ -322,7 +468,91 @@
    
    <%-- === 페이지바 보여주기 === --%>
    <div align="center" style="border: solid 0px gray; width: 80%; margin: 30px auto;">
-        ${requestScope.pageBar} page
+        <!-- 페이지 바 시작 -->
+		<c:set var="cur"  value="${requestScope.currentShowPageNo}" />
+		<c:set var="last" value="${requestScope.totalPage}" />
+		
+		<div class="pagination1">
+			
+			<!-- 맨처음 -->
+			<c:choose>
+				<c:when test="${cur > 1}">
+					<c:url var="firstUrl" value="/board/list/${requestScope.category}">	<!-- JSP에서 URL을 안전하게 만들어주는 JSTL 태그 -->
+						<c:param name="currentShowPageNo" value="1"/>	<!-- URL 뒤에 붙을 쿼리 파라미터를 추가하는 태그 -->
+						<c:param name="searchType" value="${requestScope.searchType}"/>
+						<c:param name="searchWord" value="${requestScope.searchWord}"/>
+					</c:url>
+					<a class="page-btn" href="${firstUrl}">&laquo;</a>
+				</c:when>
+				<c:otherwise>
+					<span class="page-btn disabled">&laquo;</span>
+				</c:otherwise>
+			</c:choose>
+			
+			<!-- 이전 -->
+			<c:choose>
+				<c:when test="${cur > 1}">
+					<c:url var="prevUrl" value="/board/list/${requestScope.category}">
+						<c:param name="currentShowPageNo" value="${cur - 1}"/>
+						<c:param name="searchType" value="${requestScope.searchType}"/>
+						<c:param name="searchWord" value="${requestScope.searchWord}"/>
+					</c:url>
+					<a class="page-btn" href="${prevUrl}">⬅️</a>
+				</c:when>
+				<c:otherwise>
+					<span class="page-btn disabled">⬅️</span>
+				</c:otherwise>
+			</c:choose>
+			
+			<!-- 페이지 번호 -->
+			<c:forEach var="i" begin="1" end="${last}">
+				<c:choose>
+					<c:when test="${i == cur}">
+						<a class="page-btn active" href="#">${i}</a>
+					</c:when>
+					<c:otherwise>
+						<c:url var="pageUrl" value="/board/list/${requestScope.category}">
+							<c:param name="currentShowPageNo" value="${i}"/>
+							<c:param name="searchType" value="${requestScope.searchType}"/>
+							<c:param name="searchWord" value="${requestScope.searchWord}"/>
+						</c:url>
+						<a class="page-btn" href="${pageUrl}">${i}</a>
+					</c:otherwise>
+				</c:choose>
+			</c:forEach>
+			
+			<!-- 다음 -->
+			<c:choose>
+				<c:when test="${cur < last}">
+					<c:url var="nextUrl" value="/board/list/${requestScope.category}">
+						<c:param name="currentShowPageNo" value="${cur + 1}"/>
+						<c:param name="searchType" value="${requestScope.searchType}"/>
+						<c:param name="searchWord" value="${requestScope.searchWord}"/>
+					</c:url>
+					<a class="page-btn" href="${nextUrl}">➡️</a>
+				</c:when>
+				<c:otherwise>
+					<span class="page-btn disabled">➡️</span>
+				</c:otherwise>
+			</c:choose>
+			
+			<!-- 마지막 -->
+			<c:choose>
+				<c:when test="${cur < last}">
+					<c:url var="lastUrl" value="/board/list/${requestScope.category}">
+						<c:param name="currentShowPageNo" value="${last}"/>
+						<c:param name="searchType" value="${requestScope.searchType}"/>
+						<c:param name="searchWord" value="${requestScope.searchWord}"/>
+					</c:url>
+					<a class="page-btn" href="${lastUrl}">&raquo;</a>
+				</c:when>
+				<c:otherwise>
+					<span class="page-btn disabled">&raquo;</span>
+				</c:otherwise>
+			</c:choose>
+			
+		</div>
+		<!-- 페이지 바 종료 -->
    </div>
    
   </div>   

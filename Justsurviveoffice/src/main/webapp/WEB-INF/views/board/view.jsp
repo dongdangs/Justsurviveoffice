@@ -59,9 +59,10 @@
 	        // === 댓글내용 유효성 검사 === //
 	        let contentVal = $('textarea[name="content"]').val().trim();
 	        if(contentVal.length == 0) {
-	        	alert("댓글내용을 입력해주세요 !");
-	        	return; 
+	        	alert("댓글내용을 입력해주세요.");
+	        	return;
 	        }
+	        
 	        const form = document.commentform;
 	        form.method = "post";
 	        form.action = "<%= ctxPath%>/comment/writeComment";
@@ -259,6 +260,40 @@ function boardLike(boardNo, fk_id) {
         }
     });
 }
+	function boardLike(boardNo, fk_id) {
+	    const icon = $('#boardLike-icon-'+boardNo);
+	    const likeCountSpan = $("#likeCount");
+	    $.ajax({
+	        url: "<%=ctxPath%>/board/boardlike",
+	        type: "POST",
+	        data: { fk_boardNo: boardNo },
+	        success: function(json) {
+	            if (json.success) {
+	            	// 현재 좋아요 상태 변경
+		            const isLiked = json.status === "liked";
+		            // 클래스 완전히 초기화 후 상태 적용
+		            icon.removeClass("fa-solid fa-regular text-warning");
+		            if (isLiked) {
+		                icon.addClass("fa-solid fa-thumbs-up text-warning");
+		            } 
+		            else {
+		                icon.addClass("fa-regular fa-thumbs-up");
+		            }
+		            // data-liked 속성 갱신
+		            icon.attr("data-liked", isLiked);
+		            // 좋아요 개수 즉시 갱신
+		            likeCountSpan.text(json.likeCount);
+	            }
+	            else {
+	            	alert(json.message);
+	            	window.location.href = "<%=ctxPath%>/users/loginForm";
+	            }
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}
 	
 	<!-- 북마크기능 -->
     function bookmark(boardNo, fk_id, isBookmarked) {
@@ -284,7 +319,7 @@ function boardLike(boardNo, fk_id) {
 	            	}
 	            } else {
 	                alert(json.message);
-	                window.location.href = "<%=ctxPath%>/login/loginForm";
+	                window.location.href = "<%=ctxPath%>/users/loginForm";
 	            }
 	        },
 	        error: function(request, status, error) {
@@ -310,6 +345,7 @@ function boardLike(boardNo, fk_id) {
 		 frm.action = "<%= ctxPath%>/board/view";
 		 frm.submit();
 	}
+	
 	
 </script>
 <body style="background-image: url('<%= ctxPath %>/images/background.png'); "></body>
@@ -458,6 +494,48 @@ function boardLike(boardNo, fk_id) {
                 </div>
             </c:forEach>
         </div>
+	<!-- 댓글 영역 -->
+    <div class="comment-section">
+	  <h3 style="font-weight: bold;">댓글<span>${fn:length(commentList)}</span></h3>
+        <c:forEach var="comment" items="${commentList}">
+	    <div class="comment">
+	        <div class="meta">
+	            <span>${comment.fk_id}</span> | 
+	            	<span class="comment-date">
+			    	<c:choose>
+			        <c:when test="${not empty comment.updatedAtComment}">
+			            ${fn:replace(comment.updatedAtComment, "T", " ")} 
+			            <span style="color:gray;">(수정됨)</span>
+			        </c:when>
+			        <c:otherwise>
+			            ${fn:replace(comment.createdAtComment, "T", " ")}
+			        </c:otherwise>
+			    </c:choose>
+				</span>
+	        </div>
+	        <!-- 댓글 내용 -->
+	        <div class="content">${comment.content}</div>
+	        <!-- 수정 입력창 (숨김) -->
+	        <textarea class="form-control edit-content" style="display:none;">${comment.content}</textarea>
+	        <!-- 버튼 영역 -->
+	        <div class="comment-buttons mt-2">
+	            <c:if test="${not empty loginUser and loginUser.id == comment.fk_id}">
+	                <button type="button" class="btn update-comment" data-id="${comment.commentNo}">수정</button>
+	                <button type="button" class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
+	                <button type="button" class="btn btn-sm  save-edit" data-id="${comment.commentNo}" style="display:none;">저장</button>
+	                <button type="button" class="btn btn-sm  cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
+	            </c:if>
+	        </div>
+	    </div>
+		</c:forEach>
+       <!-- 댓글 작성 -->
+       <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
+           <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+           <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+           <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
+           <button type="button" class="btn" id="addComment">댓글 등록</button>
+       </form>
+>>>>>>> refs/heads/main
     </div>
 </c:forEach>
 </div>
@@ -485,8 +563,8 @@ function boardLike(boardNo, fk_id) {
    	 	<input type="hidden" name="boardNo" />
 		<input type="hidden" name="boardWritt" />
 	</form>
-	<input type="hidden" id="preNo" name="preNo"  val="${boardDto.preNo}" />
-	<input type="hidden" id="NextNo" name="nextNo" val="${boardDto.nextNo}" />
+	<input type="hidden" id="preNo" name="preNo"  value="${boardDto.preNo}" />
+	<input type="hidden" id="NextNo" name="nextNo" value="${boardDto.nextNo}" />
 	</div>
 </div>
 

@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-//	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
@@ -41,11 +41,15 @@ dependencies {
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	
+	// Jsoup 관련 
 	implementation 'org.jsoup:jsoup:1.18.1'
+	
 	// mongodb 관련
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
 	//implementation 'org.mongodb:mongodb-driver-sync'
 	implementation 'org.mongodb:mongodb-driver-sync:5.2.1'
+	
 	// Redis 의존성 추가
     //implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     

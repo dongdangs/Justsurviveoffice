@@ -30,6 +30,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 									 "/login/**",
 									 "/board/list/**",
 									 "/board/view/**",
+									 "/board/boardlike/**",
+									 "/board/wordSearchShow/**",
 									 "/bookmark/**",
 									 "/admin/**",
 									 "/survey/**",

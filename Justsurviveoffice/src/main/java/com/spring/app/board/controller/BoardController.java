@@ -188,7 +188,7 @@ public class BoardController {
 	}
 	
 	
-	
+	  
  // 각 카테고리 게시판에 들어가기!
 	//또는 전체 게시물 검색!
 	@GetMapping("list/{category}") // RestAPI
@@ -208,15 +208,17 @@ public class BoardController {
 			modelview.setViewName("redirect:/index");
 			return modelview;
 		}
-
+		
+		// ===========  게시글 보여주기(페이징 처리) 수정 시작 =========== //
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("searchType", searchType);
 		paraMap.put("searchWord", searchWord);
 		paraMap.put("category", category);
+		paraMap.put("currentShowPageNo", currentShowPageNo);
 		// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
 		
-		int totalCount = 0;    // 총 게시물 건수
-		int sizePerPage = 10;  // 한 페이지당 보여줄 게시물 건수
+		int totalCount = boardService.searchListCount(paraMap);	// 총 검색된 게시물 건수
+		int sizePerPage = 5;  // 한 페이지당 보여줄 게시물 건수
 		int totalPage = 0;     // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
 		totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
 
@@ -238,7 +240,17 @@ public class BoardController {
 		modelview.addObject("searchWord", searchWord);
 		modelview.addObject("category", category);
 		
+		// 페이지바 전용 데이터
+		modelview.addObject("totalPage", totalPage);
+		int currentPage = Integer.parseInt(currentShowPageNo);
+		modelview.addObject("currentShowPageNo", currentPage);
+		// ===========  게시글 보여주기(페이징 처리) 수정 끝 =========== //
 		modelview.setViewName("board/list");
+		
+		// == 키워드 메소드 작성 해봄 == // 
+		List<Map.Entry<String,Integer>> keyword_top = boardService.getKeyWord(category);	// 서비스에서 구현
+		modelview.addObject("keyword_top", keyword_top);
+		
 		
 		return modelview;
 	}
@@ -365,7 +377,7 @@ public class BoardController {
 				boardDto.setBookmarked(bookmarkService.isBookmarked(
 						loginUser.getId(), 
 						boardDto.getBoardNo())); 
-				
+
 				 // 좋아요 여부 
 			    boolean isLiked = boardService.isBoardLiked(loginUser.getId(), boardDto.getBoardNo());
 			    boardDto.setBoardLiked(isLiked);
@@ -378,6 +390,7 @@ public class BoardController {
 	        modelview.addObject("likeCount", likeCount);
 
 			modelview.addObject("boardDto", boardDto);
+
 			// 댓글 목록 조회
 	        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
 	      //  List<CommentDTO> replyList = boardService.getReplyList(boardDto.getBoardNo());
@@ -521,8 +534,8 @@ public class BoardController {
 	@PostMapping("download")
     public void download(HttpServletRequest request,  
 		   				HttpServletResponse response,
-		   				String boardFileName,
-		   				String boardFileOriginName) {
+		   				@RequestParam(name = "boardFileName") String boardFileName,
+		   				@RequestParam(name = "boardFileOriginName") String boardFileOriginName) {
       
       // HttpServletResponse response -> 서버가 클라이언트(웹브라우저)로 보내는 응답 객체
       response.setContentType("text/html; charset=UTF-8");   // 브라우저가 응답을 HTML로 이해하도록 미리 Content-Type을 "text/html; charset=UTF-8"로 지정
@@ -593,7 +606,6 @@ public class BoardController {
       }
       
    }
-
 	
 	
 	//////////////////////////////////////////////////////////////////////
@@ -620,7 +632,6 @@ public class BoardController {
 
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         System.out.println("===> loginUser: " + loginUser);
-
         
         if (loginUser == null) {
 
@@ -657,5 +668,22 @@ public class BoardController {
         return result;
     }
 	
-
+    
+	
+    // 게시글 목록에 검색어 자동입력
+ 	@GetMapping("wordSearchShow")
+ 	@ResponseBody
+ 	public List<Map<String, String>> wordSearchShow(@RequestParam(name = "searchType", defaultValue = "") String searchType,
+ 													@RequestParam(name = "searchWord", defaultValue = "") String searchWord,
+ 													@RequestParam(name = "category") String category) {
+ 		
+ 		Map<String, String> paraMap = new HashMap<>();
+ 		paraMap.put("searchType", searchType);
+ 		paraMap.put("searchWord", searchWord);
+ 		paraMap.put("category", category);
+ 		
+ 		List<Map<String, String>> mapList = boardService.getSearchWordList(paraMap);	// 자동 검색어 완성시키기
+ 		
+ 		return mapList;
+ 	}
 }

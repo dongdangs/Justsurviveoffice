@@ -28,7 +28,8 @@ public class CommentController {
 	
 	// 댓글 작성
 	@PostMapping("writeComment")
-	public String writeComment(ModelAndView modelview, CommentDTO comment,
+	public String writeComment(ModelAndView modelview, 
+								CommentDTO comment,
 	                         	HttpSession session) {
 
 	    UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
