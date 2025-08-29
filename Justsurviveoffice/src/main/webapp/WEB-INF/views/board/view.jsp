@@ -485,8 +485,6 @@ function boardLike(boardNo, fk_id) {
 	        <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
 	        
 		    <form id="bookmarkForm-${boardDto.boardNo}">
-			    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
-			    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
 			    <i id="bookmark-icon-${boardDto.boardNo}"
 			       class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
 			       style="cursor: pointer;"
