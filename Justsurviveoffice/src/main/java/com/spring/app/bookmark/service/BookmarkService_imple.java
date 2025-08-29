@@ -12,27 +12,34 @@ import com.spring.app.bookmark.model.BookmarkDAO;
 @RequiredArgsConstructor
 public class BookmarkService_imple implements BookmarkService {
 
-    private final BookmarkDAO bookMarkDao;
-
+    private final BookmarkDAO bookmarkDao;
+    
+    // 북마크 추가
     @Override
     public int addBookmark(String fk_id, Long fk_boardNo) {
-    	return bookMarkDao.addBookmark(fk_id, fk_boardNo);
+    	return bookmarkDao.addBookmark(fk_id, fk_boardNo);
     }
-
+    // 북마크 삭제
     @Override
     public int removeBookmark(String fk_id, Long fk_boardNo) {
-        return bookMarkDao.removeBookmark(fk_id, fk_boardNo);
+        return bookmarkDao.removeBookmark(fk_id, fk_boardNo);
     }
 
+    // 1개의 게시물에 관련된 모든 북마크 삭제.
+ 	@Override
+ 	public int removeAllBookmark(Long boardNo) {
+ 		return bookmarkDao.removeAllBookmark(boardNo);
+ 	}
 
+ 	// 개인의 북마크 리스트 가져오기
     @Override
     public List<BookMarkDTO> getUserBookmarks(String fk_id) {
-        return bookMarkDao.getUserBookmarks(fk_id);
+        return bookmarkDao.getUserBookmarks(fk_id);
     }
 
     @Override
     public boolean isBookmarked(String fk_id, Long fk_boardNo) {
-        return bookMarkDao.checkBookmark(fk_id, fk_boardNo) > 0;
+        return bookmarkDao.checkBookmark(fk_id, fk_boardNo) > 0;
     }
 
 

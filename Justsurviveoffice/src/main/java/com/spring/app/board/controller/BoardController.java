@@ -420,10 +420,8 @@ public class BoardController {
 				modelview.addObject("message", "글이 삭제되었습니다.");
 				modelview.addObject("loc", "list/"+boardDto.getFk_categoryNo());
 				modelview.setViewName("msg");
-			// 선택된 게시물(1개)이 삭제되었고, 해당 게시물이 북마크가 되어있는 경우라면 삭제!
-				if(boardDto.getBookmarked()) {
-					bookmarkService.removeBookmark(boardDto.getFk_id(), boardDto.getBoardNo());
-				}else System.out.println("북마크가 없다고?!");
+			// 선택된 게시물(1(n)개)이 삭제되었다면, 해당 게시물에 관련된 북마크를 모두 삭제.
+				bookmarkService.removeAllBookmark(boardDto.getBoardNo());
 			}
 			else {
 				modelview.addObject("message", "이미 삭제된 게시물입니다.");

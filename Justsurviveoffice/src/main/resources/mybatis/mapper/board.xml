@@ -239,7 +239,7 @@
                   else boardcontent
              end as boardcontent
       FROM board
-        WHERE fk_id = #{fk_id}
+        WHERE fk_id = #{fk_id} 
         ORDER BY createdAtBoard DESC
     </select>
 
