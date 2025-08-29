@@ -66,6 +66,23 @@ public class CommentController {
 	    return "redirect:/board/view?boardNo="+comment.getFk_boardNo();
 	}
 
+	 // 댓글 수정
+    @PostMapping("/updateComment")
+    public String updateComment( @RequestParam(name="commentNo") Long commentNo,
+						            @RequestParam(name="content") String content,
+		                            @RequestParam(name = "fk_boardNo") Long fkBoardNo,
+						            HttpSession session) {
+
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "login";
+        }
+
+        boolean result = commentService.updateComment(commentNo, content, loginUser.getId());
+	 
+        return "redirect:/board/view?boardNo=" + fkBoardNo;
+        
+    }
 	
     //댓글삭제
     @PostMapping("deleteComment")
