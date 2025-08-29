@@ -5,7 +5,7 @@ import java.util.List;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.spring.app.users.domain.CommentDTO;
+import com.spring.app.comment.domain.CommentDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +34,14 @@ public class CommentDAO_imple implements CommentDAO {
         return sql.delete("comments.deleteComment", commentNo);
     }
 
-    // 댓글 수정
+    
+    //대댓글 삭제
+	@Override
+	public int deleteReply(Long commentNo) {
+        return sql.delete("comments.deleteReply", commentNo);
+	}
+	
+	// 댓글 수정
     @Override
     public int updateComment(Long commentNo, String content, String fk_id) {
         java.util.Map<String, Object> paramMap = new java.util.HashMap<>();
@@ -51,5 +58,27 @@ public class CommentDAO_imple implements CommentDAO {
 		return n;
 	}
 
+	//대댓글 작성
+	@Override
+	public int insertReply(CommentDTO comment) {
+		return sql.insert("comments.insertReply", comment);
+	}
+
+	//대댓글 목록
+	@Override
+	public List<CommentDTO> getRepliesByParentNo(Long commentNo) {
+		return sql.selectList("comments.getRepliesByParentNo", commentNo);
+	}
+
+	//대댓글 조회
+	@Override
+	public CommentDTO getReplyById(Long commentNo) {
+		return sql.selectOne("comments.getReplyById",commentNo);
+	}
+
+	
+	
+
+  
   
 }

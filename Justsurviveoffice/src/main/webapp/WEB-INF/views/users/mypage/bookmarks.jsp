@@ -22,6 +22,7 @@ body {
     font-family: 'Noto Sans KR', sans-serif;
 }
 
+
 .sidebar {
     background: #fff;
     border-radius: 12px;
@@ -147,7 +148,7 @@ $(function () {
   }); //end of $("#btnQuit").on("click", function (e) {})
   
   
-	//북마크 삭제
+//북마크 삭제
   $(document).on("click", ".btnDelete", function(e) {
 	    e.preventDefault();
 
@@ -215,6 +216,7 @@ $(function () {
                     <li class="nav-item"><a class="nav-link" href="<%= ctxPath%>/mypage/forms">내가 쓴 글</a></li>
                     <li class="nav-item"><a class="nav-link active" href="<%= ctxPath%>/mypage/bookmarks">내 북마크</a></li>
                 </ul>
+                
 
                 <h5>내 북마크 목록</h5>
                 <hr>
@@ -234,21 +236,32 @@ $(function () {
 						    </tr>
 						</thead>
                             <tbody>
-						    <c:forEach var="bm" items="${myBookmarks}" varStatus="st">
+						    <c:forEach var="bookmark" items="${myBookmarks}" varStatus="st">
+						    
+						     <form id="viewForm${bookmark.fk_boardNo}" 
+							      action="<%= ctxPath %>/board/view" 
+							      method="post" 
+							      style="display:none;">
+							    <input type="hidden" name="category" value="${bookmark.fk_categoryNo}">
+							    <input type="hidden" name="boardNo" value="${bookmark.fk_boardNo}">
+							</form>
+							
 						    <tr>
 						        <td>${st.index + 1}</td>
 						        <td>
-						            <a href="${pageContext.request.contextPath}/board/detail?boardNo=${bm.fk_boardNo}">
-						                ${bm.boardName}
-						            </a>
+						            <a href="javascript:void(0);" 
+							           onclick="document.getElementById('viewForm${bookmark.fk_boardNo}').submit();" 
+							           style="color: #000;">
+							            ${bookmark.boardName}
+							        </a>
 						        </td>
-						        <td>${fn:replace(bm.createdAtMark, "T", " ")}</td>
+						        <td>${fn:replace(bookmark.createdAtMark, "T", " ")}</td>
 						        <td>
-						        	     <!--fk_boardNo값: ${bm.fk_boardNo} -->
+						        	     <!--fk_boardNo값: ${bookmark.fk_boardNo} -->
 
 						            <button type="button"
 								        class="btn btn-sm btn-outline-danger btnDelete"
-								        data-fk_boardno="${bm.fk_boardNo}">
+								        data-fk_boardno="${bookmark.fk_boardNo}">
 								    삭제
 								</button>
 						        </td>

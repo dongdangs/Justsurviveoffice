@@ -21,11 +21,11 @@ import com.spring.app.admin.controller.AdminController;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
 import com.spring.app.model.HistoryRepository;
 import com.spring.app.pointlog.model.PointLogDAO;
-import com.spring.app.users.domain.CommentDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -380,6 +380,8 @@ public class BoardController {
 			// 좋아요 개수 추가
 	        int likeCount = boardService.getBoardLikeCount(boardDto.getBoardNo());
 	        modelview.addObject("likeCount", likeCount);
+			modelview.addObject("boardDto", boardDto);
+
 			// 댓글 목록 조회
 	        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
 	        modelview.addObject("commentList", commentList);
