@@ -147,7 +147,7 @@ $(function () {
   }); //end of $("#btnQuit").on("click", function (e) {})
   
   
-	//북마크 삭제
+//북마크 삭제
   $(document).on("click", ".btnDelete", function(e) {
 	    e.preventDefault();
 
@@ -236,6 +236,15 @@ $(function () {
 						</thead>
                             <tbody>
 						    <c:forEach var="bm" items="${myBookmarks}" varStatus="st">
+						    
+						     <form id="viewForm${bm.fk_boardNo}" 
+							      action="<%= ctxPath %>/board/view" 
+							      method="post" 
+							      style="display:none;">
+							    <input type="hidden" name="category" value="${bm.fk_categoryNo}">
+							    <input type="hidden" name="boardNo" value="${bm.fk_boardNo}">
+							</form>
+							
 						    <tr>
 						        <td>${st.index + 1}</td>
 						        <td>
