@@ -13,14 +13,14 @@ public interface CommentService {
     //댓글삭제
 	int deleteComment(Long commentNo);
 	
-	//대댓글 작성
-	int insertReply(CommentDTO comment);
-
 	//댓글수정
 	boolean updateComment(Long commentNo, String newContent, String fk_id);
-
+	
 	// 유저가 하루동안 쓴 댓글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
 	public int getCreatedAtCommentCnt(String id);
+
+	//대댓글 작성
+	int insertReply(CommentDTO comment);
 
 
 	//대댓글삭제

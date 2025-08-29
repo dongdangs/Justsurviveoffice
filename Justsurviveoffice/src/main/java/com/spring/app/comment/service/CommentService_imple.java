@@ -64,11 +64,11 @@ public class CommentService_imple implements CommentService {
 	}
 
 
-	@Override
-	public boolean updateComment(Long commentNo, String newContent, String fk_id) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
+    @Override
+    public boolean updateComment(Long commentNo, String content, String fk_id) {
+        return commentDao.updateComment(commentNo, content, fk_id) > 0;
+    }
 
 
     
