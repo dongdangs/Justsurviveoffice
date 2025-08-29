@@ -174,13 +174,6 @@ public class AdminController {
    }
    
    
-   @GetMapping("chart/categoryChart")
-   @ResponseBody
-   public List<CategoryDTO> categoryChart() {
-	   List<CategoryDTO> categoryChart = adminService.categoryChart();
-	   return categoryChart;
-   }
-   
    
    
    

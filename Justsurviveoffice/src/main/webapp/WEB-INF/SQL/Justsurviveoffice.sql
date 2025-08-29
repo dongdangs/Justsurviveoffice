@@ -208,3 +208,5 @@ select COALESCE(c.categoryNo, 0) AS categoryNo,
 from users U LEFT JOIN category C
 ON U.fk_categoryNo = C.categoryNo
 group by categoryNo, categoryName;
+
+

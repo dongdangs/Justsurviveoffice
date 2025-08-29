@@ -57,6 +57,7 @@
    	div#table_container table { width:100% }
    	div#table_container th, div#table_container td { border: 1px solid gray; text-align:center; }
    	div#table_container th { background-color:#595959; color: white; }
+   	img {border-radius: 50px;}
    	
 </style>
 
@@ -69,7 +70,7 @@
 	    });
 
 	    // 최초 로딩 시 월별 선택 후 실행
-	    $('#searchType').val("category").trigger("change");
+	    $('#searchType').val("categoryByBoard").trigger("change");
 		
 	});
 	
@@ -77,121 +78,240 @@
 	function func_choice(searchTypeVal){
 		
 		switch (searchTypeVal) {
-			case "category": // 카테고리별 게시글 수
-				
+			
+			case "":
+				$('div#chart_container').empty();
+				$('div#table_container').empty();
+				$('div.highcharts-data-table').empty();
+				break;
+			
+			case "categoryByBoard": // 카테고리별 게시글 통계
 				$.ajax({
-	                url: "<%= ctxPath%>/mypage/chart/categoryByBoard",
+               		url: "<%= ctxPath%>/mypage/chart/categoryByBoard",
 	                type: "post",
 	                dataType: "json",
 	                success: function (json) {
 	                    $("div#chart_container").empty();
 	                    $("div#table_container").empty();
 	                    
-	              let resultArr = [];
+	              		let resultArr = [];
 	              
-	              for(let i=0; i<json.length; i++) {
+	              		for(let i=0; i<json.length; i++) {
 	                 
-	                 let obj;
-	                 
-	                 if(i==0) {
-	                    obj = {name: json[i].categoryName,
-	                            y: Number(json[i].percentage),
-	                            sliced: true,
-	                            selected: true,
-	                            image: "<%= ctxPath%>/images/" + json[i].categoryImagePath
-	                            };
-	                    console.log("이미지 경로:", obj.image);
-	                 }
-	                 else {
-	                    obj = {name: json[i].categoryName,
-	                            y: Number(json[i].percentage),
-	                            image: "<%= ctxPath%>/images/" + json[i].categoryImagePath};
-	                 }
-	                 
-	                 resultArr.push(obj);
+		                 	let obj;
+		                 
+		                 	if(i==0) {
+		                    	obj = {name: json[i].categoryName,
+		                               y: Number(json[i].percentage),
+		                               sliced: true,
+		                               selected: true,
+		                               image: "<%= ctxPath%>/images/" + json[i].categoryImagePath
+		                              };
+	                    	//	console.log("이미지 경로:", obj.image);
+	              			}
+		                 	else {
+		                    	obj = {name: json[i].categoryName,
+		                               y: Number(json[i].percentage),
+		                               image: "<%= ctxPath%>/images/" + json[i].categoryImagePath};
+	                 		}
+		                 
+		                 	resultArr.push(obj);
 	                 	                 
-	              } // end of for
+	              		} // end of for
 	              
-	              // ====================================================== //
-	              Highcharts.chart('chart_container', {
-	                  chart: {
-	                      plotBackgroundColor: null,
-	                      plotBorderWidth: null,
-	                      plotShadow: false,
-	                      type: 'pie'
-	                  },
-	                  title: {
-	                      text: '카테고리별 게시글 통계'
-	                  },
-	                  tooltip: {
-	                	  useHTML: true,
-	                      formatter: function () {
-	                          return `
-	                              <div style="text-align:center;">
-	                                  <img src="\${this.point.image}" width="50" height="50"
-	                                       style="display:block; margin:0 auto 5px;" />
-	                                  <b>\${this.point.name}</b>: \${this.percentage.toFixed(2)}%
-	                              </div>
-	                          `;
-	                      }
-	                  },
-	                  accessibility: {
-	                      point: {
-	                          valueSuffix: '%'
-	                      }
-	                  },
-	                  plotOptions: {
-	                      pie: {
-	                          allowPointSelect: true,
-	                          cursor: 'pointer',
-	                          dataLabels: {
-	                              useHTML: true,
-	                              enabled: true,
-	                              distance: 20,
-	                              formatter: function () {
-	                                  return `
-	                                      <img src="\${this.point.image}" width="50" height="50"
-	                                           style="vertical-align:middle; margin-right:5px;" />
-	                                      <b>\${this.point.name}</b> \${this.percentage.toFixed(2)}%
-	                                  `;
-	                              }
-	                          }
-	                      }
-	                  },
-	                  series: [{
-	                      name: '게시글 수',
-	                      colorByPoint: true,
-	                      data: resultArr
-	                  }]
-	              });                  
-	              // ====================================================== //
+	              		// ====================================================== //
+	              		Highcharts.chart('chart_container', {
+	                  		chart: {
+	                      		plotBackgroundColor: null,
+	                      		plotBorderWidth: null,
+	                      		plotShadow: false,
+	                      		type: 'pie'
+	                  		},
+	                  		title: {
+	                      		text: '카테고리별 게시글 통계'
+	                  		},
+	                  		tooltip: {
+	                	  		useHTML: true,
+	                      		formatter: function () {
+	                          		return `
+	                              			<div style="text-align:center;">
+	                                  			<img src="\${this.point.image}" width="50" height="50"
+	                                       		 	 style="display:block; margin:0 auto 5px;" />
+	                                  			 <b>\${this.point.name}</b>: \${this.percentage.toFixed(2)}%
+	                              			</div>
+	                          			   `;
+	                      		}
+	                  		},
+	                  		accessibility: {
+	                      		point: {
+	                          		valueSuffix: '%'
+	                      		}
+	                  		},
+	                  		plotOptions: {
+	                      		pie: {
+	                          		allowPointSelect: true,
+	                          		cursor: 'pointer',
+	                          		dataLabels: {
+	                              		useHTML: true,
+	                              		enabled: true,
+	                              		distance: 20,
+	                              		formatter: function () {
+	                                  		return `
+	                                      			<img src="\${this.point.image}" width="50" height="50"
+	                                           			 style="vertical-align:middle; margin-right:5px;" />
+	                                      			<b>\${this.point.name}</b> \${this.percentage.toFixed(2)}%
+	                                  			   `;
+	                              		}
+	                          	}
+	                      	}
+	                  	},
+	                  	series: [{
+	                      	name: '게시글 수',
+	                      	colorByPoint: true,
+	                      	data: resultArr
+	                  	}]
+	              	});                  
+	              	// ====================================================== //
 	              
-	              let v_html = `<table>
-	                           <tr>
-	                              <th>카테고리</th>
-	                              <th>게시글 수</th>
-	                              <th>퍼센티지</th>
-	                           </tr>`;
+	              	let v_html = `<table>
+	                           			<tr>
+	                              			<th>카테고리</th>
+	                              			<th>게시글 수</th>
+	                              			<th>퍼센티지</th>
+	                           	  </tr>`;
 	                           
-	              $.each(json, function(index, item){
-	                 v_html += `<tr>
-	                            <td>\${item.categoryName}</td>
-	                            <td>\${item.cnt}</td>
-	                            <td>\${item.percentage}</td>
-	                          </tr>`;
-	              });             
+	              	$.each(json, function(index, item){
+	                 	v_html += `<tr>
+	                            		<td>\${item.categoryName}</td>
+	                            		<td>\${item.cnt}</td>
+	                            		<td>\${item.percentage}</td>
+	                          	   </tr>`;
+	              	});             
 	                           
-	              v_html += `</table>`;
+	              	v_html += `</table>`;
 	              
-	              $('div#table_container').html(v_html);         
+	              	$('div#table_container').html(v_html);         
 	              
-	           },
-	           error: function(request, status, error){
-	                    alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-	                 }
-	        });
-				
+	           	},
+	           	error: function(request, status, error){
+                	alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+               	}
+        	});
 			break;
+			
+			case "categoryByUsers": // 카테고리별 인원수 통계
+				$.ajax({
+               		url: "<%= ctxPath%>/mypage/chart/categoryByUsers",
+	                type: "post",
+	                dataType: "json",
+	                success: function (json) {
+	                    $("div#chart_container").empty();
+	                    $("div#table_container").empty();
+	                    
+	              		let resultArr = [];
+	              
+	              		for(let i=0; i<json.length; i++) {
+	                 
+		                 	let obj;
+		                 
+		                 	if(i==0) {
+		                    	obj = {name: json[i].categoryName,
+		                               y: Number(json[i].percentage),
+		                               sliced: true,
+		                               selected: true,
+		                               image: "<%= ctxPath%>/images/" + json[i].categoryImagePath
+		                              };
+	                    	//	console.log("이미지 경로:", obj.image);
+	              			}
+		                 	else {
+		                    	obj = {name: json[i].categoryName,
+		                               y: Number(json[i].percentage),
+		                               image: "<%= ctxPath%>/images/" + json[i].categoryImagePath};
+	                 		}
+		                 
+		                 	resultArr.push(obj);
+	                 	                 
+	              		} // end of for
+	              
+	              		// ====================================================== //
+	              		Highcharts.chart('chart_container', {
+	                  		chart: {
+	                      		plotBackgroundColor: null,
+	                      		plotBorderWidth: null,
+	                      		plotShadow: false,
+	                      		type: 'pie'
+	                  		},
+	                  		title: {
+	                      		text: '카테고리별 인원수 통계'
+	                  		},
+	                  		tooltip: {
+	                	  		useHTML: true,
+	                      		formatter: function () {
+	                          		return `
+	                              			<div style="text-align:center;">
+	                                  			<img src="\${this.point.image}" width="50" height="50"
+	                                       		 	 style="display:block; margin:0 auto 5px;" />
+	                                  			 <b>\${this.point.name}</b>: \${this.percentage.toFixed(2)}%
+	                              			</div>
+	                          			   `;
+	                      		}
+	                  		},
+	                  		accessibility: {
+	                      		point: {
+	                          		valueSuffix: '%'
+	                      		}
+	                  		},
+	                  		plotOptions: {
+	                      		pie: {
+	                          		allowPointSelect: true,
+	                          		cursor: 'pointer',
+	                          		dataLabels: {
+	                              		useHTML: true,
+	                              		enabled: true,
+	                              		distance: 20,
+	                              		formatter: function () {
+	                                  		return `
+	                                      			<img src="\${this.point.image}" width="50" height="50"
+	                                           			 style="vertical-align:middle; margin-right:5px;" />
+	                                      			<b>\${this.point.name}</b> \${this.percentage.toFixed(2)}%
+	                                  			   `;
+	                              		}
+	                          	}
+	                      	}
+	                  	},
+	                  	series: [{
+	                      	name: '게시글 수',
+	                      	colorByPoint: true,
+	                      	data: resultArr
+	                  	}]
+	              	});                  
+	              	// ====================================================== //
+	              
+	              	let v_html = `<table>
+	                           			<tr>
+	                              			<th>카테고리</th>
+	                              			<th>게시글 수</th>
+	                              			<th>퍼센티지</th>
+	                           	  </tr>`;
+	                           
+	              	$.each(json, function(index, item){
+	                 	v_html += `<tr>
+	                            		<td>\${item.categoryName}</td>
+	                            		<td>\${item.cnt}</td>
+	                            		<td>\${item.percentage}</td>
+	                          	   </tr>`;
+	              	});             
+	                           
+	              	v_html += `</table>`;
+	              
+	              	$('div#table_container').html(v_html);         
+	              
+	           	},
+	           	error: function(request, status, error){
+                	alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+               	}
+        	});
+	       	break;
 		}
 	}
 	
@@ -239,7 +359,8 @@
                 	<form name="searchFrm" style="margin: 20px 0 50px 0;">
 				      	<select name="searchType" id="searchType" style="height:30px;">
 				        	<option value=""></option>
-					        <option value="category">카테고리별 게시물 통계</option>
+					        <option value="categoryByBoard">카테고리별 게시물 통계</option>
+					        <option value="categoryByUsers">카테고리별 인원수 통계</option>
 				      	</select>
 				    </form>
 					

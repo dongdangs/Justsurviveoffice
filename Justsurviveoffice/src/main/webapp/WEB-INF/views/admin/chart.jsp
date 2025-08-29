@@ -43,7 +43,6 @@
       <select name="searchType" id="searchType" style="height:30px;">
         <option value="">통계선택하세요</option>
         <option value="register">회원가입 인원통계(월별)</option>
-        <option value="category">카테고리 인원통계</option>
         <option value="registerDay">회원가입 인원통계(일자별)</option>
       </select>
     </form>
@@ -146,99 +145,6 @@
         });
         break;
    
-         // ===== 카테고리는 장유민이 제작함 ===== //
-      case "category":
-            $.ajax({
-                url: "<%= ctxPath%>/admin/chart/categoryChart",
-                dataType: "json",
-                success: function (json) {
-                    $("div#chart_container").empty();
-                    $("div#table_container").empty();
-
-              let resultArr = [];
-              
-              for(let i=0; i<json.length; i++) {
-                 
-                 let obj;
-                 
-                 if(i==0) {
-                    obj = {name: json[i].categoryName,
-                            y: Number(json[i].percentage),
-                            sliced: true,
-                            selected: true};
-                 }
-                 else {
-                    obj = {name: json[i].categoryName,
-                            y: Number(json[i].percentage)};
-                 }
-                 
-                 resultArr.push(obj); // 배열속에 객체를 넣기
-                 
-              } // end of for
-              
-              // ====================================================== //
-              Highcharts.chart('chart_container', {
-                  chart: {
-                      plotBackgroundColor: null,
-                      plotBorderWidth: null,
-                      plotShadow: false,
-                      type: 'pie'
-                  },
-                  title: {
-                      text: '카테고리별 인원통계'
-                  },
-                  tooltip: {
-                      pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
-                  },
-                  accessibility: {
-                      point: {
-                          valueSuffix: '%'
-                      }
-                  },
-                  plotOptions: {
-                      pie: {
-                          allowPointSelect: true,
-                          cursor: 'pointer',
-                          dataLabels: {
-                              enabled: true,
-                              format: '<b>{point.name}</b>: {point.percentage:.2f} %'
-                          }
-                      }
-                  },
-                  series: [{
-                      name: '인원비율',
-                      colorByPoint: true,
-                      data: resultArr
-                  }]
-              });                  
-              // ====================================================== //
-              
-              let v_html = `<table>
-                           <tr>
-                              <th>카테고리</th>
-                              <th>인원수</th>
-                              <th>퍼센티지</th>
-                           </tr>`;
-                           
-              $.each(json, function(index, item){
-                 v_html += `<tr>
-                            <td>\${item.categoryName}</td>
-                            <td>\${item.cnt}</td>
-                            <td>\${item.percentage}</td>
-                          </tr>`;
-              });             
-                           
-              v_html += `</table>`;
-              
-              $('div#table_container').html(v_html);         
-              
-           },
-           error: function(request, status, error){
-                    alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-                 }
-        });
-       break;
-       
       case "registerDay": // 일자별 가입자
            $.ajax({
              url: "<%= ctxPath%>/admin/chart/registerChartday",

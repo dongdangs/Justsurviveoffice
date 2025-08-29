@@ -55,5 +55,8 @@ public interface UsersService {
 	// 카테고리별 게시물 통계
 	List<CategoryDTO> categoryByBoard();
 
+	// 카테고리별 인원수 통계
+	List<CategoryDTO> categoryByUsers();
+
 
 }

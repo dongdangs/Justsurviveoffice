@@ -297,5 +297,25 @@ public class UsersService_imple implements UsersService {
 	}
 
 
+	// 카테고리별 인원수 통계
+	@Override
+	public List<CategoryDTO> categoryByUsers() {
+		List<Object[]> usersPercentageList = usersRepository.categoryByUsers();
+   		
+		List<CategoryDTO> result = new ArrayList<>();
+   		for(Object[] obj : usersPercentageList) {
+   			CategoryDTO categoryDto = CategoryDTO.builder()
+   					.categoryName(String.valueOf(obj[0]))
+   					.cnt(((Number) obj[1]).longValue())
+   					.percentage(((Number) obj[2]).doubleValue())
+   					.categoryImagePath(String.valueOf(obj[3]))
+   					.build();
+   			result.add(categoryDto);
+   		}
+   		
+   		return result;
+	}
+
+
    
 }

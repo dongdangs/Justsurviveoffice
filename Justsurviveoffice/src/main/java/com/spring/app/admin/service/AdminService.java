@@ -19,8 +19,5 @@ public interface AdminService {
 
 	List<Map<String, String>> registerChart();
 
-	// 카테고리별 인원 통계
-	List<CategoryDTO> categoryChart();
-	
 
 }

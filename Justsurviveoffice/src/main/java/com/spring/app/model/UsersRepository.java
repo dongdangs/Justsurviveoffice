@@ -49,6 +49,19 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 	List<Object[]> categoryByBoard();
 
 	
+	// 카테고리별 인원수 통계
+	@Query(
+	        value = "select COALESCE(c.categoryname, '미분류') AS categoryName, \n"
+	        		+ "       count(*) as cnt,\n"
+	        		+ "       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM users), 2) AS percentage, \n"
+	        		+ "       categoryImagePath \n"
+	        		+ "from users U LEFT JOIN category C\n"
+	        		+ "ON U.fk_categoryNo = C.categoryNo\n"
+	        		+ "group by categoryNo, categoryName, categoryImagePath",
+	        nativeQuery = true)
+	List<Object[]> categoryByUsers();
+
+	
 	
 	
 }

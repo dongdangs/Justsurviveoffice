@@ -122,6 +122,13 @@ public class MyPageController {
     }
 	 
     
+    // 카테고리별 인원수 통계
+    @PostMapping("chart/categoryByUsers")
+    @ResponseBody
+    public List<CategoryDTO> categoryByUsers() {
+    	List<CategoryDTO> usersPercentageList = usersService.categoryByUsers(); 
+    	return usersPercentageList;
+    }
     
     
 	   
