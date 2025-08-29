@@ -1,6 +1,0 @@
-$(function(){ 
-	
-	$('span.error').hide();
-	
-
-});
