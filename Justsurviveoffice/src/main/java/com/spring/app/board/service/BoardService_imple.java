@@ -162,14 +162,6 @@ public class BoardService_imple implements BoardService {
 	}
 	
 	
-	// Hot 게시글 전체 리스트 (조회수 많은 순)
-	@Override
-	public List<BoardDTO> hotAll() {
-		List<BoardDTO> hotAllList = boardDao.hotAll();
-		return hotAllList;
-	}
-	
-	
 	// 댓글 많은 게시글 리스트
 	@Override
 	public List<BoardDTO> getTopBoardsByCommentCount() {

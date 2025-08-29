@@ -254,7 +254,7 @@
 		 const frm = document.goViewFrm;
 		 frm.boardNo.value = ${boardDto.preNo};
 		 
-		 frm.method = "post";
+		 frm.method = "get";
 		 frm.action = "<%= ctxPath%>/board/view";
 		 frm.submit();
 	}
@@ -263,7 +263,7 @@
 		 const frm = document.goViewFrm;
 		 frm.boardNo.value = ${boardDto.nextNo};
 		 
-		 frm.method = "post";
+		 frm.method = "get";
 		 frm.action = "<%= ctxPath%>/board/view";
 		 frm.submit();
 	}

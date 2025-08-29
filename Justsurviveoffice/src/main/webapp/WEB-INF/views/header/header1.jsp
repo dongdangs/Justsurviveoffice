@@ -63,12 +63,11 @@
                         <c:forEach var="hotRead" items="${hotReadList}">
                             <form id="viewForm${hotRead.boardNo}" 
 							      action="<%= ctxPath %>/board/view" 
-							      method="post" 
+							      method="get" 
 							      style="display:none;">
 							    <input type="hidden" name="category" value="${hotRead.fk_categoryNo}">
 							    <input type="hidden" name="boardNo" value="${hotRead.boardNo}">
 							</form>
-							
 							<tr>
 							    <td style="width: 5%; font-weight: bold;">
 							        ${hotRead.rank}

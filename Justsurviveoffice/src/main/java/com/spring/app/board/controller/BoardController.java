@@ -261,8 +261,10 @@ public class BoardController {
 	}
 	
 	
-	// 조회수 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
-	@RequestMapping("view") //post,get 둘 다 받아올 것!
+	// 조회수(세션,쿠키) 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
+	@GetMapping("view") 
+/*  get 방식으로만 받아와야만, 뒤로가기로 view 페이지에 입장시, 
+	변경된  DOM/JS 요소(좋아요, 북마크)를 그대로 복구 할 수 있음!  */ 
 	public ModelAndView view(ModelAndView modelview,
 							 HttpServletRequest request,
 							 HttpServletResponse response,
@@ -272,7 +274,7 @@ public class BoardController {
 			 @RequestParam(name="category", defaultValue="") String category,
 			 				 BoardDTO boardDto) {
 
-		// 추후 referer 는 spring security의 토큰 검사로 변경.
+	 // 추후 referer 는 spring security의 토큰 검사로 변경.
 		String referer = request.getHeader("Referer");
 		if(referer == null) { // url타고 get방식으로 접근 불가능하도록!
 			modelview.setViewName("redirect:/index");
@@ -290,7 +292,7 @@ public class BoardController {
 		if(boardDto != null) { // 뒤로가기 혹은 오류가 없는 정상 게시물인 경우 이동.
 			System.out.println(boardDto.getBoardNo());
 			System.out.println(boardDto.getFk_categoryNo());
-		// 명심할 점!, 1. 완벽한 조회수 알고리즘은 존재하지 않는다.
+/*		// 명심할 점!, 1. 완벽한 조회수 알고리즘은 존재하지 않는다.
 		//   2. 방법은 쿠키, 세션, (실무)DB로그, (실무)Redis 가 있다.
 		//	 3. 나는 내가 내가 배운 지식을 재활용하기 위해 세션방식을 해본 후, 쿠키방식을 선택했다..
 		//   4. 세션방식의 단점(세션이 만료되거나 로그아웃 시에는 소용이 없다 + 세션리미트는 하나로 통일됌)을 이해하고 구현한다.
@@ -298,7 +300,7 @@ public class BoardController {
 			
 		//		접속한 아이피 + 게시물번호가 세션 or 쿠키에 없다면?
 		//		 >> 아이피 + 게시물번호의 수명을 30분으로 줌, 
-		//	  + loginUser.id 와 fk_id가 같아도 >> 조회수는 증가 안함.
+		//	  + loginUser.id 와 fk_id가 같아도 >> 조회수는 증가 안함.*/
 			HttpSession session = request.getSession();
 			
 			UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
@@ -316,9 +318,9 @@ public class BoardController {
 				// -1173940223_106
 				
 				// 방금 접근한 ip가 세션에 저장되어있지 않다면 조회수를 증가!
-			/*	if(session.getAttribute(boardNo_ip) == null
-					) {
-					// 조회수 증가.
+/*			 // 1. 세션방식 
+ 				if(session.getAttribute(boardNo_ip) == null) { // 조회수 증가.
+ 
 					int n = boardService.updateReadCount(boardDto.getBoardNo());
 			//		if(n==1) System.out.println("조회수 증가 완료.");
 					
@@ -340,7 +342,7 @@ public class BoardController {
 					if(remainingMinutes <= 0) {
 						int n = boardService.updateReadCount(boardDto.getBoardNo());
 			//			if(n==1) System.out.println("조회수 증가 완료.");  	   */
-				
+			 // 2. 쿠키방식
 				Cookie[] cookies = request.getCookies();
 				boolean isExist = false; // 쿠키에 해당 boardNO 별 ip가 존재하는지 확인
 				
@@ -363,17 +365,17 @@ public class BoardController {
 				}
 			} // 로그인된 유저가 자신의 게시물에 들어갔다면 if문 생략
 			
-		/* null 일시 0값 부여서해서 view.jsp 로 0 값을 보냄 (김예준)*/
+		/* null 일시 0값 부여서해서 view.jsp 로 0 값을 보내주기! */
 			if(boardDto.getPreNo() == null ) {
 				boardDto.setPreNo("0");
 			}
 			else if(boardDto.getNextNo() == null ) {
 				boardDto.setNextNo("0");
 			}
-			
 			modelview.addObject("hotReadList", boardService.getTopBoardsByViewCount());
 	        modelview.addObject("hotCommentList", boardService.getTopBoardsByCommentCount());
-	    // 로그인된 유저가 북마크 혹은 좋아요를 눌렀을 경우, boardDto 객체에 같이 저장해주어야함!
+	    
+         // 로그인된 유저가 북마크 혹은 좋아요를 눌렀을 경우, boardDto 객체에 같이 저장해주어야함!
 			if(loginUser != null) { 
 				boardDto.setBookmarked(bookmarkService.isBookmarked(
 						loginUser.getId(), 
@@ -402,7 +404,7 @@ public class BoardController {
 			
 			return modelview;
 		}
-	}
+	} // ------------------- @GetMapping("view")... END 
 	
 	// 게시물 삭제하기 == boardDeleted = 0 으로 전환하기 == update
 	@PostMapping("delete")
@@ -607,22 +609,6 @@ public class BoardController {
       }
       
    }
-	
-	
-	//////////////////////////////////////////////////////////////////////
-	// Hot 게시글 전체 리스트 (조회수 많은 순)
-	@GetMapping("hot/all")
-	public ModelAndView hotAll(ModelAndView modelview) {
-		
-		List<BoardDTO> hotAllList = boardService.hotAll();
-		
-		modelview.addObject("boardList", hotAllList);
-		modelview.setViewName("board/boardList");
-		
-		return modelview;
-	}
-	//////////////////////////////////////////////////////////////////////
-	
 	
 
 	// 게시글 좋아요

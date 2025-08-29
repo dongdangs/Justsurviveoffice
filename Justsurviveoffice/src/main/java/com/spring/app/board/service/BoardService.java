@@ -12,9 +12,6 @@ import com.spring.app.users.domain.CommentDTO;
 public interface BoardService {
 	
 	//////////////////////////////////////////////////////////////////////////
-	// Hot 게시글 전체 리스트 (조회수 많은 순)
-	public List<BoardDTO> hotAll();
-		
 	// 인기 게시글 리스트 (조회수 많은 순)
 	@Cacheable("hotReadList")
 	public List<BoardDTO> getTopBoardsByViewCount();
