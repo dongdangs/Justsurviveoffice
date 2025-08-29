@@ -518,6 +518,22 @@ function boardLike(boardNo, fk_id) {
                 <span>${fn:replace(comment.createdAtComment, "T", " ")}</span>
             </div>
             <div class="content">${comment.content}</div>
+	
+			<div class="like-dislike">
+			    <i class="fa-regular fa-thumbs-up like-btn" 
+			       title="좋아요" 
+			       data-id="${comment.commentNo}"></i>
+			    <span class="like-count">
+			        ${empty comment.likeCount ? 0 : comment.likeCount}
+			    </span>
+			
+			    <i class="fa-regular fa-thumbs-down dislike-btn" 
+			       title="싫어요" 
+			       data-id="${comment.commentNo}"></i>
+			    <span class="dislike-count">
+			        ${empty comment.dislikeCount ? 0 : comment.dislikeCount}
+			    </span>
+			</div>
 
             <!-- 버튼 영역 -->
             <div class="actions">
