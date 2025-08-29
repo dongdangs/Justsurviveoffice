@@ -22,11 +22,9 @@ import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
 import com.spring.app.comment.domain.CommentDTO;
-import com.spring.app.comment.service.CommentService;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
 import com.spring.app.model.HistoryRepository;
-
 import com.spring.app.pointlog.model.PointLogDAO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
@@ -304,8 +302,6 @@ public class BoardController {
 			HttpSession session = request.getSession();
 			
 			UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
-			
-			
 			// 유저가 존재하고 그 유저의 id가 같은지 확인!
 			if( loginUser == null ? true : // 로그인된 유저이면서, 아이디도 다른 경우!
 				!loginUser.getId().equals(boardDto.getFk_id()) ? true : false ) 
@@ -382,26 +378,20 @@ public class BoardController {
 				boardDto.setBookmarked(bookmarkService.isBookmarked(
 						loginUser.getId(), 
 						boardDto.getBoardNo())); 
-
 				 // 좋아요 여부 
 			    boolean isLiked = boardService.isBoardLiked(loginUser.getId(), boardDto.getBoardNo());
 			    boardDto.setBoardLiked(isLiked);
 			    
 			    System.out.println("=== 좋아요 여부: " + isLiked);
 			}
-
 			// 좋아요 개수 추가
-	        int likeCount = boardService.getBaordLikeCount(boardDto.getBoardNo());
+	        int likeCount = boardService.getBoardLikeCount(boardDto.getBoardNo());
 	        modelview.addObject("likeCount", likeCount);
-
 			modelview.addObject("boardDto", boardDto);
 
 			// 댓글 목록 조회
 	        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
-	      //  List<CommentDTO> replyList = boardService.getReplyList(boardDto.getBoardNo());
-
-	modelview.addObject("commentList", commentList);
-	       
+	        modelview.addObject("commentList", commentList);
 			modelview.addObject("boardDto", boardDto);
 			
 			modelview.setViewName("board/view");
@@ -638,6 +628,7 @@ public class BoardController {
 	//////////////////////////////////////////////////////////////////////
 	
 	
+
 	// 게시글 좋아요
     @PostMapping("boardlike")
     @ResponseBody
@@ -649,31 +640,27 @@ public class BoardController {
         System.out.println("===> loginUser: " + loginUser);
         
         if (loginUser == null) {
-
             result.put("success", false);
             result.put("message", "로그인이 필요합니다.");
             return result;
-            
         }
         
         String fk_id = loginUser.getId();
         System.out.println("===> fk_id: " + fk_id);
 
-
-        boolean isLiked = boardService.isBoardLiked(fk_id,fk_boardNo );
+        boolean isLiked = boardService.isBoardLiked(fk_id, fk_boardNo);
         
         if(isLiked == true) {
-        	
         	boardService.deleteBoardLike(fk_id,fk_boardNo);
         	result.put("status", "unliked");
-        } else {
-        	
+        } 
+        else {
         	boardService.insertBoardLike(fk_id,fk_boardNo);
         	result.put("status", "liked");
         }
         
         // 현재 게시글의 좋아요 수
-        int likeCount = boardService.getBaordLikeCount(fk_boardNo);
+        int likeCount = boardService.getBoardLikeCount(fk_boardNo);
         
         boolean newStatus = boardService.isBoardLiked(fk_id, fk_boardNo); // 최신 상태 재조회
 
@@ -701,4 +688,9 @@ public class BoardController {
  		
  		return mapList;
  	}
+ 	
+ 	
+ 	
+    
+    
 }
