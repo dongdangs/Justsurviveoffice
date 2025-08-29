@@ -24,14 +24,44 @@
 	</insert>
 
     <!-- 댓글 목록 조회 -->
-    <select id="getCommentsByBoardNo" parameterType="long"
+    <!--<select id="getCommentsByBoardNo" parameterType="long"
         resultType="com.spring.app.comment.domain.CommentDTO">
     select *
     from comments
     where fk_boardNo = #{fk_boardNo, jdbcType=NUMERIC}
     and parentNo is NULL
     order by commentNo asc
-	</select>
+	</select>-->
+
+<!-- 댓글 목록 조회 -->
+<select id="getCommentsByBoardNo" parameterType="long"
+        resultType="com.spring.app.comment.domain.CommentDTO">
+    select
+        c.commentNo,
+        c.fk_boardNo,
+        c.fk_id,
+        c.fk_name,
+        c.content,
+        c.parentNo,
+        TO_CHAR(c.createdAtComment, 'YYYY-MM-DD HH24:MI:SS') AS createdAtComment,
+        TO_CHAR(c.updatedAtComment, 'YYYY-MM-DD HH24:MI:SS') AS updatedAtComment,
+        NVL(commentlike.like_count, 0) AS likeCount,
+        NVL(commentdislike.dislike_count, 0) AS dislikeCount
+    from comments c
+    LEFT JOIN (
+        select fk_commentNo, count(*) AS like_count
+        from commentlike
+        group by fk_commentNo
+    ) commentlike ON c.commentNo = commentlike.fk_commentNo
+    LEFT JOIN (
+        select fk_commentNo, count(*) AS dislike_count
+        from commentdislike
+        group by fk_commentNo
+    ) commentdislike on c.commentNo = commentdislike.fk_commentNo
+    where c.fk_boardNo = #{fk_boardNo, jdbcType=NUMERIC}
+      and c.parentNo is null
+    order by c.commentNo asc
+</select>
 
     <!-- 댓글 삭제 -->
     <delete id="deleteComment" parameterType="map">
