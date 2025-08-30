@@ -21,6 +21,18 @@
 		ORDER BY questionNo, fk_categoryNo
 	</select>
 	
+	
+	<!-- 해당 카테고리의 유형 정보 가져오기 -->
+	<select id="selectCategory" parameterType="String" resultType="CategoryDTO">
+		select categoryNo, categoryName, categoryImagePath,
+      		   LISTAGG(tagName, ',') WITHIN GROUP (ORDER BY tagNo) AS tags 
+      		   from category C join tag T 
+      		   on C.categoryNo = T.fk_categoryNo 
+      		   where categoryNo = to_number(#{categoryNo}) 
+      		   group by (categoryNo, categoryName, categoryImagePath)
+	</select>
+	
+	
 </mapper>
 
 

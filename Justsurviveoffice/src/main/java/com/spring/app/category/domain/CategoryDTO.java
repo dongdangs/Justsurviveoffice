@@ -1,9 +1,5 @@
 package com.spring.app.category.domain;
 
-import java.time.LocalDateTime;
-
-import com.spring.app.entity.Category;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,5 +21,7 @@ public class CategoryDTO {
 	private String categoryDescribe;
 
 	private String categoryImagePath;
-
+	
+	private String tags;
+	
 }

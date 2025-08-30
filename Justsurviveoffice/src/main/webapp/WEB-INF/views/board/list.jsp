@@ -365,10 +365,10 @@
 	      <tbody>
 	        <!-- 컨트롤러에서 List<Map.Entry<String,Integer>> keywordTop 로 전달했다고 가정 -->
 	        <c:if test="${not empty keyword_top}">
-	          <c:forEach var="e" items="${keyword_top}">
+	          <c:forEach var="map" items="${keyword_top}">
 	            <tr>
-	              <td><span class="keyword-word">${e.key}</span></td>
-	              <td>${e.value}</td>
+	              <td><span class="keyword-word">${map.keyword}</span></td>
+	              <td>${map.score}</td>
 	            </tr>
 	          </c:forEach>
 	        </c:if>

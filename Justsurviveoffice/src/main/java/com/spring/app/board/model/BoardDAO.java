@@ -69,8 +69,8 @@ public interface BoardDAO {
 	// 자동 검색어 완성
 	public List<String> getSearchWordList(Map<String, String> paraMap);
 	
-	// 보드 테이블에서 제목과 내용 가져오기(DB)
-	public List<BoardDTO> getBoardContents(String category);
+	// 키워드 테이블에서 데이터 가져오기
+	public List<Map<String, Object>> getBoardContents(String category);
 	// =====================0827 rdg7203 수정 끝 =============================== //
 	
 }

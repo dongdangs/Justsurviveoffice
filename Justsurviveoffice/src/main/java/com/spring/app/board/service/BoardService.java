@@ -77,6 +77,6 @@ public interface BoardService {
 	List<Map<String, String>> getSearchWordList(Map<String, String> paraMap);
 	
 	// == 키워드 메소드 작성 해봄 == // 
-	List<Entry<String, Integer>> getKeyWord(String category);
+	List<Map<String, Object>> getKeyWord(String category);
 	
 }
