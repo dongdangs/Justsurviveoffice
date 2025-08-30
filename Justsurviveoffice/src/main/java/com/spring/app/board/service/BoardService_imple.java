@@ -8,9 +8,11 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.safety.Safelist;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -82,6 +84,28 @@ public class BoardService_imple implements BoardService {
 		return boardList;
 	}
 
+	// 스마트에디터파일을 DB에서 받아와, List로 반환하기.
+	@Override
+	public List<String> fetchPhoto_upload_boardFileNameList(Long boardNo) {
+		BoardDTO dto = selectView(boardNo);
+		// 스마트 에디터 이미지만 추출하기!
+		Elements imgList = Jsoup.parse(dto.getBoardContent()).select("img[src]");
+		// import org.jsoup.nodes.Elements;
+		List<String> photo_upload_boardFileNameList = new ArrayList<>();
+		for(Element img : imgList) {
+			System.out.println(img);
+			if (img != null) {
+				String src = img.attr("src");
+		        // 파일명만 추출: 마지막 "/" 뒤 문자만
+		        String fileName = src.substring(src.lastIndexOf("/") + 1);
+				photo_upload_boardFileNameList.add(fileName);
+				System.out.println(fileName);
+			}
+		}
+		return photo_upload_boardFileNameList;
+	}
+
+	
 	// 조회수 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
 	@Override
 	public BoardDTO selectView(Long boardNo) {
@@ -324,6 +348,7 @@ public class BoardService_imple implements BoardService {
 		return boardDao.getLikeCount(fk_boardNo);
 	}
 
+	
 //	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
 //	@Override
 //	public int getCreatedAtBoardCnt(String id) {

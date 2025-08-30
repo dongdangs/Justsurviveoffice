@@ -238,7 +238,7 @@ $(function () {
 						    <tr>
 						        <td>${st.index + 1}</td>
 						        <td>
-						            <a href="${pageContext.request.contextPath}/board/detail?boardNo=${bm.fk_boardNo}">
+						            <a href="${pageContext.request.contextPath}/board/view?boardNo=${bm.fk_boardNo}">
 						                ${bm.boardName}
 						            </a>
 						        </td>

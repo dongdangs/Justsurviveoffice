@@ -33,6 +33,9 @@ public interface BoardService {
 	// 게시물 삭제하기 == boardDeleted = 0 으로 전환하기 == update
 	public int deleteBoard(Long boardNo);
 	
+	// 스마트에디터파일을 DB에서 받아와, List로 반환하기.
+	public List<String> fetchPhoto_upload_boardFileNameList(Long boardNo);
+		
 	// 게시물 수정하기 
 	public int updateBoard(BoardDTO boardDto);
 	
@@ -75,6 +78,7 @@ public interface BoardService {
 	
 	// == 키워드 메소드 작성 해봄 == // 
 	public List<Entry<String, Integer>> getKeyWord(String category);
+
 
 //	
 //	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)

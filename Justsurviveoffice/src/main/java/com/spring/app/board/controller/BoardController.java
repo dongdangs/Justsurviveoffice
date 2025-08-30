@@ -172,8 +172,8 @@ public class BoardController {
 			modelview.addObject("loc", "javascript:history.back()");
 			modelview.setViewName("msg");
 		}
+		// 포인트 로그를 조회!
 		int cnt = pointLogDao.getCreatedAtLogBoardCnt(loginUser.getId());
-		
 		if(cnt < 3) { // 유저가 하루동안 쓴 글이 3개 이하면 pointUp
 			paraMap.put("id", boardDto.getFk_id());
 			paraMap.put("point", "1000");
@@ -459,7 +459,6 @@ public class BoardController {
 
 			modelview.addObject("boardDto", boardDto); // boardDto를 넘겨주고 모두 보여주자!
 			modelview.setViewName("board/edit");
-			
 		}
 		else {
 			modelview.addObject("message", "본인 게시물에만 접근 가능합니다.");
@@ -475,7 +474,7 @@ public class BoardController {
 								  BoardDTO boardDto,
 								  HttpServletRequest request,
 								  HttpSession session,
-								  @RequestParam(name="oldBoardFileName", defaultValue = "") 
+	   @RequestParam(name="oldBoardFileName", defaultValue = "") 
 										String oldBoardFileName) {
 		
 		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
@@ -486,7 +485,8 @@ public class BoardController {
 		String root = session.getServletContext().getRealPath("/");
 		String path = root+"resources"+File.separator+"files";
 ///Users/dong/git/Justsurviveoffice/Justsurviveoffice/src/main/webapp/resources/files		
-		
+	
+	//	첨부파일은 오로지 1개이기 때문에, jsp 에서 받아온 이름으로 삭제할 것.
 		if(!oldBoardFileName.isEmpty()) { // 이전 파일이 있는 경우 삭제.
 			try { // 이전 파일 삭제해주기!
 				fileManager.doFileDelete(oldBoardFileName, path);
@@ -519,6 +519,18 @@ public class BoardController {
 				e.printStackTrace();
 			}
 		}
+	//	스마트에디터파일은 여러 개이기 때문에, DB에서 받아온 내용을 List로 받아서 삭제할 것.
+		List<String> photo_upload_boardFileNameList 
+			= boardService.fetchPhoto_upload_boardFileNameList(boardDto.getBoardNo());
+		path = root+"resources"+File.separator+"photo_upload";
+		for(String photo_uploadFile : photo_upload_boardFileNameList) {
+			try { // 이전 스마트에디터 파일들 삭제해주기!
+				fileManager.doFileDelete(photo_uploadFile, path);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	// 기존 파일들의 삭제가 끝났다면, 업데이트 시작.	
 		int n = boardService.updateBoard(boardDto); // 게시판에 수정본 업로드!
 		
 		if(n==1) {
@@ -529,9 +541,9 @@ public class BoardController {
 			modelview.addObject("loc", "javascript:history.back()");
 			modelview.setViewName("msg");
 		}
-		
 		return modelview;
-	}
+	} // ------------------- @PostMapping("edit")... END 
+	
 	
 	// 첨부파일 다운받기!
 	@PostMapping("download")

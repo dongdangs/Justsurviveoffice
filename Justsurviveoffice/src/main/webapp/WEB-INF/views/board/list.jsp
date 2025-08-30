@@ -288,7 +288,7 @@
       form.searchType.value = "${requestScope.searchType}"; 
       form.searchWord.value = "${requestScope.searchWord}"; 
     }
-    form.method = "get";
+    form.method = "";
     form.action = "<%= ctxPath%>/board/view";
      form.submit();
    

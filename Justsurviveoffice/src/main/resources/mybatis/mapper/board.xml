@@ -21,6 +21,7 @@
                		  #{boardFileName}, #{boardFileOriginName}) 
     </insert>
     
+    
     <!-- 파일첨부 된 게시물 업로드 -->
     <update id="updateBoard" parameterType="BoardDTO">
     	update Board

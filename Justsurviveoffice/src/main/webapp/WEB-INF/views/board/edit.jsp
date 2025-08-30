@@ -199,7 +199,9 @@
 		  </div>
 		  <!-- 업로드한 이미지 미리보기 --> 
 		  <img id="preview" class="preview" style="display:none;"> 
-		  <img id="oldpreview" class="preview" src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}"/>
+		  <c:if test="${not empty boardDto.boardFileName}">
+		  	<img id="oldpreview" class="preview" src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}"/>
+		  </c:if>
 		  <!-- 파일 업로드 -->
 		  <input type="file" name="attach" id="fileUpload" class="file-upload" 
 		       accept="image/*" onchange="previewImage(event)" />
