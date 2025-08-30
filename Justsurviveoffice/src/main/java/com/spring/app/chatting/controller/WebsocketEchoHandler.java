@@ -52,7 +52,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession wsession) throws Exception {
     	// >>> 파라미터 WebSocketSession wsession 은 웹소켓서버에 접속한 클라이언트 임. <<< 
-		
+    	
 		// 웹소켓서버에 접속한 클라이언트의 IP Address 얻어오기
     	/*
     	  STS 메뉴의 
