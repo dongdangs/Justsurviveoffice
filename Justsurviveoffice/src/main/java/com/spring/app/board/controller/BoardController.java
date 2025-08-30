@@ -213,15 +213,17 @@ public class BoardController {
 			modelview.setViewName("redirect:/index");
 			return modelview;
 		}
-
+		
+		// ===========  게시글 보여주기(페이징 처리) 수정 시작 =========== //
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("searchType", searchType);
 		paraMap.put("searchWord", searchWord);
 		paraMap.put("category", category);
+		paraMap.put("currentShowPageNo", currentShowPageNo);
 		// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
 		
-		int totalCount = 0;    // 총 게시물 건수
-		int sizePerPage = 10;  // 한 페이지당 보여줄 게시물 건수
+		int totalCount = boardService.searchListCount(paraMap);	// 총 검색된 게시물 건수
+		int sizePerPage = 5;  // 한 페이지당 보여줄 게시물 건수
 		int totalPage = 0;     // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
 		totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
 
@@ -243,6 +245,11 @@ public class BoardController {
 		modelview.addObject("searchWord", searchWord);
 		modelview.addObject("category", category);
 		
+		// 페이지바 전용 데이터
+		modelview.addObject("totalPage", totalPage);
+		int currentPage = Integer.parseInt(currentShowPageNo);
+		modelview.addObject("currentShowPageNo", currentPage);
+		// ===========  게시글 보여주기(페이징 처리) 수정 끝 =========== //
 		modelview.setViewName("board/list");
 		
 		// == 키워드 메소드 작성 해봄 == // 
@@ -604,7 +611,9 @@ public class BoardController {
       }
       
    }
-
+	
+	
+	
 
 	// 게시글 좋아요
     @PostMapping("boardlike")
@@ -649,4 +658,25 @@ public class BoardController {
 	
     
 	
+    // 게시글 목록에 검색어 자동입력
+ 	@GetMapping("wordSearchShow")
+ 	@ResponseBody
+ 	public List<Map<String, String>> wordSearchShow(@RequestParam(name = "searchType", defaultValue = "") String searchType,
+ 													@RequestParam(name = "searchWord", defaultValue = "") String searchWord,
+ 													@RequestParam(name = "category") String category) {
+ 		
+ 		Map<String, String> paraMap = new HashMap<>();
+ 		paraMap.put("searchType", searchType);
+ 		paraMap.put("searchWord", searchWord);
+ 		paraMap.put("category", category);
+ 		
+ 		List<Map<String, String>> mapList = boardService.getSearchWordList(paraMap);	// 자동 검색어 완성시키기
+ 		
+ 		return mapList;
+ 	}
+ 	
+ 	
+ 	
+    
+    
 }

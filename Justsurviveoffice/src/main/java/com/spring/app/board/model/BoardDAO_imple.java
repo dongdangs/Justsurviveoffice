@@ -80,6 +80,7 @@ public class BoardDAO_imple implements BoardDAO {
     	return sql.selectList("board.getBookmarksById", fk_id);
     }
 
+	////////////////////////////////////////////////////////////////////////////
 	// 인기 게시글 리스트 (조회수 많은 순)
 	@Override
 	public List<BoardDTO> getTopBoardsByViewCount() {
@@ -94,6 +95,7 @@ public class BoardDAO_imple implements BoardDAO {
 		return hotCommentList;
 	}	
 	
+	////////////////////////////////////////////////////////////////////////////
 	 
 	// 게시글 좋아요 취소
 	@Override

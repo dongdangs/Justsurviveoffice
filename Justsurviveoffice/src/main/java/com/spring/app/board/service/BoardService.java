@@ -10,8 +10,7 @@ import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.comment.domain.CommentDTO;
 
 public interface BoardService {
-	
-	//////////////////////////////////////////////////////////////////////////
+		
 	// 인기 게시글 리스트 (조회수 많은 순)
 	@Cacheable("hotReadList")
 	public List<BoardDTO> getTopBoardsByViewCount();
@@ -79,4 +78,5 @@ public interface BoardService {
 //	
 //	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
 //	public int getCreatedAtBoardCnt(String id);
+	
 }

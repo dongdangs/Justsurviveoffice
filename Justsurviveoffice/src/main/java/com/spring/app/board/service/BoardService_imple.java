@@ -347,7 +347,3 @@ public class BoardService_imple implements BoardService {
 	
 	
 }
-
-
-
-
