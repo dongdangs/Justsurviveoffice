@@ -281,7 +281,7 @@ textarea:focus {
 .commentlikedislike i,
 .replylikedislike i {
     cursor: pointer;
-    font-size: 16px;  /* ✅ 아이콘 크기 키움 */
+    font-size: 16px;  /* 아이콘 크기 키움 */
     margin-right: 5px;
     transition: transform 0.15s ease, color 0.2s ease;
 }
@@ -289,10 +289,10 @@ textarea:focus {
 .commentlikedislike i:hover,
 .replylikedislike i:hover {
     transform: scale(1.25);
-    color: #3f80ff;  /* ✅ hover 시 강조 */
+    color: #3f80ff;  /* hover 시 강조 */
 }
 
-    .row {margin:0;}
+.row {margin:0;}
 </style>
 
 <script type="text/javascript">
@@ -358,7 +358,7 @@ textarea:focus {
                             <div class="meta">
                                <span>${reply.fk_id}</span> |
                                <span>${reply.fk_name}</span> |
-                                <span>${reply.createdAtComment}</span>
+                               <span>${reply.createdAtComment}</span>
                             </div>
                             <div class="content">${reply.content||''}</div>
                             <button class="btn delete-reply" data-id="${reply.commentNo}">삭제</button>
@@ -952,35 +952,35 @@ textarea:focus {
                    <button type="button" class="btn cancel-reply" data-parent="${comment.commentNo}">취소</button>
                  </div>
             </div>
-            <div class="replies" id="replies-${comment.commentNo}" style="margin-left:20px; margin-top:10px;">
+            <div class="replies meta" id="replies-${comment.commentNo}" style="margin-left:20px; margin-top:10px;">
                 <c:forEach var="reply" items="${comment.replyList}">
-                         <div class="reply" id="reply-${reply.commentNo}">
-                            <span>${fn:replace(reply.createdAtComment, "T", " ")}</span>
-                        </div>
-                        <div class="content">${reply.content}</div>
-                        
-                  <!-- 대댓글 좋아요/싫어요 -->
-                  <div class="replylikedislike">
-                      <i id="replyLike-icon-${reply.commentNo}" 
-                        class="fa-thumbs-up ${reply.replyLiked ? 'fa-solid text-warning' : 'fa-regular'}"
-                        data-liked="${reply.replyLiked}"
-                        onclick="replyLike(${reply.commentNo})"></i>
-                     <span id="replyLikeCount-reply-${reply.commentNo}">
-                         ${reply.replyLikeCount}
-                     </span>
-                  
-                      <i id="replyDislike-icon-${reply.commentNo}" 
-                        class="fa-thumbs-down ${reply.replyDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
-                        data-liked="${reply.replyDisliked}"
-                        onclick="replyDislike(${reply.commentNo})"></i>
-                     <span id="replyDislikeCount-reply-${reply.commentNo}">
-                         ${reply.replyDislikeCount}
-                     </span>
-                  </div>
-                  
-                        <c:if test="${loginUser.id == reply.fk_id}">
-                            <button class="btn delete-reply" data-id="${reply.commentNo}" data-parent="${comment.commentNo}">삭제</button>
-                        </c:if>
+                   <div class="reply" id="reply-${reply.commentNo}">
+                   	<span>${reply.fk_id}</span>&nbsp;|&nbsp; 
+                      <span>${fn:replace(reply.createdAtComment, "T", " ")}</span>
+                  	<div class="content">${reply.content}</div>
+                 <!-- 대댓글 좋아요/싫어요 -->
+                 <div class="replylikedislike">
+                     <i id="replyLike-icon-${reply.commentNo}" 
+                       class="fa-thumbs-up ${reply.replyLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+                       data-liked="${reply.replyLiked}"
+                       onclick="replyLike(${reply.commentNo})"></i>
+                    <span id="replyLikeCount-reply-${reply.commentNo}">
+                        ${reply.replyLikeCount}
+                    </span>
+                 
+                     <i id="replyDislike-icon-${reply.commentNo}" 
+                       class="fa-thumbs-down ${reply.replyDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
+                       data-liked="${reply.replyDisliked}"
+                       onclick="replyDislike(${reply.commentNo})"></i>
+                    <span id="replyDislikeCount-reply-${reply.commentNo}">
+                        ${reply.replyDislikeCount}
+                    </span>
+                 </div>
+                       <c:if test="${loginUser.id == reply.fk_id}">
+                          <span><button class="btn delete-reply" data-id="${reply.commentNo}" data-parent="${comment.commentNo}">삭제</button>
+                      		</span>
+                       </c:if>
+                   </div>
                         
                 </c:forEach>
             </div>
