@@ -41,7 +41,6 @@
             border-color: #6366F1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
-        body {background-color:#000 !important;}
     </style>
 </head>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
