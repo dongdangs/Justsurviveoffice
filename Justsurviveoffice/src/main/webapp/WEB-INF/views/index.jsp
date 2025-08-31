@@ -35,7 +35,6 @@
 						  	<div class="card-body">
 						      <h4 class="card-title" style="font-weight: bold; color: #39FF14;">${indexList.categoryName}</h4>
 						      <p class="card-text" style="color: white;">설명: ${indexList.categoryDescribe}</p>
-							  <p class="card-text" style="color: white;">태그: ${indexList.tagName}</p>
 						    </div>
 						 </a>
 					  </div>

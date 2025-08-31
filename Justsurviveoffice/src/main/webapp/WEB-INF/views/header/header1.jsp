@@ -39,7 +39,7 @@
    
    
 </head>
-<body>
+
    <div id="mycontainer">
       <div id="myheader">
          <jsp:include page="../menu/menu1.jsp" />
