@@ -9,7 +9,7 @@
 
 <jsp:include page="header/header1.jsp" />
 	
-<div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png'); border: solid 2px blue;">
+<div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');display:flex;justify-content:center;">
 				
 				<div class="row" style="width: 80%; margin: 5%">
 				<!-- 테스트 카드 (고정) -->
@@ -24,11 +24,11 @@
 							</div>
 						</a>
 					</div>
-				<%-- begin 과 end 로 1번부터 5번 카테고리 1증감식으로 수정함 0825 --%>
+					<%-- begin과 end로 1번부터 5번 카테고리 1 증감식으로 수정함 0825 --%>
 					<c:forEach var="indexList" items="${IndexList}" begin="0" end="4" step="1">
 					  <div class="col-md-4 mb-4">
 						<a href="<%= ctxPath%>/board/list/${indexList.categoryNo}" class="card text-decoration-none h-100" style="background-color: navy;">
-						  	<div style= "margin: 5% 5%; border: solid 1px red; height: 60%;">
+						  	<div style= "margin: 5% 5%;height: 60%;">
 						  		<img src="${pageContext.request.contextPath}/images/${indexList.categoryImagePath}" alt="${indexList.categoryDTO.categoryName}" style="width:100%; height:100%; object-fit:cover;">
 						  	</div>
 						  	<div class="card-body">

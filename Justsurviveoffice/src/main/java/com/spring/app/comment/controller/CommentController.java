@@ -158,8 +158,6 @@ public class CommentController {
 
  	    return result;
  	}
-
-    
     
     //대댓글삭제
     @PostMapping("deleteReply")

@@ -56,7 +56,7 @@ public interface BoardDAO {
 	//게시글 좋아요 취소
 	public int deleteBoardLike(String fk_id, Long fk_boardNo);
 	// 게시물 좋아요
-	public int insertBoardLike(String fk_id, Long fk_boardNo);;
+	public int insertBoardLike(String fk_id, Long fk_boardNo);
 	//게시글 좋아요 수
 	public int getLikeCount(Long boardNo);
 	

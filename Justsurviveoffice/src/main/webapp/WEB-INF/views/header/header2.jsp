@@ -36,21 +36,60 @@
 	
 	<style>
 		.col-md-2 ul {height:100%;background-color:green;}
-		.admTab {width:100%;background-color:#ddd;display:block;color:#fff;padding:20% 0; text-align:center;}
-		
+		.admTab {width:100%;background-color:#d5d5d5; display:block;color:#000;border-bottom:1px solid #5f0f0f;padding:20% 0; text-align:center;}
+		.admTab:hover {background-color:#fff;}
 	</style>
 </head>
+<script type="text/javascript">
+	$(function(){
+		
+		updateClock();
+		setInterval(updateClock, 1000);
+		
+	}) // end of function(){}
+	
+	function admOut(){
+	   if(confirm('로그아웃 하시겠어요?')) {
+	     location.href = '<%= ctxPath %>/users/logout';
+	   }
+	 }
+	 
+	 function updateClock() {
+	   const now = new Date();
+	   const daysOfWeek = ["일","월","화","수","목","금","토"];
+	   const dayOfWeek = daysOfWeek[now.getDay()];
+	   const year = now.getFullYear();
+	   const month = String(now.getMonth() + 1).padStart(2, '0');
+	   const day = String(now.getDate()).padStart(2, '0');
+	   const minutes = String(now.getMinutes()).padStart(2, '0');
+	   const seconds = String(now.getSeconds()).padStart(2, '0');
+
+	   const hours24 = now.getHours();
+	   const ampm = hours24 >= 12 ? 'PM' : 'AM';
+	   const displayHours = (hours24 % 12) || 12;
+
+	   var timeString =
+	       year + '-' + month + '-' + day +
+	       ' (' + dayOfWeek + ') ' +
+	       displayHours + ':' + minutes + ':' + seconds + ' ' + ampm;
+
+	   var el = document.getElementById('clock');
+	   if (el) el.textContent = timeString;
+	 }
+
+
+</script>
 <body>
 	<div id="mycontainer" style="padding:0;">
 		<div class="row">
 			<div class="col-md-2">
-				<ul>
+				<ul style="border-right:1px solid #000;">
+				  <li class="admTab" style="background-image: url(/justsurviveoffice/images/logo2.png);display: block;background-size: contain;background-repeat: no-repeat;background-position: center;"></li>
 				  <li class="admTab">${sessionScope.loginUser.name}</li>
-				  <li class="admTab"><a href="chart">회원 통계보기</a></li>
-				  <li class="admTab"><a href="usersList">사용자 관리</a></li>
+				  <li class="admTab"><i class="fa-solid fa-chart-simple"></i>&nbsp;<a href="chart">회원 통계보기</a></li>
+				  <li class="admTab"><i class="fa-solid fa-user"></i>&nbsp;<a href="usersList">사용자 관리</a></li>
+				  <li class="admTab admOut"  onclick="admOut()"><i class="fa-solid fa-house">&nbsp;</i>로그아웃</li>
+				  <li class="admTab"><i class="fa-solid fa-rotate-left"></i><a href="javascript:history.back();">&nbsp;뒤로가기</a></li>
+				  <li class="admTab"><div id="clock"></div></li>
 				</ul>
 			</div>
-			</div>
-			</div>
-			
-            			
