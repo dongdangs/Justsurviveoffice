@@ -32,7 +32,7 @@ public class BookmarkController {
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         
         if (loginUser == null) {
-            result.put("success", false);
+            result.put("notLogin", true);
             result.put("message", "로그인이 필요한 서비스입니다.");
             return result;
         }
@@ -55,8 +55,8 @@ public class BookmarkController {
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
 
         if (loginUser == null) {
-            result.put("success", false);
-            result.put("message", "로그인이 필요합니다.");
+            result.put("notLogin", true);
+            result.put("message", "로그인이 필요한 서비스입니다.");
             return result;
         }
         
