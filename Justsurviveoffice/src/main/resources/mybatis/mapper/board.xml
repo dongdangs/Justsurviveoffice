@@ -193,7 +193,22 @@
 	
 	<!-- ================================================================================= -->
 	<!-- 인기 게시글 리스트 (조회수 많은 순) -->
-	<select id="getTopBoardsByViewCount" resultType="BoardDTO">
+	<resultMap type="HashMap" id="getTopBoardsByViewCount_map">
+		<result property="rank" column="RANK_NO" javaType="Integer" />
+		<result property="boardNo" column="FK_BOARDNO" javaType="Long" />
+		<result property="boardName" column="BOARDNAME" javaType="String" />
+		<result property="fk_categoryNo" column="FK_CATEGORYNO" javaType="Long" />
+		<result property="readCount" column="READCOUNT" javaType="Integer" />
+	</resultMap>
+	<select id="getTopBoardsByViewCount" resultMap="getTopBoardsByViewCount_map">
+		select RANK_NO, FK_BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT
+		from BOARD_RANKING_WEEKLY R join Board B
+		on R.FK_BOARDNO = B.boardNo
+		where RANK_TYPE = 'VIEWS'
+	</select>
+	
+	
+	<!-- <select id="getTopBoardsByViewCount" resultType="BoardDTO">
 	    select *
 		from(
 		     select ROWNUM as RANK, BOARDNO, BOARDNAME, FK_CATEGORYNO, READCOUNT
@@ -205,11 +220,30 @@
 			      )
 			)
 		WHERE RANK &lt;= 5
-	</select>
+	</select> -->
 	    
 	    
 	<!-- 댓글 많은 게시글 리스트 -->
-    <select id="getTopBoardsByCommentCount" resultType="BoardDTO">
+	<resultMap type="HashMap" id="getTopBoardsByCommentCount_map">
+		<result property="rank" column="RANK_NO" javaType="Integer" />
+		<result property="boardNo" column="FK_BOARDNO" javaType="Long" />
+		<result property="boardName" column="BOARDNAME" javaType="String" />
+		<result property="fk_categoryNo" column="FK_CATEGORYNO" javaType="Long" />
+		<result property="commentCount" column="COMMENTCOUNT" javaType="Integer" />
+	</resultMap>
+	<select id="getTopBoardsByCommentCount" resultMap="getTopBoardsByCommentCount_map">
+		select RANK_NO, R.FK_BOARDNO, BOARDNAME, FK_CATEGORYNO, NVL(C.COMMENTCOUNT, 0) AS COMMENTCOUNT
+		from BOARD_RANKING_WEEKLY R join BOARD B on R.FK_BOARDNO = B.boardNo 
+			 join (select FK_BOARDNO, count(*) AS COMMENTCOUNT
+			 	   from COMMENTS
+			 	   GROUP BY FK_BOARDNO
+			 	  ) C on B.BOARDNO = C.FK_BOARDNO
+		where RANK_TYPE = 'COMMENTS'
+		order by RANK_NO
+	</select>
+    
+    
+    <!-- <select id="getTopBoardsByCommentCount" resultType="BoardDTO">
 		select B.BOARDNO,
 		       B.BOARDNAME,
 		       B.FK_CATEGORYNO,
@@ -224,7 +258,7 @@
 		where B.CREATEDATBOARD &gt;= ADD_MONTHS(SYSDATE, -1)
 		order by C.COMMENTCOUNT desc, B.createdatboard desc
 		fetch first 5 rows only       
-    </select>
+    </select> -->
 	<!-- ================================================================================= -->
 	
   	
@@ -359,11 +393,16 @@
   	</select>
   	
   	
-  	<!-- 보드 테이블에서 제목과 내용 가져오기(DB) -->
-  	<select id="getBoardContents" parameterType="String" resultType="BoardDTO">
-  		SELECT boardName, boardContent
-		FROM board
-		WHERE boardDeleted = 0 AND fk_categoryNo = TO_NUMBER(#{category})
+  	<!-- 키워드 테이블에서 데이터 가져오기 -->
+  	<resultMap type="HashMap" id="getBoardContents_map">
+  		<result property="keyword" column="KEYWORD" javaType="String" />
+  		<result property="score" column="SCORE" javaType="Integer" />
+  	</resultMap>
+  	<select id="getBoardContents" parameterType="String" resultMap="getBoardContents_map">
+  		SELECT KEYWORD, SCORE
+		FROM KEYWORD_RANKING
+		WHERE FK_CATEGORYNO = TO_NUMBER(#{category})
+		ORDER BY SCORE DESC
   	</select>
   	
   	<select id="getCreatedAtBoardCnt" parameterType="String" resultType="Int">

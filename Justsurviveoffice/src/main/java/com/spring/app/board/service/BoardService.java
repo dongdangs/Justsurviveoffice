@@ -77,10 +77,12 @@ public interface BoardService {
 	public List<Map<String, String>> getSearchWordList(Map<String, String> paraMap);
 	
 	// == 키워드 메소드 작성 해봄 == // 
-	public List<Entry<String, Integer>> getKeyWord(String category);
+	List<Map<String, Object>> getKeyWord(String category);
+
 
 //	
 //	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
 //	public int getCreatedAtBoardCnt(String id);
+
 	
 }
