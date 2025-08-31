@@ -327,8 +327,6 @@
 	    });
 	 }// end of function Bookmark(boardNo,fk_id)———————————
 	
-   
-   
    // === 글목록 검색하기 요청 === //
    function searchBoard() {
       const form = document.searchForm;

@@ -177,6 +177,10 @@ header {background: cadetblue;padding: 10px 20px;display: flex;align-items: cent
   #searchFrm .btnSubmit {position:absolute;right:10px;top:1px;display:block;width:100%;max-width:30px;height:100%;background-color:transparent;border:0;}
 
   .ListHeight {min-height:900px;}
+  
+  @media screen and (max-width:1250px) {
+	#mycontent	{ min-height: initial; }
+  }
 
   /* 모바일 대응 시작 */
   @media (max-width: 768px) {
