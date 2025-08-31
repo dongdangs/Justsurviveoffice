@@ -4,6 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -11,6 +14,7 @@ import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.common.AES256;
 
 import com.spring.app.common.SecretMyKey;
@@ -31,6 +35,7 @@ public class UsersService_imple implements UsersService {
 
    private final UsersRepository usersRepository;
    private final HistoryRepository historyRepository;
+   
 
    private AES256 aes;
 
@@ -271,7 +276,86 @@ public class UsersService_imple implements UsersService {
 		}
 		else System.out.println("유저를 찾지못함. 포인트업로드 오류!");
 	}
+	
+
+	// 카테고리별 게시물 통계
+	@Override
+	public List<CategoryDTO> categoryByBoard() {
+		List<Object[]> boardPercentageList = usersRepository.categoryByBoard();
+   		
+   		List<CategoryDTO> result = new ArrayList<>();
+   		for(Object[] obj : boardPercentageList) {
+   			CategoryDTO categoryDto = CategoryDTO.builder()
+   					.categoryName(String.valueOf(obj[0]))
+   					.categoryImagePath(String.valueOf(obj[1]))
+   					.cnt(((Number) obj[2]).longValue())
+   					.percentage(((Number) obj[3]).doubleValue())
+   					.build();
+   			result.add(categoryDto);
+   		}
+   		
+   		return result;
+	}
 
 
-   
+	// 카테고리별 인원수 통계
+	@Override
+	public List<CategoryDTO> categoryByUsers() {
+		List<Object[]> usersPercentageList = usersRepository.categoryByUsers();
+   		
+		List<CategoryDTO> result = new ArrayList<>();
+   		for(Object[] obj : usersPercentageList) {
+   			CategoryDTO categoryDto = CategoryDTO.builder()
+   					.categoryName(String.valueOf(obj[0]))
+   					.cnt(((Number) obj[1]).longValue())
+   					.percentage(((Number) obj[2]).doubleValue())
+   					.categoryImagePath(String.valueOf(obj[3]))
+   					.build();
+   			result.add(categoryDto);
+   		}
+   		
+   		return result;
+	}
+
+	
+	@Override
+    public List<Map<String, String>> registerChart(int year) {
+        int[] bucket = new int[12];
+        List<UsersRepository.MonthCount> rows = usersRepository.findByMonthRegister(year);
+
+        for (UsersRepository.MonthCount r : rows) {
+            int idx = Integer.parseInt(r.getMm()) - 1; // "01" -> 0
+            bucket[idx] = r.getCnt().intValue();
+        }
+
+        List<Map<String, String>> result = new ArrayList<>(12);
+        for (int i = 1; i <= 12; i++) {
+            Map<String, String> row = new LinkedHashMap<>();
+            row.put("mm", String.format("%02d", i));
+            row.put("cnt", String.valueOf(bucket[i - 1]));
+            result.add(row);
+        }
+        return result;
+    }
+
+	 @Override
+	    public List<Map<String, String>> registerChartday(int month) {
+	        int[] bucket = new int[31];
+	        List<UsersRepository.DayCount> rows = usersRepository.findBydayRegister(month);
+	        
+	        for (UsersRepository.DayCount r : rows) {
+	            int idx = Integer.parseInt(r.getDd()); // "01" -> 0
+	            bucket[idx] = r.getCnt().intValue();
+	        }
+
+	        List<Map<String, String>> result = new ArrayList<>(31);
+	        for (int i = 1; i <= 31; i++) {
+	            Map<String, String> row = new LinkedHashMap<>();
+	            row.put("dd", String.format("%02d", i));
+	            row.put("cnt", String.valueOf(bucket[i - 1]));
+	            result.add(row);
+	        }
+	        return result;
+	    }
+
 }

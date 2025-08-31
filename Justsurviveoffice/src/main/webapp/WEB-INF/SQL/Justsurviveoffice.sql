@@ -150,19 +150,16 @@ select *
 from (
     select 
            row_number() over(
-               order by nvl(C.COMMENTCOUNT,0) desc, 
-                        nvl(C.LATESTCOMMENT, to_date('1900-01-01','yyyy-mm-dd')) desc
+               order by nvl(C.COMMENTCOUNT,0) desc
            ) as RANK,
            B.BOARDNO, 
            B.BOARDNAME, 
            B.FK_CATEGORYNO, 
-           nvl(C.COMMENTCOUNT, 0) as COMMENTCOUNT,
-           C.LATESTCOMMENT
+           nvl(C.COMMENTCOUNT, 0) as COMMENTCOUNT
     from BOARD B
          left join (
             select FK_BOARDNO, 
-                   count(*) as COMMENTCOUNT,
-                   max(UPDATEDATCOMMENT) as LATESTCOMMENT
+                   count(*) as COMMENTCOUNT
             from COMMENTS
             group by FK_BOARDNO
          ) C 
@@ -172,3 +169,98 @@ from (
 where RANK <= 5;
 
 
+select * from board;
+
+desc board;
+
+
+
+select boardno, fk_categoryno, case
+    		   	when length(boardName) > 12
+    		   		then substr(boardName, 1, 12)
+    		   		else boardName
+    		   	end as boardName, createdatboard, updatedatboard, readcount, fk_id, boardfilename,
+boardfileoriginname, boarddeleted, case
+    		   	when length(boardcontent) > 12
+    		   		then substr(boardcontent, 1, 12)
+    		   		else boardcontent
+    		   	end as boardcontent
+from board;
+
+
+select * from comments;
+
+
+select count(*)
+from comments
+group by fk_boardNo;
+
+
+select * from board;
+
+select * from category;
+
+
+select COALESCE(c.categoryNo, 0) AS categoryNo, 
+       COALESCE(c.categoryname, '미분류') AS categoryName, 
+       count(*) as cnt,
+       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM users), 2) AS percentage
+from users U LEFT JOIN category C
+ON U.fk_categoryNo = C.categoryNo
+group by categoryNo, categoryName;
+
+
+select * from tag;
+
+
+
+INSERT ALL
+    -- MZ형 (1)
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 1, '에어팟필수')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 1, '칼퇴')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 1, '딴생각장인')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 1, '지각러버')
+
+    -- 꼰대형 (2)
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 2, '맞말필수')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 2, '유능')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 2, '야근')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 2, '완벽주의자')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 2, '위계질서')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 2, '30분전출근')
+
+    -- 노예형 (3)
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 3, '말잘들음')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 3, '무욕인')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 3, '근성보유')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 3, '시키면다함')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 3, '묵묵')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 3, '수동적')
+
+    -- 마이웨이형 (4)
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 4, '자유영혼')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 4, '타협불가')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 4, '독단적')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 4, '완벽주의자')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 4, '혁신')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 4, '열정')
+
+    -- 금쪽이형 (5)
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 5, '사수소환술')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 5, '이유궁금')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 5, '궁금한거못참음')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 5, '카톡러버')
+    INTO tag(tagno, fk_categoryno, tagname) VALUES(tag_seq.nextval, 5, '응애')
+SELECT 1 FROM dual;
+
+
+SELECT tag_seq.nextval FROM dual;  -- 다음 값 확인
+
+DROP SEQUENCE tag_seq;
+
+
+CREATE SEQUENCE tag_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;

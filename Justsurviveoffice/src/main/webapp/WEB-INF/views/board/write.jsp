@@ -8,6 +8,10 @@
     //     /myspring
 %>   
 
+<!DOCTYPE html>
+<html>
+<head>
+
  <%-- Bootstrap CSS --%>
  <link rel="stylesheet" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" type="text/css">
 
@@ -97,7 +101,6 @@
    }
   
 </script>
-<head>
  <style type="text/css">
 .post-card { 
   min-width: 750px;  
@@ -223,7 +226,6 @@
    
    </div>
 </div>
-
 
 
 

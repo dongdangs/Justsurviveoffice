@@ -17,12 +17,10 @@ import lombok.Setter;
 @Builder              // 생성자 대신, 필요한 값만 선택해서 체이닝 방식으로 객체를 만들 수 있게 해주는 것.
 public class LoginHistoryDTO {
 	
-	/* 250818 GIT 김예준 오후 14:00 git 업데이트 전 시작 v1*/
 	private Long loginHistoryNo;
 	private LocalDateTime lastLogin;
 	private String ip;
 	
 	private Users users;
-	/* 250818 GIT 김예준 오후 14:00 git 업데이트 전 끝 v1*/
 	
 }

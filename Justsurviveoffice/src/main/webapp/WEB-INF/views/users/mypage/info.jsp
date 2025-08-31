@@ -157,7 +157,7 @@ $(function () {
                 </div>
                 <hr>
                 <div class="sidebar-menu text-left">
-                    <a href="<%=ctxPath%>/login/logout">로그아웃</a>
+                    <a href="<%=ctxPath%>/users/logout">로그아웃</a>
                     <a href="#" id="btnQuit">탈퇴하기</a>
                     <a href="javascript:history.back()">이전 페이지</a>
                 </div>
@@ -178,6 +178,9 @@ $(function () {
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<%= ctxPath%>/mypage/bookmarks">내 북마크</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<%= ctxPath%>/mypage/chart">통계</a>
                     </li>
                 </ul>
 

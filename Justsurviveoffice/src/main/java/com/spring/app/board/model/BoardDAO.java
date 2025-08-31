@@ -31,34 +31,32 @@ public interface BoardDAO {
 
 	// 메인페이지 카테고리 자동 불러오기
 	public List<Map<String, String>> getIndexList(String fk_categoryNo);
-	
+////////////////////////////////////////////////////////////////////////////
+
 	// 인기 게시글 리스트 (조회수 많은 순)
 	List<BoardDTO> getTopBoardsByViewCount();
 	   
 	// 댓글 많은 게시글 리스트
 	List<BoardDTO> getTopBoardsByCommentCount();
+	
+////////////////////////////////////////////////////////////////////////////
 
 	// 페이지내이션 
 	public BoardDTO getView(Long boardNo);
 
-	 //  내가 작성한 글 목록
-    List<BoardDTO> getMyBoards(String fk_id);
+	//  내가 작성한 글 목록
+//  List<BoardDTO> getMyBoards(String fk_id);
+    public List<BoardDTO> myBoardsScroll(Map<String, Object> paramMap);
 
     //  북마크한 게시글 목록
     List<BoardDTO> getBookmarksById(String fk_id);
 
-	////////////////////////////////////////////////////////////////////////////
-	// Hot 게시글 전체 리스트 (조회수 많은 순)
-	List<BoardDTO> hotAll();
-	
-
-	////////////////////////////////////////////////////////////////////////////
 	// 게시물 좋아요 여부
 	public int isBoardLiked(Map<String, Object> paramMap);
 	//게시글 좋아요 취소
 	public int deleteBoardLike(String fk_id, Long fk_boardNo);
 	// 게시물 좋아요
-	public int insertBoardLike(String fk_id, Long fk_boardNo);;
+	public int insertBoardLike(String fk_id, Long fk_boardNo);
 	//게시글 좋아요 수
 	public int getLikeCount(Long boardNo);
 	
@@ -72,5 +70,12 @@ public interface BoardDAO {
 	// 키워드 테이블에서 데이터 가져오기
 	public List<Map<String, Object>> getBoardContents(String category);
 	// =====================0827 rdg7203 수정 끝 =============================== //
+
+	
+
+
+
+//	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
+//	public int getCreatedAtBoardCnt(String id);
 	
 }

@@ -2,7 +2,7 @@ package com.spring.app.entity;
 
 import java.time.LocalDateTime;
 
-import com.spring.app.users.domain.CommentDTO;
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.users.domain.UsersDTO;
 
 import jakarta.persistence.Column;
@@ -42,18 +42,13 @@ public class Comments {
 	private String content;
 	
 	@Column(name="parentno" ,nullable = false) // int형은 자동으로 0이 디폴트값임!!
-	private int parentNo;
+	private Long parentNo;
 	
 	@Column(name = "createdatcomment",
 			nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",
 			insertable = false)
 	private LocalDateTime createdAtComment;
 	
-	
-	@Column(name = "updatedatcomment",
-			nullable = false, columnDefinition = "DATE DEFAULT SYSDATE",
-			insertable = false)
-	private LocalDateTime updatedAtComment;
 	
 	@Column(name="fk_name",nullable = false, length = 30)
 	private String fk_name;
@@ -73,7 +68,6 @@ public class Comments {
 					   .content(content)
 					   .parentNo(parentNo)
 					   .createdAtComment(createdAtComment)
-					   .updatedAtComment(updatedAtComment)
 					   .fk_name(fk_name)
 					   .users(users)
 					   .board(board)

@@ -47,9 +47,9 @@ public class BoardDTO {
 	
 	private MultipartFile attach; //스프링에서 제공하는 업로드된 파일을 다루는 객체
 	/*  주요 메소드:	getOriginalFilename() → 원본 파일명
-				getSize() → 파일 크기
-				getBytes() → 파일 내용을 바이트 배열로
-				transferTo(File dest) → 실제 서버에 저장 */
+				    getSize() → 파일 크기
+				    getBytes() → 파일 내용을 바이트 배열로
+				    transferTo(File dest) → 실제 서버에 저장 */
 	
 	private Boolean bookmarked; // select 용도
 	private boolean boardLiked; // view 페이지에 입장 시, 좋아요 여부의 select 용도
@@ -62,10 +62,13 @@ public class BoardDTO {
 	private int rank; // Hot, 댓글 많은 게시글 순위를 위한 select 용
 	private int commentCount; // 댓글 많은 게시글 댓글 수 알아오기 위한 select 용
 	
+	
 	// select 용
 	private String preNo;    	 // 이전글번호
 	private String preName; 	// 이전글제목
 	private String nextNo;         // 다음글번호
 	private String nextName;     // 다음글제목 
+	
+	
 
 }

@@ -90,6 +90,7 @@
            }
            reader.readAsDataURL(file);
        } else {
+    	   $('#oldFileOriginName').html("");
            preview.style.display = "none";
            preview.src = "";
        }
@@ -198,16 +199,17 @@
 		  </div>
 		  <!-- 업로드한 이미지 미리보기 --> 
 		  <img id="preview" class="preview" style="display:none;"> 
-		  <img id="oldpreview" class="preview" src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}"/>
+		  <c:if test="${not empty boardDto.boardFileName}">
+		  	<img id="oldpreview" class="preview" src="<%=ctxPath %>/resources/files/${boardDto.boardFileName}"/>
+		  </c:if>
 		  <!-- 파일 업로드 -->
 		  <input type="file" name="attach" id="fileUpload" class="file-upload" 
 		       accept="image/*" onchange="previewImage(event)" />
 	      <!-- 라벨을 버튼처럼 --><br>
 		  <label for="fileUpload" class="file-label" >첨부 파일</label>
 		  <span id="oldFileOriginName">&nbsp;${boardDto.boardFileOriginName}</span>
-		  <input name="oldFileOriginName"/> 
+		  <input name="oldBoardFileName" type="hidden" value="${boardDto.boardFileName}"/> 
 		  <br><br>
-  		  
 		  <!-- 제목 -->
 		  <input type="text" name="boardName" placeholder="제목을 입력하세요" 
      			  class="form-control mb-2" maxlength="100"

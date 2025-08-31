@@ -21,10 +21,15 @@
                		  #{boardFileName}, #{boardFileOriginName}) 
     </insert>
     
+    
     <!-- 파일첨부 된 게시물 업로드 -->
     <update id="updateBoard" parameterType="BoardDTO">
-    	update Board
+   		update Board
     	set boardName = #{boardName}, boardContent = #{boardContent}
+    	<if test="boardFileName == null">
+    		,boardFileName = null
+    		,boardFileOriginName = null
+    	</if>
     	<if test="boardFileName != null">
     		,boardFileName = #{boardFileName}
     		,boardFileOriginName = #{boardFileOriginName}
@@ -77,8 +82,8 @@
         fetch next 5 row only
     </select>
 
-  		<select id="selectView" resultType="BoardDTO" parameterType="long">
-		  SELECT
+	<select id="selectView" resultType="BoardDTO" parameterType="long">
+  		SELECT
 		      A.boardNo,
 		      A.fk_id,
 		      A.fk_categoryNo,
@@ -100,7 +105,7 @@
 		
 		      A.preNo,  A.preName, A.nextNo, A.nextName,
 		      C.categoryName, C.categoryDescribe, C.categoryImagePath
-		  FROM (
+	  	FROM (
 		      SELECT
 		          LEAD(B.boardNo)   OVER (PARTITION BY fk_categoryNo ORDER BY B.boardNo DESC) AS preNo,
 		          LEAD(B.boardName) OVER (PARTITION BY fk_categoryNo ORDER BY B.boardNo DESC) AS preName,
@@ -118,12 +123,12 @@
 		      FROM board B
 		      WHERE B.boardDeleted = 0
 		  ) A
-		  JOIN category C ON A.fk_categoryNo = C.categoryNo
-		  WHERE A.boardNo = #{boardNo} and A.fk_categoryNo = C.categoryNo
-		</select>
+	  	JOIN category C ON A.fk_categoryNo = C.categoryNo
+	  	WHERE A.boardNo = #{boardNo} and A.fk_categoryNo = C.categoryNo
+	</select>
   	
   	<update id="softDeleteBoard" parameterType="Long">
-  		update board 
+ 		update board 
   		set boardDeleted = 1
   		where boardNo = #{boardNo} and boardDeleted = 0	
   	</update>
@@ -153,7 +158,7 @@
 			  group by
 			    C.categoryNo, C.categoryName, C.categoryDescribe, C.categoryImagePath
 			  order by C.categoryNo
-      </select>
+	</select>
       
    
    <!-- 서브쿼리 쓴 이유 (김예준)
@@ -161,7 +166,7 @@
    		2. 그래서 서브쿼리를 안쓰고 where 절 쓸 시 한행만 도출되고 나머진 버려져서 안나옴
    		
     -->
-	  <select id="getView" resultType="BoardDTO" parameterType="long">
+  	<select id="getView" resultType="BoardDTO" parameterType="long">
 		  SELECT
 		      A.preNo, A.preName,
 		      A.nextNo, A.nextName,
@@ -269,13 +274,35 @@
                   else boardcontent
              end as boardcontent
       FROM board
-        WHERE fk_id = #{fk_id}
+        WHERE fk_id = #{fk_id} 
         ORDER BY createdAtBoard DESC
     </select>
+    
+    
+    <!-- ===== 내가 작성한 글 목록 스크롤 ===== -->
+    <select id="myBoardsScroll" parameterType="map" resultType="BoardDTO">
+    	SELECT boardNo, fk_categoryNo, 
+              case
+                  when length(boardName) &gt; 12
+                then substr(boardName, 1, 12)
+                  else boardName
+             end as boardName, 
+             createdAtBoard, updatedAtBoard, readCount, fk_id, boardFileName, boardFileOriginName, boardDeleted, 
+             case
+                  when length(boardContent) &gt; 12
+                  then substr(boardContent, 1, 12)
+                  else boardContent
+             end as boardContent
+      	FROM board
+        WHERE fk_id = #{id}
+        ORDER BY createdAtBoard DESC
+  		OFFSET #{start,jdbcType=INTEGER} ROWS FETCH NEXT #{len,jdbcType=INTEGER} ROWS ONLY
+	</select>
+    
 
 	<!-- 북마크한 게시글 목록 -->
-	<select id="getBookmarksById" parameterType="string" resultType="com.spring.app.users.domain.BookMarkDTO">
-	    select bookmark.bookmarkNo,
+	<select id="getBookmarksById" parameterType="string" resultType="com.spring.app.bookmark.domain.BookMarkDTO">
+    	select bookmark.bookmarkNo,
 	           bookmark.fk_id,
 	           bookmark.fk_boardNo,
 	           bookmark.createdAtMark,
@@ -287,8 +314,8 @@
 	    where bookmark.fk_id = #{fk_id}
 	    order by bookmark.createdAtMark DESC
 	</select>
-
-
+	
+	
   	<!-- 총 검색된 게시물 건수 -->
   	<select id="searchListCount" parameterType="HashMap" resultType="int">
   		select count(*)
@@ -375,8 +402,9 @@
 		ORDER BY SCORE DESC
   	</select>
   	
-  	
+  	<select id="getCreatedAtBoardCnt" parameterType="String" resultType="Int">
+  		select count(*) from board
+		where fk_id = #{id} and (sysdate - createdAtBoard) &lt;= 1
+  	</select>
   	
 </mapper>
-
-
