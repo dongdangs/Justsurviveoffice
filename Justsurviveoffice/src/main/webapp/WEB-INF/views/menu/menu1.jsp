@@ -46,6 +46,10 @@
     background-repeat: no-repeat;
     background-position: center;
 }
+
+@media screen and (max-width:769px){
+	#mainNav {display:block;}
+}
 </style>
 
 <script>  
