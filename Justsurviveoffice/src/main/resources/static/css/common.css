@@ -184,7 +184,7 @@ header {background: cadetblue;padding: 10px 20px;display: flex;align-items: cent
 
   /* 모바일 대응 시작 */
   @media (max-width: 768px) {
-    #menuToggle {display: block; /* 모바일에선 버튼 보이기 */}
+    #menuToggle {display: block; /* 모바일에선 버튼 보이기! */}
 	.ListHeight {min-height:initial;}
     nav {position: absolute;top: 70px; left: 0; width: 100%; background: cadetblue;display: none; flex-direction: column;}
     nav ul { flex-direction: column;}
