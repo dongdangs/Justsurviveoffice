@@ -9,10 +9,10 @@
 
 <jsp:include page="header/header1.jsp" />
 	
-<div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');display:flex;justify-content:center;">
+<div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');display:flex;justify-content:center; border-radius: 10px">
 				
 				<div class="row" style="width: 90%; margin: 5%">
-				<!-- 테스트 카드 (고정) -->
+				<!-- 테스트 카드 (고정) --> 
 				    <div class="col-md-4 mb-4">
 						<a href="<%= ctxPath%>/categoryTest/survey" class="card text-decoration-none h-100" style="background-color: #3C396B; border-radius: 15px">
 							<div style="margin: 5% 5%; height:60%;">
