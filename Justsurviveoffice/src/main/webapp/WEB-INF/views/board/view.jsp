@@ -456,6 +456,7 @@ function boardLike(boardNo, fk_id) {
 	  </div> --%>
     </c:if>
     
+    
     <!-- 본문 내용 -->
     <div class="board-content" style="white-space: pre-wrap;"
     	>${boardDto.boardContent}</div>
