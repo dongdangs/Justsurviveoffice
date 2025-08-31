@@ -78,6 +78,8 @@
             </when>
 		</choose>
         order by boardNo desc
+        offset ((to_number(#{currentShowPageNo}) - 1) * 5) rows
+        fetch next 5 row only
     </select>
 
 	<select id="selectView" resultType="BoardDTO" parameterType="long">

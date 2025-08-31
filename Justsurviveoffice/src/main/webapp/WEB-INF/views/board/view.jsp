@@ -16,6 +16,8 @@
     padding-bottom: 20px;
     font-family: 'Noto Sans KR', sans-serif;
 }
+<<<<<<< HEAD
+
 /* 게시판 헤더 */
 .board-header {
     display: flex;
