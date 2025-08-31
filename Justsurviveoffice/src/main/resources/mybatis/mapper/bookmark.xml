@@ -24,6 +24,12 @@
           AND fk_boardno = #{fk_boardNo}
     </delete>
 
+	<!-- 게시물과 관련된 모든 북마크 삭제 -->
+    <delete id="removeAllBookmark" parameterType="Long">
+        DELETE FROM bookmark
+        WHERE fk_boardno = #{fk_boardNo}
+    </delete>
+    
     <!-- 북마크 여부 체크 -->
     <select id="checkBookmark" parameterType="map" resultType="int">
         SELECT COUNT(*)

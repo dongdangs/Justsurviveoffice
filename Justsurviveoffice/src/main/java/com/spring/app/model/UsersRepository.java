@@ -1,9 +1,12 @@
 package com.spring.app.model;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.spring.app.entity.Users;
 
@@ -37,9 +40,36 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 
 	// 비밀번호 찾기
 	Users findByIdAndEmail(String id, String email);
+	
+	interface MonthCount { 
+		String getMm(); 
+		Long getCnt(); 
+	}
+	
+	interface DayCount { 
+		String getDd(); 
+		Long getCnt(); 
+	}
 
-	
-	
+    @Query(value = """
+	        SELECT TO_CHAR(u.registerday, 'MM') AS mm,
+	               COUNT(*)                     AS cnt,
+	               TO_CHAR(sysdate,'YYYY') AS nowyear
+	          FROM users u
+	         WHERE EXTRACT(YEAR FROM u.registerday) = :year
+	         GROUP BY TO_CHAR(u.registerday, 'MM')
+	    """, nativeQuery = true)
+	 List<MonthCount> findByMonthRegister(@Param("year") int year);
+
+	 @Query(value = """
+	    	   SELECT TO_CHAR(u.registerday,'dd') AS dd,
+	    		  	  count(*)					  AS cnt,
+	    		  	  TO_CHAR(sysdate,'MM') AS nowmonth
+	    		 FROM users u
+	    		 WHERE EXTRACT(MONTH FROM u.registerday) =:month
+	    		 GROUP BY TO_CHAR(u.registerday,'dd')
+	    		""", nativeQuery = true)
+	 List<DayCount> findBydayRegister(@Param("month") int month);
 	
 }
 

@@ -47,6 +47,7 @@ body {
 .table th, .table td {
     vertical-align: middle;
 }
+a {color: black;}
 </style>
 </head>
 
@@ -131,19 +132,34 @@ $(function(){
 			    <table class="table table-hover">
 			      <thead class="thead-light">
 			        <tr>
-			          <th>번호</th>
 			          <th>제목</th>
+			          <th>내용</th>
 			          <th>작성일</th>
 			          <th>조회수</th>
+			          <th>
 			        </tr>
 			      </thead>
 			      <tbody>
-			        <c:forEach var="board" items="${myBoards}" varStatus="st">
+			        <c:forEach var="boardDto" items="${myBoards}" varStatus="st">
 			          <tr>
-			            <td>${st.count}</td>
-			            <td>${board.boardName}</td>
-			            <td>${fn:substring(board.createdAtBoard, 0, 10)}</td>
-			            <td>${board.readCount}</td>
+			            <td>
+			           	  <a href="<%=ctxPath %>/board/view?boardNo=${boardDto.boardNo}">
+						      ${boardDto.boardName} </a>
+					    </td>
+					    <td>
+					      <a href="<%=ctxPath %>/board/view?boardNo=${boardDto.boardNo}"> 
+					      ${boardDto.boardContent}</a>
+					    </td>
+			            <td>${fn:substring(boardDto.createdAtBoard, 0, 10)}</td>
+			            <td>${boardDto.readCount}</td>
+			            <td> 
+			             <c:if test="${boardDto.boardDeleted==1}">
+			               <button type="button"
+							        class="btn btn-sm btn-outline-danger "
+							        data-fk_boardno="${boardDto.boardNo}">
+							   		 복구하기
+						   </button>
+						</c:if></td>
 			          </tr>
 			        </c:forEach>
 			      </tbody>

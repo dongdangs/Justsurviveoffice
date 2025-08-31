@@ -158,8 +158,6 @@ public class CommentController {
 
  	    return result;
  	}
-
-    
     
     //대댓글삭제
     @PostMapping("deleteReply")
@@ -187,6 +185,210 @@ public class CommentController {
             
         return result;  
 	    
+    }
+    
+    //댓글 좋아요
+    @PostMapping("commentLike")
+    @ResponseBody
+    public Map<String, Object> commentLike(@RequestParam(name="commentNo") Long commentNo, HttpSession session) {
+       
+    	Map<String, Object> result = new HashMap<>();
+
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        System.out.println("===> loginUser: " + loginUser);
+        
+        if (loginUser == null) {
+            result.put("success", false);
+            result.put("redirect", "/users/loginForm");
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+        
+        String fk_id = loginUser.getId();
+        System.out.println("===> fk_id: " + fk_id);
+        
+
+        // 싫어요가 눌려있으면 삭제
+        if (commentService.iscommentDisliked(fk_id, commentNo)) {
+            commentService.deleteCommentDislike(fk_id, commentNo);
+        }
+
+        boolean iscommentLiked = commentService.iscommentLiked(fk_id, commentNo);
+        
+        if(iscommentLiked == true) {
+        	commentService.deleteCommentLike(fk_id,commentNo);
+        	result.put("status", "unliked");
+        } 
+        else {
+        	commentService.insertCommentLike(fk_id,commentNo);
+        	result.put("status", "liked");
+        }
+        
+        // 현재 게시글의 좋아요 수
+        int commentLikeCount = commentService.getCommentLikeCount(commentNo);
+        int commentDislikeCount = commentService.getCommentDislikeCount(commentNo);
+        
+        boolean newStatus = commentService.iscommentLiked(fk_id, commentNo); // 최신 상태 재조회
+
+        result.put("success", true);
+        result.put("commentLikeCount", commentLikeCount);
+        result.put("commentDislikeCount", commentDislikeCount);
+
+        
+        return result;
+    }
+    
+    
+    //댓글 싫어요
+    @PostMapping("commentDislike")
+    @ResponseBody
+    public Map<String, Object> commentDislike(@RequestParam(name="commentNo") Long commentNo, HttpSession session) {
+       
+    	Map<String, Object> result = new HashMap<>();
+
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        System.out.println("===> loginUser: " + loginUser);
+        
+        if (loginUser == null) {
+            result.put("success", false);
+            result.put("redirect", "/users/loginForm");
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+        
+        String fk_id = loginUser.getId();
+        System.out.println("===> fk_id: " + fk_id);
+        
+     // 좋아요가 눌려있으면 삭제
+        if (commentService.iscommentLiked(fk_id, commentNo)) {
+            commentService.deleteCommentLike(fk_id, commentNo);
+        }
+
+
+        boolean iscommentDisliked = commentService.iscommentDisliked(fk_id, commentNo);
+        
+        if(iscommentDisliked == true) {
+        	commentService.deleteCommentDislike(fk_id,commentNo);
+        	result.put("status", "unliked");
+        } 
+        else {
+        	commentService.insertCommentDislike(fk_id,commentNo);
+        	result.put("status", "disliked");
+        }
+        
+        // 현재 게시글의 싫어요 수
+        int commentDislikeCount = commentService.getCommentDislikeCount(commentNo);
+        int commentLikeCount = commentService.getCommentLikeCount(commentNo);
+        
+        boolean newStatus = commentService.iscommentDisliked(fk_id, commentNo); // 최신 상태 재조회
+
+        result.put("success", true);
+        result.put("commentDislikeCount", commentDislikeCount);
+        result.put("commentLikeCount", commentLikeCount);
+
+        return result;
+    }
+    
+  //대댓글 좋아요
+    @PostMapping("replyLike")
+    @ResponseBody
+    public Map<String, Object> replyLike(@RequestParam(name="commentNo") Long commentNo, HttpSession session) {
+       
+    	Map<String, Object> result = new HashMap<>();
+
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        System.out.println("===> loginUser: " + loginUser);
+        
+        if (loginUser == null) {
+            result.put("success", false);
+            result.put("redirect", "/users/loginForm");
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+        
+        String fk_id = loginUser.getId();
+        System.out.println("===> fk_id: " + fk_id);
+        
+        
+        // 싫어요가 눌려있으면 삭제
+           if (commentService.isreplyDisliked(fk_id, commentNo)) {
+               commentService.deleteReplyDislike(fk_id, commentNo);
+           }
+
+
+
+        boolean isreplyLiked = commentService.isreplyLiked(fk_id, commentNo);
+        
+        if(isreplyLiked == true) {
+        	commentService.deleteReplyLike(fk_id,commentNo);
+        } 
+        else {
+        	commentService.insertReplyLike(fk_id,commentNo);
+        }
+        
+        // 현재 게시글의 좋아요 수
+        int replyLikeCount = commentService.getReplyLikeCount(commentNo);
+        int replyDislikeCount = commentService.getReplyDislikeCount(commentNo);
+        
+        boolean newStatus = commentService.isreplyLiked(fk_id, commentNo); // 최신 상태 재조회
+
+        result.put("success", true);
+        result.put("status", isreplyLiked ? "unliked" : "liked");
+        result.put("replyLikeCount", replyLikeCount);
+        result.put("replyDislikeCount", replyDislikeCount);
+        return result;
+    }
+    
+    
+    //대댓글 싫어요
+    @PostMapping("replyDislike")
+    @ResponseBody
+    public Map<String, Object> replyDislike(@RequestParam(name="commentNo") Long commentNo, HttpSession session) {
+       
+    	Map<String, Object> result = new HashMap<>();
+
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        System.out.println("===> loginUser: " + loginUser);
+        
+        if (loginUser == null) {
+            result.put("success", false);
+            result.put("redirect", "/users/loginForm");
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+        
+        String fk_id = loginUser.getId();
+        System.out.println("===> fk_id: " + fk_id);
+        
+        
+        // 좋아요가 눌려있으면 삭제
+           if (commentService.isreplyLiked(fk_id, commentNo)) {
+               commentService.deleteReplyLike(fk_id, commentNo);
+           }
+
+        boolean isreplyDisliked = commentService.isreplyDisliked(fk_id, commentNo);
+        
+        if(isreplyDisliked == true) {
+        	commentService.deleteReplyDislike(fk_id,commentNo);
+        	result.put("status", "unliked");
+        } 
+        else {
+        	commentService.insertReplyDislike(fk_id,commentNo);
+        	result.put("status", "disliked");
+        }
+        
+        // 현재 게시글의 싫어요 수
+        int replyDislikeCount = commentService.getReplyDislikeCount(commentNo);
+        int replyLikeCount = commentService.getReplyLikeCount(commentNo);
+        
+        boolean newStatus = commentService.isreplyDisliked(fk_id, commentNo); // 최신 상태 재조회
+
+        result.put("success", true);
+        result.put("status", isreplyDisliked ? "unliked" : "disliked");
+        result.put("replyLikeCount", replyLikeCount);
+        result.put("replyDislikeCount", replyDislikeCount);
+        return result;
+        
     }
     
     

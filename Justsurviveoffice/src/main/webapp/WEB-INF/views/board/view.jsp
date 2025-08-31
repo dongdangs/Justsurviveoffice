@@ -6,45 +6,300 @@
     String ctxPath = request.getContextPath();
 %>
 <jsp:include page="../header/header1.jsp" /> 
-<html><style>
-  .board-container {
+<html>
+<style>
+
+ .board-container {
     width: 80%;
     margin: 20px auto;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e0e0e0;
     padding-bottom: 20px;
-  }
-  .board-header { display:flex; justify-content:space-between; align-items:center; }
-  .board-header h2 { margin:0; }
-  .board-meta { font-size:0.9em; color:#666; }
-  .board-content { margin:15px 0; white-space: pre-wrap; word-break: break-word; }
-  .board-file img { max-width:300px; margin-top:10px; }
-  .board-actions { margin-top:10px; }
-  .comment-section { margin-top:30px; }
-  .comment { border-top:1px solid #eee; padding:10px 0; }
-  .comment .meta { font-size:0.8em; color:#555; }
-  .btn { padding:5px 10px; border:1px solid #ccc; background:#f9f9f9; cursor:pointer; }
-  .btn:hover { background:#eee; }
+    font-family: 'Noto Sans KR', sans-serif;
+}
+<<<<<<< HEAD
 
-  /* << 핵심: 본문 내 삽입 미디어 크기 제한 >> */
-  .board-content img,
-  .board-content video,
-  .board-content iframe {
-    max-width: 100% !important;  /* 컨테이너 너비를 넘지 않도록 */
-    height: auto !important;     /* 비율 유지 */
-    display: block;
-    margin: 0 auto;              /* 가운데 정렬(옵션) */
-  }
-.comment img,
-.comment video,
-.comment iframe {
-  max-width: 100% !important;
-  height: auto !important;
+/* 게시판 헤더 */
+.board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.board-header h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #333;
 }
 
+/* 게시글 메타정보 */
+.board-meta {
+    font-size: 14px;
+    color: #777;
+    margin-top: 5px;
+}
+
+/* 게시글 본문 */
+.board-content {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #fff;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.7;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+}
+
+/* 첨부파일 이미지 */
+.board-file img {
+    max-width: 300px;
+    margin-top: 10px;
+    border-radius: 6px;
+}
+
+/* 좋아요 / 북마크 / 조회수 영역 */
+.board-actions {
+    margin-top: 10px;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #eee;
+}
+.board-actions i {
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 5px;
+    transition: color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+.board-actions i:hover {
+    transform: scale(1.15);
+}
+
+/* 좋아요 색상 */
+.fa-thumbs-up {
+    color: #3f80ff;
+}
+
+/* 싫어요 색상 */
+.fa-thumbs-down {
+    color: #ff5c5c;
+}
+
+/* 북마크 색상 */
+.fa-bookmark {
+    color: #f1c40f;
+}
+
+/* 댓글 섹션 */
+.comment-section {
+    margin-top: 35px;
+    background: #fafafa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+}
+
+/* 댓글 단일 아이템 */
+.comment {
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease-in-out;
+    position: relative; /* 버튼을 오른쪽 아래 배치하기 위해 필요 */
+}
+
+/* 댓글 버튼 영역 */
+.comment .actions {
+    display: flex;
+    justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.comment:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* 댓글 메타정보 */
+.comment .meta {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 6px;
+}
+
+/* 댓글 내용 */
+.comment .content {
+    font-size: 15px;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+/* 좋아요/싫어요 버튼 */
+.comment .like-dislike {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+}
+.comment .like-dislike i {
+    cursor: pointer;
+    transition: color 0.2s ease-in-out, transform 0.15s ease-in-out;
+}
+.comment .like-dislike i:hover {
+    transform: scale(1.2);
+}
+
+/* 댓글 버튼 공통 */
+.btn {
+    padding: 5px 12px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-right: 5px;
+}
+.btn:hover {
+    background-color: #f2f2f2;
+    border-color: #ccc;
+}
+
+/* 댓글 작성 textarea */
+textarea {
+    border-radius: 6px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    width: 100%;
+    resize: vertical;
+    transition: border-color 0.2s ease-in-out;
+}
+textarea:focus {
+    border-color: #6c63ff;
+    outline: none;
+}
+
+/* 대댓글 영역 */
+.replies {
+    margin-top: 10px;
+    margin-left: 15px;
+    border-left: 2px solid #f0f0f0;
+    padding-left: 10px;
+}
+
+/* 대댓글 단일 항목 */
+.reply {
+    background-color: #fefefe;
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-top: 8px;
+    border: 1px solid #f5f5f5;
+}
+.reply .meta {
+    font-size: 12px;
+    color: #999;
+}
+.reply .content {
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+/* ===== 대댓글 입력 폼 ===== */
+.reply-form {
+    display: flex;
+    flex-direction: column;  /* 세로 정렬 */
+    align-items: flex-end;   /* 버튼 오른쪽 정렬 */
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 100%;
+}
+
+/* 대댓글 입력창 */
+.reply-form textarea {
+    width: 95%;
+    min-height: 90px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    resize: vertical;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.2s ease-in-out;
+    margin-bottom: 8px; /* 버튼과 입력창 사이 간격 */
+}
+
+/* 입력창 포커스 효과 */
+.reply-form textarea:focus {
+    border-color: #6c63ff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(108, 99, 255, 0.3);
+}
+
+/* 버튼 묶음 */
+.reply-form .button-group {
+    display: flex;
+    gap: 8px; /* 버튼 간격 */
+    justify-content: flex-start; 
+    margin-top:5px;
+    width: 100%;
+}
+
+/* 공통 버튼 스타일 */
+.reply-form button {
+    padding: 6px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+/* 등록 버튼 */
+.reply-form .add-reply {
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+}
+.reply-form .add-reply:hover {
+    background-color: #5848e5;
+}
+
+/* 취소 버튼 */
+.reply-form .cancel-reply {
+    background-color: #f8f8f8;
+    color: #555;
+    border: 1px solid #ccc;
+}
+.reply-form .cancel-reply:hover {
+    background-color: #f0f0f0;
+}
+
+.commentlikedislike i,
+.replylikedislike i {
+    cursor: pointer;
+    font-size: 16px;  /* ✅ 아이콘 크기 키움 */
+    margin-right: 5px;
+    transition: transform 0.15s ease, color 0.2s ease;
+}
+
+.commentlikedislike i:hover,
+.replylikedislike i:hover {
+    transform: scale(1.25);
+    color: #3f80ff;  /* ✅ hover 시 강조 */
+}
+
+=======
+    .row {margin:0;}
+>>>>>>> refs/remotes/origin/yejunsKim
 </style>
 
 <script type="text/javascript">
-
+ 
 	$(function() {
 		const nextVals = ${boardDto.nextNo};
 		if(nextVals == 0) {
@@ -74,8 +329,8 @@
 			 console.log("reply-btn 클릭됨, parentNo=", parentNo); 
 
 		        const form = $('#reply-form-'+parentNo);
-		        	$(".reply-form").hide();
-		        	form.show();
+		        $(".reply-form").not(form).hide(); 
+		        form.show().find("textarea").focus(); 
 		            $(`#reply-content-${parentNo}`).focus();
 		   });  
 			 
@@ -115,8 +370,8 @@
 			                            <div class="content">${reply.content||''}</div>
 			                            <button class="btn delete-reply" data-id="${reply.commentNo}">삭제</button>
 			                        </div>`;
-			                       // $('#replies-' + parentNo).append(html);
-									 location.reload(); 
+
+			                        location.reload();  //재로드
 			                       
 			                    // 입력창 초기화 및 숨김
 			                    $('#reply-content-'+parentNo).val("");
@@ -278,76 +533,222 @@
 	}
 	
 	// 게시글 좋아요
-function boardLike(boardNo, fk_id) {
-    const icon = $('#boardLike-icon-'+boardNo);
-    const likeCountSpan = $("#likeCount");
-
-    $.ajax({
-        url: "<%= ctxPath%>/board/boardlike",
-        type: "POST",
-        data: { fk_boardNo: boardNo },
-        success: function(json) {
-            if (!json.success) {
-                alert(json.message);
-                return;
-            }
-
-            // 현재 좋아요 상태 변경
-            const isLiked = json.status === "liked";
-
-            // 클래스 완전히 초기화 후 상태 적용
-            icon.removeClass("fa-solid fa-regular text-warning");
-            if (isLiked) {
-                icon.addClass("fa-solid fa-thumbs-up text-warning");
-            } else {
-                icon.addClass("fa-regular fa-thumbs-up");
-            }
-
-            // data-liked 속성 갱신
-            icon.attr("data-liked", isLiked);
-
-            // 좋아요 개수 즉시 갱신
-            likeCountSpan.text(json.likeCount);
-        },
-        error: function(request, status, error) {
-            alert("code:" + request.status + "\nmessage:" + request.responseText);
-        }
-    });
-}
 	function boardLike(boardNo, fk_id) {
 	    const icon = $('#boardLike-icon-'+boardNo);
 	    const likeCountSpan = $("#likeCount");
+	
 	    $.ajax({
-	        url: "<%=ctxPath%>/board/boardlike",
+	        url: "<%= ctxPath%>/board/boardlike",
 	        type: "POST",
 	        data: { fk_boardNo: boardNo },
 	        success: function(json) {
-	            if (json.success) {
-	            	// 현재 좋아요 상태 변경
-		            const isLiked = json.status === "liked";
-		            // 클래스 완전히 초기화 후 상태 적용
-		            icon.removeClass("fa-solid fa-regular text-warning");
-		            if (isLiked) {
-		                icon.addClass("fa-solid fa-thumbs-up text-warning");
-		            } 
-		            else {
-		                icon.addClass("fa-regular fa-thumbs-up");
-		            }
-		            // data-liked 속성 갱신
-		            icon.attr("data-liked", isLiked);
-		            // 좋아요 개수 즉시 갱신
-		            likeCountSpan.text(json.likeCount);
+	            if (!json.success) {
+	                alert(json.message);
+	                return;
 	            }
-	            else {
-	            	alert(json.message);
-	            	window.location.href = "<%=ctxPath%>/users/loginForm";
+	
+	            // 현재 좋아요 상태 변경
+	            const isLiked = json.status === "liked";
+	
+	            // 클래스 완전히 초기화 후 상태 적용
+	            icon.removeClass("fa-solid fa-regular text-warning");
+	            if (isLiked) {
+	                icon.addClass("fa-solid fa-thumbs-up text-warning");
+	            } else {
+	                icon.addClass("fa-regular fa-thumbs-up");
 	            }
+	
+	            // data-liked 속성 갱신
+	            icon.attr("data-liked", isLiked);
+	
+	            // 좋아요 개수 즉시 갱신
+	            likeCountSpan.text(json.likeCount);
 	        },
 	        error: function(request, status, error) {
 	            alert("code:" + request.status + "\nmessage:" + request.responseText);
 	        }
 	    });
 	}
+	
+	//댓글 좋아요
+	function commentLike(commentNo,fk_id) {
+		 const icon = $('#commentLike-icon-' + commentNo);
+	    const dislikeIcon = $('#commentDislike-icon-' + commentNo);
+	    const likeCountSpan = $('#commentLikeCount-' + commentNo);
+	    const dislikeCountSpan = $('#commentDislikeCount-' + commentNo);
+	
+	    $.ajax({
+	        url: "<%= ctxPath%>/comment/commentLike",
+	        type: "POST",
+	        dataType: "json", 
+	        data: { commentNo: commentNo },
+	        success: function(json) {
+	        	// 로그인 안 한 경우 처리
+			    if (json.redirect) {
+			    	alert(json.message);
+			        window.location.href = "<%= ctxPath %>/users/loginForm";
+			        return;
+			    }
+
+	            // 좋아요 상태 변경
+	            const iscommentLiked = json.status === "liked";
+	            icon.removeClass("fa-solid fa-thumbs-up text-warning fa-regular");
+	            dislikeIcon.removeClass("fa-solid fa-thumbs-down text-warning fa-regular");
+
+	            if (iscommentLiked) {
+	                icon.addClass("fa-solid fa-thumbs-up text-warning");
+	            } else {
+	                icon.addClass("fa-regular fa-thumbs-up");
+	            }
+	
+	            // 싫어요는 항상 해제 상태로 갱신
+	            dislikeIcon.addClass("fa-regular fa-thumbs-down");
+
+	            icon.attr("data-liked", iscommentLiked); //좋아요 상태 유지
+	
+	            // 좋아요 개수 즉시 갱신
+	            likeCountSpan.text(json.commentLikeCount);
+	            dislikeCountSpan.text(json.commentDislikeCount);
+	        	
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}
+	
+	//댓글 싫어요
+	function commentDislike(commentNo,fk_id) {
+	    const icon = $('#commentDislike-icon-' + commentNo);
+	    const likeIcon = $('#commentLike-icon-' + commentNo);
+	    const dislikeCountSpan = $('#commentDislikeCount-' + commentNo);
+	    const likeCountSpan = $('#commentLikeCount-' + commentNo);
+	
+	    $.ajax({
+	        url: "<%= ctxPath%>/comment/commentDislike",
+	        type: "POST",
+	        dataType: "json", 
+	        data: { commentNo: commentNo },
+	        success: function(json) {
+	        	if (json.redirect) {
+			    	alert(json.message);
+			        window.location.href = "<%= ctxPath %>/users/loginForm";
+			        return;
+			    }
+	            //  싫어요 상태 변경
+	            const iscommentDisliked = json.status === "disliked";
+	            icon.removeClass("fa-solid fa-thumbs-down text-warning fa-regular");
+	            likeIcon.removeClass("fa-solid fa-thumbs-up text-warning fa-regular");
+
+	            if (iscommentDisliked) {
+	                icon.addClass("fa-solid fa-thumbs-down text-warning"); 
+	            } else {
+	                icon.addClass("fa-regular fa-thumbs-down"); 
+	            }
+	
+	            // 좋아요는 항상 해제 상태로 갱신
+	            likeIcon.addClass("fa-regular fa-thumbs-up");
+	            
+	            icon.attr("data-liked", iscommentDisliked); //싫어요 유지
+
+	            // 개수 갱신
+	            dislikeCountSpan.text(json.commentDislikeCount);
+	            likeCountSpan.text(json.commentLikeCount);
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}
+	
+	
+	//대댓글 좋아요
+	function replyLike(commentNo,fk_id) {
+		 const icon = $('#replyLike-icon-' + commentNo);
+	    const dislikeIcon = $('#replyDislike-icon-' + commentNo);
+	    const likeCountSpan = $('#replyLikeCount-reply-' + commentNo);
+	    const dislikeCountSpan = $('#replyDislikeCount-reply-' + commentNo);
+
+	
+	    $.ajax({
+	        url: "<%= ctxPath%>/comment/replyLike",
+	        type: "POST",
+	        dataType: "json", 
+	        data: { commentNo: commentNo  },
+	        success: function(json) {
+	        	// ✅ 로그인 안 되어 있으면 바로 이동
+	            if (json.redirect) {
+	                window.location.href = json.redirect;
+	                return;
+	            }
+	            //  좋아요 상태 변경
+	            const isreplyLiked = json.status === "liked";
+	            icon.removeClass("fa-solid fa-thumbs-up text-warning fa-regular");
+	
+	            if (isreplyLiked) {
+	                icon.addClass("fa-solid fa-thumbs-up text-warning");
+	                // 좋아요 누르면 싫어요 해제
+	                dislikeIcon.removeClass("fa-solid fa-thumbs-down text-warning")
+	                           .addClass("fa-regular fa-thumbs-down");
+	            } else {
+	                icon.addClass("fa-regular fa-thumbs-up");
+	            }
+	            icon.attr("data-liked", isreplyLiked); //좋아요유지
+	            
+	            // count 갱신
+	            likeCountSpan.text(json.replyLikeCount);
+	            dislikeCountSpan.text(json.replyDislikeCount);
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}
+	
+	//대댓글 싫어요
+	function replyDislike(commentNo,fk_id) {
+		 const icon = $('#replyDislike-icon-' + commentNo);
+	    const likeIcon = $('#replyLike-icon-' + commentNo);
+	    const likeCountSpan = $('#replyLikeCount-reply-' + commentNo);
+	    const dislikeCountSpan = $('#replyDislikeCount-reply-' + commentNo);
+	
+	    $.ajax({
+	        url: "<%= ctxPath%>/comment/replyDislike",
+	        type: "POST",
+	        dataType: "json", 
+	        data: { commentNo: commentNo },
+	        success: function(json) {
+	        	// ✅ 로그인 안 되어 있으면 바로 이동
+	            if (json.redirect) {
+	                window.location.href = json.redirect;
+	                return;
+	            }        		
+	            //  싫어요 상태 변경
+	            const isreplyDisliked = json.status === "disliked";
+	            icon.removeClass("fa-solid fa-thumbs-down text-warning fa-regular");
+
+	            if (isreplyDisliked) {
+	                icon.addClass("fa-solid fa-thumbs-down text-warning");
+	                // 싫어요 누르면 좋아요 해제
+	                likeIcon.removeClass("fa-solid fa-thumbs-up text-warning")
+	                        .addClass("fa-regular fa-thumbs-up");
+	            } else {
+	                icon.addClass("fa-regular fa-thumbs-down");
+	            }
+	
+	            icon.attr("data-liked", isreplyDisliked) ;//싫어요 상태 유지
+	            
+	            // count 갱신
+	            dislikeCountSpan.text(json.replyDislikeCount);
+	            likeCountSpan.text(json.replyLikeCount);		
+	        },
+	        error: function(request, status, error) {
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	}
+	
+	
 	
 	<!-- 북마크기능 -->
     function bookmark(boardNo, fk_id, isBookmarked) {
@@ -374,12 +775,13 @@ function boardLike(boardNo, fk_id) {
 	            		$('input[name="bookmarked"]').value = true;
 	            	}
 	            } else {
-	                alert(json.message);
-	                window.location.href = "<%=ctxPath%>/users/loginForm";
+	                //alert(json.message + "뒤로가기 오류!");
+	                alert("뒤로가기 오류입니다.");
+	                window.location.href = "<%=ctxPath%>/index";
 	            }
 	        },
 	        error: function(request, status, error) {
-	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	            //alert("뒤로가기 오류!"+"   code:" + request.status + "\nmessage:" + request.responseText);
 	            alert("뒤로가기 오류입니다.");
 	            window.location.href = "<%=ctxPath%>/index";
 	            // 일단 임시로 오류시 main으로 전환시키기
@@ -391,7 +793,7 @@ function boardLike(boardNo, fk_id) {
 		 const frm = document.goViewFrm;
 		 frm.boardNo.value = ${boardDto.preNo};
 		 
-		 frm.method = "post";
+		 frm.method = "get";
 		 frm.action = "<%= ctxPath%>/board/view";
 		 frm.submit();
 	}
@@ -400,7 +802,7 @@ function boardLike(boardNo, fk_id) {
 		 const frm = document.goViewFrm;
 		 frm.boardNo.value = ${boardDto.nextNo};
 		 
-		 frm.method = "post";
+		 frm.method = "get";
 		 frm.action = "<%= ctxPath%>/board/view";
 		 frm.submit();
 	}
@@ -456,6 +858,7 @@ function boardLike(boardNo, fk_id) {
 	  </div> --%>
     </c:if>
     
+    
     <!-- 본문 내용 -->
     <div class="board-content" style="white-space: pre-wrap;"
     	>${boardDto.boardContent}</div>
@@ -492,7 +895,7 @@ function boardLike(boardNo, fk_id) {
 			    </i>
 			</form> 
 			
-	        <form name="delnEditForm" method="post" style="display:inline;margin: auto; ">
+	        <form name="delnEditForm" style="display:inline;margin: auto; ">
 		        <c:if test="${loginUser.id eq boardDto.fk_id}">
 		        	<input name="fk_categoryNo" style="display: none;" value="${boardDto.fk_categoryNo}"/>
 		        	<input type="hidden" name="boardNo" value="${boardDto.boardNo}">
@@ -507,7 +910,6 @@ function boardLike(boardNo, fk_id) {
 	    </div>
 	</div>
 	
-	<!-- ======== 댓글 목록 ======== -->
 <!-- ======== 댓글 목록 ======== -->
 <div class="comment-section">
     <h3 style="font-weight: bold;">댓글 <span>${fn:length(commentList)}</span></h3>
@@ -519,21 +921,25 @@ function boardLike(boardNo, fk_id) {
             </div>
             <div class="content">${comment.content}</div>
 	
-			<div class="like-dislike">
-			    <i class="fa-regular fa-thumbs-up like-btn" 
-			       title="좋아요" 
-			       data-id="${comment.commentNo}"></i>
-			    <span class="like-count">
-			        ${empty comment.likeCount ? 0 : comment.likeCount}
-			    </span>
+			<!-- 댓글 좋아요/싫어요 -->
+			<div class="commentlikedislike">
+			    <i id="commentLike-icon-${comment.commentNo}" 
+				   class="fa-thumbs-up ${comment.commentLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+				   data-liked="${comment.commentLiked}"
+				   onclick="commentLike(${comment.commentNo})"></i>
+				<span id="commentLikeCount-${comment.commentNo}">
+				    ${comment.commentLikeCount}
+				</span>
 			
-			    <i class="fa-regular fa-thumbs-down dislike-btn" 
-			       title="싫어요" 
-			       data-id="${comment.commentNo}"></i>
-			    <span class="dislike-count">
-			        ${empty comment.dislikeCount ? 0 : comment.dislikeCount}
-			    </span>
+			    <i id="commentDislike-icon-${comment.commentNo}" 
+				   class="fa-thumbs-down ${comment.commentDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
+				   data-liked="${comment.commentDisliked}"
+				   onclick="commentDislike(${comment.commentNo})"></i>
+				<span id="commentDislikeCount-${comment.commentNo}">
+				    ${comment.commentDislikeCount}
+				</span>
 			</div>
+
 
             <!-- 버튼 영역 -->
             <div class="actions">
@@ -553,21 +959,42 @@ function boardLike(boardNo, fk_id) {
 
             <!-- 대댓글 입력폼 + 리스트 -->
             <div class="reply-form" id="reply-form-${comment.commentNo}" style="display:none; margin-top:5px;">
-                <textarea id="reply-content-${comment.commentNo}" rows="2" style="width:80%;" placeholder="대댓글을 입력하세요"></textarea>
-                <button type="button" class="btn add-reply" data-parent="${comment.commentNo}">등록</button>
-                <button type="button" class="btn cancel-reply" data-parent="${comment.commentNo}">취소</button>
+                <textarea id="reply-content-${comment.commentNo}" rows="3" placeholder="대댓글을 입력하세요"></textarea>
+                <div class="button-group">
+	                <button type="button" class="btn add-reply" data-parent="${comment.commentNo}">등록</button>
+	                <button type="button" class="btn cancel-reply" data-parent="${comment.commentNo}">취소</button>
+           		</div>
             </div>
             <div class="replies" id="replies-${comment.commentNo}" style="margin-left:20px; margin-top:10px;">
                 <c:forEach var="reply" items="${comment.replyList}">
                     <div class="reply" id="reply-${reply.commentNo}">
-                        <div class="meta">
-                            <span>${reply.fk_id}</span> |
                             <span>${fn:replace(reply.createdAtComment, "T", " ")}</span>
                         </div>
                         <div class="content">${reply.content}</div>
+                        
+						<!-- 대댓글 좋아요/싫어요 -->
+						<div class="replylikedislike">
+						    <i id="replyLike-icon-${reply.commentNo}" 
+							   class="fa-thumbs-up ${reply.replyLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+							   data-liked="${reply.replyLiked}"
+							   onclick="replyLike(${reply.commentNo})"></i>
+							<span id="replyLikeCount-reply-${reply.commentNo}">
+							    ${reply.replyLikeCount}
+							</span>
+						
+						    <i id="replyDislike-icon-${reply.commentNo}" 
+							   class="fa-thumbs-down ${reply.replyDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
+							   data-liked="${reply.replyDisliked}"
+							   onclick="replyDislike(${reply.commentNo})"></i>
+							<span id="replyDislikeCount-reply-${reply.commentNo}">
+							    ${reply.replyDislikeCount}
+							</span>
+						</div>
+						
                         <c:if test="${loginUser.id == reply.fk_id}">
                             <button class="btn delete-reply" data-id="${reply.commentNo}" data-parent="${comment.commentNo}">삭제</button>
                         </c:if>
+                        
                     </div>
                 </c:forEach>
             </div>

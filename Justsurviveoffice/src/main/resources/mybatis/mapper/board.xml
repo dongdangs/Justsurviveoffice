@@ -21,6 +21,7 @@
                		  #{boardFileName}, #{boardFileOriginName}) 
     </insert>
     
+    
     <!-- 파일첨부 된 게시물 업로드 -->
     <update id="updateBoard" parameterType="BoardDTO">
     	update Board
@@ -77,8 +78,6 @@
             </when>
 		</choose>
         order by boardNo desc
-        offset ((to_number(#{currentShowPageNo}) - 1) * 5) rows
-        fetch next 5 row only
     </select>
 
   		<select id="selectView" resultType="BoardDTO" parameterType="long">
@@ -239,7 +238,7 @@
                   else boardcontent
              end as boardcontent
       FROM board
-        WHERE fk_id = #{fk_id}
+        WHERE fk_id = #{fk_id} 
         ORDER BY createdAtBoard DESC
     </select>
 
@@ -258,80 +257,6 @@
 	    order by bookmark.createdAtMark DESC
 	</select>
 
-
-  	<!-- 총 검색된 게시물 건수 -->
-  	<select id="searchListCount" parameterType="HashMap" resultType="int">
-  		select count(*)
-  		from board
-  		where boardDeleted = 0
-			<if test='categoryNo != ""'>
-				and fk_categoryNo = to_number(#{category})
-			</if>
-		<choose>
-            <when test='searchType == "boardName" and searchWord != ""'>
-                and lower(boardName) like '%'||lower(#{searchWord})||'%'
-            </when>
-            <when test='searchType == "boardContent" and searchWord != ""'>
-                and lower(boardContent) like '%'||lower(#{searchWord})||'%'
-            </when>
-            <when test='searchType == "boardName_boardContent" and searchWord != ""'>
-                and ( lower(boardName) like '%'||lower(#{searchWord})
-               		||'%' or lower(boardContent) like '%'||lower(#{searchWord})||'%' ) 
-            </when>
-            <when test='searchType == "fk_id" and searchWord != ""'>
-            	and lower(fk_id) like '%'||lower(#{searchWord})||'%'
-            </when>
-		</choose>
-  	</select>
-  	
-  	
-  	<!-- 자동 검색어 완성 -->
-  	<select id="getSearchWordList" parameterType="HashMap" resultType="String">
-  		<choose>
-  			<when test='searchType == "boardName" and searchWord != ""' >
-  				select boardname
-  				from board
-  				where boardDeleted = 0
-				<if test='categoryNo != ""'>
-					and fk_categoryNo = to_number(#{category})
-				</if>
-				and lower(boardName) like '%' || lower(#{searchWord}) || '%'
-				order by createdAtBoard
-  			</when>
-  			<when test='searchType == "boardContent" and searchWord != ""'>
-  				select boardname
-  				from board
-  				where boardDeleted = 0
-				<if test='categoryNo != ""'>
-					and fk_categoryNo = to_number(#{category})
-				</if>
-				and lower(boardContent) like '%' || lower(#{searchWord}) || '%'
-				order by createdAtBoard
-  			</when>
-  			<when test='searchType == "boardName_boardContent" and searchWord != ""'>
-  				select boardname
-  				from board
-  				where boardDeleted = 0
-				<if test='categoryNo != ""'>
-					and fk_categoryNo = to_number(#{category})
-				</if>
-				 and ( lower(boardName) like '%'||lower(#{searchWord})
-               		||'%' or lower(boardContent) like '%'||lower(#{searchWord})||'%' ) 
-				order by createdAtBoard
-  			</when>
-  			<when test='searchType == "fk_id" and searchWord != ""'>
-  				SELECT DISTINCT fk_id
-				FROM board 
-				WHERE boardDeleted = 0 
-				<if test='categoryNo != ""'>
-					AND fk_categoryNo = TO_NUMBER(#{category})
-				</if>
-				AND lower(fk_id) LIKE '%' || lower(#{searchWord}) || '%'
-				ORDER BY fk_id
-  			</when>
-  		</choose>
-  	</select>
-  	
   	
   	<!-- 보드 테이블에서 제목과 내용 가져오기(DB) -->
   	<select id="getBoardContents" parameterType="String" resultType="BoardDTO">
@@ -346,5 +271,3 @@
   	</select>
   	
 </mapper>
-
-

@@ -230,7 +230,7 @@ tasks.named('test') {
 
 // Java 컴파일러에게 파라미터 이름을 class 파일에 기록하라고 지시
 tasks.withType(JavaCompile) {
-    options.compilerArgs << "-parameters"
+    options.compilerArgs << '-parameters'
 }
 
 // === QClass 관련하여 설정하기 === 

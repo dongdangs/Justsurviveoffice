@@ -32,6 +32,7 @@
 
    <%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
    
+	
 </head>
 <body>
    <div id="mycontainer">
@@ -40,7 +41,7 @@
       </div>
       
       <div id="mycontent"">
-         <div class="row"> 
+         <div class="row" style="margin:0 auto;"> 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
             <c:if test="${not empty sessionScope.loginUser}">   
                <div>
@@ -52,7 +53,7 @@
                    </div>
                </div>
             </c:if>   
-               <div style="width: 70%; margin-top:30%; border: solid 1px green;">
+               <div style="width: 70%; margin-top:30%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 style="font-weight: bolder; margin: 0;">대사살 <span style="color: red;">Hot!</span> 게시글</h6>
                 </div>
@@ -61,12 +62,11 @@
                         <c:forEach var="hotRead" items="${hotReadList}">
                             <form id="viewForm${hotRead.boardNo}" 
 							      action="<%= ctxPath %>/board/view" 
-							      method="post" 
+							      method="get" 
 							      style="display:none;">
 							    <input type="hidden" name="category" value="${hotRead.fk_categoryNo}">
 							    <input type="hidden" name="boardNo" value="${hotRead.boardNo}">
 							</form>
-							
 							<tr>
 							    <td style="width: 5%; font-weight: bold;">
 							        ${hotRead.rank}
@@ -77,7 +77,7 @@
 							           style="color: #000;">
 							            ${hotRead.boardName}
 							        </a>
-							        <span class="fa-regular fa-eye text-muted" style="font-size: 8pt;">
+							        <span class="fa-regular fa-eye text-muted" style="font-size: 8pt; color:#fff !important">
 							            (${hotRead.readCount})
 							        </span>
 							    </td>
@@ -86,7 +86,7 @@
                     </tbody>
                 </table>
             </div>
-            <div style="width: 70%; margin-top:30%; border: solid 1px green;">
+            <div style="width: 70%; margin-top:30%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 style="font-weight: bolder; margin: 0;">대사살 댓글많은 게시글</h6>
                 </div>
@@ -95,7 +95,7 @@
                         <c:forEach var="hotComment" items="${hotCommentList}">
                         	<form id="viewForm${hotComment.boardNo}" 
 							      action="<%= ctxPath %>/board/view" 
-							      method="post" 
+							      method="get" 
 							      style="display:none;">
 							    <input type="hidden" name="category" value="${hotComment.fk_categoryNo}">
 							    <input type="hidden" name="boardNo" value="${hotComment.boardNo}">
@@ -111,7 +111,7 @@
 							           style="color: #000;">
 							            ${hotComment.boardName}
 							        </a>
-							        <span class="fa-regular fa-eye text-muted" style="font-size: 8pt;">
+							        <span class="fa-regular fa-eye text-muted" style="font-size: 8pt; color:#fff !important">
 							            (${hotComment.commentCount})
 							        </span>
 							    </td>

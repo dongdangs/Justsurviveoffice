@@ -94,26 +94,8 @@ public class BoardDAO_imple implements BoardDAO {
 		List<BoardDTO> hotCommentList = sql.selectList("board.getTopBoardsByCommentCount");
 		return hotCommentList;
 	}	
-	
-	// Hot 게시글 전체 리스트 (조회수 많은 순)
-	@Override
-	public List<BoardDTO> hotAll() {
-		List<BoardDTO> hotAllList = sql.selectList("board.hotAll");
-		return hotAllList;
-	}
-	
-	
 	////////////////////////////////////////////////////////////////////////////
 	 
-	// 게시글 좋아요 취소
-	@Override
-	public int deleteBoardLike(String fk_id, Long fk_boardNo) {
-		Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("fk_id", fk_id);
-        paramMap.put("fk_boardNo", fk_boardNo);
-		return sql.delete("boardLike.deleteBoardLike", paramMap);
-	}
-	
 	// =====================0827 rdg7203 수정 시작 =============================== //
 	// 총 검색된 게시물 건수
 	@Override
@@ -143,6 +125,16 @@ public class BoardDAO_imple implements BoardDAO {
 //		return n;
 //	}
 	
+	
+
+	//게시글 좋아요 여부
+	@Override
+	public int isBoardLiked(Map<String, Object> paramMap) {
+	    return sql.selectOne("boardLike.isBoardLiked", paramMap);
+	}
+	
+	
+	
 	//게시글 좋아요 추가
 	@Override
 	public int insertBoardLike(String fk_id, Long fk_boardNo) {
@@ -155,17 +147,20 @@ public class BoardDAO_imple implements BoardDAO {
 	
 	
 	 //게시글 좋아요 수
-		@Override
-		public int getLikeCount(Long boardNo) {
-	        return sql.selectOne("boardLike.getLikeCount", boardNo);
+	@Override
+	public int getLikeCount(Long boardNo) {
+        return sql.selectOne("boardLike.getLikeCount", boardNo);
+
+	}
 	
-		}
+	// 게시글 좋아요 취소
+	@Override
+	public int deleteBoardLike(String fk_id, Long fk_boardNo) {
+		Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("fk_id", fk_id);
+        paramMap.put("fk_boardNo", fk_boardNo);
+		return sql.delete("boardLike.deleteBoardLike", paramMap);
+	}	
 		
-		
-		//좋아요 여부
-		@Override
-		public int isBoardLiked(Map<String, Object> paramMap) {
-		    return sql.selectOne("boardLike.isBoardLiked", paramMap);
-		}
 		
 }
