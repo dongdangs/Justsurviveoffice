@@ -324,102 +324,95 @@ textarea:focus {
 	    });
 		 
 			//대댓글 입력
-		    $(document).on("click", ".reply-btn", function() {
-			 const parentNo = $(this).data("id"); //data-id="${comment.commentNo}"라고 아래에 button 속성 지정해놨음
-			 console.log("reply-btn 클릭됨, parentNo=", parentNo); 
-
-		        const form = $('#reply-form-'+parentNo);
+		 $(document).on("click", ".reply-btn", function() {
+				const parentNo = $(this).data("id"); //data-id="${comment.commentNo}"라고 아래에 button 속성 지정해놨음
+				console.log("reply-btn 클릭됨, parentNo=", parentNo); 
+ 		        const form = $('#reply-form-'+parentNo);
 		        $(".reply-form").not(form).hide(); 
 		        form.show().find("textarea").focus(); 
-		            $(`#reply-content-${parentNo}`).focus();
-		   });  
-			 
-			// 대댓글 작성
-   			 $(document).on("click", ".add-reply", function() {
-		        const parentNo = $(this).data("parent"); //data-parent로 "${comment.commentNo}" 지정해놨음
-		        const content = $('#reply-content-'+parentNo).val().trim();  
-		        
-		        console.log("parentNo 뭔데 : "+parentNo);
-		        
-			        if(content.length == 0) {
-			        	alert("댓글내용을 입력해주세요 !");
-			        	return; 
-			        }
-			        
-			        $.ajax({
-			            url: "<%= ctxPath%>/comment/writeReply",
-			            type: "POST",
-			            dataType:"json",
-			            data: { 
-			            	fk_boardNo: "${boardDto.boardNo}",
-			                content: content,
-			                parentNo: parentNo
-						},
-			            success: function(json) {
-			            	  
-			                if (json.success) {
-			                	// 대댓글 리스트에 새로 추가
-			                	const reply = json.reply;
-			                	const html = `
-			                        <div class="reply" id="reply-${reply.commentNo}">
-			                            <div class="meta">
-		                                <span>${reply.fk_id}</span> |
-		                                <span>${reply.fk_name}</span> |
-			                                <span>${reply.createdAtComment}</span>
-			                            </div>
-			                            <div class="content">${reply.content||''}</div>
-			                            <button class="btn delete-reply" data-id="${reply.commentNo}">삭제</button>
-			                        </div>`;
+	            $(`#reply-content-${parentNo}`).focus();
+		 });  
+		  
+		 // 대댓글 작성
+		 $(document).on("click", ".add-reply", function() {
+	        const parentNo = $(this).data("parent"); //data-parent로 "${comment.commentNo}" 지정해놨음
+	        const content = $('#reply-content-'+parentNo).val().trim();  
+	        
+	        console.log("parentNo 뭔데 : "+parentNo);
+	        if(content.length == 0) {
+	        	alert("댓글내용을 입력해주세요 !");
+	        	return; 
+	        }
+	        $.ajax({
+	            url: "<%= ctxPath%>/comment/writeReply",
+	            type: "POST",
+	            dataType:"json",
+	            data: { 
+	            	fk_boardNo: "${boardDto.boardNo}",
+	                content: content,
+	                parentNo: parentNo
+				},
+	            success: function(json) {
+	                if (json.success) {
+	                	// 대댓글 리스트에 새로 추가
+	                	const reply = json.reply;
+	                	const html = `
+                        <div class="reply" id="reply-${reply.commentNo}">
+                            <div class="meta">
+                               <span>${reply.fk_id}</span> |
+                               <span>${reply.fk_name}</span> |
+                                <span>${reply.createdAtComment}</span>
+                            </div>
+                            <div class="content">${reply.content||''}</div>
+                            <button class="btn delete-reply" data-id="${reply.commentNo}">삭제</button>
+                        </div>`;
+                        location.reload();  //재로드
+	                    // 입력창 초기화 및 숨김
+	                    $('#reply-content-'+parentNo).val("");
+	                    $('#reply-form-'+parentNo).hide();
+	                } else {
+	                    alert(json.message);
+	                }
+	            },
+	            error: function(request, status, error) {
+	                alert("code:" + request.status + "\nmessage:" + request.responseText);
+	            }
+	        });
+		}); // end of $('button#replybtn').click(function(){});
+	       
+		 // 대댓글 작성 취소버튼
+	    $(document).on("click", ".cancel-reply", function() {
+	        const parentNo = $(this).data("parent");
+	    	
+	        $('#reply-content-'+parentNo).val("");
+	        $('#reply-form-'+parentNo).hide();
+	        
+	    });
 
-			                        location.reload();  //재로드
-			                       
-			                    // 입력창 초기화 및 숨김
-			                    $('#reply-content-'+parentNo).val("");
-			                    $('#reply-form-'+parentNo).hide();
-			                } else {
-			                    alert(json.message);
-			                }
-			            },
-			            error: function(request, status, error) {
-			                alert("code:" + request.status + "\nmessage:" + request.responseText);
-			            }
-			        });
-			        
-			}); // end of $('button#replybtn').click(function(){});
-		       
-			 // 대댓글 작성 취소버튼
-		    $(document).on("click", ".cancel-reply", function() {
-		        const parentNo = $(this).data("parent");
-		    	
-		        $('#reply-content-'+parentNo).val("");
-		        $('#reply-form-'+parentNo).hide();
-		        
-		    });
+	    // 대댓글 삭제
+	    $(document).on("click", ".delete-reply", function() {
+	        if (!confirm("정말 삭제하시겠습니까?")) return;
 
-		    // 대댓글 삭제
-		    $(document).on("click", ".delete-reply", function() {
-		        if (!confirm("정말 삭제하시겠습니까?")) return;
+	        const commentNo = $(this).data("id");
 
-		        const commentNo = $(this).data("id");
-
-		        $.ajax({
-		            url: "<%= ctxPath %>/comment/deleteReply",
-		            type: "POST",
-		            dataType:"json",
-		            data: {commentNo:commentNo,
-		            },
-		            success: function(json) {
-		                if (json.success) {
-		                    $('#reply-'+commentNo).remove();
-		                } else {
-		                    alert(json.message);
-		                }
-		            },
-		            error: function(request, status, error) {
-		                alert("code:" + request.status + "\nmessage:" + request.responseText);
-		            }
-		        });
-		    });
+	        $.ajax({
+	            url: "<%= ctxPath %>/comment/deleteReply",
+	            type: "POST",
+	            dataType:"json",
+	            data: {commentNo:commentNo,
+	            },
+	            success: function(json) {
+	                if (json.success) {
+	                    $('#reply-'+commentNo).remove();
+	                } else {
+	                    alert(json.message);
+	                }
+	            },
+	            error: function(request, status, error) {
+	                alert("code:" + request.status + "\nmessage:" + request.responseText);
+	            }
+	        });
+	    });
 		 
 		
 		 // 댓글 삭제 
@@ -428,7 +421,6 @@ textarea:focus {
 	            alert("삭제가 취소되었습니다.");
 	            return;
 	        }
-
 	        const commentNo = $(this).data("id");
 	        const fkBoardNo = "${boardDto.boardNo}";
 	        const fkId = "${sessionScope.loginUser.id}";
@@ -544,9 +536,9 @@ textarea:focus {
 	        success: function(json) {
 	            if (!json.success) {
 	                alert(json.message);
+	                window.location.href = "<%=ctxPath%>/users/loginForm";
 	                return;
 	            }
-	
 	            // 현재 좋아요 상태 변경
 	            const isLiked = json.status === "liked";
 	
@@ -557,10 +549,8 @@ textarea:focus {
 	            } else {
 	                icon.addClass("fa-regular fa-thumbs-up");
 	            }
-	
 	            // data-liked 속성 갱신
 	            icon.attr("data-liked", isLiked);
-	
 	            // 좋아요 개수 즉시 갱신
 	            likeCountSpan.text(json.likeCount);
 	        },
@@ -645,12 +635,9 @@ textarea:focus {
 	            } else {
 	                icon.addClass("fa-regular fa-thumbs-down"); 
 	            }
-	
 	            // 좋아요는 항상 해제 상태로 갱신
 	            likeIcon.addClass("fa-regular fa-thumbs-up");
-	            
 	            icon.attr("data-liked", iscommentDisliked); //싫어요 유지
-
 	            // 개수 갱신
 	            dislikeCountSpan.text(json.commentDislikeCount);
 	            likeCountSpan.text(json.commentLikeCount);
@@ -664,19 +651,17 @@ textarea:focus {
 	
 	//대댓글 좋아요
 	function replyLike(commentNo,fk_id) {
-		 const icon = $('#replyLike-icon-' + commentNo);
+		const icon = $('#replyLike-icon-' + commentNo);
 	    const dislikeIcon = $('#replyDislike-icon-' + commentNo);
 	    const likeCountSpan = $('#replyLikeCount-reply-' + commentNo);
 	    const dislikeCountSpan = $('#replyDislikeCount-reply-' + commentNo);
-
-	
 	    $.ajax({
 	        url: "<%= ctxPath%>/comment/replyLike",
 	        type: "POST",
 	        dataType: "json", 
 	        data: { commentNo: commentNo  },
 	        success: function(json) {
-	        	// ✅ 로그인 안 되어 있으면 바로 이동
+	        	// 로그인 안 되어 있으면 바로 이동
 	            if (json.redirect) {
 	                window.location.href = json.redirect;
 	                return;
@@ -718,7 +703,7 @@ textarea:focus {
 	        dataType: "json", 
 	        data: { commentNo: commentNo },
 	        success: function(json) {
-	        	// ✅ 로그인 안 되어 있으면 바로 이동
+	        	// 로그인 안 되어 있으면 바로 이동
 	            if (json.redirect) {
 	                window.location.href = json.redirect;
 	                return;
@@ -735,9 +720,7 @@ textarea:focus {
 	            } else {
 	                icon.addClass("fa-regular fa-thumbs-down");
 	            }
-	
 	            icon.attr("data-liked", isreplyDisliked) ;//싫어요 상태 유지
-	            
 	            // count 갱신
 	            dislikeCountSpan.text(json.replyDislikeCount);
 	            likeCountSpan.text(json.replyLikeCount);		
@@ -747,8 +730,6 @@ textarea:focus {
 	        }
 	    });
 	}
-	
-	
 	
 	<!-- 북마크기능 -->
     function bookmark(boardNo, fk_id, isBookmarked) {
@@ -761,6 +742,10 @@ textarea:focus {
 	        data: { fk_boardNo: boardNo },
 	        success: function(json) {
 	            const icon = $('#bookmark-icon-'+boardNo); // 북마크 아이콘 지정
+	            console.log(json.stringify);
+	            console.log(json.success);
+	            console.log(json.notLogin);
+	            console.log(json.message);
 	            if (json.success) {
 	            	icon.removeClass("fa-solid fa-bookmark text-warning fa-regular");
 	            	if (isBookmarked) {
@@ -774,8 +759,13 @@ textarea:focus {
 	            	    icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', true)");
 	            		$('input[name="bookmarked"]').value = true;
 	            	}
-	            } else {
-	                //alert(json.message + "뒤로가기 오류!");
+	            } 
+	            else if (json.notLogin) { // 로그인이 안되었을시,
+	            	alert(json.message);
+	            	window.location.href = "<%=ctxPath%>/users/loginForm";
+	            }
+	            else {
+	                // json.message == undefined
 	                alert("뒤로가기 오류입니다.");
 	                window.location.href = "<%=ctxPath%>/index";
 	            }
