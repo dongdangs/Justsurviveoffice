@@ -33,19 +33,11 @@
    <%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
    
    <script>
-<<<<<<< HEAD
    
    
    </script>
    
    
-=======
-	
-	
-   </script>
-   
-	
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 </head>
 <body>
    <div id="mycontainer">
