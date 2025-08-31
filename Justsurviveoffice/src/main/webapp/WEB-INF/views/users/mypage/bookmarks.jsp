@@ -115,6 +115,14 @@ $(function () {
         return dateTimeStr.split("T")[0];
     }
 
+    // ✅ 번호 다시 매기기 함수
+    function renumberRows() {
+        $("#bookmarkList tr").each(function(index) {
+            $(this).find("td:first").text(index + 1);
+        });
+    }
+
+    // ✅ 데이터 불러오기
     function loadMore() {
         if (isLoading || endOfData) return;
         isLoading = true;
@@ -130,7 +138,9 @@ $(function () {
             },
             success: function(data) {
                 if (data.length > 0) {
-                    let rowNumber = start + 1;
+                    // 현재 테이블에 있는 행 개수 + 1부터 시작
+                    let rowNumber = $("#bookmarkList tr").length + 1;
+                    
                     data.forEach(function(bm) {
                         $("#bookmarkList").append(
                             "<tr>"
@@ -176,33 +186,33 @@ $(function () {
             loadMore();
         }
     });
- 
-  // 회원탈퇴
-  $("#btnQuit").on("click", function (e) {
-    e.preventDefault();
-    if (!confirm("정말로 탈퇴하시겠습니까?")) return;
 
-    $.ajax({
-      url: "<%= ctxPath %>/mypage/quit",
-      type: "post",
-      data: { id: "${sessionScope.loginUser.id}" },
-      dataType: "json",
-      success: function (json) {
-        if (json.n == 1) {
-          alert("탈퇴되었습니다.");
-          location.href = "<%= ctxPath %>/index";
-        } else {
-          alert("탈퇴 실패");
-        }
-      },
-      error: function (request, status, error) {
-        alert("code: " + request.status + "\nmessage: " + request.responseText + "\nerror: " + error);
-      }
+    // ✅ 회원탈퇴
+    $("#btnQuit").on("click", function (e) {
+        e.preventDefault();
+        if (!confirm("정말로 탈퇴하시겠습니까?")) return;
+
+        $.ajax({
+          url: "<%= ctxPath %>/mypage/quit",
+          type: "post",
+          data: { id: "${sessionScope.loginUser.id}" },
+          dataType: "json",
+          success: function (json) {
+            if (json.n == 1) {
+              alert("탈퇴되었습니다.");
+              location.href = "<%= ctxPath %>/index";
+            } else {
+              alert("탈퇴 실패");
+            }
+          },
+          error: function (request, status, error) {
+            alert("code: " + request.status + "\nmessage: " + request.responseText + "\nerror: " + error);
+          }
+        });
     });
-  });
-  
-  //북마크 삭제
-  $(document).on("click", ".btnDelete", function(e) {
+
+    // ✅ 북마크 삭제
+    $(document).on("click", ".btnDelete", function(e) {
 	    e.preventDefault();
 
 	    const fk_boardNo = $(this).data("fk_boardno"); 
@@ -223,6 +233,7 @@ $(function () {
 	            if (json.success) {
 	                alert("북마크가 삭제되었습니다.");
 	                $row.remove();
+	                renumberRows();  // ✅ 삭제 후 번호 재정렬
 	            } else {
 	                alert("삭제 실패: " + json.message);
 	            }
@@ -232,8 +243,9 @@ $(function () {
 	        }
 	    });
 	});
-  
+
 });
+
 </script>
 
 <body>
