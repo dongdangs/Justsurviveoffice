@@ -28,22 +28,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardService_imple implements BoardService {
 
-    private final BoardDAO boardDao;
+	private final BoardDAO boardDao;
     private final FileManager fileManager;
     private final CommentDAO commentDao;
 	
     // 게시글 업로드 메소드
 	@Override
 	@Transactional(value="transactionManager_final_orauser2",
-	   propagation=Propagation.REQUIRED, 
-	   isolation=Isolation.READ_COMMITTED, 
-	   rollbackFor = {Throwable.class})
+	   			   propagation=Propagation.REQUIRED, 
+	   			   isolation=Isolation.READ_COMMITTED, 
+	   			   rollbackFor = {Throwable.class})
 	public int insertBoard(BoardDTO boardDto) {
 		
 		int result = 0;
 		// SQL문 if 처리해도 되지만, service 단에서 처리하는 실무연습.
 		if(boardDto.getBoardFileName() == null ||
-			"".equals(boardDto.getBoardFileName())) {
+		   "".equals(boardDto.getBoardFileName())) {
 			// 파일첨부 안 된 경우.
 			result = boardDao.insertBoard(boardDto);
 		}
@@ -126,17 +126,23 @@ public class BoardService_imple implements BoardService {
 	}
 
 
-	   @Override
-	   public BoardDTO getView(Long boardNo) {
-			BoardDTO boardDto = boardDao.getView(boardNo);
+	@Override
+	public BoardDTO getView(Long boardNo) {
+		BoardDTO boardDto = boardDao.getView(boardNo);
 			
-			return boardDto;
-	   }
+		return boardDto;
+	}
 
-	 //내가 작성한 글 목록
-    @Override
-    public List<BoardDTO> getMyBoards(String fk_id) {
-        return boardDao.getMyBoards(fk_id);
+	//내가 작성한 글 목록
+//  @Override
+//  public List<BoardDTO> getMyBoards(String fk_id) {
+//    	return boardDao.getMyBoards(fk_id);
+//  }
+	   
+   	// 내가 작성한 글 목록 스크롤
+	@Override
+    public List<BoardDTO> myBoardsScroll(Map<String, Object> paramMap) {
+		return boardDao.myBoardsScroll(paramMap);
     }
 
     // 북마크한 글 목록
@@ -149,14 +155,14 @@ public class BoardService_imple implements BoardService {
     // 댓글목록
 	@Override
 	public List<CommentDTO> getCommentList(Long boardNo) {
-		 List<CommentDTO> commentList = commentDao.getCommentList(boardNo);
+	 	List<CommentDTO> commentList = commentDao.getCommentList(boardNo);
 		 
-		 for (CommentDTO comment : commentList) {
-		        List<CommentDTO> replies = commentDao.getRepliesByParentNo(comment.getCommentNo());
-		        comment.setReplyList(replies);
-		    }
+	 	for (CommentDTO comment : commentList) {
+	 		List<CommentDTO> replies = commentDao.getRepliesByParentNo(comment.getCommentNo());
+	 		comment.setReplyList(replies);
+	    }
 
-		    return commentList;
+	    return commentList;
 	}
 
 	
@@ -180,40 +186,40 @@ public class BoardService_imple implements BoardService {
 	////////////////////////////////////////////////////////////////////////////////////   
 	
 	
-		//게시글 좋아요 여부
-		@Override
-		public boolean isBoardLiked(String fk_id, Long fk_boardNo) {
-			 
-			Map<String, Object> paramMap = new HashMap<>();
-			
-			paramMap.put("fk_id", fk_id);
-			paramMap.put("fk_boardNo", fk_boardNo);
-			
-			int count = boardDao.isBoardLiked(paramMap);
-		    return count > 0; // 좋아요가 존재하면 true			
-		}
-
-		//게시글 좋아요 취소
-		@Override
-		public int deleteBoardLike(String fk_id, Long fk_boardNo) {
-		    return boardDao.deleteBoardLike(fk_id, fk_boardNo);
-
-			
-		}
-
-		//게시글 좋아요 추가
-		@Override
-		public int insertBoardLike(String fk_id, Long fk_boardNo) {
-			int n = boardDao.insertBoardLike( fk_id,fk_boardNo );
-			return n;
-		}
+	//게시글 좋아요 여부
+	@Override
+	public boolean isBoardLiked(String fk_id, Long fk_boardNo) {
+		 
+		Map<String, Object> paramMap = new HashMap<>();
 		
+		paramMap.put("fk_id", fk_id);
+		paramMap.put("fk_boardNo", fk_boardNo);
+		
+		int count = boardDao.isBoardLiked(paramMap);
+	    return count > 0; // 좋아요가 존재하면 true			
+	}
 
-		//게시글 좋아요 수
-		@Override
-		public int getBoardLikeCount(Long fk_boardNo) {
-			return boardDao.getLikeCount(fk_boardNo);
-		}
+	//게시글 좋아요 취소
+	@Override
+	public int deleteBoardLike(String fk_id, Long fk_boardNo) {
+	    return boardDao.deleteBoardLike(fk_id, fk_boardNo);
+
+		
+	}
+
+	//게시글 좋아요 추가
+	@Override
+	public int insertBoardLike(String fk_id, Long fk_boardNo) {
+		int n = boardDao.insertBoardLike( fk_id,fk_boardNo );
+		return n;
+	}
+	
+
+	//게시글 좋아요 수
+	@Override
+	public int getBoardLikeCount(Long fk_boardNo) {
+		return boardDao.getLikeCount(fk_boardNo);
+	}
 		
 		
 

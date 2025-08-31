@@ -48,4 +48,26 @@
         WHERE bm.fk_id = #{fk_id}
         ORDER BY bm.createdatmark DESC
     </select>
+    
+    
+    <!-- 마이페이지 북마크 스크롤 -->
+    <select id="bookmarkScroll" parameterType="map" resultType="com.spring.app.bookmark.domain.BookMarkDTO">
+	    SELECT 
+        bm.bookmarkno     AS bookmarkNo,
+        bm.fk_id          AS fkId,
+        bm.fk_boardno     AS fkBoardNo,
+        bm.createdatmark  AS createdAtMark,
+        b.boardname       AS boardName,
+        b.boardcontent    AS boardContent,
+        b.fk_categoryno   AS fkCategoryNo,
+        b.createdatboard  AS createdAtBoard
+    FROM bookmark bm
+    JOIN board b ON bm.fk_boardno = b.boardno
+    WHERE bm.fk_id = #{id}
+    ORDER BY bm.createdatmark DESC
+    OFFSET #{start,jdbcType=INTEGER} ROWS
+    FETCH NEXT #{len,jdbcType=INTEGER} ROWS ONLY
+	</select>
+    
+    
 </mapper>

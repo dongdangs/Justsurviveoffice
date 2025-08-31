@@ -41,8 +41,9 @@ public interface BoardDAO {
 	// 페이지내이션 
 	public BoardDTO getView(Long boardNo);
 
-	 //  내가 작성한 글 목록
-    List<BoardDTO> getMyBoards(String fk_id);
+	//  내가 작성한 글 목록
+//  List<BoardDTO> getMyBoards(String fk_id);
+    public List<BoardDTO> myBoardsScroll(Map<String, Object> paramMap);
 
     //  북마크한 게시글 목록
     List<BoardDTO> getBookmarksById(String fk_id);
@@ -66,6 +67,8 @@ public interface BoardDAO {
 	// 보드 테이블에서 제목과 내용 가져오기(DB)
 	public List<BoardDTO> getBoardContents(String category);
 	// =====================0827 rdg7203 수정 끝 =============================== //
+
+	
 
 
 

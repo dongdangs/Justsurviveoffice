@@ -1,6 +1,7 @@
 package com.spring.app.bookmark.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,10 @@ public class BookmarkService_imple implements BookmarkService {
         return bookMarkDao.checkBookmark(fk_id, fk_boardNo) > 0;
     }
 
+    // 마이페이지 북마크 목록 스크롤
+    @Override
+    public List<BookMarkDTO> bookmarkScroll(Map<String, Object> paramMap) {
+        return bookMarkDao.bookmarkScroll(paramMap);
+    }
 
 }

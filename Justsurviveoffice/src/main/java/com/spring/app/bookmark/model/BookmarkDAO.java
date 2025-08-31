@@ -1,6 +1,7 @@
 package com.spring.app.bookmark.model;
 
 import java.util.List;
+import java.util.Map;
 
 import com.spring.app.bookmark.domain.BookMarkDTO;
 
@@ -17,4 +18,7 @@ public interface BookmarkDAO {
 
     // 북마크 목록 조회
     List<BookMarkDTO> getUserBookmarks(String fk_id);
+
+    // 마이페이지 북마크 목록 스크롤
+	List<BookMarkDTO> bookmarkScroll(Map<String, Object> paramMap);
 }

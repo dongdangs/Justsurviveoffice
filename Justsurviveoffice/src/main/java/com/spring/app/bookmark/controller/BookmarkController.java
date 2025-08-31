@@ -1,5 +1,6 @@
 package com.spring.app.bookmark.controller;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,12 +75,24 @@ public class BookmarkController {
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         if (loginUser == null) return "login/loginForm";
 
-        List<BookMarkDTO> bookmarks = bookMarkService.getUserBookmarks(loginUser.getId());
-        model.addAttribute("myBookmarks", bookmarks);
-
         return "mypage/bookmarks";
     }
     
-    
+    // 마이페이지 북마크 목록 스크롤
+    @GetMapping("bookmarksMore")
+    @ResponseBody
+    public List<BookMarkDTO> bookmarksMore(HttpSession session,
+    									   @RequestParam(name="id") String id,
+                                           @RequestParam(name="start") int start,
+                                           @RequestParam(name="len") int len) {
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", loginUser.getId());
+        paramMap.put("start", start);
+        paramMap.put("len", len);
+
+        return bookMarkService.bookmarkScroll(paramMap);
+    }
     
 }

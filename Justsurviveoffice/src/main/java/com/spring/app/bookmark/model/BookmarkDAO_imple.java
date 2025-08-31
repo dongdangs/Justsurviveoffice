@@ -52,4 +52,10 @@ public class BookmarkDAO_imple implements BookmarkDAO{
         return sqlsession.selectList("bookmark.getUserBookmarks", fk_id);
     }
 
+    // 마이페이지 북마크 목록 스크롤
+	@Override
+	public List<BookMarkDTO> bookmarkScroll(Map<String, Object> paramMap) {
+		return sqlsession.selectList("bookmark.bookmarkScroll", paramMap);
+	}
+
 }

@@ -1,5 +1,6 @@
 package com.spring.app.mypage.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +42,7 @@ public class MyPageController {
         return "users/mypage/info";
     }
 
- // 내가 작성한 글 목록
+    // 내가 작성한 글 목록
     @GetMapping("forms")
     public String myBoardList(HttpSession session, Model model) {
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
@@ -49,10 +50,26 @@ public class MyPageController {
             return "login/loginForm";
         }
 
-        List<BoardDTO> boardList = boardService.getMyBoards(loginUser.getId());
-        model.addAttribute("myBoards", boardList);
         return "users/mypage/forms";
     }
+    
+    // 내가 작성한 글 목록 스크롤
+    @GetMapping("myBoardsMore")
+    @ResponseBody
+    public List<BoardDTO> myBoardsMore(@RequestParam(name="id") String id,
+                                       @RequestParam(name="start") int start,
+                                       @RequestParam(name="len") int len) {
+    	
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        paramMap.put("start", start);
+        paramMap.put("len", len);
+        
+        List<BoardDTO> boardList = boardService.myBoardsScroll(paramMap);
+        
+        return boardList;
+    }
+    
 
     // 북마크 목록
     @GetMapping("bookmarks")

@@ -40,8 +40,11 @@ public interface BoardService {
 	
     
     // 내가 작성한 글 목록
-	public List<BoardDTO> getMyBoards(String fk_id);
+//	public List<BoardDTO> getMyBoards(String fk_id);
 
+	// 내가 작성한 글 목록 스크롤
+	public List<BoardDTO> myBoardsScroll(Map<String, Object> paramMap);
+	
     // 북마크한 게시글 목록
     public List<BoardDTO> getBookmarksById(String fk_id);
 
@@ -73,6 +76,8 @@ public interface BoardService {
 	
 	// == 키워드 메소드 작성 해봄 == // 
 	public List<Entry<String, Integer>> getKeyWord(String category);
+
+	
 
 
 //	

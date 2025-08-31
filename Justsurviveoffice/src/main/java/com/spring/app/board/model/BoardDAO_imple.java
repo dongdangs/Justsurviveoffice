@@ -24,31 +24,37 @@ public class BoardDAO_imple implements BoardDAO {
 	public int insertBoard(BoardDTO boardDto) {
 		return sql.insert("board.insertBoard", boardDto);
 	}
+	
 	// 파일첨부 된 게시물 업로드
 	@Override
 	public int insertBoardWithFile(BoardDTO boardDto) {
 		return sql.insert("board.insertBoardWithFile", boardDto);
 	}
+	
 	// 게시물의 리스트를 추출해오며, 검색 목록이 있는 경우도 포함.
 	@Override
 	public List<BoardDTO> selectBoardList(Map<String, String> paraMap) {
 		return sql.selectList("board.selectBoardList", paraMap);
 	}
+	
 	// 조회수 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
 	@Override
 	public BoardDTO selectView(Long boardNo) {
 		return sql.selectOne("board.selectView", boardNo);
 	}
+	
 	// 게시물 삭제하기 == boardDeleted = 0 으로 전환하기 == update
 	@Override
 	public int softDeleteBoard(Long boardNo) {
 		return sql.update("board.softDeleteBoard", boardNo);
 	}
+	
 	// 게시물 수정하기, 수정시 기존 파일은 삭제!
 	@Override
 	public int updateBoard(BoardDTO boardDto) {
 		return sql.update("board.updateBoard", boardDto);
 	}
+	
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	@Override
 	public int updateReadCount(Long boardNo) {
@@ -63,9 +69,14 @@ public class BoardDAO_imple implements BoardDAO {
 	}
 	
 	// 내가 작성한 글 목록 
-    @Override
-    public List<BoardDTO> getMyBoards(String fk_id) {
-        return sql.selectList("board.getMyBoards", fk_id);
+//  @Override
+//  public List<BoardDTO> getMyBoards(String fk_id) {
+//  	return sql.selectList("board.getMyBoards", fk_id);
+//  }
+    
+    // 내가 작성한 글 목록 스크롤
+    public List<BoardDTO> myBoardsScroll(Map<String, Object> paramMap) {
+        return sql.selectList("board.myBoardsScroll", paramMap);
     }
 	
 	//페이지내이션 
@@ -74,7 +85,7 @@ public class BoardDAO_imple implements BoardDAO {
 		return sql.selectOne("board.getView", boardNo);
 	}   
 	
-	 // 북마크한 게시글 목록 
+	// 북마크한 게시글 목록 
     @Override
     public List<BoardDTO> getBookmarksById(String fk_id) {
     	return sql.selectList("board.getBookmarksById", fk_id);
@@ -93,8 +104,7 @@ public class BoardDAO_imple implements BoardDAO {
 	public List<BoardDTO> getTopBoardsByCommentCount() {
 		List<BoardDTO> hotCommentList = sql.selectList("board.getTopBoardsByCommentCount");
 		return hotCommentList;
-	}	
-	
+	}
 	////////////////////////////////////////////////////////////////////////////
 	 
 	// 게시글 좋아요 취소
@@ -142,22 +152,18 @@ public class BoardDAO_imple implements BoardDAO {
         paramMap.put("fk_id", fk_id);
         paramMap.put("fk_boardNo", fk_boardNo);
         return sql.insert("boardLike.insertBoardLike", paramMap); 
-		
 	}
 	
+	//게시글 좋아요 수
+	@Override
+	public int getLikeCount(Long boardNo) {
+		return sql.selectOne("boardLike.getLikeCount", boardNo);
+	}
 	
-	 //게시글 좋아요 수
-		@Override
-		public int getLikeCount(Long boardNo) {
-	        return sql.selectOne("boardLike.getLikeCount", boardNo);
+	//좋아요 여부
+	@Override
+	public int isBoardLiked(Map<String, Object> paramMap) {
+		return sql.selectOne("boardLike.isBoardLiked", paramMap);
+	}
 	
-		}
-		
-		
-		//좋아요 여부
-		@Override
-		public int isBoardLiked(Map<String, Object> paramMap) {
-		    return sql.selectOne("boardLike.isBoardLiked", paramMap);
-		}
-		
 }

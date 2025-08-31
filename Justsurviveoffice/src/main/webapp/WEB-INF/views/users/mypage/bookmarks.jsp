@@ -118,6 +118,81 @@ body {
 
 <script>
 $(function () {
+	
+	let start = 0;
+    let len = 10;  // 첫 로딩은 10개
+    let isLoading = false;
+    let endOfData = false;
+
+    function formatDate(dateTimeStr) {
+        if (!dateTimeStr) return '-';
+        return dateTimeStr.split("T")[0];
+    }
+
+    function loadMore() {
+        if (isLoading || endOfData) return;
+        isLoading = true;
+        $(".loading").show();
+
+        $.ajax({
+            url: "<%=ctxPath%>/bookmark/bookmarksMore",
+            type: "GET",
+            data: {
+            	id: "${sessionScope.loginUser.id}",
+                start: start,
+                len: len
+            },
+            success: function(data) {
+                if (data.length > 0) {
+                    let rowNumber = start + 1;
+                    data.forEach(function(bm) {
+                    	$("#bookmarkList").append(
+                    	        "<tr>"
+                    	      + "<td>" + (rowNumber++) + "</td>"
+                    	      + "<td>"
+                    	      +   "<form id='viewForm" + bm.fk_boardNo + "' action='<%= ctxPath %>/board/view' method='post' style='display:none;'>"
+                    	      +       "<input type='hidden' name='category' value='" + bm.fk_categoryNo + "'>"
+                    	      +       "<input type='hidden' name='boardNo' value='" + bm.fk_boardNo + "'>"
+                    	      +   "</form>"
+                    	      +   "<a href='javascript:void(0);' onclick=\"document.getElementById('viewForm" + bm.fk_boardNo + "').submit();\" style='color:#000;'>"
+                    	      +       (bm.boardName || '-') 
+                    	      +   "</a>"
+                    	      + "</td>"
+                    	      + "<td>" + formatDate(bm.createdAtMark) + "</td>"
+                    	      + "<td>"
+                    	      +   "<button type='button' class='btn btn-sm btn-outline-danger btnDelete' data-fk_boardno='" + bm.fk_boardNo + "'>삭제</button>"
+                    	      + "</td>"
+                    	      + "</tr>"
+                    	    );
+                    });
+                    start += len;
+                    len = 5; // 이후부터는 5개씩
+                } else {
+                    $("#bookmarkList").append(
+                        "<tr><td colspan='4' class='text-center text-muted'>더 이상 북마크가 없습니다.</td></tr>"
+                    );
+                    endOfData = true;
+                }
+                $(".loading").hide();
+                isLoading = false;
+            },
+            error: function(request, status, error) {
+                $(".loading").hide();
+                isLoading = false;
+                alert("code:" + request.status + "\nmessage:" + request.responseText + "\nerror:" + error);
+            }
+        });
+    }
+
+    // 첫 로딩
+    loadMore();
+
+    // 스크롤 이벤트
+    $(window).scroll(function() {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 50) {
+            loadMore();
+        }
+    });
  
 
   // 회원탈퇴
@@ -236,40 +311,12 @@ $(function () {
 						        <th style="width: 15%; text-align:center;"></th>
 						    </tr>
 						</thead>
-                            <tbody>
-						    <c:forEach var="bookmark" items="${myBookmarks}" varStatus="st">
-						    
-						     <form id="viewForm${bookmark.fk_boardNo}" 
-							      action="<%= ctxPath %>/board/view" 
-							      method="post" 
-							      style="display:none;">
-							    <input type="hidden" name="category" value="${bookmark.fk_categoryNo}">
-							    <input type="hidden" name="boardNo" value="${bookmark.fk_boardNo}">
-							</form>
-							
-						    <tr>
-						        <td>${st.index + 1}</td>
-						        <td>
-						            <a href="javascript:void(0);" 
-							           onclick="document.getElementById('viewForm${bookmark.fk_boardNo}').submit();" 
-							           style="color: #000;">
-							            ${bookmark.boardName}
-							        </a>
-						        </td>
-						        <td>${fn:replace(bookmark.createdAtMark, "T", " ")}</td>
-						        <td>
-						        	     <!--fk_boardNo값: ${bookmark.fk_boardNo} -->
-
-						            <button type="button"
-								        class="btn btn-sm btn-outline-danger btnDelete"
-								        data-fk_boardno="${bookmark.fk_boardNo}">
-								    삭제
-								</button>
-						        </td>
-						    </tr>
-						</c:forEach>
-						</tbody>
+                            <tbody id="bookmarkList">
+							    <!-- Ajax로 채워짐 -->
+							  </tbody>
+							  
                         </table>
+                        <div class="loading text-center my-3" style="display:none;">불러오는 중...</div>
                     </c:otherwise>
                 </c:choose>
 
