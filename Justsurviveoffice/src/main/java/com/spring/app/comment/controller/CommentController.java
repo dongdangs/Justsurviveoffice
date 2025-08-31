@@ -1,5 +1,7 @@
 package com.spring.app.comment.controller;
 
+
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
@@ -9,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.comment.service.CommentService;
 import com.spring.app.pointlog.model.PointLogDAO;
-import com.spring.app.users.domain.CommentDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -64,6 +66,23 @@ public class CommentController {
 	    return "redirect:/board/view?boardNo="+comment.getFk_boardNo();
 	}
 
+	 // 댓글 수정
+    @PostMapping("/updateComment")
+    public String updateComment( @RequestParam(name="commentNo") Long commentNo,
+						            @RequestParam(name="content") String content,
+		                            @RequestParam(name = "fk_boardNo") Long fkBoardNo,
+						            HttpSession session) {
+
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "login";
+        }
+
+        boolean result = commentService.updateComment(commentNo, content, loginUser.getId());
+	 
+        return "redirect:/board/view?boardNo=" + fkBoardNo;
+        
+    }
 	
     //댓글삭제
     @PostMapping("deleteComment")
@@ -98,24 +117,79 @@ public class CommentController {
 	    
     }
     
+    //대댓글 작성
+    @PostMapping("/writeReply")
+    @ResponseBody
+    public Map<String, Object> writeReply(CommentDTO comment, HttpSession session) {
 
-    // 댓글 수정
-    @PostMapping("/updateComment")
-    public String updateComment( @RequestParam(name="commentNo") Long commentNo,
-						            @RequestParam(name="content") String content,
-		                            @RequestParam(name = "fk_boardNo") Long fkBoardNo,
-						            HttpSession session) {
+        Map<String, Object> result = new HashMap<>();
 
+ 	    UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+ 	    
+ 	    if (loginUser == null) {
+ 	    	 result.put("success", false);
+ 	        result.put("message", "로그인이 필요합니다.");
+ 	        return result;
+ 	    }
+
+ 	    comment.setFk_id(loginUser.getId());
+ 	    comment.setFk_name(loginUser.getName());
+ 
+ 	    int n = commentService.insertReply(comment);
+
+ 	    if (n == 1) {
+ 	    //  새로 생성된 commentNo 가져오기
+ 	        Long newCommentNo = comment.getCommentNo();
+ 	    	
+ 	        CommentDTO savedReply = commentService.getReplyById(newCommentNo);
+ 	        
+ 	       if(savedReply.getContent() == null) {
+ 	    	    savedReply.setContent("");
+ 	    	}
+ 	        
+ 	    	
+ 	        result.put("success", true);
+ 	        result.put("message", "대댓글 작성 성공!");
+ 	        result.put("reply", savedReply);
+ 	    } else {
+ 	        result.put("success", false);
+ 	        result.put("message", "대댓글 작성 실패!");
+ 	    }
+
+ 	    return result;
+ 	}
+
+    
+    
+    //대댓글삭제
+    @PostMapping("deleteReply")
+    @ResponseBody
+    public Map<String, Object> deleteReply(@RequestParam(name="commentNo") Long commentNo,
+    								HttpSession session) {
+    	
+    	Map<String, Object> result = new HashMap<>();
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         if (loginUser == null) {
-            return "login";
-        }
-
-        boolean result = commentService.updateComment(commentNo, content, loginUser.getId());
-	 
-        return "redirect:/board/view?boardNo=" + fkBoardNo;
+	    	 result.put("success", false);
+	        result.put("message", "로그인이 필요합니다.");
+	        return result;
+	    }
         
+        	int n = commentService.deleteReply(commentNo);
+        	
+        	if(n == 1) {
+        		 result.put("success", true);
+      	         result.put("message", "대댓글이 삭제되었습니다.");
+      	    } else {
+      	    	 result.put("success", false);
+      	        result.put("message", "이미 삭제되었거나 존재하지 않는 댓글입니다.");
+      	    }
+            
+        return result;  
+	    
     }
+    
+    
 }
    
 	

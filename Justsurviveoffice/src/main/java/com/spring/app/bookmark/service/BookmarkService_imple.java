@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
-import com.spring.app.users.domain.BookMarkDTO;
+import com.spring.app.bookmark.domain.BookMarkDTO;
 import com.spring.app.bookmark.model.BookmarkDAO;
 
 @Service

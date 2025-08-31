@@ -50,4 +50,7 @@
 				  <li class="admTab"><a href="usersList">사용자 관리</a></li>
 				</ul>
 			</div>
+			</div>
+			</div>
+			
             			

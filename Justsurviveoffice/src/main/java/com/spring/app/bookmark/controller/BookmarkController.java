@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.spring.app.users.domain.BookMarkDTO;
+import com.spring.app.bookmark.domain.BookMarkDTO;
 import com.spring.app.bookmark.service.BookmarkService;
 import com.spring.app.users.domain.UsersDTO;
 

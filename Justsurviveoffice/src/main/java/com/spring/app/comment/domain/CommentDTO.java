@@ -1,6 +1,7 @@
-package com.spring.app.users.domain;
+package com.spring.app.comment.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.spring.app.entity.Board;
 import com.spring.app.entity.Users;
@@ -28,15 +29,23 @@ public class CommentDTO {
 
 	private  LocalDateTime createdAtComment;
 
-	private  LocalDateTime updatedAtComment;
 
 	private Long fk_boardNo;
 
-	private int parentNo;
+	private Long parentNo;
 	
 	private Users users;
 	
 	private Board board;
+	
+	// 좋아요/싫어요 카운트 추가
+    private int likeCount;      
+    private int dislikeCount;   
+
+	
+
+    // 대댓글 리스트 추가
+    private List<CommentDTO> replyList;
 	
 
 }

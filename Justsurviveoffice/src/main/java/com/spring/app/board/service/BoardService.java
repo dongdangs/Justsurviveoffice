@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.spring.app.board.domain.BoardDTO;
-import com.spring.app.users.domain.CommentDTO;
+import com.spring.app.comment.domain.CommentDTO;
 
 public interface BoardService {
 	
@@ -44,21 +44,21 @@ public interface BoardService {
 	
     
     // 내가 작성한 글 목록
-	public List<BoardDTO> getMyBoards(String fkId);
+	public List<BoardDTO> getMyBoards(String fk_id);
 
     // 북마크한 게시글 목록
-    public List<BoardDTO> getBookmarksById(String fkId);
+    public List<BoardDTO> getBookmarksById(String fk_id);
 
 	public List<CommentDTO> getCommentList(Long boardNo);
 
 	//게시물 좋아요 여부 확인
-	public boolean isBoardLiked(String fk_id, Long fk_boardNo);
+	public boolean isBoardLiked(String fk_id, Long fk_boardNo) ;
 
 	//게시물 좋아요 취소
-	public int deleteBoardLike(String fk_id, Long fk_boardNo);
+	public int deleteBoardLike(String fk_id, Long fk_boardNo) ;
 
 	//게시물 좋아요
-	public int insertBoardLike(String fk_id, Long fk_boardNo);
+	public int insertBoardLike(String fk_id, Long fk_boardNo) ;
 
     // 좋아요 수 
 	public int getBoardLikeCount(Long fk_boardNo);
@@ -69,7 +69,6 @@ public interface BoardService {
 	// 페이지네이션 구현
 	public BoardDTO getView(Long boardNo);
 
-	
 	// 총 검색된 게시물 건수
 	public int searchListCount(Map<String, String> paraMap);
 	

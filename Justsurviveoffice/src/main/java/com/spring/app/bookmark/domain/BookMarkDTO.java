@@ -1,4 +1,4 @@
-package com.spring.app.users.domain;
+package com.spring.app.bookmark.domain;
 
 import java.time.LocalDateTime;
 
@@ -23,6 +23,8 @@ public class BookMarkDTO {
 
 	private LocalDateTime createdAtMark;
 	
+	
+	private Long fk_categoryNo;
 	
 	private String boardName;        
 	private LocalDateTime createdAtBoard; // 게시글 작성일

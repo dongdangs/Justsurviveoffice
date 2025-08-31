@@ -245,7 +245,7 @@
     </select>
 
 	<!-- 북마크한 게시글 목록 -->
-	<select id="getBookmarksById" parameterType="string" resultType="com.spring.app.users.domain.BookMarkDTO">
+	<select id="getBookmarksById" parameterType="string" resultType="com.spring.app.bookmark.domain.BookMarkDTO">
 	    select bookmark.bookmarkNo,
 	           bookmark.fk_id,
 	           bookmark.fk_boardNo,

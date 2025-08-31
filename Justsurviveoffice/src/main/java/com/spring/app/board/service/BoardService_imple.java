@@ -20,9 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.model.BoardDAO;
+import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.comment.model.CommentDAO;
 import com.spring.app.common.FileManager;
-import com.spring.app.users.domain.CommentDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -77,7 +77,7 @@ public class BoardService_imple implements BoardService {
 				dto.setImgForBoardList(imgForBoardList);
 				System.out.println("스마트에디터이미지는 경로 >> " +imgForBoardList);
 				System.out.println("첨부이미지는 경로 >> " +dto.getBoardFileName());
-			}
+			} 
 		}
 		//이렇게 하지않으면, JSP가 HTML 스마트 에디터의 태그까지 문자열로 찍어주기 때문에 레이아웃이 깨짐!
 
@@ -173,7 +173,14 @@ public class BoardService_imple implements BoardService {
     // 댓글목록
 	@Override
 	public List<CommentDTO> getCommentList(Long boardNo) {
-	    return commentDao.getCommentList(boardNo);
+		 List<CommentDTO> commentList = commentDao.getCommentList(boardNo);
+		 
+		 for (CommentDTO comment : commentList) {
+		        List<CommentDTO> replies = commentDao.getRepliesByParentNo(comment.getCommentNo());
+		        comment.setReplyList(replies);
+		    }
+
+		    return commentList;
 	}
 
 	
@@ -196,18 +203,46 @@ public class BoardService_imple implements BoardService {
 	
 	////////////////////////////////////////////////////////////////////////////////////   
 	
-	//게시글 좋아요 여부
-	@Override
-	public boolean isBoardLiked(String fk_id, Long fk_boardNo) {
-		 
-		Map<String, Object> paramMap = new HashMap<>();
+	
+		//게시글 좋아요 여부
+		@Override
+		public boolean isBoardLiked(String fk_id, Long fk_boardNo) {
+			 
+			Map<String, Object> paramMap = new HashMap<>();
+			
+			paramMap.put("fk_id", fk_id);
+			paramMap.put("fk_boardNo", fk_boardNo);
+			
+			int count = boardDao.isBoardLiked(paramMap);
+		    return count > 0; // 좋아요가 존재하면 true			
+		}
+
+		//게시글 좋아요 취소
+		@Override
+		public int deleteBoardLike(String fk_id, Long fk_boardNo) {
+		    return boardDao.deleteBoardLike(fk_id, fk_boardNo);
+
+			
+		}
+
+		//게시글 좋아요 추가
+		@Override
+		public int insertBoardLike(String fk_id, Long fk_boardNo) {
+			int n = boardDao.insertBoardLike( fk_id,fk_boardNo );
+			return n;
+		}
 		
-		paramMap.put("fk_id", fk_id);
-		paramMap.put("fk_boardNo", fk_boardNo);
+
+		//게시글 좋아요 수
+		@Override
+		public int getBoardLikeCount(Long fk_boardNo) {
+			return boardDao.getLikeCount(fk_boardNo);
+		}
 		
-		int count = boardDao.isBoardLiked(paramMap);
-	    return count > 0; // 좋아요가 존재하면 true			
-	}
+		
+
+	
+
 	
 	// 총 검색된 게시물 건수
 	@Override
@@ -326,27 +361,6 @@ public class BoardService_imple implements BoardService {
 		return keyword_top;
 	}
 
-	//게시글 좋아요 취소
-	@Override
-	public int deleteBoardLike(String fk_id, Long fk_boardNo) {
-	    return boardDao.deleteBoardLike(fk_id, fk_boardNo);
-
-		
-	}
-
-	//게시글 좋아요 추가
-	@Override
-	public int insertBoardLike(String fk_id, Long fk_boardNo) {
-		int n = boardDao.insertBoardLike( fk_id, fk_boardNo );
-		return n;
-	}
-	
-
-	//게시글 좋아요 수
-	@Override
-	public int getBoardLikeCount(Long fk_boardNo) {
-		return boardDao.getLikeCount(fk_boardNo);
-	}
 
 	
 //	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)
