@@ -213,20 +213,30 @@
 	              		for(let i=0; i<json.length; i++) {
 	                 
 		                 	let obj;
-		                 
+		                 	
+		                 	let imgPath;
+
+		                 	if(!json[i].categoryImagePath || json[i].categoryName === '미분류') {
+		                 	    // DB에 경로 없거나 카테고리가 미분류일 때
+		                 	    imgPath = "<%= ctxPath%>/images/unassigned.png"; 
+		                 	}
+		                 	else {
+		                 	    imgPath = "<%= ctxPath%>/images/" + json[i].categoryImagePath;
+		                 	}
+		                 			                 	
 		                 	if(i==0) {
 		                    	obj = {name: json[i].categoryName,
 		                               y: Number(json[i].percentage),
 		                               sliced: true,
 		                               selected: true,
-		                               image: "<%= ctxPath%>/images/" + json[i].categoryImagePath
+		                               image: imgPath
 		                              };
 	                    	//	console.log("이미지 경로:", obj.image);
 	              			}
 		                 	else {
 		                    	obj = {name: json[i].categoryName,
 		                               y: Number(json[i].percentage),
-		                               image: "<%= ctxPath%>/images/" + json[i].categoryImagePath};
+		                               image: imgPath};
 	                 		}
 		                 
 		                 	resultArr.push(obj);
