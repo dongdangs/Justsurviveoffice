@@ -46,9 +46,25 @@
     background-repeat: no-repeat;
     background-position: center;
 }
+@media screen and (max-width:768px){
+	.mainUl > li {width:100%;text-align:center;}
+	.moHd {display:none;}
+}
 </style>
 
 <script>  
+	// 250331 김예준 햄버거메뉴(모바일) 시 토글누르면 메뉴보이도록 함
+	$(function () {
+	  $("button#menuToggle").on("click", function () {
+	    let $nav = $("#mainNav");
+	    let isExpanded = $(this).attr("aria-expanded") === "true";
+
+	    $(this).attr("aria-expanded", !isExpanded);
+
+	    $nav.toggleClass("show");
+	  });
+	});
+	
   // === 전체 글목록 검색하기 요청 === //
   function searchBoardAll() {
 	   const form = document.searchAllForm;
@@ -59,6 +75,7 @@
 			   		 + $('#searchWord').val; --%>
 	   form.submit();
   }
+  
 </script>
 
 <header style="opacity: 0.7; display: flex;">
@@ -82,8 +99,8 @@
       </c:if>
       <c:if test="${not empty sessionScope.loginUser && sessionScope.loginUser.id != 'admin'}">
         <li><a href="<%=ctxPath%>/mypage/info">내정보보기</a></li>
-        <li><p style="background: #fff;padding: 4px 13px;border-radius: 13px;">${sessionScope.loginUser.id}</p></li>
-		<li><a class="navBookmk" href="<%=ctxPath%>/mypage/bookmarks"" id="bookmarks"></a></li>
+        <li class="moHd"><p style="background: #fff;padding: 4px 13px;border-radius: 13px;">${sessionScope.loginUser.id}</p></li>
+		<li class="moHd"><a class="navBookmk" href="<%=ctxPath%>/mypage/bookmarks"" id="bookmarks"></a></li>
 		<li><a href="<%=ctxPath%>/users/logout">로그아웃</a></li>     
       </c:if>
       

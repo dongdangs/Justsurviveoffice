@@ -131,8 +131,11 @@ commit;
 
 desc users;
 
+select * from question;
 
-select * from category;
+select * from tabs;
+
+select * from tag;
 
 update users set email='dbals010321@naver.com' where id='jangym';
 
@@ -149,4 +152,16 @@ group by rollup(to_char(Registerday, 'yyyymmdd'));
         count(*)	 AS cnt
 	FROM users u
 	WHERE EXTRACT(MONTH FROM u.registerday) = :month
-	GROUP BY TO_CHAR(u.registerday,'dd')
+	GROUP BY TO_CHAR(u.registerday,'dd');
+    
+select * from tag;
+
+select * from category C join Board B on C.categoryNo = B.fk_categoryNo join tag t on t.fk_categoryNo = c.categoryNo ;
+        
+        
+select categoryNo, categoryName, categoryImagePath, CATEGORYDESCRIBE,
+       LISTAGG(tagName, '# ') WITHIN GROUP (ORDER BY tagNo) AS tags
+from category C join tag T
+on C.categoryNo = T.fk_categoryNo
+where categoryNo = 1
+group by (categoryNo, categoryName, categoryImagePath,CATEGORYDESCRIBE);

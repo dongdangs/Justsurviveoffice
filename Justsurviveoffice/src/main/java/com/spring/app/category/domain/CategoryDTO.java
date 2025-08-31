@@ -22,6 +22,9 @@ public class CategoryDTO {
 
 	private String categoryImagePath;
 	
+	// 설문 결과 DB에서 태그를 받아 리스트 형식으로 저장할 변수
+	private String tags;
+	
 	// 카테고리별 인원수 select 용
 	private Long cnt;
 	private Double percentage;

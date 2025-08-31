@@ -42,7 +42,6 @@ public class BoardDTO {
 
 	private int boardDeleted ;
 	
-	
 	private Users users;
 	
 	private String name;

@@ -177,7 +177,6 @@
   display: inline-block;
 }
 
-
 </style> 
 
 <script type="text/javascript">
@@ -328,8 +327,6 @@
 	    });
 	 }// end of function Bookmark(boardNo,fk_id)———————————
 	
-   
-   
    // === 글목록 검색하기 요청 === //
    function searchBoard() {
       const form = document.searchForm;
@@ -342,7 +339,8 @@
    
 </script>
 
-<div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png'); border: solid 2px blue;">
+<div class="col-md-9 ListHeight" style="border-radius: 10pt; 
+		background-image: url('<%= ctxPath %>/images/background.png');">
     <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 5% 0">
 		<c:if test="${requestScope.category eq 1}">
 			<span>MZ들의&nbsp;</span></c:if>
@@ -365,10 +363,10 @@
 	      <tbody>
 	        <!-- 컨트롤러에서 List<Map.Entry<String,Integer>> keywordTop 로 전달했다고 가정 -->
 	        <c:if test="${not empty keyword_top}">
-	          <c:forEach var="e" items="${keyword_top}">
+	          <c:forEach var="map" items="${keyword_top}">
 	            <tr>
-	              <td><span class="keyword-word">${e.key}</span></td>
-	              <td>${e.value}</td>
+	              <td><span class="keyword-word">${map.keyword}</span></td>
+	              <td>${map.score}</td>
 	            </tr>
 	          </c:forEach>
 	        </c:if>

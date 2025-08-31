@@ -254,7 +254,7 @@ public class BoardController {
 			modelview.setViewName("board/list");
 			
 			// == 키워드 메소드 작성 해봄 == // 
-			List<Map.Entry<String,Integer>> keyword_top = boardService.getKeyWord(category);	// 서비스에서 구현
+			List<Map<String, Object>> keyword_top = boardService.getKeyWord(category);	// 서비스에서 구현
 			modelview.addObject("keyword_top", keyword_top);
 			
 			

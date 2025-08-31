@@ -176,43 +176,23 @@ header {background: cadetblue;padding: 10px 20px;display: flex;align-items: cent
   #searchFrm #searchIco {position:absolute;right:15px;top:8px;}
   #searchFrm .btnSubmit {position:absolute;right:10px;top:1px;display:block;width:100%;max-width:30px;height:100%;background-color:transparent;border:0;}
 
-  /* 모바일 대응 */
+  .ListHeight {min-height:900px;}
+  
+  @media screen and (max-width:1250px) {
+	#mycontent	{ min-height: initial; }
+  }
+
+  /* 모바일 대응 시작 */
   @media (max-width: 768px) {
-    #menuToggle {
-      display: block; /* 모바일에선 버튼 보이기 */
-    }
+    #menuToggle {display: block; /* 모바일에선 버튼 보이기 */}
+	.ListHeight {min-height:initial;}
+    nav {position: absolute;top: 70px; left: 0; width: 100%; background: cadetblue;display: none; flex-direction: column;}
+    nav ul { flex-direction: column;}
+    nav ul li {margin-left: 0; border-top: 1px solid rgba(255,255,255,0.3);} 
+    nav ul li a {padding: 1rem;}
+    nav.show {display: flex !important;}
+	#myfooter { display: flex; min-height:120px; position: relative; top:60px; background-color:#555555; margin-bottom: 70px;}
+		
+	#myheader a {text-decoration:none;}
 
-    nav {
-      position: absolute;
-      top: 70px;
-      left: 0;
-      width: 100%;
-      background: cadetblue;
-      display: none;
-      flex-direction: column;
-    }
-
-    nav ul {
-      flex-direction: column;
-    }
-
-    nav ul li {
-      margin-left: 0;
-      border-top: 1px solid rgba(255,255,255,0.3);
-    }
-
-    nav ul li a {
-      padding: 1rem;
-    }
-
-    nav.show {
-      display: flex !important;
-    }
-
-	  
-
-#myfooter { display: flex; min-height:120px; position: relative; top:60px; background-color:#555555; margin-bottom: 70px;}
-	
-#myheader a {text-decoration:none;}
-
-}
+} /* end of /* 모바일 대응 끝 */
