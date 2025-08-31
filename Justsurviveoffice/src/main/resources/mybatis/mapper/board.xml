@@ -141,23 +141,12 @@
 
 	
 	 <select id="getIndexList" parameterType="string" resultType="map">
-          select
-			    C.categoryNo         AS "categoryNo",
-			    C.categoryName       AS "categoryName",
-			    C.categoryDescribe   AS "categoryDescribe",
-			    C.categoryImagePath  AS "categoryImagePath",
-			    COUNT(B.boardNo)     AS "boardCount"
-			  from category C
-			  left join board B
-			  on B.fk_categoryNo = C.categoryNo
-			  <where>
-			    <if test="_parameter != null and _parameter != ''">
-			      C.categoryNo = #{_parameter}
-			    </if>
-			  </where>
-			  group by
-			    C.categoryNo, C.categoryName, C.categoryDescribe, C.categoryImagePath
-			  order by C.categoryNo
+            select categoryNo, categoryName, categoryImagePath, CATEGORYDESCRIBE,
+	               LISTAGG('#'|| tagName, ' ') WITHIN GROUP (ORDER BY tagNo) AS tags
+		    from category C join tag T
+			on C.categoryNo = T.fk_categoryNo
+			where categoryNo = #{categoryNo}
+			group by (categoryNo, categoryName, categoryImagePath, CATEGORYDESCRIBE)
 	</select>
       
    
