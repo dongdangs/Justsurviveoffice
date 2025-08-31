@@ -9,7 +9,7 @@
 
 <jsp:include page="header/header1.jsp" />
 	
-<div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');display:flex;justify-content:center;">
+<div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');display:flex;justify-content:center; border-radius: 10px">
 				
 				<div class="row" style="width: 90%; margin: 5%">
 				<!-- 테스트 카드 (고정) -->
