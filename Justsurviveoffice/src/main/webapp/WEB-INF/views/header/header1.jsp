@@ -45,7 +45,7 @@
          <jsp:include page="../menu/menu1.jsp" />
       </div>
       
-      <div id="mycontent" >
+      <div id="mycontent">
          <div class="row" style="margin:0 auto;"> 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
             <c:if test="${not empty sessionScope.loginUser}">   
