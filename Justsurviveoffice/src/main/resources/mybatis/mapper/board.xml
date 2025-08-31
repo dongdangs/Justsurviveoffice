@@ -141,12 +141,26 @@
 
 	
 	 <select id="getIndexList" parameterType="string" resultType="map">
-            select categoryNo, categoryName, categoryImagePath, CATEGORYDESCRIBE,
-	               LISTAGG('#'|| tagName, ' ') WITHIN GROUP (ORDER BY tagNo) AS tags
-		    from category C join tag T
-			on C.categoryNo = T.fk_categoryNo
-			where categoryNo = #{categoryNo}
-			group by (categoryNo, categoryName, categoryImagePath, CATEGORYDESCRIBE)
+          select
+			    C.categoryNo         AS "categoryNo",
+			    C.categoryName       AS "categoryName",
+			    C.categoryDescribe   AS "categoryDescribe",
+			    C.categoryImagePath  AS "categoryImagePath",
+			    COUNT(B.boardNo)     AS "boardCount",
+			    T.tagName 			 AS "tagName"
+			  from category C
+			  left join board B
+			  on B.fk_categoryNo = C.categoryNo
+			  JOIN tag T 
+			  on T.fk_categoryNo = C.categoryNo
+			  <where>
+			    <if test="_parameter != null and _parameter != ''">
+			      C.categoryNo = #{_parameter}
+			    </if>
+			  </where>
+			  group by
+			    C.categoryNo, C.categoryName, C.categoryDescribe, C.categoryImagePath, T.tagName
+			  order by C.categoryNo
 	</select>
       
    
