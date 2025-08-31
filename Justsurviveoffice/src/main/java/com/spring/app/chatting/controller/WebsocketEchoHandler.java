@@ -6,7 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
@@ -32,6 +35,18 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
 	// === 웹소켓 서버에 접속시 채팅에 접속한 사용자ID, 성명, 이메일 정보를 보여주기 위해 채팅에 접속한 UserVO 를 저장하는 List   
     private List<UsersDTO> usersDTO_list = new ArrayList<>();
     
+	// categoryNo 타입을 Long으로 지정
+	private final Map<WebSocketSession, Long> sessionCategory = new ConcurrentHashMap<>();
+	private final Set<Long> occupiedCategories = ConcurrentHashMap.<Long>newKeySet();
+	// 처음보는 선언인데, 이거는 
+	// ConcurrentHashMap<Long, Boolean>이고 map.put(1L, Boolean.TRUE) 형태로 들어감.
+	
+	// set<Long> 롱값인 1,2,3 형태만 들어갑니다~
+	
+	private final ReentrantLock admissionLock = new ReentrantLock();
+	// ReentrantLock은 DB랑 무관하게 한 프로세스(즉, 해당 메소드내에서 동시에 실행이 안되도록 하는것. 
+	// 사용자가 1. FK_categoryNo가 같은 user가 들어오는거 방지하기 위해 사용)
+		  
     // ========= 몽고DB 시작 (#웹채팅관련 12 ) ====== //
     
     private final ChattingMongoOperations chattingMongo;
@@ -69,15 +84,51 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
     	// System.out.println("====> 웹채팅확인용 : " + "연결 컴퓨터명 : " + wsession.getRemoteAddress().getHostName());
     	// System.out.println("====> 웹채팅확인용 : " + "연결 컴퓨터명 : " + wsession.getRemoteAddress().getAddress().getHostName());
     	// System.out.println("====> 웹채팅확인용 : " + "연결 IP : " + wsession.getRemoteAddress().getAddress().getHostAddress());
-    	/*
-    	====> 웹채팅확인용 : 연결 컴퓨터명 : DESKTOP-ESIUD68
-    	====> 웹채팅확인용 : 연결 컴퓨터명 : DESKTOP-ESIUD68
-    	====> 웹채팅확인용 : 연결 IP : 192.168.10.213
     	
-    	====> 웹채팅확인용 : 연결 컴퓨터명 : 192.168.10.233
-		====> 웹채팅확인용 : 연결 컴퓨터명 : 192.168.10.233
-		====> 웹채팅확인용 : 연결 IP : 192.168.10.233
-    	*/
+    	// 카테고리 제한 메소드 추가 시작 250830 // 
+    	{
+    		Map<String, Object> atts = wsession.getAttributes();
+    		UsersDTO loginuserForAdmission = (UsersDTO) atts.get("loginUser");
+    		if (loginuserForAdmission == null || loginuserForAdmission.getCategory() == null) {
+    			wsession.close(CloseStatus.NOT_ACCEPTABLE.withReason("세션이 없거나 카테고리가 중복입니다."));
+    			return;
+    		}
+
+    		Long userCategoryNo = loginuserForAdmission.getCategory().getCategoryNo();
+
+    		admissionLock.lock();
+    		// admissionLock은 42번 라인에 기재했습니다.
+    		// A = 1 , B =1 || 같은 카테고리 일 시를 가정합니다.
+    		// 간단하게 설명하자면 A유저랑 B유저랑 동시에 입장해도
+    		// A유저 먼저 해당 프로세스 실행마무리 까지 B는 잠김(대기상태)
+    		// 만약, 문제가 없다면 A의 categoryNo는 occupiedCategories 로 occupiedCategories<1>이 들어감
+    		// occupiedCategories(1)
+    		// B에서는 A가 끝난 후, B에도 같은 프로세스 실행됨
+    		// 하지만 B는 검증을 하지만 이미 1이 들어있어서 거부됨.
+    		// 동시성 제어를 위해 사용하는거라 DB랑 상관 X임.
+    		
+    		try {
+    			// 이미 같은 카테고리가 방 안에 있으면 거부
+    			if (occupiedCategories.contains(userCategoryNo)) {
+    				wsession.close(CloseStatus.POLICY_VIOLATION.withReason("Category already present"));
+    				return;
+    			}
+    			
+    			// 서로 다른 카테고리가 5개면 거부
+    			if (occupiedCategories.size() >= 5) {
+    				wsession.close(CloseStatus.POLICY_VIOLATION.withReason("Room full (5 distinct categories)"));
+    				return;
+    			}
+    			// 통과 → 점유 기록
+    			occupiedCategories.add(userCategoryNo);
+    			sessionCategory.put(wsession, userCategoryNo);
+    		}
+    		finally {
+    			admissionLock.unlock();
+    		}
+    	}
+    	// === [카테고리 제한 메소드 추가 끝 250830] ===
+    	
     	connectedUsers.add(wsession);
     	
     	// ==== 웹소켓 서버에 접속시 접속자 명단을 알려주기 위한 것 시작 ==== //
@@ -253,6 +304,13 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
 	               먼저 HttpSession에 저장되어진 값들을 읽어 들여, WebsocketEchoHandler 클래스에서 사용할 수 있도록 처리해준다.
 	            */
 	    	   
+		    	// (선택) 상태 가드: 입장 시 가져온 카테고리가 없으면 차단
+		       	if (sessionCategory.get(wsession) == null) {
+		       		wsession.close(CloseStatus.NOT_ACCEPTABLE.withReason("No category bound"));
+		       		return;
+		       	}
+
+	    	   
 	    	   Map<String, Object> map = wsession.getAttributes();
 	    	   
 	    	   UsersDTO loginuser = (UsersDTO) map.get("loginUser");
@@ -378,6 +436,17 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
 	        public void afterConnectionClosed(WebSocketSession wsession, CloseStatus status) throws Exception {
 	            // 파라미터 WebSocketSession wsession 은 연결을 끊은 웹소켓 클라이언트임.
 	            // 파라미터 CloseStatus 은 웹소켓 클라이언트의 연결 상태.
+	        	
+	        	{
+	        		Long cat = sessionCategory.remove(wsession);
+	        		if (cat != null) {
+	        			boolean stillUsed = sessionCategory.values().stream().anyMatch(c -> c.equals(cat));
+	        			if (!stillUsed) {
+	        				occupiedCategories.remove(cat);
+	        			}
+	        		}
+	        	}
+	        	// === [추가 끝] ===
 
 	        	Map<String, Object> map = wsession.getAttributes(); 
 	        	UsersDTO loginuser = (UsersDTO)map.get("loginUser");
