@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
 String ctxPath = request.getContextPath();
 %>
@@ -30,6 +31,7 @@ body { background: #f7f7fb; }
     box-shadow: 0 8px 24px rgba(0,0,0,.06);
 }
 .table th, .table td { vertical-align: middle; }
+a { color: black; }
 .loading { text-align:center; margin:20px 0; display:none; }
 </style>
 </head>
@@ -61,12 +63,13 @@ $(function(){
         }
     });
 
-    let start = 0;			// 데이터 로딩 시작 위치
-    let len = 10;  			// 첫 로딩은 10개
-    let isLoading = false; 	// 중복 호출 방지를 위한 로딩 여부
-    let endOfData = false;	// 데이터 끝에 도달했는지 여부
+    // 스크롤 페이징 변수
+    let start = 0;
+    let len = 10;  // 첫 로딩은 10개
+    let isLoading = false;
+    let endOfData = false;
 
- 	// 날짜 포맷 함수 (yyyy-MM-dd 형식으로 변환)
+    // 날짜 포맷
     function formatDate(dateTimeStr) {
         if (!dateTimeStr) return '-';
         return dateTimeStr.split("T")[0]; // yyyy-MM-dd
@@ -74,7 +77,7 @@ $(function(){
 
     // 데이터 불러오기
     function loadMore() {
-        if (isLoading || endOfData) return; // 이미 로딩 중이거나 데이터가 끝난 경우 실행 X
+        if (isLoading || endOfData) return;
         isLoading = true;
         $(".loading").show();
 
@@ -86,41 +89,45 @@ $(function(){
                 start: start,
                 len: len
             },
-            success: function(data) { 
-                if (data.length > 0) { // 데이터가 존재하는 경우
-                    let rowNumber = start + 1; // // 행 번호 (JS 변수로 계산)
+            success: function(data) {
+                if (data.length > 0) {
+                    let rowNumber = start + 1;
                     data.forEach(function(board) {
-                    	// 게시글 데이터 테이블에 추가
                         $("#boardList").append(
                             "<tr>"
-                          + "<td>" + (rowNumber++) + "</td>"  // ✅ 여기서는 JSP EL 아님, JS 문자열
-                          + "<td>" + (board.boardName || '-') + "</td>"
+                          + "<td>" + (rowNumber++) + "</td>"
+                          + "<td><a href='<%=ctxPath%>/board/view?boardNo=" + board.boardNo + "'>"
+                          + (board.boardName || '-') + "</a></td>"
                           + "<td>" + (board.createdAtBoard ? formatDate(board.createdAtBoard) : '-') + "</td>"
                           + "<td>" + (board.readCount || 0) + "</td>"
+                          + "<td>"
+                          + (board.boardDeleted == 1
+                                ? "<button type='button' class='btn btn-sm btn-outline-danger' data-fk_boardno='" + board.boardNo + "'>복구하기</button>"
+                                : "")
+                          + "</td>"
                           + "</tr>"
                         );
                     });
-                    start += len; // 시작 위치 갱신 
+                    start += len;
                     len = 5; // 이후부터는 5개씩
                 } else {
-                	// 데이터가 더 이상 없는  경우 메시지 출력
                     $("#boardList").append(
-                        "<tr><td colspan='4' class='text-center text-muted'>더 이상 글이 없습니다.</td></tr>"
+                        "<tr><td colspan='5' class='text-center text-muted'>더 이상 글이 없습니다.</td></tr>"
                     );
-                    endOfData = true; // 데이터가 끝에 도달했는지 
+                    endOfData = true;
                 }
                 $(".loading").hide();
-                isLoading = false; // 로딩 상태 해제
+                isLoading = false;
             },
             error: function() {
                 $(".loading").hide();
-                isLoading = false;	// 로딩 상태 해제
+                isLoading = false;
                 alert("데이터 로딩 실패");
             }
         });
     }
 
- 	// 첫 화면 로딩 시 초기 데이터 불러오기
+    // 첫 화면 로딩 시 데이터 불러오기
     loadMore();
 
     // 스크롤 이벤트
@@ -132,7 +139,6 @@ $(function(){
 
 });
 </script>
-
 
 <body>
 <div class="container mt-4">
@@ -165,7 +171,6 @@ $(function(){
                     <li class="nav-item"><a class="nav-link" href="<%= ctxPath%>/mypage/chart">통계</a></li>
                 </ul>
 
-                <!-- 작성한 글 목록 -->
                 <h5>내가 쓴 글 목록</h5>
                 <hr>
 
@@ -176,6 +181,7 @@ $(function(){
                             <th>제목</th>
                             <th>작성일</th>
                             <th>조회수</th>
+                            <th>비고</th>
                         </tr>
                     </thead>
                     <tbody id="boardList">

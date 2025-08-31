@@ -58,5 +58,18 @@ public interface UsersService {
 	// 카테고리별 인원수 통계
 	List<CategoryDTO> categoryByUsers();
 
+	// 250828 01:30 차트 수정
+	List<Map<String,String>> registerChart(int year);
+	 
+ 	default List<Map<String,String>> registerChart() {
+ 		return registerChart(java.time.LocalDate.now().getYear());
+ 	}	
+ 
+ 	List<Map<String, String>> registerChartday(int month);
 
+ 	// 차트 월 - 일자별 보이도록
+ 	default List<Map<String, String>> registerChartday(){
+ 		return registerChartday(java.time.LocalDate.now().getMonthValue());
+ 	}
+	 
 }

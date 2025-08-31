@@ -37,6 +37,12 @@ public class BookmarkDAO_imple implements BookmarkDAO{
         return sqlsession.delete("bookmark.removeBookmark", paramMap);
     }
 
+    // 1개의 게시물에 관련된 모든 북마크 삭제.
+ 	@Override
+ 	public int removeAllBookmark(Long boardNo) {
+ 		return sqlsession.delete("bookmark.removeAllBookmark", boardNo);
+ 	}
+ 	
     //북마크 여부 체크 
     @Override
     public int checkBookmark(String fk_id, Long fk_boardNo) {
@@ -52,10 +58,12 @@ public class BookmarkDAO_imple implements BookmarkDAO{
         return sqlsession.selectList("bookmark.getUserBookmarks", fk_id);
     }
 
+    
     // 마이페이지 북마크 목록 스크롤
 	@Override
 	public List<BookMarkDTO> bookmarkScroll(Map<String, Object> paramMap) {
 		return sqlsession.selectList("bookmark.bookmarkScroll", paramMap);
 	}
+	
 
 }

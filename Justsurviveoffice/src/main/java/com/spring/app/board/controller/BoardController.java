@@ -22,6 +22,7 @@ import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
 import com.spring.app.comment.domain.CommentDTO;
+import com.spring.app.comment.service.CommentService;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
 import com.spring.app.model.HistoryRepository;
@@ -50,6 +51,7 @@ public class BoardController {
 	private final UsersService usersService;
 	private final BoardService boardService;
 	private final BookmarkService bookmarkService;
+	private final CommentService commentService;
 	private final PointLogDAO pointLogDao;
 	
 	private final FileManager fileManager;
@@ -101,7 +103,6 @@ public class BoardController {
 			// === 웹브라우저 상에 사진 이미지를 쓰기 === //
 			PrintWriter out = response.getWriter();
 			out.print(strURL);
-			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -172,8 +173,8 @@ public class BoardController {
 			modelview.addObject("loc", "javascript:history.back()");
 			modelview.setViewName("msg");
 		}
+		// 포인트 로그를 조회!
 		int cnt = pointLogDao.getCreatedAtLogBoardCnt(loginUser.getId());
-		
 		if(cnt < 3) { // 유저가 하루동안 쓴 글이 3개 이하면 pointUp
 			paraMap.put("id", boardDto.getFk_id());
 			paraMap.put("point", "1000");
@@ -203,7 +204,7 @@ public class BoardController {
 	 @RequestParam(name="searchType", defaultValue="") String searchType,
 	 @RequestParam(name="searchWord", defaultValue="") String searchWord, 
 	 @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
-	 @PathVariable("category") String category) {
+	 @PathVariable(name="category") String category) {
  // http://localhost:9089/justsurviveoffice/board/list/1
 		List<BoardDTO> boardList = null;
 		
@@ -213,17 +214,15 @@ public class BoardController {
 			modelview.setViewName("redirect:/index");
 			return modelview;
 		}
-		
-		// ===========  게시글 보여주기(페이징 처리) 수정 시작 =========== //
+
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("searchType", searchType);
 		paraMap.put("searchWord", searchWord);
 		paraMap.put("category", category);
-		paraMap.put("currentShowPageNo", currentShowPageNo);
 		// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
 		
-		int totalCount = boardService.searchListCount(paraMap);	// 총 검색된 게시물 건수
-		int sizePerPage = 5;  // 한 페이지당 보여줄 게시물 건수
+		int totalCount = 0;    // 총 게시물 건수
+		int sizePerPage = 10;  // 한 페이지당 보여줄 게시물 건수
 		int totalPage = 0;     // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
 		totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
 
@@ -245,11 +244,6 @@ public class BoardController {
 		modelview.addObject("searchWord", searchWord);
 		modelview.addObject("category", category);
 		
-		// 페이지바 전용 데이터
-		modelview.addObject("totalPage", totalPage);
-		int currentPage = Integer.parseInt(currentShowPageNo);
-		modelview.addObject("currentShowPageNo", currentPage);
-		// ===========  게시글 보여주기(페이징 처리) 수정 끝 =========== //
 		modelview.setViewName("board/list");
 		
 		// == 키워드 메소드 작성 해봄 == // 
@@ -261,8 +255,10 @@ public class BoardController {
 	}
 	
 	
-	// 조회수 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
-	@RequestMapping("view") //post,get 둘 다 받아올 것!
+	// 조회수(세션,쿠키) 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
+	@GetMapping("view") 
+/*  get 방식으로만 받아와야만, 뒤로가기로 view 페이지에 입장시, 
+	변경된  DOM/JS 요소(좋아요, 북마크)를 그대로 복구 할 수 있음!  */ 
 	public ModelAndView view(ModelAndView modelview,
 							 HttpServletRequest request,
 							 HttpServletResponse response,
@@ -272,7 +268,7 @@ public class BoardController {
 			 @RequestParam(name="category", defaultValue="") String category,
 			 				 BoardDTO boardDto) {
 
-		// 추후 referer 는 spring security의 토큰 검사로 변경.
+	 // 추후 referer 는 spring security의 토큰 검사로 변경.
 		String referer = request.getHeader("Referer");
 		if(referer == null) { // url타고 get방식으로 접근 불가능하도록!
 			modelview.setViewName("redirect:/index");
@@ -290,7 +286,7 @@ public class BoardController {
 		if(boardDto != null) { // 뒤로가기 혹은 오류가 없는 정상 게시물인 경우 이동.
 			System.out.println(boardDto.getBoardNo());
 			System.out.println(boardDto.getFk_categoryNo());
-		// 명심할 점!, 1. 완벽한 조회수 알고리즘은 존재하지 않는다.
+/*		// 명심할 점!, 1. 완벽한 조회수 알고리즘은 존재하지 않는다.
 		//   2. 방법은 쿠키, 세션, (실무)DB로그, (실무)Redis 가 있다.
 		//	 3. 나는 내가 내가 배운 지식을 재활용하기 위해 세션방식을 해본 후, 쿠키방식을 선택했다..
 		//   4. 세션방식의 단점(세션이 만료되거나 로그아웃 시에는 소용이 없다 + 세션리미트는 하나로 통일됌)을 이해하고 구현한다.
@@ -298,7 +294,7 @@ public class BoardController {
 			
 		//		접속한 아이피 + 게시물번호가 세션 or 쿠키에 없다면?
 		//		 >> 아이피 + 게시물번호의 수명을 30분으로 줌, 
-		//	  + loginUser.id 와 fk_id가 같아도 >> 조회수는 증가 안함.
+		//	  + loginUser.id 와 fk_id가 같아도 >> 조회수는 증가 안함.*/
 			HttpSession session = request.getSession();
 			
 			UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
@@ -316,9 +312,9 @@ public class BoardController {
 				// -1173940223_106
 				
 				// 방금 접근한 ip가 세션에 저장되어있지 않다면 조회수를 증가!
-			/*	if(session.getAttribute(boardNo_ip) == null
-					) {
-					// 조회수 증가.
+/*			 // 1. 세션방식 
+ 				if(session.getAttribute(boardNo_ip) == null) { // 조회수 증가.
+ 
 					int n = boardService.updateReadCount(boardDto.getBoardNo());
 			//		if(n==1) System.out.println("조회수 증가 완료.");
 					
@@ -340,7 +336,7 @@ public class BoardController {
 					if(remainingMinutes <= 0) {
 						int n = boardService.updateReadCount(boardDto.getBoardNo());
 			//			if(n==1) System.out.println("조회수 증가 완료.");  	   */
-				
+			 // 2. 쿠키방식
 				Cookie[] cookies = request.getCookies();
 				boolean isExist = false; // 쿠키에 해당 boardNO 별 ip가 존재하는지 확인
 				
@@ -363,17 +359,17 @@ public class BoardController {
 				}
 			} // 로그인된 유저가 자신의 게시물에 들어갔다면 if문 생략
 			
-		/* null 일시 0값 부여서해서 view.jsp 로 0 값을 보냄 (김예준)*/
+		/* null 일시 0값 부여서해서 view.jsp 로 0 값을 보내주기! */
 			if(boardDto.getPreNo() == null ) {
 				boardDto.setPreNo("0");
 			}
 			else if(boardDto.getNextNo() == null ) {
 				boardDto.setNextNo("0");
 			}
-			
 			modelview.addObject("hotReadList", boardService.getTopBoardsByViewCount());
 	        modelview.addObject("hotCommentList", boardService.getTopBoardsByCommentCount());
-	    // 로그인된 유저가 북마크 혹은 좋아요를 눌렀을 경우, boardDto 객체에 같이 저장해주어야함!
+	    
+         // 로그인된 유저가 북마크 혹은 좋아요를 눌렀을 경우, boardDto 객체에 같이 저장해주어야함!
 			if(loginUser != null) { 
 				boardDto.setBookmarked(bookmarkService.isBookmarked(
 						loginUser.getId(), 
@@ -391,8 +387,40 @@ public class BoardController {
 
 			// 댓글 목록 조회
 	        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
+	        
+	        // 댓글, 대댓글 반응 개수 
+	        if (loginUser != null) {
+	            String loginId = loginUser.getId();
+
+	            for (CommentDTO comment : commentList) {
+	                // 댓글 좋아요 / 싫어요 개수
+	                comment.setCommentLikeCount(commentService.getCommentLikeCount(comment.getCommentNo()));
+	                comment.setCommentDislikeCount(commentService.getCommentDislikeCount(comment.getCommentNo()));
+
+	            	// 현재 로그인 사용자의 좋아요/싫어요 여부
+	            	comment.setCommentLiked(commentService.iscommentLiked(loginId, comment.getCommentNo()));
+	                comment.setCommentDisliked(commentService.iscommentDisliked(loginId, comment.getCommentNo()));
+
+	                if (comment.getReplyList() != null) {
+	                    for (CommentDTO reply : comment.getReplyList()) {
+	                    	
+	                    	// 대댓글 좋아요 / 싫어요 개수
+	                        reply.setReplyLikeCount(commentService.getReplyLikeCount(reply.getCommentNo()));
+	                        reply.setReplyDislikeCount(commentService.getReplyDislikeCount(reply.getCommentNo()));
+
+	                        //현재 로그인 사용자의 좋아요/싫어요 여부
+	                        reply.setReplyLiked(commentService.isreplyLiked(loginId, reply.getCommentNo()));
+	                        reply.setReplyDisliked(commentService.isreplyDisliked(loginId, reply.getCommentNo()));
+	                    }
+	                }
+	            }
+	        }
+	        
+	        
 	        modelview.addObject("commentList", commentList);
 			modelview.addObject("boardDto", boardDto);
+			
+			
 			
 			modelview.setViewName("board/view");
 			return modelview;
@@ -404,7 +432,7 @@ public class BoardController {
 			
 			return modelview;
 		}
-	}
+	} // ------------------- @GetMapping("view")... END 
 	
 	// 게시물 삭제하기 == boardDeleted = 0 으로 전환하기 == update
 	@PostMapping("delete")
@@ -422,10 +450,8 @@ public class BoardController {
 				modelview.addObject("message", "글이 삭제되었습니다.");
 				modelview.addObject("loc", "list/"+boardDto.getFk_categoryNo());
 				modelview.setViewName("msg");
-			// 선택된 게시물(1개)이 삭제되었고, 해당 게시물이 북마크가 되어있는 경우라면 삭제!
-				if(boardDto.getBookmarked()) {
-					bookmarkService.removeBookmark(boardDto.getFk_id(), boardDto.getBoardNo());
-				}else System.out.println("북마크가 없다고?!");
+			// 선택된 게시물(1(n)개)이 삭제되었다면, 해당 게시물에 관련된 북마크를 모두 삭제.
+				bookmarkService.removeAllBookmark(boardDto.getBoardNo());
 			}
 			else {
 				modelview.addObject("message", "이미 삭제된 게시물입니다.");
@@ -461,7 +487,6 @@ public class BoardController {
 
 			modelview.addObject("boardDto", boardDto); // boardDto를 넘겨주고 모두 보여주자!
 			modelview.setViewName("board/edit");
-			
 		}
 		else {
 			modelview.addObject("message", "본인 게시물에만 접근 가능합니다.");
@@ -477,7 +502,7 @@ public class BoardController {
 								  BoardDTO boardDto,
 								  HttpServletRequest request,
 								  HttpSession session,
-								  @RequestParam(name="oldBoardFileName", defaultValue = "") 
+	   @RequestParam(name="oldBoardFileName", defaultValue = "") 
 										String oldBoardFileName) {
 		
 		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
@@ -488,7 +513,8 @@ public class BoardController {
 		String root = session.getServletContext().getRealPath("/");
 		String path = root+"resources"+File.separator+"files";
 ///Users/dong/git/Justsurviveoffice/Justsurviveoffice/src/main/webapp/resources/files		
-		
+	
+	//	첨부파일은 오로지 1개이기 때문에, jsp 에서 받아온 이름으로 삭제할 것.
 		if(!oldBoardFileName.isEmpty()) { // 이전 파일이 있는 경우 삭제.
 			try { // 이전 파일 삭제해주기!
 				fileManager.doFileDelete(oldBoardFileName, path);
@@ -521,6 +547,18 @@ public class BoardController {
 				e.printStackTrace();
 			}
 		}
+	//	스마트에디터파일은 여러 개이기 때문에, DB에서 받아온 내용을 List로 받아서 삭제할 것.
+		List<String> photo_upload_boardFileNameList 
+			= boardService.fetchPhoto_upload_boardFileNameList(boardDto.getBoardNo());
+		path = root+"resources"+File.separator+"photo_upload";
+		for(String photo_uploadFile : photo_upload_boardFileNameList) {
+			try { // 이전 스마트에디터 파일들 삭제해주기!
+				fileManager.doFileDelete(photo_uploadFile, path);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	// 기존 파일들의 삭제가 끝났다면, 업데이트 시작.	
 		int n = boardService.updateBoard(boardDto); // 게시판에 수정본 업로드!
 		
 		if(n==1) {
@@ -531,9 +569,9 @@ public class BoardController {
 			modelview.addObject("loc", "javascript:history.back()");
 			modelview.setViewName("msg");
 		}
-		
 		return modelview;
-	}
+	} // ------------------- @PostMapping("edit")... END 
+	
 	
 	// 첨부파일 다운받기!
 	@PostMapping("download")
@@ -611,9 +649,6 @@ public class BoardController {
       }
       
    }
-	
-	
-	
 
 	// 게시글 좋아요
     @PostMapping("boardlike")
@@ -655,28 +690,6 @@ public class BoardController {
         
         return result;
     }
-	
     
 	
-    // 게시글 목록에 검색어 자동입력
- 	@GetMapping("wordSearchShow")
- 	@ResponseBody
- 	public List<Map<String, String>> wordSearchShow(@RequestParam(name = "searchType", defaultValue = "") String searchType,
- 													@RequestParam(name = "searchWord", defaultValue = "") String searchWord,
- 													@RequestParam(name = "category") String category) {
- 		
- 		Map<String, String> paraMap = new HashMap<>();
- 		paraMap.put("searchType", searchType);
- 		paraMap.put("searchWord", searchWord);
- 		paraMap.put("category", category);
- 		
- 		List<Map<String, String>> mapList = boardService.getSearchWordList(paraMap);	// 자동 검색어 완성시키기
- 		
- 		return mapList;
- 	}
- 	
- 	
- 	
-    
-    
 }

@@ -159,17 +159,23 @@ public class AdminService_imple implements AdminService {
       
       return usersDto;
    }
-
+   
+   // 카테고리별 인원 통계
    @Override
-   public List<Map<String, String>> registerChart() {
-	// TODO Auto-generated method stub
-	return null;
+   public List<CategoryDTO> categoryChart() {
+      List<Object[]> categoryPercentageList = adminRepository.getCategoryChart();
+      
+      List<CategoryDTO> result = new ArrayList<>();
+      for(Object[] obj : categoryPercentageList) {
+         CategoryDTO categoryDto = CategoryDTO.builder()
+               .categoryName(String.valueOf(obj[0]))
+               .cnt(((Number) obj[1]).longValue())
+               .percentage(((Number) obj[2]).doubleValue())
+               .build();
+         result.add(categoryDto);
+      }
+      
+      return result;
    }
-
-   
-
-  
-   
-   
    
 }

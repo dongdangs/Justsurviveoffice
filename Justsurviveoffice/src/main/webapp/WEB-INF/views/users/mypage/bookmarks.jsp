@@ -21,21 +21,17 @@ body {
     background: #f7f7fb;
     font-family: 'Noto Sans KR', sans-serif;
 }
-
-
 .sidebar {
     background: #fff;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 8px 24px rgba(0,0,0,.06);
 }
-
 .sidebar img {
     max-width: 100%;
     border-radius: 10px;
     margin-bottom: 10px;
 }
-
 .sidebar-menu a {
     display: block;
     padding: 8px 0;
@@ -44,36 +40,30 @@ body {
     font-weight: 500;
     transition: all 0.2s ease-in-out;
 }
-
 .sidebar-menu a:hover {
     color: #6c63ff;
     padding-left: 5px;
 }
-
 .content {
     background: #fff;
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 8px 24px rgba(0,0,0,.06);
 }
-
 /* 북마크 테이블 */
 .table {
     border-collapse: separate;
     border-spacing: 0 8px;
 }
-
 .table thead {
     background-color: #f1f3f6;
     border-radius: 8px;
 }
-
 .table th {
     text-align: center;
     font-weight: 600;
     color: #444;
 }
-
 .table td {
     text-align: center;
     vertical-align: middle;
@@ -81,7 +71,6 @@ body {
     box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
     border-radius: 6px;
 }
-
 /* 링크 스타일 */
 .table td a {
     display: inline-block;
@@ -92,12 +81,10 @@ body {
     color: #333;
     font-weight: 500;
 }
-
 .table td a:hover {
     color: #6c63ff;
     text-decoration: underline;
 }
-
 /* 삭제 버튼 */
 .btnDelete {
     background-color: #ff6b6b;
@@ -108,7 +95,6 @@ body {
     font-size: 13px;
     transition: all 0.2s ease-in-out;
 }
-
 .btnDelete:hover {
     background-color: #ff4b4b;
     transform: scale(1.05);
@@ -146,24 +132,21 @@ $(function () {
                 if (data.length > 0) {
                     let rowNumber = start + 1;
                     data.forEach(function(bm) {
-                    	$("#bookmarkList").append(
-                    	        "<tr>"
-                    	      + "<td>" + (rowNumber++) + "</td>"
-                    	      + "<td>"
-                    	      +   "<form id='viewForm" + bm.fk_boardNo + "' action='<%= ctxPath %>/board/view' method='post' style='display:none;'>"
-                    	      +       "<input type='hidden' name='category' value='" + bm.fk_categoryNo + "'>"
-                    	      +       "<input type='hidden' name='boardNo' value='" + bm.fk_boardNo + "'>"
-                    	      +   "</form>"
-                    	      +   "<a href='javascript:void(0);' onclick=\"document.getElementById('viewForm" + bm.fk_boardNo + "').submit();\" style='color:#000;'>"
-                    	      +       (bm.boardName || '-') 
-                    	      +   "</a>"
-                    	      + "</td>"
-                    	      + "<td>" + formatDate(bm.createdAtMark) + "</td>"
-                    	      + "<td>"
-                    	      +   "<button type='button' class='btn btn-sm btn-outline-danger btnDelete' data-fk_boardno='" + bm.fk_boardNo + "'>삭제</button>"
-                    	      + "</td>"
-                    	      + "</tr>"
-                    	    );
+                        $("#bookmarkList").append(
+                            "<tr>"
+                          + "<td>" + (rowNumber++) + "</td>"
+                          + "<td>"
+                          +   "<a href='<%=ctxPath%>/board/view?boardNo=" + bm.fk_boardNo 
+                          +   "&category=" + bm.fk_categoryNo + "' style='color:#000;'>"
+                          +   (bm.boardName || '-') 
+                          +   "</a>"
+                          + "</td>"
+                          + "<td>" + (bm.createdAtMark ? formatDate(bm.createdAtMark) : '-') + "</td>"
+                          + "<td>"
+                          +   "<button type='button' class='btn btn-sm btnDelete' data-fk_boardno='" + bm.fk_boardNo + "'>삭제</button>"
+                          + "</td>"
+                          + "</tr>"
+                        );
                     });
                     start += len;
                     len = 5; // 이후부터는 5개씩
@@ -194,12 +177,10 @@ $(function () {
         }
     });
  
-
   // 회원탈퇴
   $("#btnQuit").on("click", function (e) {
     e.preventDefault();
     if (!confirm("정말로 탈퇴하시겠습니까?")) return;
-
 
     $.ajax({
       url: "<%= ctxPath %>/mypage/quit",
@@ -212,29 +193,23 @@ $(function () {
           location.href = "<%= ctxPath %>/index";
         } else {
           alert("탈퇴 실패");
-          $btn.prop("disabled", false);
         }
       },
       error: function (request, status, error) {
         alert("code: " + request.status + "\nmessage: " + request.responseText + "\nerror: " + error);
-        $btn.prop("disabled", false);
       }
     });
-  }); //end of $("#btnQuit").on("click", function (e) {})
+  });
   
-  
-//북마크 삭제
+  //북마크 삭제
   $(document).on("click", ".btnDelete", function(e) {
 	    e.preventDefault();
 
 	    const fk_boardNo = $(this).data("fk_boardno"); 
-	    console.log("삭제 버튼 클릭, fk_boardNo =", fk_boardNo);
-
 	    if (!fk_boardNo) {
 	        alert("게시글 번호를 가져올 수 없습니다.");
 	        return;
 	    }
-
 	    if (!confirm("해당 북마크를 삭제하시겠습니까?")) return;
 
 	    const $row = $(this).closest("tr");
@@ -257,7 +232,6 @@ $(function () {
 	        }
 	    });
 	});
-  
   
 });
 </script>
@@ -292,41 +266,31 @@ $(function () {
                     <li class="nav-item"><a class="nav-link active" href="<%= ctxPath%>/mypage/bookmarks">내 북마크</a></li>
 	                <li class="nav-item"><a class="nav-link" href="<%= ctxPath%>/mypage/chart">통계</a></li>
                 </ul>
-                
 
                 <h5>내 북마크 목록</h5>
                 <hr>
 
-                <c:choose>
-                    <c:when test="${empty myBookmarks}">
-                        <div class="alert alert-secondary text-center">북마크한 글이 없습니다.</div>
-                    </c:when>
-                    <c:otherwise>
-                        <table class="table table-hover">
-                            <thead class="thead-light">
-						    <tr>
-						        <th style="width: 10%; text-align:center;">번호</th>
-						        <th style="width: 50%; text-align:center;">제목</th>
-						        <th style="width: 25%; text-align:center;">추가일</th>
-						        <th style="width: 15%; text-align:center;"></th>
-						    </tr>
-						</thead>
-                            <tbody id="bookmarkList">
-							    <!-- Ajax로 채워짐 -->
-							  </tbody>
-							  
-                        </table>
-                        <div class="loading text-center my-3" style="display:none;">불러오는 중...</div>
-                    </c:otherwise>
-                </c:choose>
-
+                <table class="table table-hover">
+                    <thead class="thead-light">
+					    <tr>
+					        <th style="width: 10%; text-align:center;">번호</th>
+					        <th style="width: 50%; text-align:center;">제목</th>
+					        <th style="width: 25%; text-align:center;">추가일</th>
+					        <th style="width: 15%; text-align:center;"></th>
+					    </tr>
+					</thead>
+                    <tbody id="bookmarkList">
+					    <!-- Ajax로 채워짐 -->
+					</tbody>
+                </table>
+                <div class="loading text-center my-3" style="display:none;">불러오는 중...</div>
             </div>
         </div>
     </div>
 </div>
 
- 	<!-- 숨은 폼: 로그아웃  -->
-	<form id="logoutForm" action="<%=ctxPath%>/logout" method="post" style="display:none;"></form>
+<!-- 숨은 폼: 로그아웃  -->
+<form id="logoutForm" action="<%=ctxPath%>/logout" method="post" style="display:none;"></form>
 
 </body>
 </html>

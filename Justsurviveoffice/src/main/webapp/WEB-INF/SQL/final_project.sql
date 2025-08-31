@@ -121,16 +121,32 @@ CREATE SEQUENCE tag_seq START WITH 1 INCREMENT BY 1 NOCYCLE NOCACHE;
 select * from tab;
 
 select *
-from users;
+from users
+order by fk_categoryNo;
+
+update users set fk_categoryNo = '2'
+where id = 'sai05005';
+
+commit;
 
 desc users;
 
+
+select * from category;
 
 update users set email='dbals010321@naver.com' where id='jangym';
 
 commit;
 select * from users;
 
+select To_char(sysdate,'MM') from users;
+
 select to_char(Registerday, 'yyyymmdd'), count(*) from users
 where sysdate - Registerday > 10
 group by rollup(to_char(Registerday, 'yyyymmdd'));
+
+   select TO_CHAR(u.registerday,'dd') AS dd,
+        count(*)	 AS cnt
+	FROM users u
+	WHERE EXTRACT(MONTH FROM u.registerday) = :month
+	GROUP BY TO_CHAR(u.registerday,'dd')

@@ -39,10 +39,19 @@ public class CommentDTO {
 	private Board board;
 	
 	// 좋아요/싫어요 카운트 추가
-    private int likeCount;      
-    private int dislikeCount;   
+    private int commentLikeCount;      
+    private int commentDislikeCount;   
 
+    private int replyLikeCount;      
+    private int replyDislikeCount;      
+    
+    private boolean commentLiked;   // 댓글 좋아요 여부
+    private boolean commentDisliked; // 댓글 싫어요 여부
 	
+    
+    private boolean replyLiked;     // 대댓글 좋아요 여부
+    private boolean replyDisliked;  // 대댓글 싫어요 여부
+
 
     // 대댓글 리스트 추가
     private List<CommentDTO> replyList;
