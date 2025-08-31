@@ -22,6 +22,7 @@ import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
 import com.spring.app.bookmark.service.BookmarkService;
 import com.spring.app.comment.domain.CommentDTO;
+import com.spring.app.comment.service.CommentService;
 import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
 import com.spring.app.model.HistoryRepository;
@@ -50,6 +51,7 @@ public class BoardController {
 	private final UsersService usersService;
 	private final BoardService boardService;
 	private final BookmarkService bookmarkService;
+	private final CommentService commentService;
 	private final PointLogDAO pointLogDao;
 	
 	private final FileManager fileManager;
@@ -391,8 +393,40 @@ public class BoardController {
 
 			// 댓글 목록 조회
 	        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
+	        
+	        // 댓글, 대댓글 반응 개수 
+	        if (loginUser != null) {
+	            String loginId = loginUser.getId();
+
+	            for (CommentDTO comment : commentList) {
+	                // 댓글 좋아요 / 싫어요 개수
+	                comment.setCommentLikeCount(commentService.getCommentLikeCount(comment.getCommentNo()));
+	                comment.setCommentDislikeCount(commentService.getCommentDislikeCount(comment.getCommentNo()));
+
+	            	// 현재 로그인 사용자의 좋아요/싫어요 여부
+	            	comment.setCommentLiked(commentService.iscommentLiked(loginId, comment.getCommentNo()));
+	                comment.setCommentDisliked(commentService.iscommentDisliked(loginId, comment.getCommentNo()));
+
+	                if (comment.getReplyList() != null) {
+	                    for (CommentDTO reply : comment.getReplyList()) {
+	                    	
+	                    	// 대댓글 좋아요 / 싫어요 개수
+	                        reply.setReplyLikeCount(commentService.getReplyLikeCount(reply.getCommentNo()));
+	                        reply.setReplyDislikeCount(commentService.getReplyDislikeCount(reply.getCommentNo()));
+
+	                        //현재 로그인 사용자의 좋아요/싫어요 여부
+	                        reply.setReplyLiked(commentService.isreplyLiked(loginId, reply.getCommentNo()));
+	                        reply.setReplyDisliked(commentService.isreplyDisliked(loginId, reply.getCommentNo()));
+	                    }
+	                }
+	            }
+	        }
+	        
+	        
 	        modelview.addObject("commentList", commentList);
 			modelview.addObject("boardDto", boardDto);
+			
+			
 			
 			modelview.setViewName("board/view");
 			return modelview;
