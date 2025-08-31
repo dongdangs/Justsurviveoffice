@@ -19,4 +19,5 @@ public interface AdminService {
 
 	// 카테고리별 인원 통계 (장유민 제작)
 	List<CategoryDTO> categoryChart();
+	
 }

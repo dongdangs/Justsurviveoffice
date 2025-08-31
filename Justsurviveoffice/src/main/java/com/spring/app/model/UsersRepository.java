@@ -51,6 +51,30 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 		Long getCnt(); 
 	}
 
+	
+	// 카테고리별 게시물 수 통계
+	@Query(value = "select categoryName, categoryImagePath, count(*) as cnt, \n"
+				 + "       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM board), 2) AS percentage \n"
+				 + "from board b join category c\n"
+				 + "on b.fk_categoryNo = c.categoryNo\n"
+				 + "group by categoryName, categoryImagePath",
+		   nativeQuery = true)
+	List<Object[]> categoryByBoard();
+
+	
+	// 카테고리별 인원수 통계
+	@Query(
+	        value = "select COALESCE(c.categoryname, '미분류') AS categoryName, \n"
+	        		+ "       count(*) as cnt,\n"
+	        		+ "       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM users), 2) AS percentage, \n"
+	        		+ "       categoryImagePath \n"
+	        		+ "from users U LEFT JOIN category C\n"
+	        		+ "ON U.fk_categoryNo = C.categoryNo\n"
+	        		+ "group by categoryNo, categoryName, categoryImagePath",
+	        nativeQuery = true)
+	List<Object[]> categoryByUsers();
+
+	
     @Query(value = """
 	        SELECT TO_CHAR(u.registerday, 'MM') AS mm,
 	               COUNT(*)                     AS cnt,

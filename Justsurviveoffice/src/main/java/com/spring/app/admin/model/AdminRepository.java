@@ -14,14 +14,14 @@ import com.spring.app.entity.Users;
 public interface AdminRepository extends JpaRepository<Users, String> {
 
 	// 카테고리별 인원 통계
-	   @Query(
-	           value = "select COALESCE(c.categoryname, '미분류') AS categoryName, \n"
-	                 + "       count(*) as cnt,\n"
-	                 + "       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM users), 2) AS percentage\n"
-	                 + "from users U LEFT JOIN category C\n"
-	                 + "ON U.fk_categoryNo = C.categoryNo\n"
-	                 + "group by categoryNo, categoryName",
-	           nativeQuery = true)
-	   List<Object[]> getCategoryChart();
+	@Query(
+           value = "select COALESCE(c.categoryname, '미분류') AS categoryName, \n"
+                 + "       count(*) as cnt,\n"
+                 + "       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM users), 2) AS percentage\n"
+                 + "from users U LEFT JOIN category C\n"
+                 + "ON U.fk_categoryNo = C.categoryNo\n"
+                 + "group by categoryNo, categoryName",
+           nativeQuery = true)
+	List<Object[]> getCategoryChart();
 }
 

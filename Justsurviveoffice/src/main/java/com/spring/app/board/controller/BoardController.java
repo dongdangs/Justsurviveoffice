@@ -195,64 +195,71 @@ public class BoardController {
 	
 	
 	  
- // 각 카테고리 게시판에 들어가기!
-	//또는 전체 게시물 검색!
-	@GetMapping("list/{category}") // RestAPI
-	public ModelAndView list(ModelAndView modelview, 
-							 HttpServletRequest request,
-							 HttpServletResponse response,
-	 @RequestParam(name="searchType", defaultValue="") String searchType,
-	 @RequestParam(name="searchWord", defaultValue="") String searchWord, 
-	 @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
-	 @PathVariable(name="category") String category) {
- // http://localhost:9089/justsurviveoffice/board/list/1
-		List<BoardDTO> boardList = null;
-		
-		// 추후 referer 는 spring security의 토큰 검사로 변경.
-		String referer = request.getHeader("Referer");
-		if(referer == null) { // url타고 get방식으로 접근 불가능하도록!
-			modelview.setViewName("redirect:/index");
+	// 각 카테고리 게시판에 들어가기!
+		//또는 전체 게시물 검색!
+		@GetMapping("list/{category}") // RestAPI
+		public ModelAndView list(ModelAndView modelview, 
+								 HttpServletRequest request,
+								 HttpServletResponse response,
+		 @RequestParam(name="searchType", defaultValue="") String searchType,
+		 @RequestParam(name="searchWord", defaultValue="") String searchWord, 
+		 @RequestParam(name="currentShowPageNo", defaultValue="1") String currentShowPageNo,
+		 @PathVariable("category") String category) {
+	 // http://localhost:9089/justsurviveoffice/board/list/1
+			List<BoardDTO> boardList = null;
+			
+			// 추후 referer 는 spring security의 토큰 검사로 변경.
+			String referer = request.getHeader("Referer");
+			if(referer == null) { // url타고 get방식으로 접근 불가능하도록!
+				modelview.setViewName("redirect:/index");
+				return modelview;
+			}
+			
+			// ===========  게시글 보여주기(페이징 처리) 수정 시작 =========== //
+			Map<String, String> paraMap = new HashMap<>();
+			paraMap.put("searchType", searchType);
+			paraMap.put("searchWord", searchWord);
+			paraMap.put("category", category);
+			paraMap.put("currentShowPageNo", currentShowPageNo);
+			// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
+			
+			int totalCount = boardService.searchListCount(paraMap);	// 총 검색된 게시물 건수
+			int sizePerPage = 5;  // 한 페이지당 보여줄 게시물 건수
+			int totalPage = 0;     // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
+			totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
+
+			boardList = boardService.boardList(paraMap);
+			
+			HttpSession session = request.getSession();
+			UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+			// 로그인 된 유저가 있다면, 게시물 별 bookmarked 를 체크해야함.
+			if(loginUser != null) {
+				for(BoardDTO boardDto : boardList) {
+					boardDto.setBookmarked(bookmarkService.isBookmarked(
+															loginUser.getId(), 
+															boardDto.getBoardNo())); 
+				}
+			}
+			// System.out.println(category);
+			modelview.addObject("boardList", boardList);
+			modelview.addObject("searchType", searchType);
+			modelview.addObject("searchWord", searchWord);
+			modelview.addObject("category", category);
+			
+			// 페이지바 전용 데이터
+			modelview.addObject("totalPage", totalPage);
+			int currentPage = Integer.parseInt(currentShowPageNo);
+			modelview.addObject("currentShowPageNo", currentPage);
+			// ===========  게시글 보여주기(페이징 처리) 수정 끝 =========== //
+			modelview.setViewName("board/list");
+			
+			// == 키워드 메소드 작성 해봄 == // 
+			List<Map.Entry<String,Integer>> keyword_top = boardService.getKeyWord(category);	// 서비스에서 구현
+			modelview.addObject("keyword_top", keyword_top);
+			
+			
 			return modelview;
 		}
-
-		Map<String, String> paraMap = new HashMap<>();
-		paraMap.put("searchType", searchType);
-		paraMap.put("searchWord", searchWord);
-		paraMap.put("category", category);
-		// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
-		
-		int totalCount = 0;    // 총 게시물 건수
-		int sizePerPage = 10;  // 한 페이지당 보여줄 게시물 건수
-		int totalPage = 0;     // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
-		totalPage = (int) Math.ceil((double)totalCount/sizePerPage);
-
-		boardList = boardService.boardList(paraMap);
-		
-		HttpSession session = request.getSession();
-		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
-		// 로그인 된 유저가 있다면, 게시물 별 bookmarked 를 체크해야함.
-		if(loginUser != null) {
-			for(BoardDTO boardDto : boardList) {
-				boardDto.setBookmarked(bookmarkService.isBookmarked(
-														loginUser.getId(), 
-														boardDto.getBoardNo())); 
-			}
-		}
-		// System.out.println(category);
-		modelview.addObject("boardList", boardList);
-		modelview.addObject("searchType", searchType);
-		modelview.addObject("searchWord", searchWord);
-		modelview.addObject("category", category);
-		
-		modelview.setViewName("board/list");
-		
-		// == 키워드 메소드 작성 해봄 == // 
-		List<Map.Entry<String,Integer>> keyword_top = boardService.getKeyWord(category);	// 서비스에서 구현
-		modelview.addObject("keyword_top", keyword_top);
-		
-		
-		return modelview;
-	}
 	
 	
 	// 조회수(세션,쿠키) 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
@@ -649,7 +656,6 @@ public class BoardController {
       }
       
    }
-	
 
 	// 게시글 좋아요
     @PostMapping("boardlike")

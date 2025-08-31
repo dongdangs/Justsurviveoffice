@@ -1,9 +1,5 @@
 package com.spring.app.category.domain;
 
-import java.time.LocalDateTime;
-
-import com.spring.app.entity.Category;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,8 +21,9 @@ public class CategoryDTO {
 	private String categoryDescribe;
 
 	private String categoryImagePath;
-
+	
 	// 카테고리별 인원수 select 용
 	private Long cnt;
 	private Double percentage;
+
 }

@@ -1,6 +1,7 @@
 package com.spring.app.bookmark.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.spring.app.bookmark.domain.BookMarkDTO;
 
@@ -20,6 +21,9 @@ public interface BookmarkService {
 
 	public boolean isBookmarked(String fk_id, Long fk_boardNo);
 
+
+	// 마이페이지 북마크 목록 스크롤
+	List<BookMarkDTO> bookmarkScroll(Map<String, Object> paramMap);
 
 
     

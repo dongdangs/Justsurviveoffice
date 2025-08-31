@@ -1,5 +1,6 @@
 package com.spring.app.mypage.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,9 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.app.users.domain.BookMarkDTO;
+import com.spring.app.admin.service.AdminService;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -27,6 +32,9 @@ public class MyPageController {
 
     private final UsersService usersService;
     private final BoardService boardService;
+    
+    
+    private final AdminService adminService;
 
     // 내정보 화면
     @GetMapping("info")
@@ -34,7 +42,7 @@ public class MyPageController {
         return "users/mypage/info";
     }
 
- // 내가 작성한 글 목록
+    // 내가 작성한 글 목록
     @GetMapping("forms")
     public String myBoardList(HttpSession session, Model model) {
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
@@ -42,10 +50,26 @@ public class MyPageController {
             return "login/loginForm";
         }
 
-        List<BoardDTO> boardList = boardService.getMyBoards(loginUser.getId());
-        model.addAttribute("myBoards", boardList);
         return "users/mypage/forms";
     }
+    
+    // 내가 작성한 글 목록 스크롤
+    @GetMapping("myBoardsMore")
+    @ResponseBody
+    public List<BoardDTO> myBoardsMore(@RequestParam(name="id") String id,
+                                       @RequestParam(name="start") int start,
+                                       @RequestParam(name="len") int len) {
+    	
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        paramMap.put("start", start);
+        paramMap.put("len", len);
+        
+        List<BoardDTO> boardList = boardService.myBoardsScroll(paramMap);
+        
+        return boardList;
+    }
+    
 
     // 북마크 목록
     @GetMapping("bookmarks")
@@ -97,4 +121,34 @@ public class MyPageController {
         boolean duplicated = usersService.isEmailDuplicated(email);
         return Map.of("duplicated", duplicated);
     }
+    
+    
+    // 마이페이지 내 통계로 이동
+    @GetMapping("chart")
+    public String chartForm() {
+        return "users/mypage/chart";
+    }
+    
+	
+	// 카테고리별 게시물 통계
+    @PostMapping("chart/categoryByBoard")
+    @ResponseBody 
+    public List<CategoryDTO> categoryByBoard() {
+    	List<CategoryDTO> boardPercentageList = usersService.categoryByBoard(); 
+    	return boardPercentageList;
+    }
+	 
+    
+    // 카테고리별 인원수 통계
+    @PostMapping("chart/categoryByUsers")
+    @ResponseBody
+    public List<CategoryDTO> categoryByUsers() {
+    	List<CategoryDTO> usersPercentageList = usersService.categoryByUsers(); 
+    	return usersPercentageList;
+    }
+    
+    
+	   
+    
+    
 }

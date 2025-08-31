@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -167,7 +168,7 @@ public class AdminController {
    public String chart() {
        return "admin/chart";  
    }
-
+   
    @GetMapping(value = "/chart/registerChart", produces = "application/json; charset=UTF-8")
    @ResponseBody
    public List<Map<String,String>> registerChart(
@@ -175,7 +176,8 @@ public class AdminController {
        	   return (year == null) ? usersService.registerChart()
        			   				 : usersService.registerChart(year);
    }
-     
+
+   
    @GetMapping(value = "/chart/registerChartday", produces = "application/json; charset=UTF-8")
    @ResponseBody
    public List<Map<String,String>> registerChartday(
@@ -183,4 +185,5 @@ public class AdminController {
        	   return (month == null) ? usersService.registerChartday()
        			   				  : usersService.registerChartday(month);
    }
+   
 }

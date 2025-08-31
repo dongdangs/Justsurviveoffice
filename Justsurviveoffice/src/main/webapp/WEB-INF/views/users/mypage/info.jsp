@@ -179,6 +179,9 @@ $(function () {
                     <li class="nav-item">
                         <a class="nav-link" href="<%= ctxPath%>/mypage/bookmarks">내 북마크</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<%= ctxPath%>/mypage/chart">통계</a>
+                    </li>
                 </ul>
 
                 <!-- 내정보 수정 폼 -->

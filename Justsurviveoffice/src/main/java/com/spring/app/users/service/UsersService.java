@@ -3,6 +3,7 @@ package com.spring.app.users.service;
 import java.util.List;
 import java.util.Map;
 
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.entity.Users;
 import com.spring.app.users.domain.LoginHistoryDTO;
 import com.spring.app.users.domain.UsersDTO;
@@ -51,18 +52,24 @@ public interface UsersService {
 	void getPoint(Map<String, String> paraMap); 
 	// 게시물 업로드시, 1000p, 좋아요 누를시 500p, 댓글 500p
 
-	// 250828 01:30 차트 수정
-	 List<Map<String,String>> registerChart(int year);
-	 
-	 default List<Map<String,String>> registerChart() {
-	     return registerChart(java.time.LocalDate.now().getYear());
-	  }
-	 
-	List<Map<String, String>> registerChartday(int month);
+	// 카테고리별 게시물 통계
+	List<CategoryDTO> categoryByBoard();
 
-	// 차트 월 - 일자별 보이도록
-	 default List<Map<String, String>> registerChartday(){
-		 return registerChartday(java.time.LocalDate.now().getMonthValue());
-	 }
+	// 카테고리별 인원수 통계
+	List<CategoryDTO> categoryByUsers();
+
+	// 250828 01:30 차트 수정
+	List<Map<String,String>> registerChart(int year);
+	 
+ 	default List<Map<String,String>> registerChart() {
+ 		return registerChart(java.time.LocalDate.now().getYear());
+ 	}	
+ 
+ 	List<Map<String, String>> registerChartday(int month);
+
+ 	// 차트 월 - 일자별 보이도록
+ 	default List<Map<String, String>> registerChartday(){
+ 		return registerChartday(java.time.LocalDate.now().getMonthValue());
+ 	}
 	 
 }

@@ -10,8 +10,7 @@ import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.comment.domain.CommentDTO;
 
 public interface BoardService {
-	
-	//////////////////////////////////////////////////////////////////////////
+
 	// 인기 게시글 리스트 (조회수 많은 순)
 	@Cacheable("hotReadList")
 	public List<BoardDTO> getTopBoardsByViewCount();
@@ -42,10 +41,12 @@ public interface BoardService {
 	// 조회수 증가시키기! ip측정 및 스케줄러는 컨트롤러&서비스에서!
 	public int updateReadCount(Long boardNo);
 	
-    
     // 내가 작성한 글 목록
-	public List<BoardDTO> getMyBoards(String fk_id);
+//	public List<BoardDTO> getMyBoards(String fk_id);
 
+	// 내가 작성한 글 목록 스크롤
+	public List<BoardDTO> myBoardsScroll(Map<String, Object> paramMap);
+	
     // 북마크한 게시글 목록
     public List<BoardDTO> getBookmarksById(String fk_id);
 
@@ -77,7 +78,6 @@ public interface BoardService {
 	
 	// == 키워드 메소드 작성 해봄 == // 
 	public List<Entry<String, Integer>> getKeyWord(String category);
-
 
 //	
 //	// 유저가 하루동안 쓴 글의 개수를 얻어오는 메소드 (3개 이하면 pointUp)

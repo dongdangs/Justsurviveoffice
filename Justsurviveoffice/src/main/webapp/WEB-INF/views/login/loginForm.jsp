@@ -60,6 +60,7 @@
 			func_Login();
 		 });
 		
+		// 카카오 로그인 버튼 클릭시
 		document.querySelector('.kakao-bg').addEventListener('click', function(e) {
 		    e.preventDefault();
 
