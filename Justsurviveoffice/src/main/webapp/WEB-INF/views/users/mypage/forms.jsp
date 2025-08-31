@@ -143,20 +143,23 @@ $(function(){
 			        <c:forEach var="boardDto" items="${myBoards}" varStatus="st">
 			          <tr>
 			            <td>
-			           	 <a href="<%=ctxPath %>/board/view?boardNo=${boardDto.boardNo}">
+			           	  <a href="<%=ctxPath %>/board/view?boardNo=${boardDto.boardNo}">
 						      ${boardDto.boardName} </a>
 					    </td>
-					    <td>${boardDto.boardContent}
+					    <td>
+					      <a href="<%=ctxPath %>/board/view?boardNo=${boardDto.boardNo}"> 
+					      ${boardDto.boardContent}</a>
 					    </td>
-			            <td>${fn:substring(board.createdAtBoard, 0, 10)}</td>
+			            <td>${fn:substring(boardDto.createdAtBoard, 0, 10)}</td>
 			            <td>${boardDto.readCount}</td>
-			             <td> 
+			            <td> 
 			             <c:if test="${boardDto.boardDeleted==1}">
-			             <button type="button"
+			               <button type="button"
 							        class="btn btn-sm btn-outline-danger "
 							        data-fk_boardno="${boardDto.boardNo}">
 							   		 복구하기
-							</button></c:if></td>
+						   </button>
+						</c:if></td>
 			          </tr>
 			        </c:forEach>
 			      </tbody>
