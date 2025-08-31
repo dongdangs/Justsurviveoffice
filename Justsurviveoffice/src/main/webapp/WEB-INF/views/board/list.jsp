@@ -177,7 +177,6 @@
   display: inline-block;
 }
 
-
 </style> 
 
 <script type="text/javascript">
@@ -342,7 +341,11 @@
    
 </script>
 
+<<<<<<< HEAD
 <div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');">
+=======
+<div class="col-md-9 ListHeight" style="background-image: url('<%= ctxPath %>/images/background.png');">
+>>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
     <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 5% 0">
 		<c:if test="${requestScope.category eq 1}">
 			<span>MZ들의&nbsp;</span></c:if>
