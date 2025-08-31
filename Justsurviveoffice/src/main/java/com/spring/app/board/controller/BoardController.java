@@ -703,7 +703,6 @@ public class BoardController {
         
         return result;
     }
-	
     
 	
     // 게시글 목록에 검색어 자동입력
