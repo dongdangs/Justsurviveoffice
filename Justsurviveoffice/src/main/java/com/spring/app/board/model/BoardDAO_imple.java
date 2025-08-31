@@ -94,15 +94,6 @@ public class BoardDAO_imple implements BoardDAO {
 		List<BoardDTO> hotCommentList = sql.selectList("board.getTopBoardsByCommentCount");
 		return hotCommentList;
 	}	
-	
-	// Hot 게시글 전체 리스트 (조회수 많은 순)
-	@Override
-	public List<BoardDTO> hotAll() {
-		List<BoardDTO> hotAllList = sql.selectList("board.hotAll");
-		return hotAllList;
-	}
-	
-	
 	////////////////////////////////////////////////////////////////////////////
 	 
 	// =====================0827 rdg7203 수정 시작 =============================== //

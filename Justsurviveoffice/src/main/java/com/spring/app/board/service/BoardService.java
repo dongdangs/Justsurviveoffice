@@ -12,9 +12,6 @@ import com.spring.app.comment.domain.CommentDTO;
 public interface BoardService {
 	
 	//////////////////////////////////////////////////////////////////////////
-	// Hot 게시글 전체 리스트 (조회수 많은 순)
-	public List<BoardDTO> hotAll();
-		
 	// 인기 게시글 리스트 (조회수 많은 순)
 	@Cacheable("hotReadList")
 	public List<BoardDTO> getTopBoardsByViewCount();
@@ -36,6 +33,9 @@ public interface BoardService {
 	// 게시물 삭제하기 == boardDeleted = 0 으로 전환하기 == update
 	public int deleteBoard(Long boardNo);
 	
+	// 스마트에디터파일을 DB에서 받아와, List로 반환하기.
+	public List<String> fetchPhoto_upload_boardFileNameList(Long boardNo);
+		
 	// 게시물 수정하기 
 	public int updateBoard(BoardDTO boardDto);
 	

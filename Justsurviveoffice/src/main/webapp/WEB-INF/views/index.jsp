@@ -24,7 +24,7 @@
 							</div>
 						</a>
 					</div>
-					<%-- begin과 end로 1번부터 5번 카테고리 1증감식으로 수정함 0825 --%>
+				<%-- begin 과 end 로 1번부터 5번 카테고리 1증감식으로 수정함 0825 --%>
 					<c:forEach var="indexList" items="${IndexList}" begin="0" end="4" step="1">
 					  <div class="col-md-4 mb-4">
 						<a href="<%= ctxPath%>/board/list/${indexList.categoryNo}" class="card text-decoration-none h-100" style="background-color: navy;">
@@ -38,11 +38,8 @@
 						 </a>
 					  </div>
 					</c:forEach>
-				
 			</div>
-			
 		</div>
 	</div>
-	
 </body>
 </html>

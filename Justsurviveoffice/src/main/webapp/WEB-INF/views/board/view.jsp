@@ -295,7 +295,7 @@ textarea:focus {
 </style>
 
 <script type="text/javascript">
-
+ 
 	$(function() {
 		const nextVals = ${boardDto.nextNo};
 		if(nextVals == 0) {
@@ -771,12 +771,13 @@ textarea:focus {
 	            		$('input[name="bookmarked"]').value = true;
 	            	}
 	            } else {
-	                alert(json.message);
-	                window.location.href = "<%=ctxPath%>/users/loginForm";
+	                //alert(json.message + "뒤로가기 오류!");
+	                alert("뒤로가기 오류입니다.");
+	                window.location.href = "<%=ctxPath%>/index";
 	            }
 	        },
 	        error: function(request, status, error) {
-	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	            //alert("뒤로가기 오류!"+"   code:" + request.status + "\nmessage:" + request.responseText);
 	            alert("뒤로가기 오류입니다.");
 	            window.location.href = "<%=ctxPath%>/index";
 	            // 일단 임시로 오류시 main으로 전환시키기
@@ -788,7 +789,7 @@ textarea:focus {
 		 const frm = document.goViewFrm;
 		 frm.boardNo.value = ${boardDto.preNo};
 		 
-		 frm.method = "post";
+		 frm.method = "get";
 		 frm.action = "<%= ctxPath%>/board/view";
 		 frm.submit();
 	}
@@ -797,7 +798,7 @@ textarea:focus {
 		 const frm = document.goViewFrm;
 		 frm.boardNo.value = ${boardDto.nextNo};
 		 
-		 frm.method = "post";
+		 frm.method = "get";
 		 frm.action = "<%= ctxPath%>/board/view";
 		 frm.submit();
 	}
@@ -890,7 +891,7 @@ textarea:focus {
 			    </i>
 			</form> 
 			
-	        <form name="delnEditForm" method="post" style="display:inline;margin: auto; ">
+	        <form name="delnEditForm" style="display:inline;margin: auto; ">
 		        <c:if test="${loginUser.id eq boardDto.fk_id}">
 		        	<input name="fk_categoryNo" style="display: none;" value="${boardDto.fk_categoryNo}"/>
 		        	<input type="hidden" name="boardNo" value="${boardDto.boardNo}">

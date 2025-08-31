@@ -237,32 +237,20 @@ $(function () {
 						</thead>
                             <tbody>
 						    <c:forEach var="bookmark" items="${myBookmarks}" varStatus="st">
-						    
-						     <form id="viewForm${bookmark.fk_boardNo}" 
-							      action="<%= ctxPath %>/board/view" 
-							      method="post" 
-							      style="display:none;">
-							    <input type="hidden" name="category" value="${bookmark.fk_categoryNo}">
-							    <input type="hidden" name="boardNo" value="${bookmark.fk_boardNo}">
-							</form>
-							
 						    <tr>
 						        <td>${st.index + 1}</td>
 						        <td>
-						            <a href="javascript:void(0);" 
-							           onclick="document.getElementById('viewForm${bookmark.fk_boardNo}').submit();" 
-							           style="color: #000;">
-							            ${bookmark.boardName}
-							        </a>
+						            <a href="${pageContext.request.contextPath}/board/view?boardNo=${bookmark.fk_boardNo}">
+						                ${bookmark.boardName}
+						            </a>
 						        </td>
 						        <td>${fn:replace(bookmark.createdAtMark, "T", " ")}</td>
 						        <td>
 						        	     <!--fk_boardNo값: ${bookmark.fk_boardNo} -->
-
-						            <button type="button"
-								        class="btn btn-sm btn-outline-danger btnDelete"
-								        data-fk_boardno="${bookmark.fk_boardNo}">
-								    삭제
+					            <button type="button"
+							        class="btn btn-sm btn-outline-danger btnDelete"
+							        data-fk_boardno="${bookmark.fk_boardNo}">
+							   		 삭제
 								</button>
 						        </td>
 						    </tr>

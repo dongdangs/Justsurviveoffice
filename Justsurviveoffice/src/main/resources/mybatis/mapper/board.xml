@@ -21,6 +21,7 @@
                		  #{boardFileName}, #{boardFileOriginName}) 
     </insert>
     
+    
     <!-- 파일첨부 된 게시물 업로드 -->
     <update id="updateBoard" parameterType="BoardDTO">
     	update Board
@@ -239,7 +240,7 @@
                   else boardcontent
              end as boardcontent
       FROM board
-        WHERE fk_id = #{fk_id}
+        WHERE fk_id = #{fk_id} 
         ORDER BY createdAtBoard DESC
     </select>
 
