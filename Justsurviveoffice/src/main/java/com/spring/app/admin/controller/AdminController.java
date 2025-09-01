@@ -186,47 +186,6 @@ public class AdminController {
        			   				  : usersService.registerChartday(month);
    }
    
-   @GetMapping("ExcelUserList")
-	public String empManager_employeeList(HttpServletRequest request, Model md) {
-		
-		// employees 테이블에서 근무중인 사원들의 부서번호 가져오기
-		List<String> deptIdList = usersService.deptIdList();
-				
-		for (String deptId : deptIdList) {
-			// System.out.println("확인용 deptIdList :" + deptId);
-			/*
-			확인용 deptIdList :-9999
-			확인용 deptIdList :10
-			확인용 deptIdList :20
-			확인용 deptIdList :30
-			확인용 deptIdList :40
-			확인용 deptIdList :50
-			확인용 deptIdList :60
-			확인용 deptIdList :70
-			확인용 deptIdList :80
-			확인용 deptIdList :90
-			확인용 deptIdList :100
-			확인용 deptIdList :110 
-			 * */
 
-		}
-		
-		// 각 사원정보를 뿌리기 위해서 담는다.
-		List<Map<String, String>> employeeList = service.employeeList();
-			
-		md.addAttribute("deptIdList", deptIdList);
-		// request.setAttribute("deptIdList",deptIdList); 와 같은 뜻이다.
-		
-		md.addAttribute("employeeList",employeeList);
-		// request.setAttribute("employeeList",employeeList); 와 같은 뜻이다.
-		
-		for (Map<String, String> employees : employeeList) {
-				
-			// System.out.println("확인용 employees :" + employees);
-		}
-		
-		return "mycontent2/emp/employeeList";
-		//         /WEB-INF/views/ employeeList.jsp파일을 만들어야 한다.
-	}
    
 }

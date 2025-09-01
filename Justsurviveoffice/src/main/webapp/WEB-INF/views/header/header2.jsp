@@ -85,9 +85,10 @@
 			<div class="col-md-12">
 				<ul style="border-right:1px solid #000;display:flex;">
 				  <li class="admTab" style="background-image: url(/justsurviveoffice/images/logo2.png);display: block;background-size: contain;background-repeat: no-repeat;background-position: center;"></li>
-				  <li class="admTab">${sessionScope.loginUser.name}</li>
+				  <%-- <li class="admTab">${sessionScope.loginUser.name}</li> --%>
 				  <li class="admTab"><i class="fa-solid fa-chart-simple"></i>&nbsp;<a href="chart">회원 통계보기</a></li>
 				  <li class="admTab"><i class="fa-solid fa-user"></i>&nbsp;<a href="usersList">사용자 관리</a></li>
+				  <li class="admTab"><i class="fa-solid fa-user"></i>&nbsp;<a href="userExcelList">회원목록 엑셀</a></li>
 				  <li class="admTab admOut"  onclick="admOut()"><i class="fa-solid fa-house">&nbsp;</i>로그아웃</li>
 				  <li class="admTab"><i class="fa-solid fa-rotate-left"></i><a href="javascript:history.back();">&nbsp;뒤로가기</a></li>
 				  <li class="admTab"><div id="clock"></div></li>
