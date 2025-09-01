@@ -698,5 +698,20 @@ public class BoardController {
         return result;
     }
     
+    // 게시글 목록에 검색어 자동입력
+  	@GetMapping("wordSearchShow")
+  	@ResponseBody
+  	public List<Map<String, String>> wordSearchShow(@RequestParam(name = "searchType", defaultValue = "") String searchType,
+  													@RequestParam(name = "searchWord", defaultValue = "") String searchWord,
+  													@RequestParam(name = "category") String category) {
+  		Map<String, String> paraMap = new HashMap<>();
+  		paraMap.put("searchType", searchType);
+  		paraMap.put("searchWord", searchWord);
+  		paraMap.put("category", category);
+  		
+  		List<Map<String, String>> mapList = boardService.getSearchWordList(paraMap);	// 자동 검색어 완성시키기
+  		
+  		return mapList;
+  	}
 	
 }
