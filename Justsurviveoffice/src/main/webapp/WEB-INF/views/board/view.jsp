@@ -95,6 +95,10 @@
     padding: 15px;
     border-radius: 8px;
     border: 1px solid #f0f0f0;
+
+    /* 스크롤바 추가 */
+    max-height: 400px;   /* 원하는 높이 설정 (px, vh 가능) */
+    overflow-y: auto;    /* 세로 스크롤 활성화 */
 }
 
 /* 댓글 단일 아이템 */
