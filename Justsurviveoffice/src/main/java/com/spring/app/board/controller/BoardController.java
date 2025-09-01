@@ -113,9 +113,31 @@ public class BoardController {
 	
 	@GetMapping("write/{category}") // RestAPI
 	public ModelAndView writeBoard(@PathVariable("category") String category,
+								   HttpSession session,
+								   HttpServletRequest request,
 								   ModelAndView modelview) {
-		modelview.addObject("category", category); // 카테고리 번호가 게시판마다 따라가야함!
-		modelview.setViewName("board/write");
+		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+		// 카테고리 자체가 없는 경우 null 선 체크가 기본^^
+		if(loginUser.getCategory() == null) {
+			modelview.addObject("message", "성향 테스트를 아직 안하셨군요?");
+			modelview.addObject("loc", request.getContextPath()
+										+ "/categoryTest/survey");
+			// 절대주소 첨부!
+			modelview.setViewName("msg");
+		} 
+		// 카테고리 번호가 현재 페이지의 카테고리와 같은 경우면 글쓰기
+		else if(loginUser.getCategory().getCategoryNo() != null &&
+				loginUser.getCategory().getCategoryNo() == Integer.parseInt(category)) {
+			modelview.addObject("category", category); // 카테고리 번호가 게시판마다 따라가야함!
+			modelview.setViewName("board/write");
+		} 
+		// 카테고리 번호가 현재 페이지의 카테고리와 다르면 뒤로가기
+		else {
+			modelview.addObject("message", "같은 성향 게시물만 업로드 가능합니다");
+			modelview.addObject("loc", "javascript:history.back()");
+			modelview.setViewName("msg");
+		}
+		
 		return modelview;
 	}
 	

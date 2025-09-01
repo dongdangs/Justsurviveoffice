@@ -279,7 +279,7 @@
     }
     form.method = "";
     form.action = "<%= ctxPath%>/board/view";
-     form.submit();
+    form.submit();
    
    }// end of function view(boardNo,fk_id)----------------------
 
@@ -392,7 +392,7 @@
       <button type="button" class="btn btn-secondary btn-sm" onclick="searchBoard()">검색</button> 
       
       <span><a href="<%=ctxPath %>/board/write/${category}" class="btn btn-secondary btn-sm" 
-            style="background-color: navy;">글쓰기</a></span>
+            id="writeBtn" style="background-color: navy;">글쓰기</a></span>
       <!-- <span><input type="hidden" name="category"/></span> -->
    </form> 
    
