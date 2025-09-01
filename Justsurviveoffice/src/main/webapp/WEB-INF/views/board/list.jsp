@@ -22,10 +22,6 @@
 }
 
 .board-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 12px;
@@ -52,13 +48,10 @@
 }
 
 .board-card .thumbnail {
-  width: 100px;       /* 썸네일 고정 너비 */
-  height: 100px;      /* 썸네일 고정 높이 */
-  object-fit: cover;  /* 이미지 비율 유지 + 잘라내기 */
-  border-radius: 6px; /* 둥근 모서리 */
-  flex-shrink: 0;     /* 이미지가 줄어들지 않게 고정 */
-  background-color: #f9f9f9;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  margin-bottom: 8px;
 }
 
 .board-card .meta {
