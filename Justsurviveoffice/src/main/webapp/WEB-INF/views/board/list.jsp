@@ -117,7 +117,7 @@
   overflow: hidden;
   z-index: 5;                         /* 상단 레이어 */
 }
-
+ 
 .keyword-header {
   padding: 10px 12px;
   font-weight: 700;
