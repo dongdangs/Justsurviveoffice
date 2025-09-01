@@ -56,6 +56,49 @@ public class BoardController {
 	
 	private final FileManager fileManager;
 	
+	@GetMapping("listAll")
+	public ModelAndView listAll(ModelAndView modelview, 
+							 HttpServletRequest request,
+							 HttpServletResponse response,
+				@RequestParam(name="searchType", defaultValue="") String searchType,
+				@RequestParam(name="searchWord", defaultValue="") String searchWord) {
+				// http://localhost:9089/justsurviveoffice/board/listAll
+		List<BoardDTO> boardList = null;
+		
+		// ===========  게시글 보여주기(페이징 처리) 수정 시작 =========== //
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("searchType", searchType);
+		paraMap.put("searchWord", searchWord);
+		// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
+		
+		boardList = boardService.boardListAll(paraMap);
+		
+		HttpSession session = request.getSession();
+		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+		// 로그인 된 유저가 있다면, 게시물 별 bookmarked 를 체크해야함.
+		if(loginUser != null) {
+			for(BoardDTO boardDto : boardList) {
+				boardDto.setBookmarked(bookmarkService.isBookmarked(
+												loginUser.getId(), 
+												boardDto.getBoardNo())); 
+			}
+		}
+		// System.out.println(category);
+		modelview.addObject("boardList", boardList);
+		modelview.addObject("searchType", searchType);
+		modelview.addObject("searchWord", searchWord);
+		
+		modelview.setViewName("board/listAll");
+//		
+//		// == 키워드 메소드 작성 해봄 == // 
+//		List<Map<String, Object>> keyword_top = boardService.getKeyWord(category);	// 서비스에서 구현
+//		modelview.addObject("keyword_top", keyword_top);
+//		
+		
+		return modelview;
+	}
+	
+	
  // 2번. 스마트 에디터로 모든 파일 텍스트 업로드해보기
 	// ==== #스마트에디터. 드래그앤드롭을 사용한 다중사진 파일업로드 ====
 	@PostMapping("image/multiplePhotoUpload")
@@ -219,7 +262,7 @@ public class BoardController {
 	  
 	// 각 카테고리 게시판에 들어가기!
 		//또는 전체 게시물 검색!
-		@GetMapping("list/{category}") // RestAPI
+		@GetMapping("list/{category}") // Restfull
 		public ModelAndView list(ModelAndView modelview, 
 								 HttpServletRequest request,
 								 HttpServletResponse response,
