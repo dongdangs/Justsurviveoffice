@@ -559,7 +559,8 @@ textarea:focus {
    
    //댓글 좋아요
    function commentLike(commentNo,fk_id) {
-       const icon = $('#commentLike-icon-' + commentNo);
+
+	   const icon = $('#commentLike-icon-' + commentNo);
        const dislikeIcon = $('#commentDislike-icon-' + commentNo);
        const likeCountSpan = $('#commentLikeCount-' + commentNo);
        const dislikeCountSpan = $('#commentDislikeCount-' + commentNo);
@@ -570,19 +571,19 @@ textarea:focus {
            dataType: "json", 
            data: { commentNo: commentNo },
            success: function(json) {
+        	   
               // 로그인 안 한 경우 처리
-             if (json.redirect) {
-                alert(json.message);
-                 window.location.href = "<%= ctxPath %>/users/loginForm";
-                 return;
-             }
+             if (json.notLogin) {
+                 alert(json.message);
+                 window.location.href = "<%=ctxPath%>/users/loginForm";
+              }
 
                // 좋아요 상태 변경
                const iscommentLiked = json.status === "liked";
                icon.removeClass("fa-solid fa-thumbs-up text-warning fa-regular");
                dislikeIcon.removeClass("fa-solid fa-thumbs-down text-warning fa-regular");
 
-               if (iscommentLiked) {
+               if (iscommentLiked) { //이미 좋아요가 되어있다면 취소
                    icon.addClass("fa-solid fa-thumbs-up text-warning");
                } else {
                    icon.addClass("fa-regular fa-thumbs-up");
@@ -593,7 +594,7 @@ textarea:focus {
 
                icon.attr("data-liked", iscommentLiked); //좋아요 상태 유지
    
-               // 좋아요 개수 즉시 갱신
+               // 좋아요,싫어요 개수 즉시 갱신
                likeCountSpan.text(json.commentLikeCount);
                dislikeCountSpan.text(json.commentDislikeCount);
               
@@ -617,17 +618,16 @@ textarea:focus {
            dataType: "json", 
            data: { commentNo: commentNo },
            success: function(json) {
-              if (json.redirect) {
-                alert(json.message);
-                 window.location.href = "<%= ctxPath %>/users/loginForm";
-                 return;
-             }
+              if (json.notLogin) { // 로그인이 안되었을시,
+                  alert(json.message);
+                  window.location.href = "<%=ctxPath%>/users/loginForm";
+               }
                //  싫어요 상태 변경
                const iscommentDisliked = json.status === "disliked";
                icon.removeClass("fa-solid fa-thumbs-down text-warning fa-regular");
                likeIcon.removeClass("fa-solid fa-thumbs-up text-warning fa-regular");
 
-               if (iscommentDisliked) {
+               if (iscommentDisliked) {//싫어요가 이미 눌러져있다면
                    icon.addClass("fa-solid fa-thumbs-down text-warning"); 
                } else {
                    icon.addClass("fa-regular fa-thumbs-down"); 
@@ -635,7 +635,8 @@ textarea:focus {
                // 좋아요는 항상 해제 상태로 갱신
                likeIcon.addClass("fa-regular fa-thumbs-up");
                icon.attr("data-liked", iscommentDisliked); //싫어요 유지
-               // 개수 갱신
+               
+               // 좋아요,싫어요 개수 갱신
                dislikeCountSpan.text(json.commentDislikeCount);
                likeCountSpan.text(json.commentLikeCount);
            },
@@ -659,16 +660,18 @@ textarea:focus {
            data: { commentNo: commentNo  },
            success: function(json) {
               // 로그인 안 되어 있으면 바로 이동
-               if (json.redirect) {
-                   window.location.href = json.redirect;
-                   return;
-               }
+               if (json.notLogin) { // 로그인이 안되었을시,
+                   alert(json.message);
+                   window.location.href = "<%=ctxPath%>/users/loginForm";
+                }
+              
                //  좋아요 상태 변경
                const isreplyLiked = json.status === "liked";
                icon.removeClass("fa-solid fa-thumbs-up text-warning fa-regular");
    
-               if (isreplyLiked) {
+               if (isreplyLiked) { //이미 좋아요가 눌러져있다면
                    icon.addClass("fa-solid fa-thumbs-up text-warning");
+               
                    // 좋아요 누르면 싫어요 해제
                    dislikeIcon.removeClass("fa-solid fa-thumbs-down text-warning")
                               .addClass("fa-regular fa-thumbs-down");
@@ -677,7 +680,7 @@ textarea:focus {
                }
                icon.attr("data-liked", isreplyLiked); //좋아요유지
                
-               // count 갱신
+               // 좋아요,싫어요 count 갱신
                likeCountSpan.text(json.replyLikeCount);
                dislikeCountSpan.text(json.replyDislikeCount);
            },
@@ -701,15 +704,15 @@ textarea:focus {
            data: { commentNo: commentNo },
            success: function(json) {
               // 로그인 안 되어 있으면 바로 이동
-               if (json.redirect) {
-                   window.location.href = json.redirect;
-                   return;
-               }              
+               if (json.notLogin) { // 로그인이 안되었을시,
+                   alert(json.message);
+                   window.location.href = "<%=ctxPath%>/users/loginForm";
+                }             
                //  싫어요 상태 변경
                const isreplyDisliked = json.status === "disliked";
                icon.removeClass("fa-solid fa-thumbs-down text-warning fa-regular");
 
-               if (isreplyDisliked) {
+               if (isreplyDisliked) { //이미 싫어요가 눌러져있다면
                    icon.addClass("fa-solid fa-thumbs-down text-warning");
                    // 싫어요 누르면 좋아요 해제
                    likeIcon.removeClass("fa-solid fa-thumbs-up text-warning")
@@ -718,7 +721,7 @@ textarea:focus {
                    icon.addClass("fa-regular fa-thumbs-down");
                }
                icon.attr("data-liked", isreplyDisliked) ;//싫어요 상태 유지
-               // count 갱신
+               // 좋아요,싫어요 count 갱신
                dislikeCountSpan.text(json.replyDislikeCount);
                likeCountSpan.text(json.replyLikeCount);      
            },

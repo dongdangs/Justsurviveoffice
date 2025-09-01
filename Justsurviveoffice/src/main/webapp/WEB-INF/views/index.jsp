@@ -8,6 +8,17 @@
 %>
 
 <jsp:include page="header/header1.jsp" />
+
+<style>
+.col-md-9 {
+    border-radius: 10pt;
+    background-size: cover;       /* 화면 전체에 꽉 차게 */
+    background-position: center;  /* 중앙 기준으로 배치 */
+    background-repeat: no-repeat; /* 이미지 반복 안 함 */
+    background-attachment: fixed;       /* 스크롤 시 고정 */
+    background-blend-mode: overlay;     /* 색상 오버레이 효과 동일 */
+}
+</style>
 	
 <div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');display:flex;justify-content:center; border-radius: 10px">
 				

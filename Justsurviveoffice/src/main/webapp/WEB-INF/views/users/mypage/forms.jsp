@@ -71,68 +71,6 @@
 	        return dateTimeStr.split("T")[0]; // yyyy-MM-dd
 	    }
 	
-	    // 데이터 불러오기
-	    function loadMore() {
-	    	// 이미 로딩 중이거나 데이터가 끝난 경우 실행 X
-	        if (isLoading || endOfData) return;
-	        isLoading = true;
-	        $(".loading").show();
-	
-	        $.ajax({
-	            url: "<%=ctxPath%>/mypage/myBoardsMore",
-	            type: "GET",
-	            data: {
-	                id: "${sessionScope.loginUser.id}",
-	                start: start,
-	                len: len
-	            },
-	            success: function(data) {
-	            	// 데이터가 존재하는 경우
-	                if (data.length > 0) {
-	                	// 현재 테이블에 있는 행 개수 + 1부터 시작
-	                    let rowNumber = start + 1;
-	                    data.forEach(function(board) {
-	                        $("#boardList").append(
-	                            "<tr>"
-	                          + "<td>" + (rowNumber++) + "</td>"
-	                          + "<td><a href='<%=ctxPath%>/board/view?boardNo=" + board.boardNo + "'>"
-	                          + (board.boardName || '-') + "</a></td>"
-	                          + "<td>" + (board.createdAtBoard ? formatDate(board.createdAtBoard) : '-') + "</td>"
-	                          + "<td>" + (board.readCount || 0) + "</td>"
-	                          + "<td>"
-	                          + (board.boardDeleted == 1
-	                                ? "<button type='button' class='btn btn-sm btn-outline-danger' data-fk_boardno='" + board.boardNo + "'>복구하기</button>"
-	                                : "")
-	                          + "</td>"
-	                          + "</tr>"
-	                        );
-	                    });
-	                    
-	                    start += len;	// 시작 위치 갱신
-	                    len = 5; 		// 이후부터는 5개씩
-	                    
-	                } else {
-	                	// 데이터가 더 이상 없는 경우 메시지 출력
-	                    $("#boardList").append(
-	                        "<tr><td colspan='5' class='text-center text-muted'>더 이상 글이 없습니다.</td></tr>"
-	                    );
-	                    endOfData = true;	// 데이터 끝 설정
-	                }
-	                $(".loading").hide();
-	                isLoading = false;
-	            },
-	            error: function() {
-	                $(".loading").hide();
-	                isLoading = false;
-	                alert("데이터 로딩 실패");
-	            }
-	        });
-	    }
-	
-	    // 첫 화면 로딩 시 데이터 불러오기
-	    loadMore();
-	
-	    // 스크롤 이벤트
 	    $(window).scroll(function() {
 	        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 50) {
 	            loadMore();

@@ -29,6 +29,8 @@ public class CommentController {
 	private final UsersService usersService;
 	private final PointLogDAO pointLogDao;
 	
+	
+	
 	// 댓글 작성
 	@PostMapping("writeComment")
 	public String writeComment(ModelAndView modelview, 
@@ -92,7 +94,7 @@ public class CommentController {
     	
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         
-        if(loginUser.getId().equals(commentDto.getFk_id())) {
+        if(loginUser.getId().equals(commentDto.getFk_id())) { //로그인한 사용자의 아이디가 댓글작성자의 아이디와 같다면
         	
         	int n = commentService.deleteComment(commentDto.getCommentNo());
         	
@@ -127,7 +129,7 @@ public class CommentController {
  	    UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
  	    
  	    if (loginUser == null) {
- 	    	 result.put("success", false);
+ 	    	result.put("success", false);
  	        result.put("message", "로그인이 필요합니다.");
  	        return result;
  	    }
@@ -138,12 +140,13 @@ public class CommentController {
  	    int n = commentService.insertReply(comment);
 
  	    if (n == 1) {
- 	    //  새로 생성된 commentNo 가져오기
+ 	    	
+ 	    	//  새로 생성된 commentNo 가져오기
  	        Long newCommentNo = comment.getCommentNo();
  	    	
- 	        CommentDTO savedReply = commentService.getReplyById(newCommentNo);
+ 	        CommentDTO savedReply = commentService.getReplyById(newCommentNo); //대댓글에 commentNo 부여하기
  	        
- 	       if(savedReply.getContent() == null) {
+ 	       if(savedReply.getContent() == null) { //내용이 비어있다면
  	    	    savedReply.setContent("");
  	    	}
  	        
@@ -159,6 +162,7 @@ public class CommentController {
  	    return result;
  	}
     
+    
     //대댓글삭제
     @PostMapping("deleteReply")
     @ResponseBody
@@ -167,13 +171,14 @@ public class CommentController {
     	
     	Map<String, Object> result = new HashMap<>();
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        
         if (loginUser == null) {
 	    	 result.put("success", false);
 	        result.put("message", "로그인이 필요합니다.");
 	        return result;
 	    }
         
-        	int n = commentService.deleteReply(commentNo);
+        	int n = commentService.deleteReply(commentNo); 
         	
         	if(n == 1) {
         		 result.put("success", true);
@@ -187,6 +192,7 @@ public class CommentController {
 	    
     }
     
+    
     //댓글 좋아요
     @PostMapping("commentLike")
     @ResponseBody
@@ -197,10 +203,10 @@ public class CommentController {
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
         System.out.println("===> loginUser: " + loginUser);
         
-        if (loginUser == null) {
+        if (loginUser == null) { //로그인이 안되어있다면
             result.put("success", false);
-            result.put("redirect", "/users/loginForm");
-            result.put("message", "로그인이 필요합니다.");
+            result.put("notLogin", true);
+            result.put("message", "로그인이 필요한 서비스입니다.");
             return result;
         }
         
@@ -213,18 +219,20 @@ public class CommentController {
             commentService.deleteCommentDislike(fk_id, commentNo);
         }
 
+        // 좋아요가 눌러져있는지 확인
         boolean iscommentLiked = commentService.iscommentLiked(fk_id, commentNo);
         
+        //이미 좋아요를 눌렀다면 
         if(iscommentLiked == true) {
-        	commentService.deleteCommentLike(fk_id,commentNo);
+        	commentService.deleteCommentLike(fk_id,commentNo); //좋아요 삭제
         	result.put("status", "unliked");
         } 
-        else {
+        else {//좋아요가 눌러져있지 않다면 좋아요 추가
         	commentService.insertCommentLike(fk_id,commentNo);
         	result.put("status", "liked");
         }
         
-        // 현재 게시글의 좋아요 수
+        // 현재 게시글의 좋아요/싫어요 수
         int commentLikeCount = commentService.getCommentLikeCount(commentNo);
         int commentDislikeCount = commentService.getCommentDislikeCount(commentNo);
         
@@ -234,7 +242,6 @@ public class CommentController {
         result.put("commentLikeCount", commentLikeCount);
         result.put("commentDislikeCount", commentDislikeCount);
 
-        
         return result;
     }
     
@@ -251,32 +258,33 @@ public class CommentController {
         
         if (loginUser == null) {
             result.put("success", false);
-            result.put("redirect", "/users/loginForm");
-            result.put("message", "로그인이 필요합니다.");
+            result.put("notLogin", true);
+            result.put("message", "로그인이 필요한 서비스입니다.");
             return result;
         }
         
         String fk_id = loginUser.getId();
         System.out.println("===> fk_id: " + fk_id);
         
-     // 좋아요가 눌려있으면 삭제
+     // 좋아요가 눌려있으면 좋아요를 삭제한 후 -> 싫어요 추가
         if (commentService.iscommentLiked(fk_id, commentNo)) {
             commentService.deleteCommentLike(fk_id, commentNo);
         }
 
-
+        // 싫어요가 눌러져있는지 여부 확인
         boolean iscommentDisliked = commentService.iscommentDisliked(fk_id, commentNo);
         
+        // 이미 싫어요를 눌렀다면?
         if(iscommentDisliked == true) {
-        	commentService.deleteCommentDislike(fk_id,commentNo);
+        	commentService.deleteCommentDislike(fk_id,commentNo); //싫어요 삭제
         	result.put("status", "unliked");
         } 
-        else {
+        else { // 싫어요가 안눌러져있다면 싫어요 추가!
         	commentService.insertCommentDislike(fk_id,commentNo);
         	result.put("status", "disliked");
         }
         
-        // 현재 게시글의 싫어요 수
+        // 현재 게시글의 좋아요/싫어요 수
         int commentDislikeCount = commentService.getCommentDislikeCount(commentNo);
         int commentLikeCount = commentService.getCommentLikeCount(commentNo);
         
@@ -301,8 +309,8 @@ public class CommentController {
         
         if (loginUser == null) {
             result.put("success", false);
-            result.put("redirect", "/users/loginForm");
-            result.put("message", "로그인이 필요합니다.");
+            result.put("notLogin", true);
+            result.put("message", "로그인이 필요한 서비스입니다.");
             return result;
         }
         
@@ -310,23 +318,24 @@ public class CommentController {
         System.out.println("===> fk_id: " + fk_id);
         
         
-        // 싫어요가 눌려있으면 삭제
+        // 싫어요가 눌려있으면 삭제한 후에 좋아요 추가 실행
            if (commentService.isreplyDisliked(fk_id, commentNo)) {
                commentService.deleteReplyDislike(fk_id, commentNo);
            }
 
 
-
+       // 좋아요가 눌러져있는지 여부 확인
         boolean isreplyLiked = commentService.isreplyLiked(fk_id, commentNo);
         
+        //이미 좋아요를 눌렀다면 좋아요 삭제
         if(isreplyLiked == true) {
         	commentService.deleteReplyLike(fk_id,commentNo);
         } 
-        else {
+        else { // 좋아요 추가
         	commentService.insertReplyLike(fk_id,commentNo);
         }
         
-        // 현재 게시글의 좋아요 수
+        // 현재 게시글의 좋아요/싫어요 수
         int replyLikeCount = commentService.getReplyLikeCount(commentNo);
         int replyDislikeCount = commentService.getReplyDislikeCount(commentNo);
         
@@ -352,8 +361,8 @@ public class CommentController {
         
         if (loginUser == null) {
             result.put("success", false);
-            result.put("redirect", "/users/loginForm");
-            result.put("message", "로그인이 필요합니다.");
+            result.put("notLogin", true);
+            result.put("message", "로그인이 필요한 서비스입니다.");
             return result;
         }
         
@@ -366,18 +375,20 @@ public class CommentController {
                commentService.deleteReplyLike(fk_id, commentNo);
            }
 
+       // 싫어요가 눌러져있는지 여부 확인
         boolean isreplyDisliked = commentService.isreplyDisliked(fk_id, commentNo);
         
+        //싫어요를 이미 눌러놨다면 삭제
         if(isreplyDisliked == true) {
         	commentService.deleteReplyDislike(fk_id,commentNo);
         	result.put("status", "unliked");
         } 
-        else {
+        else { //싫어요 추가
         	commentService.insertReplyDislike(fk_id,commentNo);
         	result.put("status", "disliked");
         }
         
-        // 현재 게시글의 싫어요 수
+        // 현재 게시글의 좋아요/싫어요 수
         int replyDislikeCount = commentService.getReplyDislikeCount(commentNo);
         int replyLikeCount = commentService.getReplyLikeCount(commentNo);
         
