@@ -58,7 +58,7 @@
                    </div>
                </div>
             </c:if>   
-               <div style="width: 70%; margin-top:30%;">
+               <div class="LBoardRank" style="width:70%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 style="font-weight: bolder; margin: 0;">대사살 <span style="color: red;">Hot!</span> 게시글</h6>
                 </div>
@@ -91,7 +91,7 @@
                     </tbody>
                 </table>
             </div>
-            <div style="width: 70%; margin-top:30%;">
+            <div class="LBoardRank" style="width: 70%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 style="font-weight: bolder; margin: 0;">대사살 댓글많은 게시글</h6>
                 </div>
