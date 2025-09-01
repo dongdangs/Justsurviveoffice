@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.common.AES256;
@@ -357,5 +358,13 @@ public class UsersService_imple implements UsersService {
 	        }
 	        return result;
 	    }
+
+
+	 // 엑셀 저장
+	 @Override
+	 public void userExcelList_to_Excel(Map<String, Object> paraMap, Model model) {
+		// TODO Auto-generated method stub
+		
+	 }
 
 }

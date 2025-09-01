@@ -1,8 +1,8 @@
 package com.spring.app.admin.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -13,11 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.spring.app.common.MyUtil;
-import com.spring.app.entity.Users;
-import com.spring.app.model.UsersRepository;
 import com.spring.app.admin.service.AdminService;
-import com.spring.app.category.domain.CategoryDTO;
+import com.spring.app.common.MyUtil;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -185,5 +182,68 @@ public class AdminController {
        	   return (month == null) ? usersService.registerChartday()
        			   				  : usersService.registerChartday(month);
    }
+   
+   /////////////////////////////////////////////////////////////////////////////////////////
+   // 엑셀 저장과 테이블을 보여주기 위한 공통 메소드
+   private Map<String, Object> chartData(String chart, Integer year, Integer month) {
+	    
+	   List<Map<String,String>> list;
+
+	    if ("registerDay".equals(chart)) {
+	        list = (month == null) ? usersService.registerChartday()
+	                               : usersService.registerChartday(month);
+	    } else {
+	        list = (year == null) ? usersService.registerChart()
+	                              : usersService.registerChart(year);
+	    }
+
+	    int total = list.stream()
+	                    .mapToInt(row -> Integer.parseInt(row.get("cnt")))
+	                    .sum();
+
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", list);
+	    result.put("total", total);
+	    
+	    return result;
+	}
+      
+   // 엑셀 저장을 위한 통계 테이블 페이지
+   @GetMapping("userExcelList")
+   public String userExcelList(@RequestParam(name="chart", required=false, defaultValue="register") String chart,
+                               @RequestParam(name="year", required=false) Integer year,
+                               @RequestParam(name="month", required=false) Integer month,
+                               Model model) {
+
+	   Map<String, Object> paraMap = chartData(chart, year, month);
+
+	   model.addAttribute("chart", chart);
+	   model.addAttribute("year", year);
+	   model.addAttribute("month", month);
+	   model.addAllAttributes(paraMap);
+
+       return "admin/excelList";  // JSP
+   }
+
+   
+   // 액샐 저장
+   @PostMapping("downloadExcelFile")
+   public String downloadExcelFile(@RequestParam(name="chart", defaultValue="register") String chart,
+           						   @RequestParam(name="year", required=false) String year,
+           						   @RequestParam(name="month", required=false) String month,
+           						   Model model) {
+	   
+		Map<String, Object> paraMap = new HashMap<>();
+		paraMap.put("chart", chart);
+		if (year != null && !year.isBlank()) paraMap.put("year", year);
+		if (month != null && !month.isBlank()) paraMap.put("month", month);
+		
+		usersService.userExcelList_to_Excel(paraMap, model);
+		
+		return "excelDownloadView";  // ViewConfig에 등록된 bean
+	}
+   
+   
+   
    
 }
