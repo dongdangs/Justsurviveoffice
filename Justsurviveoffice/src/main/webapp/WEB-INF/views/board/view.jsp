@@ -668,17 +668,20 @@ textarea:focus {
                //  좋아요 상태 변경
                const isreplyLiked = json.status === "liked";
                icon.removeClass("fa-solid fa-thumbs-up text-warning fa-regular");
-   
+               dislikeIcon.removeClass("fa-solid fa-thumbs-down text-warning fa-regular");
+
+               
                if (isreplyLiked) { //이미 좋아요가 눌러져있다면
                    icon.addClass("fa-solid fa-thumbs-up text-warning");
                
-                   // 좋아요 누르면 싫어요 해제
-                   dislikeIcon.removeClass("fa-solid fa-thumbs-down text-warning")
-                              .addClass("fa-regular fa-thumbs-down");
                } else {
                    icon.addClass("fa-regular fa-thumbs-up");
                }
-               icon.attr("data-liked", isreplyLiked); //좋아요유지
+	
+               // 싫어요는 항상 해제 상태로 갱신
+               dislikeIcon.addClass("fa-regular fa-thumbs-down");
+               
+               icon.attr("data-liked", isreplyLiked); //좋아요 상태 유지
                
                // 좋아요,싫어요 count 갱신
                likeCountSpan.text(json.replyLikeCount);
@@ -711,16 +714,19 @@ textarea:focus {
                //  싫어요 상태 변경
                const isreplyDisliked = json.status === "disliked";
                icon.removeClass("fa-solid fa-thumbs-down text-warning fa-regular");
+               likeIcon.removeClass("fa-solid fa-thumbs-up text-warning fa-regular");
+
 
                if (isreplyDisliked) { //이미 싫어요가 눌러져있다면
                    icon.addClass("fa-solid fa-thumbs-down text-warning");
-                   // 싫어요 누르면 좋아요 해제
-                   likeIcon.removeClass("fa-solid fa-thumbs-up text-warning")
-                           .addClass("fa-regular fa-thumbs-up");
                } else {
                    icon.addClass("fa-regular fa-thumbs-down");
                }
-               icon.attr("data-liked", isreplyDisliked) ;//싫어요 상태 유지
+
+               // 좋아요는 항상 해제 상태로 갱신
+               likeIcon.addClass("fa-regular fa-thumbs-up");
+               icon.attr("data-liked", isreplyDisliked); //싫어요 유지
+               
                // 좋아요,싫어요 count 갱신
                dislikeCountSpan.text(json.replyDislikeCount);
                likeCountSpan.text(json.replyLikeCount);      

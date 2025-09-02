@@ -483,8 +483,8 @@ public class BoardController {
 	                	if(comment.getReplyList() != null ) {
 	        	            for (CommentDTO reply : comment.getReplyList()) {
 
-		                	comment.setReplyLiked(commentService.isreplyLiked(loginUser.getId(), comment.getCommentNo()));
-		                	comment.setReplyDisliked(commentService.isreplyDisliked(loginUser.getId(), comment.getCommentNo()));
+		                	reply.setReplyLiked(commentService.isreplyLiked(loginUser.getId(), reply.getCommentNo()));
+		                	reply.setReplyDisliked(commentService.isreplyDisliked(loginUser.getId(), reply.getCommentNo()));
 	                
 	        	            }
 	                	}
