@@ -85,9 +85,9 @@
 
   <nav id="mainNav" class="hidden">
     <ul class="mainUl">
-      <li><a href="<%=ctxPath%>/menu1">전체게시판</a></li>
+      <li><a href="<%=ctxPath%>/board/listAll">전체게시판</a></li>
       <c:if test="${not empty sessionScope.loginUser}">
-      	<li><a href="<%=ctxPath%>/chatting/multichat">대화방</a></li>
+      	<li><a href="<%=ctxPath%>/chatting/multichat">랜덤톡방</a></li>
       </c:if>
       <c:if test="${empty sessionScope.loginUser}">
         <li><a href="<%=ctxPath%>/users/loginForm">로그인</a></li>

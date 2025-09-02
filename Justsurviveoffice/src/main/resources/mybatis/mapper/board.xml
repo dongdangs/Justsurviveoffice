@@ -127,6 +127,51 @@
 	  	WHERE A.boardNo = #{boardNo} and A.fk_categoryNo = C.categoryNo
 	</select>
   	
+  	<!-- 모든 카테고리와, 각 카테고리별 게시물을 3개씩 가져오는 메소드 -->
+  	<select id="selectBoardListAll" parameterType="HashMap" resultType="BoardDTO">
+		select *
+		from (
+		    select
+		        boardNo, fk_id,
+		        case when length(boardName) &gt; 12 
+		             then substr(boardName, 1, 12)
+		             else boardName end as boardName,
+		        boardContent, BoardFileName, BoardFileOriginName, readcount,
+		        to_char(updatedAtBoard, 'yyyy-mm-dd hh24:mi:ss') AS updatedAtBoard,
+		        case
+		            when (SYSDATE - updatedAtBoard) * 24 * 60 &lt; 60 
+		                then trunc((SYSDATE - updatedAtBoard) * 24 * 60) || '분 전'
+		            when (SYSDATE - updatedAtBoard) * 24 &lt; 24
+		                then trunc((SYSDATE - updatedAtBoard) * 24) || '시간 전'
+		            when (SYSDATE - updatedAtBoard) &lt; 7
+		                then trunc(SYSDATE - updatedAtBoard) || '일 전'
+		            else to_char(updatedAtBoard, 'yyyy-mm-dd')
+		        end as formattedDate,
+		        fk_categoryNo, categoryName,
+		        row_number() over (partition by fk_categoryNo order by boardNo desc) as rnum
+		    from board join category on fk_categoryNo = categoryNo 
+		    where boardDeleted = 0
+		    <choose>
+		            <when test='searchType == "boardName" and searchWord != ""'>
+		                and lower(boardName) like '%'||lower(#{searchWord})||'%'
+		            </when>
+		            <when test='searchType == "boardContent" and searchWord != ""'>
+		                and lower(boardContent) like '%'||lower(#{searchWord})||'%'
+		            </when>
+		            <when test='searchType == "boardName_boardContent" and searchWord != ""'>
+		                and ( lower(boardName) like '%'||lower(#{searchWord})
+		               		||'%' or lower(boardContent) like '%'||lower(#{searchWord})||'%' ) 
+		            </when>
+		            <when test='searchType == "fk_id" and searchWord != ""'>
+		            	and lower(fk_id) like '%'||lower(#{searchWord})||'%'
+		            </when>
+				</choose>
+		) sub
+		where sub.rnum &lt;= 3
+		order by sub.fk_categoryNo, sub.boardNo desc   		
+  	</select>
+  	
+  	
   	<update id="softDeleteBoard" parameterType="Long">
  		update board 
   		set boardDeleted = 1

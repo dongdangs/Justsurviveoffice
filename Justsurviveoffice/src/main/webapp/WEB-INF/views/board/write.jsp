@@ -5,7 +5,7 @@
 
 <%
     String ctxPath = request.getContextPath();
-    //     /myspring
+    //    /justsurviveoffice
 %>   
 
 <!DOCTYPE html>

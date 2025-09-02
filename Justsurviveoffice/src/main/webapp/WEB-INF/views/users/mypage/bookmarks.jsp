@@ -155,7 +155,7 @@
 	        });
 	    });
 
-	    // ✅ 북마크 삭제
+	    // 북마크 삭제
 	    $(document).on("click", ".btnDelete", function(e) {
 		    e.preventDefault();
 	
@@ -177,7 +177,7 @@
 		            if (json.success) {
 		                alert("북마크가 삭제되었습니다.");
 		                $row.remove();
-		                renumberRows();  // ✅ 삭제 후 번호 재정렬
+		                renumberRows();  // 삭제 후 번호 재정렬
 		            } else {
 		                alert("삭제 실패: " + json.message);
 		            }

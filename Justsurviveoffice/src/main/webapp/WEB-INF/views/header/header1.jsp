@@ -10,6 +10,7 @@
     
 <!DOCTYPE html>
 <html>
+
 <head>
    <%-- Required meta tags --%>
    <meta charset="UTF-8">
@@ -32,12 +33,23 @@
 
    <%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
    
-   <script>
-   
-   
-   </script>
-   
-   
+<style type="text/css">
+.category-img {
+    width: 100%;
+    max-width: 100%; /* 최대 크기 지정, 필요시 조정 */
+    height: auto;
+    border-radius: 10px; /* 둥글게, 옵션 */
+    object-fit: cover;   /* 비율 유지, 잘림 없이 */
+    display: block;
+    margin: 5% 0 0 0;      /* 가운데 정렬 */
+}
+@media (max-width: 600px) {
+    .category-img {
+        max-width: 80px;
+    }
+}
+
+</style>
 </head>
 
    <div id="mycontainer">
@@ -50,10 +62,17 @@
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
             <c:if test="${not empty sessionScope.loginUser}">   
                <div>
-                  <img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
+               <c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() eq null}">
+               		<img src="<%=ctxPath%>/images/unassigned.png" alt="프로필" 
+               			 class="category-img mb-3">
+               </c:if>
+               	<c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() ne null}">
+               		<img src="<%=ctxPath%>/images/${sessionScope.loginUser.getCategory().getCategoryImagePath()}" alt="프로필" 
+               			 class="category-img mb-3">
+               	</c:if>
                    <div class="text-muted small mb-3 ml-3">${sessionScope.loginUser.email}</div>
                    <div class="mb-3 ml-3">
-                      <span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
+                      <div style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </div>
                       <div>포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b></div>
                    </div>
                </div>
