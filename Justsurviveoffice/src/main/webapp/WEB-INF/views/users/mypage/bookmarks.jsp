@@ -37,6 +37,35 @@
 	/* 삭제 버튼 */
 	.btnDelete { background-color: #ff6b6b; border: none; color: white; padding: 4px 12px; border-radius: 6px; font-size: 13px; transition: all 0.2s ease-in-out; }
 	.btnDelete:hover { background-color: #ff4b4b; transform: scale(1.05); }
+	
+	/* =======================  */
+	/* 스크롤은 래퍼 div에만 적용 */
+	.table-scroll {
+	  max-height: 60vh;          /* 화면 높이의 60% (원하면 조절) */
+	  overflow: auto;            /* 세로/가로 자동 */
+	  border: 1px solid #e9ecef;
+	  border-radius: 8px;
+	
+	  /* 스크롤바 공간을 미리 확보해서 헤더/본문 폭 어긋남 방지 (지원 브라우저에서) */
+	  scrollbar-gutter: stable both-edges;
+	}
+	
+	/* 테이블 아래 여백 제거(스크롤 영역 계산 깔끔) */
+	.table-scroll .table {
+		width: 100%;
+		table-layout: fixed;          /* 열 너비 고정 */
+		margin-bottom: 0;             /* 계산 깔끔하게 */
+	}
+	
+	/* 헤더 고정 */
+	.table-scroll thead th,
+	.table-scroll .table td {
+	  white-space: nowrap;          /* 한 줄로 */
+	  overflow: hidden;             /* 넘치면 숨김 */
+	  text-overflow: ellipsis;      /* … 처리 */
+	  box-sizing: border-box;
+	}
+	
 </style>
 
 <script type="text/javascript">
@@ -106,7 +135,9 @@
                 	} else {
                 		// 데이터가 더 이상 없는 경우 메시지 출력
                     	$("#bookmarkList").append(
-	                        "<tr><td colspan='4' class='text-center text-muted'>더 이상 북마크가 없습니다.</td></tr>"
+	                        "<tr><td colspan='4' class='text-center text-muted'>더 이상 북마크가 없습니다. "
+	                      + "<button type='button' class='btn btn-sm btn-outline-secondary ml-2 btn-scroll-top'>"
+	                      + "맨 위로</button></td></tr>"
 	                    );
 	                    endOfData = true; // 데이터 끝 설정
 	                }
@@ -123,13 +154,6 @@
 
     	// 첫 로딩
     	loadMore();
-
-    	// 스크롤 이벤트
-    	$(window).scroll(function() {
-        	if ($(window).scrollTop() + $(window).height() >= $(document).height() - 50) {
-            	loadMore();
-        	}
-    	});
 
 	    // ✅ 회원탈퇴
 	    $("#btnQuit").on("click", function (e) {
@@ -187,7 +211,23 @@
 		        }
 		    });
 		});
-
+	
+	    
+	 	// 테이블 스크롤시 데이터 나옴
+	    $('#tableScroll').on('scroll', function() {
+			const elmt = this;
+			if (elmt.scrollTop + elmt.clientHeight >= elmt.scrollHeight - 50) {
+				loadMore();
+			}
+		});
+	    
+	    // 스크롤 마지막까지 내려오면 버튼 생김
+	    $('#bookmarkList').on('click', '.btn-scroll-top', function (e) {
+			e.preventDefault();
+			$('#tableScroll').animate({ scrollTop: 0 }, 300);
+		});
+	    
+	    
 	});
 
 </script>
@@ -227,21 +267,25 @@
 
                 <h5>내 북마크 목록</h5>
                 <hr>
-
-                <table class="table table-hover">
-                    <thead class="thead-light">
-					    <tr>
-					        <th style="width: 10%; text-align:center;">번호</th>
-					        <th style="width: 50%; text-align:center;">제목</th>
-					        <th style="width: 25%; text-align:center;">추가일</th>
-					        <th style="width: 15%; text-align:center;"></th>
-					    </tr>
-					</thead>
-                    <tbody id="bookmarkList">
-					    <!-- Ajax로 채워짐 -->
-					</tbody>
-                </table>
-                <div class="loading text-center my-3" style="display:none;">불러오는 중...</div>
+				
+				<div id="tableScroll" class="table-scroll">   <!-- 추가 -->
+	                <table class="table table-hover">
+	                    <thead class="thead-light">
+						    <tr>
+						        <th style="width: 10%; text-align:center;">번호</th>
+						        <th style="width: 50%; text-align:center;">제목</th>
+						        <th style="width: 25%; text-align:center;">추가일</th>
+						        <th style="width: 15%; text-align:center;"></th>
+						    </tr>
+						</thead>
+	                    <tbody id="bookmarkList">
+						    <!-- Ajax로 채워짐 -->
+						</tbody>
+	                </table>
+	                <div class="loading text-center my-3" style="display:none;">불러오는 중...</div>
+                </div>
+                
+                
             </div>
         </div>
     </div>

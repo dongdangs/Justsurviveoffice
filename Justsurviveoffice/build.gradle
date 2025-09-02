@@ -44,6 +44,9 @@ dependencies {
 	
 	// Jsoup 관련 
 	implementation 'org.jsoup:jsoup:1.18.1'
+	// <문자메시지 관련 순서1>
+	// 문자메시지 보내기 관련(Coolsms SDK)
+	implementation "net.nurigo:javaSDK:2.2"
 	
 	// mongodb 관련
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
@@ -113,6 +116,7 @@ dependencies {
         (#스프링보안02) Spring Security 어노테이션을 사용하기 위해서는 cglib 가 필요하다. 
 	*/
 	// https://mvnrepository.com/artifact/cglib/cglib
+	// 대사살 스프링 시큐리티02 >> 프록시(대리자) 객체 만들 때 필요한 라이브러리
 	implementation 'cglib:cglib:3.3.0'
 	
 	// Spring TX(Transaction) 라이브러리 추가
@@ -194,11 +198,14 @@ dependencies {
 	// Spring Security 태그들을 사용하기 위해 taglibs 라이브러리를 추가
 	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs
 	// implementation 'org.springframework.security:spring-security-taglibs'
-	//  implementation 'org.springframework.security:spring-security-taglibs:6.4.2'
+	
+	// 대사살 스프링 시큐리티01 >> <sec:authorize> 같은 태그 사용할 수 있는 라이브러리
+	implementation 'org.springframework.security:spring-security-taglibs:6.4.2'
 	
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
 	//implementation 'org.springframework.boot:spring-boot-starter-security'
-//	implementation 'org.springframework.boot:spring-boot-starter-security:3.4.1'
+	// 대사살 스프링 시큐리티01 >> 여기도 주석 해제!!!!!
+	implementation 'org.springframework.boot:spring-boot-starter-security:3.4.1'
     
     // https://mvnrepository.com/artifact/org.springframework.security/spring-security-test
 	//testImplementation 'org.springframework.security:spring-security-test'

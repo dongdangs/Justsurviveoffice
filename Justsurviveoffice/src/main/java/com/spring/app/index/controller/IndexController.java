@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.users.service.UsersService;
 
 
@@ -31,29 +32,27 @@ public class IndexController {
 		return "redirect:/index";
 	}
 
+	// 0901 김윤호 인덱스 불러오기 수정 완료
 	@GetMapping("index")
 	public String index(HttpServletRequest request, 
 			  			HttpServletResponse response,
-			   			Model model,
-			   			@RequestParam(value = "fk_categoryNo", required = false) String fk_categoryNo
-			   			// param값에 value를 넣어야 값이 들어옴
+			   			Model model
 						) {
-			/* 0825 인덱스 카테고리 자동으로 보이기 시작 - 김예준 */
-			List<Map<String, String>> IndexList = boardService.getIndexList(fk_categoryNo);
-			model.addAttribute("IndexList", IndexList);
-			model.addAttribute("fk_categoryNo", fk_categoryNo);
-			/* 0825 인덱스 카테고리 자동으로 보이기 끝 - 김예준 */
-			
-		    // Hot 게시글 리스트 (조회수 많은 순)
-		    List<BoardDTO> hotReadList = boardService.getTopBoardsByViewCount();
-		    model.addAttribute("hotReadList", hotReadList);
-		      
-		    // 댓글 많은 게시글 리스트
-		    List<BoardDTO> hotCommentList = boardService.getTopBoardsByCommentCount();
-		    model.addAttribute("hotCommentList", hotCommentList);
-			
-			
-			return "index";
+		/* 0825 인덱스 카테고리 자동으로 보이기 시작 - 김예준 */
+		List<CategoryDTO> IndexList = boardService.getIndexList();
+		model.addAttribute("IndexList", IndexList);
+		/* 0825 인덱스 카테고리 자동으로 보이기 끝 - 김예준 */ // index.jsp 에서 카테고리번호는 의미 없는 것 같아서 삭제했습니다.
+		
+	    // Hot 게시글 리스트 (조회수 많은 순)
+	    List<BoardDTO> hotReadList = boardService.getTopBoardsByViewCount();
+	    model.addAttribute("hotReadList", hotReadList);
+	      
+	    // 댓글 많은 게시글 리스트
+	    List<BoardDTO> hotCommentList = boardService.getTopBoardsByCommentCount();
+	    model.addAttribute("hotCommentList", hotCommentList);
+		
+		
+		return "index";
 	}
 	
 	

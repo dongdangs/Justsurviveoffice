@@ -57,7 +57,51 @@
 	
 	$(function(){
 		
-		// 메시지 보내기 나중에 작성해야함
+		$("div#smsResult").hide(); 
+		
+		$('button#btnSend').click(()=>{
+			let reservedate = $('input#reservedate').val();
+			reservedate = reservedate.split("-").join("");
+			
+			let reservetime = $('input#reservetime').val();
+			reservetime = reservetime.split(":").join("") + "00";
+			
+			const datetime = reservedate + reservetime;
+			
+			let dataObj;
+			
+			if( reservedate == "" || reservetime == "" ) {
+			    dataObj = {"mobile":"${requestScope.usersDto.mobile}",
+			               "smsContent":$('textarea#smsContent').val()};
+			}
+			else {
+			    dataObj = {"mobile":"${requestScope.usersDto.mobile}",
+			               "smsContent":$('textarea#smsContent').val(),
+			               "datetime":datetime};
+			}
+			/* <문자메시지 관련 순서2> */
+			$.ajax({
+				url:"<%= ctxPath%>/admin/smsSend",
+				type:"post",
+				data:dataObj,
+				dataType:"json",
+				success:function(json){
+					if(json.success_count == 1) {
+						$("div#smsResult").html('<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert"><strong class="font-bold">Success!</strong><span class="block sm:inline"> SMS sent successfully!</span></div>');
+					}
+					else if(json.error_count != 0) {
+						$("div#smsResult").html('<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert"><strong class="font-bold">Error!</strong><span class="block sm:inline"> Failed to send SMS.</span></div>');
+					}
+					
+					$("div#smsResult").show().delay(5000).fadeOut();
+					$('textarea#smsContent').val("");
+				},
+				error: function(request, status, error){
+					alert("code:" + request.status + "\nmessage:" + request.responseText);
+				}
+			});
+		
+		});
 		
 	});// end of $(function(){})-----------------------------
 	
