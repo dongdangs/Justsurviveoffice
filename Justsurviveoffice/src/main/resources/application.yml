@@ -1,3 +1,9 @@
+# <문자메시지 관련 순서4>
+coolsms:
+  api-key: NCS93YETYVO43LUO
+  api-secret: HXQJYZDQPVWFW7P2RMQZHUIMQH1Q1HKJ
+  from: 01064396718
+
 spring: # 주의할 점은 내용작성시 들여쓰기 내어쓰기시 공백개수를 반드시 꼭 지켜야 한다.
   application:
     name: Justsurviveoffice

@@ -77,7 +77,7 @@
                    </div>
                </div>
             </c:if>   
-               <div class="LBoardRank" style="width:70%;">
+              <div class="LBoardRank" style="width:80%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 style="font-weight: bolder; margin: 0;">대사살 <span style="color: red;">Hot!</span> 게시글</h6>
                 </div>
@@ -85,15 +85,15 @@
                     <tbody style="font-size: 10pt;">
                         <c:forEach var="hotRead" items="${hotReadList}">
                             <form id="viewForm${hotRead.boardNo}" 
-                           action="<%= ctxPath %>/board/view" 
-                           method="get" 
-                           style="display:none;">
+		                           action="<%= ctxPath %>/board/view" 
+		                           method="get" 
+		                           style="display:none;">
                          <input type="hidden" name="category" value="${hotRead.fk_categoryNo}">
                          <input type="hidden" name="boardNo" value="${hotRead.boardNo}">
                      </form>
                      <tr>
                          <td style="width: 5%; font-weight: bold;">
-                             ${hotRead.rank}
+                             ${hotRead.rank}.
                          </td>
                          <td style="width: 95%;">
                              <a href="javascript:void(0);" 
@@ -110,24 +110,24 @@
                     </tbody>
                 </table>
             </div>
-            <div class="LBoardRank" style="width: 70%;">
+            <div class="LBoardRank" style="width: 80%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 style="font-weight: bolder; margin: 0;">대사살 댓글많은 게시글</h6>
+                    <h6 style="font-weight: bolder; margin: 0;">대사살 <span style="color:blue;">시끌벅적!</span> 게시글</h6>
                 </div>
                 <table class="table table-sm table-borderless">
                     <tbody style="font-size: 10pt;">
                         <c:forEach var="hotComment" items="${hotCommentList}">
                            <form id="viewForm${hotComment.boardNo}" 
-                           action="<%= ctxPath %>/board/view" 
-                           method="get" 
-                           style="display:none;">
+		                           action="<%= ctxPath %>/board/view" 
+		                           method="get" 
+		                           style="display:none;">
                          <input type="hidden" name="category" value="${hotComment.fk_categoryNo}">
                          <input type="hidden" name="boardNo" value="${hotComment.boardNo}">
                      </form>
                      
                      <tr>
                          <td style="width: 5%; font-weight: bold;">
-                             ${hotComment.rank}
+                             ${hotComment.rank}.
                          </td>
                          <td style="width: 95%;">
                              <a href="javascript:void(0);" 
@@ -135,9 +135,6 @@
                                 style="color: #000;">
                                  ${hotComment.boardName}
                              </a>
-                             <span class="fa-regular fa-eye text-muted" style="font-size: 8pt; color:#fff !important">
-                                 (${hotComment.commentCount})
-                             </span>
                          </td>
                      </tr>
                         </c:forEach>

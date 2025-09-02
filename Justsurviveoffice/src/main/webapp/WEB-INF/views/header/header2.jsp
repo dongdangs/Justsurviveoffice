@@ -84,7 +84,8 @@
 		<div class="row">
 			<div class="col-md-12">
 				<ul style="border-right:1px solid #000;display:flex;">
-				  <li class="admTab" style="background-image: url(/justsurviveoffice/images/logo2.png);display: block;background-size: contain;background-repeat: no-repeat;background-position: center;"></li>
+				  <li class="admTab" style="background-image: url(/justsurviveoffice/images/logo2.png);display: block;background-size: contain;background-repeat: no-repeat;background-position: center;cursor:pointer;"
+				  		onclick="location.href='<%=ctxPath %>/index'"></li>
 				  <%-- <li class="admTab">${sessionScope.loginUser.name}</li> --%>
 				  <li class="admTab"><i class="fa-solid fa-chart-simple"></i>&nbsp;<a href="chart">회원 통계보기</a></li>
 				  <li class="admTab"><i class="fa-solid fa-user"></i>&nbsp;<a href="usersList">사용자 관리</a></li>
