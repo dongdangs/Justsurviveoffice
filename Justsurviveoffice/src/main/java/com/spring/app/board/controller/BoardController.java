@@ -492,7 +492,6 @@ public class BoardController {
 	                }
 	            }
 	        
-	            
 	        
 	        modelview.addObject("commentList", commentList);
 			modelview.addObject("boardDto", boardDto);
