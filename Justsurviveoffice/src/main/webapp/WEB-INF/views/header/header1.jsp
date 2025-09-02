@@ -34,20 +34,10 @@
    <%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
    
 <style type="text/css">
-.category-img {
-    width: 100%;
-    max-width: 100%; /* 최대 크기 지정, 필요시 조정 */
-    height: auto;
-    border-radius: 10px; /* 둥글게, 옵션 */
-    object-fit: cover;   /* 비율 유지, 잘림 없이 */
-    display: block;
-    margin: 5% 0 0 0;      /* 가운데 정렬 */
-}
+.category-img {width: 100%;max-width: 100%; /* 최대 크기 지정, 필요시 조정 */height: auto;border-radius: 10px; /* 둥글게, 옵션 */object-fit: cover;   /* 비율 유지, 잘림 없이 */display: block;}
 .profileImg {max-width:230px;}
 @media (max-width: 600px) {
-    .category-img {
-        max-width: 80px;
-    }
+    .category-img {max-width: 80px;}
 }
 
 </style>
@@ -64,13 +54,13 @@
             <c:if test="${not empty sessionScope.loginUser}">   
                <div>
                <c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() eq null}">
-               		<img src="<%=ctxPath%>/images/unassigned.png" alt="프로필" class="category-img mb-3 profileImg">
+               		<img src="<%=ctxPath%>/images/unassigned.png" alt="프로필" class="category-img profileImg">
                </c:if>
                	<c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() ne null}">
                		<img src="<%=ctxPath%>/images/${sessionScope.loginUser.getCategory().getCategoryImagePath()}" alt="프로필" 
-               			 class="category-img mb-3 profileImg">
+               			 class="category-img profileImg">
                	</c:if>
-                   <div class="text-muted small mb-3 ml-3">${sessionScope.loginUser.email}</div>
+                   <div class="small mb-3 ml-3" style="color:#fff;">${sessionScope.loginUser.email}</div>
                    <div class="mb-3 ml-3">
                       <div style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </div>
                       <div>포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b></div>
