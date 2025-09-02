@@ -35,7 +35,15 @@
 
 
 /* ------------------------------------------------  */
-.col-md-9 { position: relative; } /* 패널 absolute 배치를 위한 기준 */
+.col-md-9 {
+    border-radius: 10pt;
+    background-size: cover;       /* 화면 전체에 꽉 차게 */
+    background-position: center;  /* 중앙 기준으로 배치 */
+    background-repeat: no-repeat; /* 이미지 반복 안 함 */
+    background-attachment: fixed;       /* 스크롤 시 고정 */
+    background-blend-mode: overlay;     /* 색상 오버레이 효과 동일 */
+}
+
 .keyword-panel {
   position: absolute;
   top: 16px;      /* 상단 여백 */

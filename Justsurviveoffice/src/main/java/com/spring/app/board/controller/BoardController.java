@@ -3,7 +3,6 @@ package com.spring.app.board.controller;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -460,18 +459,11 @@ public class BoardController {
 			// 댓글 목록 조회
 	        List<CommentDTO> commentList = boardService.getCommentList(boardDto.getBoardNo());
 	        
-	        // 댓글, 대댓글 반응 개수 
-	        if (loginUser != null) {
-	            String loginId = loginUser.getId();
-
+	        	// 댓글, 대댓글 좋아요/싫어요 카운트
 	            for (CommentDTO comment : commentList) {
 	                // 댓글 좋아요 / 싫어요 개수
 	                comment.setCommentLikeCount(commentService.getCommentLikeCount(comment.getCommentNo()));
 	                comment.setCommentDislikeCount(commentService.getCommentDislikeCount(comment.getCommentNo()));
-
-	            	// 현재 로그인 사용자의 좋아요/싫어요 여부
-	            	comment.setCommentLiked(commentService.iscommentLiked(loginId, comment.getCommentNo()));
-	                comment.setCommentDisliked(commentService.iscommentDisliked(loginId, comment.getCommentNo()));
 
 	                if (comment.getReplyList() != null) {
 	                    for (CommentDTO reply : comment.getReplyList()) {
@@ -479,14 +471,26 @@ public class BoardController {
 	                    	// 대댓글 좋아요 / 싫어요 개수
 	                        reply.setReplyLikeCount(commentService.getReplyLikeCount(reply.getCommentNo()));
 	                        reply.setReplyDislikeCount(commentService.getReplyDislikeCount(reply.getCommentNo()));
+   	                    }
+	                }
+	                
+	                //로그인한 경우 사용자가 반응을 눌렀는지 
+	                if(loginUser != null ) {
+	                	
+	                	comment.setCommentLiked(commentService.iscommentLiked(loginUser.getId(), comment.getCommentNo()));
+	                	comment.setCommentDisliked(commentService.iscommentDisliked(loginUser.getId(), comment.getCommentNo()));
+	                	
+	                	if(comment.getReplyList() != null ) {
+	        	            for (CommentDTO reply : comment.getReplyList()) {
 
-	                        //현재 로그인 사용자의 좋아요/싫어요 여부
-	                        reply.setReplyLiked(commentService.isreplyLiked(loginId, reply.getCommentNo()));
-	                        reply.setReplyDisliked(commentService.isreplyDisliked(loginId, reply.getCommentNo()));
-	                    }
+		                	reply.setReplyLiked(commentService.isreplyLiked(loginUser.getId(), reply.getCommentNo()));
+		                	reply.setReplyDisliked(commentService.isreplyDisliked(loginUser.getId(), reply.getCommentNo()));
+	                
+	        	            }
+	                	}
+	                	
 	                }
 	            }
-	        }
 	        
 	        
 	        modelview.addObject("commentList", commentList);

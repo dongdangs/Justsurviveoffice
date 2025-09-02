@@ -31,6 +31,24 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 
+<style type="text/css">
+        
+   body {
+	  	background-color: #9da6ae;
+	  	background-image: url("<%= ctxPath%>/images/background.png");
+	  	background-size: cover;
+	  	background-position: center;
+	  	background-attachment: fixed;
+	  	background-blend-mode: overlay;
+	  	background-repeat:no-repeat;
+	}
+	
+    .backdrop-blur {
+        backdrop-filter: blur(8px);
+    } 
+	
+</style>
+
 
 <script type="text/javascript">
 
@@ -122,21 +140,6 @@
 
 </script>
 
-<style type="text/css">
-        
-    body {
-  		background-image: url("<%= ctxPath%>/images/background.png");
-    	background-size: cover;
-    	background-position: center;
-    	background-attachment: fixed;
-    	background-blend-mode: overlay;
-	}
-	
-    .backdrop-blur {
-        backdrop-filter: blur(8px);
-    } 
-	
-</style>
 
 </head>
 
@@ -144,6 +147,11 @@
 	
 	<div class="form-container w-full max-w-3xl bg-white rounded-xl shadow-xl overflow-hidden backdrop-blur">
         <div class="bg-indigo-600 py-4 px-6">
+        	 <!-- 뒤로가기 아이콘 -->
+            <p style="background-image:url('<%= ctxPath%>/images/backIco.png');
+                     position:absolute;top:16px;left:10px;width:30px;height:30px;
+                     background-size:cover;cursor:pointer;"
+               onclick="location.href='http://localhost:9089/justsurviveoffice/'"></p>
             <h1 class="text-2xl font-bold text-white" style="text-align: center;font-family: italic">
             비밀번호 찾기</h1>
         </div>
