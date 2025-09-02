@@ -140,8 +140,14 @@
 	</update>
 
 	
-	 <select id="getIndexList" parameterType="string" resultType="map">
-          select
+	 <select id="getIndexList" resultType="CategoryDTO">
+          select categoryNo, categoryName, categoryImagePath, categoryDescribe,
+          		 LISTAGG(tagName, ',') WITHIN GROUP (ORDER BY tagNo) AS tags 
+          from category C join tag T  
+          on C.categoryNo = T.fk_categoryNo 
+          group by (categoryNo, categoryName, categoryImagePath,categoryDescribe)
+          
+          <!-- select
 			    C.categoryNo         AS "categoryNo",
 			    C.categoryName       AS "categoryName",
 			    C.categoryDescribe   AS "categoryDescribe",
@@ -157,7 +163,7 @@
 			  </where>
 			  group by
 			    C.categoryNo, C.categoryName, C.categoryDescribe, C.categoryImagePath
-			  order by C.categoryNo
+			  order by C.categoryNo -->
 	</select>
       
    

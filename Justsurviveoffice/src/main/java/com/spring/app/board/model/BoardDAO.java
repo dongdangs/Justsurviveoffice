@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.spring.app.board.domain.BoardDTO;
+import com.spring.app.category.domain.CategoryDTO;
 
 public interface BoardDAO {
 	
@@ -30,7 +31,7 @@ public interface BoardDAO {
 	
 
 	// 메인페이지 카테고리 자동 불러오기
-	public List<Map<String, String>> getIndexList(String fk_categoryNo);
+	public List<CategoryDTO> getIndexList();
 ////////////////////////////////////////////////////////////////////////////
 
 	// 인기 게시글 리스트 (조회수 많은 순)

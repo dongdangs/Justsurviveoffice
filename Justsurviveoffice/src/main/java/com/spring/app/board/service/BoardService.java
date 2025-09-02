@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.spring.app.board.domain.BoardDTO;
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.comment.domain.CommentDTO;
 
 public interface BoardService {
@@ -65,7 +66,7 @@ public interface BoardService {
 	public int getBoardLikeCount(Long fk_boardNo);
 
 	// 메인페이지 카테고리 자동 불러오기 메서드
-	public List<Map<String, String>> getIndexList(String fk_categoryNo);
+	public List<CategoryDTO> getIndexList();
 
 	// 페이지네이션 구현
 	public BoardDTO getView(Long boardNo);

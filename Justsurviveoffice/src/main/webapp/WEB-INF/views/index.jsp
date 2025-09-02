@@ -29,11 +29,17 @@
 					  <div class="col-md-4 mb-4">
 						<a href="<%= ctxPath%>/board/list/${indexList.categoryNo}" class="card text-decoration-none h-100" style="background-color: #3C396B; border-radius: 15px">
 						  	<div style= "margin: 5% 5%;height: 60%;">
-						  		<img src="${pageContext.request.contextPath}/images/${indexList.categoryImagePath}" alt="${indexList.categoryDTO.categoryName}" 
+						  		<img src="${pageContext.request.contextPath}/images/${indexList.categoryImagePath}" alt="${indexList.categoryName}" 
 						  					style="width:100%; height:100%; object-fit:cover; border-radius: 10px">
 						  	</div>
 						  	<div class="card-body">
 						      <h4 class="card-title" style="font-weight: bold; color: #39FF14;">${indexList.categoryName}</h4>
+						      <p class="card-text" style="color: white;">
+							      <c:forEach var="tag" items="${indexList.tags}">
+							      	  #${tag}
+							      </c:forEach>
+						      </p>
+						      <br>
 						      <p class="card-text" style="color: white;">설명: ${indexList.categoryDescribe}</p>
 						    </div>
 						 </a>
