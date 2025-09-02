@@ -125,6 +125,7 @@ table {
 header {background: cadetblue;padding: 10px 20px;display: flex;align-items: center;justify-content: space-between;top:0;left:0;width:100%;position:fixed;z-index:10;}
 h1 {margin: 0;color: white;font-size: 1.5rem;}
 h1 a {color: white;text-decoration: none;}
+.hotTitle {font-size:1.8rem;line-height:2rem;}
 
 /* 메뉴 토글 버튼 */
 #menuToggle { font-size: 2rem;background: none;border: none;color: white;cursor: pointer;display: none; /* 기본엔 숨김 */}
@@ -142,9 +143,10 @@ h1 a {color: white;text-decoration: none;}
 #searchFrm .btnSubmit {position:absolute;right:10px;top:1px;display:block;width:100%;max-width:30px;height:100%;background-color:transparent;border:0;}
 
 .ListHeight {min-height:900px;}
-.LBoardRank {margin-top:30%;}
+.LBoardRank {margin-top:25%;} <!-- 왼쪽 대사살 영역 수정-->
 .page-btn {font-size:1.35rem;margin:0 5px;}
 .page-btn.active {color:#000; font-weight:600;}
+.card-text {font-size:15px;}  
   
 @media screen and (max-width:1250px) {
 	#mycontent	{ min-height: initial; }
@@ -163,6 +165,5 @@ h1 a {color: white;text-decoration: none;}
   #myheader a {text-decoration:none;}
   .LBoardRank {margin-top:4%;margin-bottom:4%;}
   #mycontent {padding:0;}
-  
 
 } /* end of /* 모바일 대응 끝 */

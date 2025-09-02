@@ -43,6 +43,7 @@
     display: block;
     margin: 5% 0 0 0;      /* 가운데 정렬 */
 }
+.profileImg {max-width:230px;}
 @media (max-width: 600px) {
     .category-img {
         max-width: 80px;
@@ -63,12 +64,11 @@
             <c:if test="${not empty sessionScope.loginUser}">   
                <div>
                <c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() eq null}">
-               		<img src="<%=ctxPath%>/images/unassigned.png" alt="프로필" 
-               			 class="category-img mb-3">
+               		<img src="<%=ctxPath%>/images/unassigned.png" alt="프로필" class="category-img mb-3 profileImg">
                </c:if>
                	<c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() ne null}">
                		<img src="<%=ctxPath%>/images/${sessionScope.loginUser.getCategory().getCategoryImagePath()}" alt="프로필" 
-               			 class="category-img mb-3">
+               			 class="category-img mb-3 profileImg">
                	</c:if>
                    <div class="text-muted small mb-3 ml-3">${sessionScope.loginUser.email}</div>
                    <div class="mb-3 ml-3">
@@ -79,7 +79,7 @@
             </c:if>   
                <div class="LBoardRank" style="width:70%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 style="font-weight: bolder; margin: 0;">대사살 <span style="color: red;">Hot!</span> 게시글</h6>
+                    <h6 style="font-weight: bolder; margin: 0;" class="hotTitle">대사살 <span style="color: red;">Hot!</span> 게시글</h6>
                 </div>
                 <table class="table table-sm table-borderless">
                     <tbody style="font-size: 10pt;">
@@ -112,7 +112,7 @@
             </div>
             <div class="LBoardRank" style="width: 70%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 style="font-weight: bolder; margin: 0;">대사살 댓글많은 게시글</h6>
+                    <h6 class="hotTitle" style="font-weight: bolder; margin: 0;">대사살 댓글많은 게시글</h6>
                 </div>
                 <table class="table table-sm table-borderless">
                     <tbody style="font-size: 10pt;">
