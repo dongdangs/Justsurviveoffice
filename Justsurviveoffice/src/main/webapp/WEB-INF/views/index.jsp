@@ -11,7 +11,7 @@
 	
 <div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');display:flex;justify-content:center; border-radius: 10px">
 				
-				<div class="row" style="width: 90%; margin: 5%">
+				<div class="row" style="width: 90%; margin: 5%; max-width:1000px;">
 				<!-- 테스트 카드 (고정) --> 
 				    <div class="col-sm-6 col-md-6 col-lg-4 mb-4">
 						<a href="<%= ctxPath%>/categoryTest/survey" class="card text-decoration-none h-100" style="background-color: #3C396B; border-radius: 15px">
@@ -34,7 +34,8 @@
 						  	</div>
 						  	<div class="card-body">
 						      <h4 class="card-title" style="font-weight: bold; color: #39FF14;">${indexList.categoryName}</h4>
-						      <p class="card-text" style="color: white;">설명: ${indexList.categoryDescribe}</p>
+						      <p class="card-text" style="color: white;margin-bottom:10px;">설명: ${indexList.categoryDescribe}</p>
+						      <p class="card-text" style="color: white;">태그: ${indexList.tags}</p>
 						    </div>
 						 </a>
 					  </div>
