@@ -26,8 +26,6 @@
     object-fit: cover;   /* 비율 유지하며 잘라내기 */
     border-radius: 10px; /* 둥근 모서리 유지 */
     display: block;
-       margin-bottom: 0;     /* ✅ 이미지와 텍스트 간격 최소화 */
-    
 }
 
 .card {
@@ -68,8 +66,8 @@
 						  	</div>
 						  	<div class="card-body">
 						      <h4 class="card-title" style="font-weight: bold; color: #39FF14;">${indexList.categoryName}</h4>
+   						      <p class="card-text" style="color: white;">${indexList.tags}</p>
 						      <p class="card-text" style="color: white;margin-bottom:10px;">설명: ${indexList.categoryDescribe}</p>
-						      <p class="card-text" style="color: white;">태그: ${indexList.tags}</p>
 						    </div>
 						 </a>
 					  </div>
