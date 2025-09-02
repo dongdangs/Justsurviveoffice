@@ -21,30 +21,31 @@
 	<div style="width:100%; min-height:700px; margin:auto;"> 
 		<h2>가입자 통계</h2> 
 		
-		<!-- ✅ 통계 종류 선택 --> 
+		<!-- ✅ 통계 종류 + 월 선택 -->
 		<form id="searchForm" method="get" action="<%= ctxPath%>/admin/userExcelList">
 		  <label for="chartSelect">통계 종류: </label>
 		  <select id="chartSelect" name="chart" onchange="this.form.submit()">
 		    <option value="register" ${chart eq 'register' ? 'selected' : ''}>월별 가입자 통계</option>
 		    <option value="registerDay" ${chart eq 'registerDay' ? 'selected' : ''}>일자별 가입자 통계</option>
 		  </select>
-		  
-		  <label for="monthSelect">월: </label>
-		    <select id="monthSelect" name="month" onchange="this.form.submit()">
-		      <c:forEach var="m" begin="1" end="12">
-		        <option value="${m}" ${m eq month ? 'selected' : ''}>${m}월</option>
-		      </c:forEach>
-		    </select>
+		
+		  <!-- ✅ 일자별 통계일 때만 월 선택 표시 -->
+		  <c:if test="${chart eq 'registerDay'}">
+			  <label for="monthSelect">월: </label>
+			  <select id="monthSelect" name="month" onchange="this.form.submit()">
+			    <c:forEach var="m" begin="1" end="12">
+			      <option value="${m < 10 ? '0' + m : m}" ${m eq month ? 'selected' : ''}>${m}월</option>
+			    </c:forEach>
+			  </select>
+			</c:if>
 		</form>
+		
 		
 		<!-- ✅ 엑셀 다운로드 버튼 --> 
 		<div class="action-buttons"> 
 		  <form id="downloadForm" method="post">
 		    <input type="hidden" name="chart" value="${chart}" />
-		    <input type="hidden" name="year" value="${year}" />
-		    <c:if test="${chart eq 'registerDay'}">
-		      <input type="hidden" name="month" value="${month}" />
-		    </c:if>
+		    <input type="hidden" name="month" value="${month}" />
 		    <button type="button" id="btnExcel">엑셀 다운로드</button>
 		  </form>
 		</div>

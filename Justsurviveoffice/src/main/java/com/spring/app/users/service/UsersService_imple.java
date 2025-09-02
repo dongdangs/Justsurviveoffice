@@ -2,25 +2,18 @@ package com.spring.app.users.service;
 
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -30,9 +23,7 @@ import org.springframework.ui.Model;
 
 import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.common.AES256;
-
 import com.spring.app.common.SecretMyKey;
-
 import com.spring.app.common.Sha256;
 import com.spring.app.entity.LoginHistory;
 import com.spring.app.entity.Users;
@@ -375,7 +366,7 @@ public class UsersService_imple implements UsersService {
 
 	 // 엑셀 저장
 	 @Override
-	 public void userExcelList_to_Excel(String chart, Integer year, Integer month, Model model) {
+	 public void userExcelList_to_Excel(String chart, Integer month, Model model) {
 		
 		 SXSSFWorkbook workbook = new SXSSFWorkbook();
 			
@@ -390,30 +381,25 @@ public class UsersService_imple implements UsersService {
 		// 행의 위치를 나타내는 변수
 		int rowLocation = 0;
 		
-		// Cell Merge 셀 병합시키기
-        /* 셀병합은 시트의 addMergeRegion 메소드에 CellRangeAddress 객체를 인자로 하여 병합시킨다.
-           CellRangeAddress 생성자의 인자로(시작 행, 끝 행, 시작 열, 끝 열) 순서대로 넣어서 병합시킬 범위를 정한다. 배열처럼 시작은 0부터이다.  
-        */
 		// 병합할 행 만들기
 		Row mergeRow = sheet.createRow(rowLocation); // 엑셀에서 행의 시작은 0 부터 시작한다.
 		
-		// 병합할 행에 "우리회사 사원정보" 로 셀을 만들어 셀에 스타일을 주기
+		// 병합할 행에 "회원가입 통계 정보" 로 셀을 만들어 셀에 스타일을 주기
 		for(int i=0; i<3; i++) {
 			Cell cell = mergeRow.createCell(i);
 			cell.setCellValue("회원가입 통계 정보");
 		} // end of for
 		
 		// 셀 병합하기
-		sheet.addMergedRegion(new CellRangeAddress(rowLocation, rowLocation, 0, 3)); // 시작 행, 끝 행, 시작 열, 끝 열
-		
+		sheet.addMergedRegion(new CellRangeAddress(rowLocation, rowLocation, 0, 2)); // 시작 행, 끝 행, 시작 열, 끝 열
 		
 		// 헤더 행 만들기
 		Row headerRow = sheet.createRow(++rowLocation); // 엑셀에서 행의 시작은 0 부터 시작한다.
 														// ++rowLocation 은 전위연산자임.
 		
 		// 헤더 행의 첫번째 열 셀 만들기
-		Cell headerCell = headerRow.createCell(0); // 엑셀에서 열의 시작은 0 부터 시작한다.
-		headerCell.setCellValue("월");
+		Cell headerCell = headerRow.createCell(0);
+		headerCell.setCellValue("registerDay".equals(chart) ? "일" : "월");
 		
 		// 헤더 행의 두번째 열 셀 만들기
 		headerCell = headerRow.createCell(1);
@@ -423,40 +409,64 @@ public class UsersService_imple implements UsersService {
 		headerCell = headerRow.createCell(2);
 		headerCell.setCellValue("퍼센티지");
 		
-		// ==== 회원가입 통계 정보 내용에 해당하는 행 및 셀 만들기 ==== //
+		// ==== 데이터 조회 ==== //
 		List<Map<String, String>> statList;
 
-	    if ("registerDay".equals(chart)) {
-	        statList = (month == null) ? registerChartday() : registerChartday(month);
-	    } else {
-	        statList = (year == null) ? registerChart() : registerChart(year);
-	    }
+		if ("registerDay".equals(chart)) {
+		    statList = (month == null) ? registerChartday() : registerChartday(month);
+		} else {
+		    statList = registerChart(); // 월별은 month 무시
+		}
 
 	    int total = statList.stream()
 	                        .mapToInt(row -> Integer.parseInt(row.get("cnt")))
 	                        .sum();
-
+	    
+	    // 오른쪽 정렬 스타일 적용
+	    CellStyle rightAlignStyle = workbook.createCellStyle();
+	    rightAlignStyle.setAlignment(HorizontalAlignment.RIGHT);
+	    
+	    // ==== 데이터 행 ====
 	    for (int i = 0; i < statList.size(); i++) {
 	        Map<String, String> rowMap = statList.get(i);
-
 	        Row bodyRow = sheet.createRow(i + (rowLocation + 1));
 
-	        // 월/일
-	        bodyRow.createCell(0).setCellValue(rowMap.get("mm"));
+	        // ✅ 월/일 구분
+	        if ("registerDay".equals(chart)) {
+	            bodyRow.createCell(0).setCellValue(rowMap.get("dd"));
+	        } else {
+	            bodyRow.createCell(0).setCellValue(rowMap.get("mm"));
+	        }
 
 	        // 가입자수
-	        bodyRow.createCell(1).setCellValue(rowMap.get("cnt"));
-
-	        // 퍼센티지 = (cnt / total * 100)
+	        Cell cntCell = bodyRow.createCell(1);
+	        cntCell.setCellValue(rowMap.get("cnt") + "명");
+	        cntCell.setCellStyle(rightAlignStyle);
+	        
+	        // 퍼센티지
 	        double percent = (total > 0)
 	                ? (Double.parseDouble(rowMap.get("cnt")) * 100.0 / total)
 	                : 0.0;
 	        bodyRow.createCell(2).setCellValue(String.format("%.2f%%", percent));
 	    }
+	    
+	    // ==== ✅ 합계 행 추가 ====
+	    Row totalRow = sheet.createRow(statList.size() + (rowLocation + 1));
+
+	    // 첫 번째 열: "합계"
+	    totalRow.createCell(0).setCellValue("합계");
+
+	    // 두 번째 열: 총 가입자 수
+	    Cell totalCntCell = totalRow.createCell(1);
+	    totalCntCell.setCellValue(total + "명");
+	    totalCntCell.setCellStyle(rightAlignStyle);
+
+	    // 세 번째 열: 퍼센티지 합계 (항상 100% 또는 0%)
+	    totalRow.createCell(2).setCellValue(total > 0 ? "100.00%" : "0.00%");
 
 	    // workbook을 model에 담아서 View에서 write
 	    model.addAttribute("workbook", workbook);
-	    model.addAttribute("workbookName", "user_stat");
+	    model.addAttribute("workbookName", "회원가입 통계 정보");
 		 
 	}
 
