@@ -47,7 +47,7 @@ public class UsersService_imple implements UsersService {
      UsersDTO usersDto = null;
          
      try {
-        Optional<Users> user = usersRepository.findById(id);
+        Optional<Users> user = usersRepository.findById(id);	// 카테고리 포함 데이터 가져오기
    /*   Java8에서는 Optional<T> 클래스를 사용해 NullPointerException 을 방지할 수 있도록 도와준다. 
         Optional<T>는 null이 올 수 있는 값을 감싸는 Wrapper 클래스 이므로, 참조하더라도 NullPointerException 이 발생하지 않도록 도와준다. 
         Optional 클래스는 null 이더라도 바로 NullPointerException 이 발생하지 않으며, 클래스이기 때문에 각종 메소드를 제공해준다. */

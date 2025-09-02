@@ -68,6 +68,15 @@
 						      <h4 class="card-title" style="font-weight: bold; color: #39FF14;">${indexList.categoryName}</h4>
    						      <p class="card-text" style="color: white;">${indexList.tags}</p>
 						      <p class="card-text" style="color: white;margin-bottom:10px;">설명: ${indexList.categoryDescribe}</p>
+			<%-- =======
+						      <p class="card-text" style="color: white;">
+							      <c:forEach var="tag" items="${indexList.tags}">
+							      	  #${tag}
+							      </c:forEach>
+						      </p>
+						      <br>
+						      <p class="card-text" style="color: white;">설명: ${indexList.categoryDescribe}</p>
+			>>>>>>> refs/heads/rdg7203 --%>
 						    </div>
 						 </a>
 					  </div>
