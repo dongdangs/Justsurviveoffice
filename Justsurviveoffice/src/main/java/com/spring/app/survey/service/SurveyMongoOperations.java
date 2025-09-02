@@ -31,7 +31,7 @@ public class SurveyMongoOperations {
 	}
 	
 	
-	// 몽고DB에서 설문 데이터 가져오기
+	// 몽고DB에서 설문 데이터 가져오기 1
 	public List<Mongo_QuestionDTO> findAllQuestions() {
 		
 		List<Mongo_QuestionDTO> list = null;
