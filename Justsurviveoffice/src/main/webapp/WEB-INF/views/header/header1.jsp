@@ -36,12 +36,11 @@
 <style type="text/css">
 .category-img {
     width: 100%;
-    max-width: 100%; /* 최대 크기 지정, 필요시 조정 */
+    min-width: 30%; /* 최대 크기 지정, 필요시 조정 */
     height: auto;
     border-radius: 10px; /* 둥글게, 옵션 */
     object-fit: cover;   /* 비율 유지, 잘림 없이 */
     display: block;
-    margin: 5% 0 0 0;      /* 가운데 정렬 */
 }
 @media (max-width: 600px) {
     .category-img {
@@ -57,7 +56,7 @@
          <jsp:include page="../menu/menu1.jsp" />
       </div>
       
-      <div id="mycontent">
+      <div id="mycontent" class="mt-5">
          <div class="row" style="margin:0 auto;"> 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
             <c:if test="${not empty sessionScope.loginUser}">   
