@@ -26,6 +26,9 @@ public interface BoardService {
 	// 게시물의 리스트를 추출해오며, 검색 목록이 있는 경우도 포함.
 	public List<BoardDTO> boardList(Map<String, String> paraMap);
 	
+	// 카테고리별 게시물이 3개씩 있는 리스트를 추출해오며, 검색 목록이 있는 경우도 포함.
+	public List<BoardDTO> boardListAll(Map<String, String> paraMap);
+	
 	// 조회수 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
 	public BoardDTO selectView(Long boardNo);
 	
@@ -77,7 +80,7 @@ public interface BoardService {
 	public List<Map<String, String>> getSearchWordList(Map<String, String> paraMap);
 	
 	// == 키워드 메소드 작성 해봄 == // 
-	List<Map<String, Object>> getKeyWord(String category);
+	public List<Map<String, Object>> getKeyWord(String category);
 
 
 //	

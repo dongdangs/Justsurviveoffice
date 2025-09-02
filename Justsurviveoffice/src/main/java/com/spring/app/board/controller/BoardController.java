@@ -56,6 +56,49 @@ public class BoardController {
 	
 	private final FileManager fileManager;
 	
+	@GetMapping("listAll")
+	public ModelAndView listAll(ModelAndView modelview, 
+							 HttpServletRequest request,
+							 HttpServletResponse response,
+				@RequestParam(name="searchType", defaultValue="") String searchType,
+				@RequestParam(name="searchWord", defaultValue="") String searchWord) {
+				// http://localhost:9089/justsurviveoffice/board/listAll
+		List<BoardDTO> boardList = null;
+		
+		// ===========  게시글 보여주기(페이징 처리) 수정 시작 =========== //
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("searchType", searchType);
+		paraMap.put("searchWord", searchWord);
+		// 페이지를 옮겼거나, 검색 목록이 있다면 저장.
+		
+		boardList = boardService.boardListAll(paraMap);
+		
+		HttpSession session = request.getSession();
+		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+		// 로그인 된 유저가 있다면, 게시물 별 bookmarked 를 체크해야함.
+		if(loginUser != null) {
+			for(BoardDTO boardDto : boardList) {
+				boardDto.setBookmarked(bookmarkService.isBookmarked(
+												loginUser.getId(), 
+												boardDto.getBoardNo())); 
+			}
+		}
+		// System.out.println(category);
+		modelview.addObject("boardList", boardList);
+		modelview.addObject("searchType", searchType);
+		modelview.addObject("searchWord", searchWord);
+		
+		modelview.setViewName("board/listAll");
+//		
+//		// == 키워드 메소드 작성 해봄 == // 
+//		List<Map<String, Object>> keyword_top = boardService.getKeyWord(category);	// 서비스에서 구현
+//		modelview.addObject("keyword_top", keyword_top);
+//		
+		
+		return modelview;
+	}
+	
+	
  // 2번. 스마트 에디터로 모든 파일 텍스트 업로드해보기
 	// ==== #스마트에디터. 드래그앤드롭을 사용한 다중사진 파일업로드 ====
 	@PostMapping("image/multiplePhotoUpload")
@@ -113,9 +156,31 @@ public class BoardController {
 	
 	@GetMapping("write/{category}") // RestAPI
 	public ModelAndView writeBoard(@PathVariable("category") String category,
+								   HttpSession session,
+								   HttpServletRequest request,
 								   ModelAndView modelview) {
-		modelview.addObject("category", category); // 카테고리 번호가 게시판마다 따라가야함!
-		modelview.setViewName("board/write");
+		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+		// 카테고리 자체가 없는 경우 null 선 체크가 기본^^
+		if(loginUser.getCategory() == null) {
+			modelview.addObject("message", "성향 테스트를 아직 안하셨군요?");
+			modelview.addObject("loc", request.getContextPath()
+										+ "/categoryTest/survey");
+			// 절대주소 첨부!
+			modelview.setViewName("msg");
+		} 
+		// 카테고리 번호가 현재 페이지의 카테고리와 같은 경우면 글쓰기
+		else if(loginUser.getCategory().getCategoryNo() != null &&
+				loginUser.getCategory().getCategoryNo() == Integer.parseInt(category)) {
+			modelview.addObject("category", category); // 카테고리 번호가 게시판마다 따라가야함!
+			modelview.setViewName("board/write");
+		} 
+		// 카테고리 번호가 현재 페이지의 카테고리와 다르면 뒤로가기
+		else {
+			modelview.addObject("message", "같은 성향 게시물만 업로드 가능합니다");
+			modelview.addObject("loc", "javascript:history.back()");
+			modelview.setViewName("msg");
+		}
+		
 		return modelview;
 	}
 	
@@ -197,7 +262,7 @@ public class BoardController {
 	  
 	// 각 카테고리 게시판에 들어가기!
 		//또는 전체 게시물 검색!
-		@GetMapping("list/{category}") // RestAPI
+		@GetMapping("list/{category}") // Restfull
 		public ModelAndView list(ModelAndView modelview, 
 								 HttpServletRequest request,
 								 HttpServletResponse response,
@@ -698,5 +763,20 @@ public class BoardController {
         return result;
     }
     
+    // 게시글 목록에 검색어 자동입력
+  	@GetMapping("wordSearchShow")
+  	@ResponseBody
+  	public List<Map<String, String>> wordSearchShow(@RequestParam(name = "searchType", defaultValue = "") String searchType,
+  													@RequestParam(name = "searchWord", defaultValue = "") String searchWord,
+  													@RequestParam(name = "category") String category) {
+  		Map<String, String> paraMap = new HashMap<>();
+  		paraMap.put("searchType", searchType);
+  		paraMap.put("searchWord", searchWord);
+  		paraMap.put("category", category);
+  		
+  		List<Map<String, String>> mapList = boardService.getSearchWordList(paraMap);	// 자동 검색어 완성시키기
+  		
+  		return mapList;
+  	}
 	
 }

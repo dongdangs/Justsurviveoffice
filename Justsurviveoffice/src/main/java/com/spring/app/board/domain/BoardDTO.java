@@ -37,7 +37,8 @@ public class BoardDTO {
 	// 얘도 접근하려면, 카테고리 서비스로 또 메소드 만들어야해서, 
 	// 메소드를 만들게되면, boardNo로만 categoryNo를 가져올 수 있다. ㅇㅋ?
 	private Long fk_categoryNo; // 카테고리번호 // jsp에서 계속 받아와야함.
-			
+	private String categoryName; // listAll, list, view에서 편하게 보여줄 select
+	
 	private String boardFileName;// 첨부된 파일명 
 	private String boardFileOriginName;// 업로드 시 첨부된 파일명
 	
