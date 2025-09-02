@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.spring.app.board.domain.BoardDTO;
+import com.spring.app.category.domain.CategoryDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -69,8 +70,8 @@ public class BoardDAO_imple implements BoardDAO {
 
 	// 메인페이지 카테고리 리스트 자동 받아오기
 	@Override
-	public List<Map<String, String>> getIndexList(String fk_categoryNo) {
-		List<Map<String, String>> IndexList = sql.selectList("board.getIndexList");
+	public List<CategoryDTO> getIndexList() {
+		List<CategoryDTO> IndexList = sql.selectList("board.getIndexList");
 		return IndexList;
 	}
 	

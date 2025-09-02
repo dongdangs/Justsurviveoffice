@@ -12,6 +12,8 @@ import java.util.Optional;
 
 import javax.crypto.BadPaddingException;
 
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,8 @@ import com.spring.app.common.SecretMyKey;
 import com.spring.app.users.domain.UsersDTO;
 
 import lombok.RequiredArgsConstructor;
+import net.nurigo.java_sdk.api.Message;
+import net.nurigo.java_sdk.exceptions.CoolsmsException;
 
 @Service
 @RequiredArgsConstructor  // @RequiredArgsConstructor는 Lombok 라이브러리에서 제공하는 애너테이션으로, final 필드 또는 @NonNull이 붙은 필드에 대해 생성자를 자동으로 생성해준다.
@@ -40,6 +44,17 @@ public class AdminService_imple implements AdminService {
    private final JPAQueryFactory jPAQueryFactory;
    
    private AES256 aes;
+   
+   // <문자메시지 관련 순서5>
+   // import org.springframework.beans.factory.annotation.Value;
+   @Value("${coolsms.api-key}")
+   private String api_key;			// 발급받은 본인 API Key
+   
+   @Value("${coolsms.api-secret}")
+   private String api_secret;		// 발급받은 본인 API Secret
+   
+   @Value("${coolsms.from}")		// 사전등록 발신번호
+   private String from;
    
    
    // 회원목록 전체보기(페이징 처리)
@@ -176,6 +191,52 @@ public class AdminService_imple implements AdminService {
       }
       
       return result;
+   }
+   
+   // <문자메시지 관련 순서6>
+   // 문자메시지 보내기 관련 코드 작성
+   @Override
+   public JSONObject smsSend(String mobile, String smsContent, String datetime) throws Exception {
+	   
+	   Message coolsms = new Message(api_key, api_secret);
+	   
+	   // == 4개 파라미터(to, from, type, text)는 필수사항이다. == 
+	 HashMap<String, String> paraMap = new HashMap<>();
+	 paraMap.put("to", mobile); // 수신번호
+	 paraMap.put("from", from); // 발신번호
+	 // 2020년 10월 16일 이후로 발신번호 사전등록제로 인해 등록된 발신번호로만 문자를 보내실 수 있습니다
+	 paraMap.put("type", "SMS"); // Message type ( SMS(단문), LMS(장문), MMS, ATA )
+	 paraMap.put("text", smsContent); // 문자내용
+	 
+	 if(datetime != null) {
+	    paraMap.put("datetime", datetime); // 예약일자및시간
+	 }
+	  
+	 paraMap.put("app_version", "JAVA SDK v2.2"); // application name and version 
+	  
+	 //   ==  아래의 파라미터는 필요에 따라 사용하는 선택사항이다. == 
+	 //   paraMap.put("mode", "test"); // 'test' 모드. 실제로 발송되지 않으며 전송내역에 60 오류코드로 뜹니다. 차감된 캐쉬는 다음날 새벽에 충전 됩니다.
+	 //   paraMap.put("image", "desert.jpg"); // image for MMS. type must be set as "MMS"
+	 //   paraMap.put("image_encoding", "binary"); // image encoding binary(default), base64 
+	 //   paraMap.put("delay", "10"); // 0~20사이의 값으로 전송지연 시간을 줄 수 있습니다.
+	 //   paraMap.put("force_sms", "true"); // 푸시 및 알림톡 이용시에도 강제로 SMS로 발송되도록 할 수 있습니다.
+	 //   paraMap.put("refname", ""); // Reference name
+	 //   paraMap.put("country", "KR"); // Korea(KR) Japan(JP) America(USA) China(CN) Default is Korea
+	 //   paraMap.put("sender_key", "5554025sa8e61072frrrd5d4cc2rrrr65e15bb64"); // 알림톡 사용을 위해 필요합니다. 신청방법 : http://www.coolsms.co.kr/AboutAlimTalk
+	 //   paraMap.put("template_code", "C004"); // 알림톡 template code 입니다. 자세한 설명은 http://www.coolsms.co.kr/AboutAlimTalk을 참조해주세요. 
+	 //   paraMap.put("datetime", "20210106153000"); // Format must be(YYYYMMDDHHMISS) 2021 01 06 15 30 00 (2021 Jan 06th 3pm 30 00)
+	 //   paraMap.put("mid", "mymsgid01"); // set message id. Server creates automatically if empty
+	 //   paraMap.put("gid", "mymsg_group_id01"); // set group id. Server creates automatically if empty
+	 //   paraMap.put("subject", "Message Title"); // set msg title for LMS and MMS
+	 //   paraMap.put("charset", "euckr"); // For Korean language, set euckr or utf-8
+	 //   paraMap.put("app_version", "Purplebook 4.1") // 어플리케이션 버전
+	   
+	 try {	// import org.json.simple.JSONObject;
+		 JSONObject jsobj = (JSONObject) coolsms.send(paraMap);
+		 return jsobj;
+	} catch (CoolsmsException e) {
+		throw e;
+	}
    }
    
 }

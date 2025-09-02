@@ -29,6 +29,37 @@
 	.table th, .table td { vertical-align: middle; }
 	a { color: black; }
 	.loading { text-align:center; margin:20px 0; display:none; }
+	
+	/* =======================  */
+	/* 스크롤은 래퍼 div에만 적용 */
+	.table-scroll {
+	  max-height: 60vh;          /* 화면 높이의 60% (원하면 조절) */
+	  overflow: auto;            /* 세로/가로 자동 */
+	  border: 1px solid #e9ecef;
+	  border-radius: 8px;
+	
+	  /* 스크롤바 공간을 미리 확보해서 헤더/본문 폭 어긋남 방지 (지원 브라우저에서) */
+	  scrollbar-gutter: stable both-edges;
+	}
+	
+	/* 테이블 아래 여백 제거(스크롤 영역 계산 깔끔) */
+	.table-scroll .table {
+		width: 100%;
+		table-layout: fixed;          /* 열 너비 고정 */
+		margin-bottom: 0;             /* 계산 깔끔하게 */
+	}
+	
+	/* 헤더 고정 */
+	.table-scroll thead th,
+	.table-scroll .table td {
+	  white-space: nowrap;          /* 한 줄로 */
+	  overflow: hidden;             /* 넘치면 숨김 */
+	  text-overflow: ellipsis;      /* … 처리 */
+	  box-sizing: border-box;
+	}
+	
+	
+	
 </style>
 
 <script type="text/javascript">
@@ -61,7 +92,7 @@
 	
 	    // 스크롤 페이징 변수
 	    let start = 0;			// 데이터 로딩 시작 위치
-	    let len = 10;  			// 첫 로딩은 10개
+	    let len = 12;  			// 첫 로딩은 12개
 	    let isLoading = false;	// 중복 호출 방지를 위한 로딩 여부 
 	    let endOfData = false;  // 데이터 끝에 도달했는지 여부
 	
@@ -71,11 +102,82 @@
 	        return dateTimeStr.split("T")[0]; // yyyy-MM-dd
 	    }
 	
-	    $(window).scroll(function() {
-	        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 50) {
-	            loadMore();
-	        }
-	    });
+	    // 데이터 불러오기
+	    function loadMore() {
+	    	// 이미 로딩 중이거나 데이터가 끝난 경우 실행 X
+	        if (isLoading || endOfData) return;
+	        isLoading = true;
+	        $(".loading").show();
+	
+	        $.ajax({
+	            url: "<%=ctxPath%>/mypage/myBoardsMore",
+	            type: "GET",
+	            data: {
+	                id: "${sessionScope.loginUser.id}",
+	                start: start,
+	                len: len
+	            },
+	            success: function(data) {
+	            	// 데이터가 존재하는 경우
+	                if (data.length > 0) {
+	                	// 현재 테이블에 있는 행 개수 + 1부터 시작
+	                    let rowNumber = start + 1;
+	                    data.forEach(function(board) {
+	                        $("#boardList").append(
+	                            "<tr>"
+	                          + "<td>" + (rowNumber++) + "</td>"
+	                          + "<td><a href='<%=ctxPath%>/board/view?boardNo=" + board.boardNo + "'>"
+	                          + (board.boardName || '-') + "</a></td>"
+	                          + "<td>" + (board.createdAtBoard ? formatDate(board.createdAtBoard) : '-') + "</td>"
+	                          + "<td>" + (board.readCount || 0) + "</td>"
+	                          + "<td>"
+	                          + (board.boardDeleted == 1
+	                                ? "<button type='button' class='btn btn-sm btn-outline-danger' data-fk_boardno='" + board.boardNo + "'>복구하기</button>"
+	                                : "")
+	                          + "</td>"
+	                          + "</tr>"
+	                        );
+	                    });
+	                    
+	                    start += len;	// 시작 위치 갱신
+	                    len = 5; 		// 이후부터는 5개씩
+	                    
+	                } else {
+	                	// 데이터가 더 이상 없는 경우 메시지 출력
+	                    $("#boardList").append(
+	                        "<tr><td colspan='5' class='text-center text-muted'>더 이상 글이 없습니다. "
+	                        + "<button type='button' class='btn btn-sm btn-outline-secondary ml-2 btn-scroll-top'>"
+	                        + "맨 위로</button></td></tr>"
+	                    );
+	                    endOfData = true;	// 데이터 끝 설정
+	                }
+	                $(".loading").hide();
+	                isLoading = false;
+	            },
+	            error: function() {
+	                $(".loading").hide();
+	                isLoading = false;
+	                alert("데이터 로딩 실패");
+	            }
+	        });
+	    }
+	    
+	    // 테이블 스크롤시 데이터 나옴
+	    $('#tableScroll').on('scroll', function() {
+			const elmt = this;
+			if (elmt.scrollTop + elmt.clientHeight >= elmt.scrollHeight - 50) {
+				loadMore();
+			}
+		});
+	    
+	    // 스크롤 마지막까지 내려오면 버튼 생김
+	    $('#boardList').on('click', '.btn-scroll-top', function (e) {
+			e.preventDefault();
+			$('#tableScroll').animate({ scrollTop: 0 }, 300);
+		});
+	    
+	    // 첫 화면 로딩 시 데이터 불러오기
+	    loadMore();
 	
 	});
 	
@@ -116,22 +218,25 @@
 	
 	                <h5>내가 쓴 글 목록</h5>
 	                <hr>
-	
-	                <table class="table table-hover">
-	                    <thead class="thead-light">
-	                        <tr>
-	                            <th>번호</th>
-	                            <th>제목</th>
-	                            <th>작성일</th>
-	                            <th>조회수</th>
-	                            <th>비고</th>
-	                        </tr>
-	                    </thead>
-	                    <tbody id="boardList">
-	                        <!-- AJAX로 데이터 추가 -->
-	                    </tbody>
-	                </table>
-	                <div class="loading">불러오는 중...</div>
+	                
+					<div id="tableScroll" class="table-scroll">   <!-- 추가 -->
+		                <table class="table table-hover">
+		                    <thead class="thead-light">
+		                        <tr>
+		                            <th>번호</th>
+		                            <th>제목</th>
+		                            <th>작성일</th>
+		                            <th>조회수</th>
+		                            <th>비고</th>
+		                        </tr>
+		                    </thead>
+		                    <tbody id="boardList">
+		                        <!-- AJAX로 데이터 추가 -->
+		                    </tbody>
+		                </table>
+		                <div class="loading">불러오는 중...</div>
+	                </div>
+	                
 	            </div>
 	        </div>
 	    </div>
