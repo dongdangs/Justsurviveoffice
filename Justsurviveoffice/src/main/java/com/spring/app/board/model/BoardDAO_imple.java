@@ -37,6 +37,12 @@ public class BoardDAO_imple implements BoardDAO {
 		return sql.selectList("board.selectBoardList", paraMap);
 	}
 	
+	// 카테고리별 게시물이 3개씩 있는 리스트를 추출해오며, 검색 목록이 있는 경우도 포함.
+	@Override
+	public List<BoardDTO> selectBoardListAll(Map<String, String> paraMap) {
+		return sql.selectList("board.selectBoardListAll", paraMap);
+	}
+	
 	// 조회수 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
 	@Override
 	public BoardDTO selectView(Long boardNo) {
@@ -171,5 +177,6 @@ public class BoardDAO_imple implements BoardDAO {
         paramMap.put("fk_id", fk_id);
         paramMap.put("fk_boardNo", fk_boardNo);
 		return sql.delete("boardLike.deleteBoardLike", paramMap);
-	}	
+	}
+
 }
