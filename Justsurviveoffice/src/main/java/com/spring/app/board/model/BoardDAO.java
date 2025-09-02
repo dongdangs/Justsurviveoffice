@@ -16,6 +16,9 @@ public interface BoardDAO {
 	// 게시물의 리스트를 추출해오며, 검색 목록이 있는 경우도 포함.
 	public List<BoardDTO> selectBoardList(Map<String, String> paraMap);
 	
+	// 카테고리별 게시물이 3개씩 있는 리스트를 추출해오며, 검색 목록이 있는 경우도 포함.
+	public List<BoardDTO> selectBoardListAll(Map<String, String> paraMap);
+	
 	// 조회수 증가 및 페이징 기법이 포함된 게시물 상세보기 메소드
 	public BoardDTO selectView(Long boardNo);
 	
@@ -71,7 +74,6 @@ public interface BoardDAO {
 	public List<Map<String, Object>> getBoardContents(String category);
 	// =====================0827 rdg7203 수정 끝 =============================== //
 
-	
 
 
 

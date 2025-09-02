@@ -125,7 +125,7 @@
   overflow: hidden;
   z-index: 5;                         /* 상단 레이어 */
 }
-
+ 
 .keyword-header {
   padding: 10px 12px;
   font-weight: 700;
@@ -188,96 +188,86 @@
 </style> 
 
 <script type="text/javascript">
-   $(function(){
+ $(function(){
 
-	   $('span.boardName').hover(function(e){
-		   $(e.target).addClass("boardNameStyle");
-	   }, function(e){
-		   $(e.target).removeClass("boardNameStyle");
-	   });
+   $('span.boardName').hover(function(e){
+	   $(e.target).addClass("boardNameStyle");
+	   },function(e){
+	   $(e.target).removeClass("boardNameStyle");
+   });
 	   
-	   // 글검색시 글검색어 입력후 엔터를 했을 경우 이벤트 작성하기
-	   $('input:text[name="searchWord"]').bind("keyup", function(e){
-		   if(e.keyCode == 13) { // 엔터를 했을 경우
-			   searchBoard();
-		   }
-	   });
-	   
-	   // 글목록 검색시 검색조건 및 검색어 값 유지시키기
-	   if(${not empty requestScope.searchType}) {
-		   $('select[name="searchType"]').val("${requestScope.searchType}");
+   // 글검색시 글검색어 입력후 엔터를 했을 경우 이벤트 작성하기
+   $('input:text[name="searchWord"]').bind("keyup", function(e){
+	   if(e.keyCode == 13) { // 엔터를 했을 경우
+		   searchBoard();
 	   }
-	   if(${not empty requestScope.searchWord}) {
-		   $('input[name="searchWord"]').val("${requestScope.searchWord}");
+   });
+	   
+   // 글목록 검색시 검색조건 및 검색어 값 유지시키기
+   if(${not empty requestScope.searchType}) {
+	   $('select[name="searchType"]').val("${requestScope.searchType}");
+   }
+   if(${not empty requestScope.searchWord}) {
+	   $('input[name="searchWord"]').val("${requestScope.searchWord}");
+   }
+	   
+   <%-- === 검색어 입력시 자동글 완성하기 === --%>
+   // 입력이 없던 초기 div 숨기기.
+   $('div#displayList').hide();
+   $('input[name="searchWord"]').keyup(function(){
+	   const wordLength = $(this).val().trim().length;
+	   // 검색어에서 공백을 제거한 길이를 알아온다.
+	   if(wordLength == 0) {
+		   $('div#displayList').hide();
+		   // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안 나오도록 해야 한다. 
 	   }
-	   
-	   
-	   
-	   <%-- === 검색어 입력시 자동글 완성하기 === --%>
-	   $('div#displayList').hide();
-	   
-	   $('input[name="searchWord"]').keyup(function(){
-		   
-		   const wordLength = $(this).val().trim().length;
-		   // 검색어에서 공백을 제거한 길이를 알아온다.
-		   
-		   if(wordLength == 0) {
-			   $('div#displayList').hide();
-			   // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안 나오도록 해야 한다. 
+	   else {
+		   if( $('select[name="searchType"]').val() == "boardName" || 
+			   $('select[name="searchType"]').val() == "boardContent" || 
+			   $('select[name="searchType"]').val() == "boardName_boardContent" ||
+			   $('select[name="searchType"]').val() == "fk_id") {
+			   
+			   $.ajax({
+				   url:"<%= ctxPath%>/board/wordSearchShow",
+				   type:"get",
+				   data:{"searchType":$('select[name="searchType"]').val()
+					    ,"searchWord":$('input[name="searchWord"]').val()
+					    ,"category":${category}},
+				   dataType:"json",
+				   success:function(json){
+					   if(json.length > 0) {
+						   // 검색된 데이터가 있는 경우임.
+						   let v_html = ``;
+						   $.each(json, function(index, item){
+							   const word = item.word;
+							   const idx = word.toLowerCase().indexOf($('input[name="searchWord"]').val().toLowerCase());
+							   const len = $('input[name="searchWord"]').val().length;
+						       const result = word.substring(0, idx) + "<span style='color:red;'>"+word.substring(idx, idx+len)+"</span>" + word.substring(idx+len);
+						       v_html += `<span class='result'>\${result}</span>`;
+						   });// end of $.each(json, function(index, item){})-------------------
+						   
+						   const input_width = $('input[name="searchWord"]').css("width"); // 검색어 input 태그 width 값 알아오기 
+						   $('div#displayList').css({"width":input_width}); // 검색결과 div 의 width 크기를 검색어 입력 input 태그의 width 와 일치시키기 
+						   $('div#displayList').html(v_html).show();
+					   }
+				   },
+				   error: function(request, status, error){
+					   console.log("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+				   } 
+			   });
 		   }
-		   
-		   else {
-			   if( $('select[name="searchType"]').val() == "boardName" || 
-				   $('select[name="searchType"]').val() == "boardContent" || 
-				   $('select[name="searchType"]').val() == "boardName_boardContent" ||
-				   $('select[name="searchType"]').val() == "fk_id") {
-				   
-				   $.ajax({
-					   url:"<%= ctxPath%>/board/wordSearchShow",
-					   type:"get",
-					   data:{"searchType":$('select[name="searchType"]').val()
-						    ,"searchWord":$('input[name="searchWord"]').val()
-						    ,"category":${category}},
-					   dataType:"json",
-					   success:function(json){
-						  
-						   if(json.length > 0) {
-							   // 검색된 데이터가 있는 경우임.
-							   let v_html = ``;
-							   
-							   $.each(json, function(index, item){
-								   const word = item.word;
-								   
-								   const idx = word.toLowerCase().indexOf($('input[name="searchWord"]').val().toLowerCase());
-								   const len = $('input[name="searchWord"]').val().length;
-							       const result = word.substring(0, idx) + "<span style='color:red;'>"+word.substring(idx, idx+len)+"</span>" + word.substring(idx+len);
-							       v_html += `<span class='result'>\${result}</span>`;
-							   });// end of $.each(json, function(index, item){})-------------------
-							   
-							   const input_width = $('input[name="searchWord"]').css("width"); // 검색어 input 태그 width 값 알아오기 
-							   
-							   $('div#displayList').css({"width":input_width}); // 검색결과 div 의 width 크기를 검색어 입력 input 태그의 width 와 일치시키기 
-							   
-							   $('div#displayList').html(v_html).show();
-						   }
-					   },
-					   error: function(request, status, error){
-						   console.log("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-					   } 
-				   });
-			   }
-		   }
-	   });// end of $('input[name="searchWord"]').keyup(function(){})-----------------
+	   }
+   });// end of $('input[name="searchWord"]').keyup(function(){})-----------------
+   
+   <%-- === 검색어 입력시 자동글 완성하기  === --%>
+   $(document).on('click', 'span.result', function(e){
+	    const word = $(this).text()
+	    $('input[name="searchWord"]').val(word); // 텍스트박스에 검색된 결과의 문자열을 입력해준다.
+	    $('div#displayList').hide();
+	    searchBoard(); // 글목록 검색하기 요청
+   });
 	   
-	   <%-- === 검색어 입력시 자동글 완성하기  === --%>
-	   $(document).on('click', 'span.result', function(e){
-		    const word = $(this).text()
-		    $('input[name="searchWord"]').val(word); // 텍스트박스에 검색된 결과의 문자열을 입력해준다.
-		    $('div#displayList').hide();
-		    searchBoard(); // 글목록 검색하기 요청
-	   });
-	   
-   }); // end of $(function(){})--------------------------
+ }); // end of $(function(){})--------------------------
    
    
    // Function Declaration
@@ -297,7 +287,7 @@
     }
     form.method = "";
     form.action = "<%= ctxPath%>/board/view";
-     form.submit();
+    form.submit();
    
    }// end of function view(boardNo,fk_id)----------------------
 
@@ -343,7 +333,7 @@
       form.action = "<%= ctxPath%>/board/list/${category}";
         
       form.submit();
-   }
+    }
    
 </script>
 
@@ -410,7 +400,7 @@
       <button type="button" class="btn btn-secondary btn-sm" onclick="searchBoard()">검색</button> 
       
       <span><a href="<%=ctxPath %>/board/write/${category}" class="btn btn-secondary btn-sm" 
-            style="background-color: navy;">글쓰기</a></span>
+            id="writeBtn" style="background-color: navy;">글쓰기</a></span>
       <!-- <span><input type="hidden" name="category"/></span> -->
    </form> 
    
