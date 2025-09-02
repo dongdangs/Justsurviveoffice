@@ -95,6 +95,10 @@
     padding: 15px;
     border-radius: 8px;
     border: 1px solid #f0f0f0;
+
+    /* 스크롤바 추가 */
+    max-height: 400px;   /* 원하는 높이 설정 (px, vh 가능) */
+    overflow-y: auto;    /* 세로 스크롤 활성화 */
 }
 
 /* 댓글 단일 아이템 */
@@ -906,105 +910,104 @@ textarea:focus {
        </div>
    </div>
    
-<!-- ======== 댓글 목록 ======== -->
-<div class="comment-section">
-    <h3 style="font-weight: bold;">댓글 <span>${fn:length(commentList)}</span></h3>
-    <c:forEach var="comment" items="${commentList}">
-        <div class="comment" id="comment-${comment.commentNo}">
-            <div class="meta">
-                <span>${comment.fk_id}</span> |
-                <span>${fn:replace(comment.createdAtComment, "T", " ")}</span>
-            </div>
-            <div class="content">${comment.content}</div>
-   
-         <!-- 댓글 좋아요/싫어요 -->
-         <div class="commentlikedislike">
-             <i id="commentLike-icon-${comment.commentNo}" 
-               class="fa-thumbs-up ${comment.commentLiked ? 'fa-solid text-warning' : 'fa-regular'}"
-               data-liked="${comment.commentLiked}"
-               onclick="commentLike(${comment.commentNo})"></i>
-            <span id="commentLikeCount-${comment.commentNo}">
-                ${comment.commentLikeCount}
-            </span>
-         
-             <i id="commentDislike-icon-${comment.commentNo}" 
-               class="fa-thumbs-down ${comment.commentDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
-               data-liked="${comment.commentDisliked}"
-               onclick="commentDislike(${comment.commentNo})"></i>
-            <span id="commentDislikeCount-${comment.commentNo}">
-                ${comment.commentDislikeCount}
-            </span>
-         </div>
-
-
-            <!-- 버튼 영역 -->
-            <div class="actions">
-                <c:if test="${not empty loginUser}">
-                    <button class="btn reply-btn" data-id="${comment.commentNo}">답글</button>
-                </c:if>
-                <c:if test="${loginUser.id == comment.fk_id}">
-                    <button type="button" class="btn update-comment" data-id="${comment.commentNo}">수정</button>
-                    <button type="button" class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
-                    <button type="button" class="btn btn-sm save-edit" data-id="${comment.commentNo}" style="display:none;">저장</button>
-                    <button type="button" class="btn btn-sm cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
-                </c:if>
-            </div>
-
-            <!-- 수정 textarea -->
-            <textarea class="form-control edit-content" style="display:none;">${comment.content}</textarea>
-
-            <!-- 대댓글 입력폼 + 리스트 -->
-            <div class="reply-form" id="reply-form-${comment.commentNo}" style="display:none; margin-top:5px;">
-                <textarea id="reply-content-${comment.commentNo}" rows="3" placeholder="대댓글을 입력하세요"></textarea>
-                <div class="button-group">
-                   <button type="button" class="btn add-reply" data-parent="${comment.commentNo}">등록</button>
-                   <button type="button" class="btn cancel-reply" data-parent="${comment.commentNo}">취소</button>
-                 </div>
-            </div>
-            <div class="replies meta" id="replies-${comment.commentNo}" style="margin-left:20px; margin-top:10px;">
-                <c:forEach var="reply" items="${comment.replyList}">
-                   <div class="reply" id="reply-${reply.commentNo}">
-                   	<span>${reply.fk_id}</span>&nbsp;|&nbsp; 
-                      <span>${fn:replace(reply.createdAtComment, "T", " ")}</span>
-                  	<div class="content">${reply.content}</div>
-                 <!-- 대댓글 좋아요/싫어요 -->
-                 <div class="replylikedislike">
-                     <i id="replyLike-icon-${reply.commentNo}" 
-                       class="fa-thumbs-up ${reply.replyLiked ? 'fa-solid text-warning' : 'fa-regular'}"
-                       data-liked="${reply.replyLiked}"
-                       onclick="replyLike(${reply.commentNo})"></i>
-                    <span id="replyLikeCount-reply-${reply.commentNo}">
-                        ${reply.replyLikeCount}
-                    </span>
-                 
-                     <i id="replyDislike-icon-${reply.commentNo}" 
-                       class="fa-thumbs-down ${reply.replyDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
-                       data-liked="${reply.replyDisliked}"
-                       onclick="replyDislike(${reply.commentNo})"></i>
-                    <span id="replyDislikeCount-reply-${reply.commentNo}">
-                        ${reply.replyDislikeCount}
-                    </span>
-                 </div>
-                       <c:if test="${loginUser.id == reply.fk_id}">
-                          <span><button class="btn delete-reply" data-id="${reply.commentNo}" data-parent="${comment.commentNo}">삭제</button>
-                      		</span>
-                       </c:if>
-                   </div>
-                        
-                </c:forEach>
-            </div>
-        </div>
-    </c:forEach>
-
-    <!-- 댓글 작성 -->
+	<!-- ======== 댓글 목록 ======== -->
+	<div class="comment-section">
+	    <h3 style="font-weight: bold;">댓글 <span>${fn:length(commentList)}</span></h3>
+	    <c:forEach var="comment" items="${commentList}">
+	        <div class="comment" id="comment-${comment.commentNo}">
+	            <div class="meta">
+	                <span>${comment.fk_id}</span> |
+	                <span>${fn:replace(comment.createdAtComment, "T", " ")}</span>
+	            </div>
+	            <div class="content">${comment.content}</div>
+	   
+	         <!-- 댓글 좋아요/싫어요 -->
+	         <div class="commentlikedislike">
+	             <i id="commentLike-icon-${comment.commentNo}" 
+	               class="fa-thumbs-up ${comment.commentLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+	               data-liked="${comment.commentLiked}"
+	               onclick="commentLike(${comment.commentNo})"></i>
+	            <span id="commentLikeCount-${comment.commentNo}">
+	                ${comment.commentLikeCount}
+	            </span>
+	         
+	             <i id="commentDislike-icon-${comment.commentNo}" 
+	               class="fa-thumbs-down ${comment.commentDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
+	               data-liked="${comment.commentDisliked}"
+	               onclick="commentDislike(${comment.commentNo})"></i>
+	            <span id="commentDislikeCount-${comment.commentNo}">
+	                ${comment.commentDislikeCount}
+	            </span>
+	         </div>
+	
+	
+	            <!-- 버튼 영역 -->
+	            <div class="actions">
+	                <c:if test="${not empty loginUser}">
+	                    <button class="btn reply-btn" data-id="${comment.commentNo}">답글</button>
+	                </c:if>
+	                <c:if test="${loginUser.id == comment.fk_id}">
+	                    <button type="button" class="btn update-comment" data-id="${comment.commentNo}">수정</button>
+	                    <button type="button" class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
+	                    <button type="button" class="btn btn-sm save-edit" data-id="${comment.commentNo}" style="display:none;">저장</button>
+	                    <button type="button" class="btn btn-sm cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
+	                </c:if>
+	            </div>
+	
+	            <!-- 수정 textarea -->
+	            <textarea class="form-control edit-content" style="display:none;">${comment.content}</textarea>
+	
+	            <!-- 대댓글 입력폼 + 리스트 -->
+	            <div class="reply-form" id="reply-form-${comment.commentNo}" style="display:none; margin-top:5px;">
+	                <textarea id="reply-content-${comment.commentNo}" rows="3" placeholder="대댓글을 입력하세요"></textarea>
+	                <div class="button-group">
+	                   <button type="button" class="btn add-reply" data-parent="${comment.commentNo}">등록</button>
+	                   <button type="button" class="btn cancel-reply" data-parent="${comment.commentNo}">취소</button>
+	                 </div>
+	            </div>
+	            <div class="replies meta" id="replies-${comment.commentNo}" style="margin-left:20px; margin-top:10px;">
+	                <c:forEach var="reply" items="${comment.replyList}">
+	                   <div class="reply" id="reply-${reply.commentNo}">
+	                   	<span>${reply.fk_id}</span>&nbsp;|&nbsp; 
+	                      <span>${fn:replace(reply.createdAtComment, "T", " ")}</span>
+	                  	<div class="content">${reply.content}</div>
+	                 <!-- 대댓글 좋아요/싫어요 -->
+	                 <div class="replylikedislike">
+	                     <i id="replyLike-icon-${reply.commentNo}" 
+	                       class="fa-thumbs-up ${reply.replyLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+	                       data-liked="${reply.replyLiked}"
+	                       onclick="replyLike(${reply.commentNo})"></i>
+	                    <span id="replyLikeCount-reply-${reply.commentNo}">
+	                        ${reply.replyLikeCount}
+	                    </span>
+	                 
+	                     <i id="replyDislike-icon-${reply.commentNo}" 
+	                       class="fa-thumbs-down ${reply.replyDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
+	                       data-liked="${reply.replyDisliked}"
+	                       onclick="replyDislike(${reply.commentNo})"></i>
+	                    <span id="replyDislikeCount-reply-${reply.commentNo}">
+	                        ${reply.replyDislikeCount}
+	                    </span>
+	                 </div>
+	                       <c:if test="${loginUser.id == reply.fk_id}">
+	                          <span><button class="btn delete-reply" data-id="${reply.commentNo}" data-parent="${comment.commentNo}">삭제</button>
+	                      		</span>
+	                       </c:if>
+	                   </div>
+	                        
+	                </c:forEach>
+	            </div>
+	        </div>
+	    </c:forEach>
+	</div>
+	
+	<!-- 댓글 작성 -->
     <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
         <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
         <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
         <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
         <button type="button" class="btn" id="addComment">댓글 등록</button>
     </form>
-</div>
-
  
        
     <!-- 목록 버튼, 이전글 다음글 -->

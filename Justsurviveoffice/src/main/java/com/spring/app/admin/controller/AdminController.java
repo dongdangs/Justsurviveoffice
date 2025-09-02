@@ -186,4 +186,6 @@ public class AdminController {
        			   				  : usersService.registerChartday(month);
    }
    
+
+   
 }

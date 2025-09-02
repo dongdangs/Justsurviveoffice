@@ -11,91 +11,24 @@
 
 <style type="text/css">
     th {background-color: #ddd}
-    .boardNameStyle {font-weight: bold;
-                   color: navy;
-                   cursor: pointer;}
+    .boardNameStyle {font-weight: bold;color: navy;cursor: pointer;}
     a {text-decoration: none !important;} /* 페이지바의 a 태그에 밑줄 없애기 */
-.board-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.board-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 12px;
-  margin-right: 10%;
-  background: #fff;
-  cursor: pointer;
-  transition: box-shadow 0.2s;
-}
-
-.board-card:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-.board-card .title {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.board-card .preview {
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 8px;
-}
-
-.board-card .thumbnail {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  margin-bottom: 8px;
-}
-
-.board-card .meta {
-  font-size: 0.8rem;
-  color: #888;
-  display: flex;
-  gap: 10px;
-}
-
-.title,content { /* 제목과 내용의 라인을 한줄로 제한하고, 이상이되면 안보이게! */
-    white-space: nowrap;
-    overflow: hidden;
-}
-
+.board-list {display: flex;flex-direction: column;gap: 16px;}
+.board-card {border: 1px solid #ddd;border-radius: 8px;padding: 12px;margin-right: 10%;background: #fff;cursor: pointer;transition: box-shadow 0.2s;}
+.board-card:hover {box-shadow: 0 2px 8px rgba(0,0,0,0.15);}
+.board-card .title {font-size: 1.1rem;font-weight: bold;margin-bottom: 8px;}
+.board-card .preview {font-size: 0.9rem;color: #555;margin-bottom: 8px;}
+.board-card .thumbnail {width: 80px;height: 80px;object-fit: cover;margin-bottom: 8px;}
+.board-card .meta {font-size: 0.8rem;color: #888;display: flex;gap: 10px;align-items:center;}
+.title,content { /* 제목과 내용의 라인을 한줄로 제한하고, 이상이되면 안보이게! */white-space: nowrap;overflow: hidden;}
 
 /* 입력창-자동완성 래퍼 */
 .autocomplete { position: relative; display: inline-block; }
 
 /* 자동검색 박스 */
-#displayList{
-  position: absolute;        /* 입력창 바로 아래 붙이기 */
-  top: 100%;
-  left: 0; right: 0;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-top: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,.12);
-  z-index: 1000;
-  display: none;
-  max-height: 180px;         /* 대략 6줄 */
-  overflow-y: auto;          /* 넘치면 스크롤 */
-  overflow-x: hidden;
-  border-radius: 0 0 6px 6px;
-}
-
+#displayList{position: absolute;top: 100%;left: 0; right: 0;background: #fff;border: 1px solid #ccc;border-top: none;box-shadow: 0 4px 12px rgba(0,0,0,.12);z-index: 1000;display: none;max-height: 180px;/* 대략 6줄 */overflow-y: auto;/* 넘치면 스크롤 */overflow-x: hidden;border-radius: 0 0 6px 6px;}
 /* 항목 스타일 */
-#displayList .result{
-  display: block;            /* 줄바꿈 대신 블록으로 */
-  padding: 6px 8px;
-  line-height: 24px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  cursor: pointer;
+#displayList .result{display: block;            /* 줄바꿈 대신 블록으로 */padding: 6px 8px;line-height: 24px;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;cursor: pointer;
 }
 #displayList .result:hover{ background:#f5f7fa; }
 #displayList .result span{ color:#d00; font-weight:600; } /* 강조색 */

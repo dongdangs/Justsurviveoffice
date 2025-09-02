@@ -108,6 +108,39 @@
       		    	 	$("table#tbl > tbody").html(event.data);
       		       
       		       }
+      				
+      		     	else if(event.data.substr(0,24)=="∋이미 다른 기기에서 채팅에 참여중 입니다.") 
+      		     	{ 
+      	              if(confirm(event.data.substring(1)) ) { // 이미 다른 기기에서 채팅에 참여중 입니다. 다른 기기의 연결을 끊고 새로이 연결 하시겠습니까?
+      	            	
+      	            	  messageObj = {}; // 자바스크립트 객체 생성함. 
+      	                  messageObj.message = "∋이미 다른 기기에서 채팅에 참여중 끊기";
+      	                  messageObj.type = "disconnectAndConnect";  
+      	                  messageObj.to = ""; 
+      	      		                    
+      	                  websocket.send(JSON.stringify(messageObj));
+      	                  history.go(0); // 새로고침을 해주어야만 현재접속자명단이 제대로 나오기 때문이다.
+      	              }
+      	              else { // 취소시
+      	            	  location.href="<%= request.getContextPath()%>/index";
+      	              }
+      	           }
+      				
+      		       else if(event.data == "∋접속하는 대화방 인원이 꽉 찼습니다.") { 
+   	                   alert("대화방 인원이 꽉 찼습니다.");
+   	                   location.href="<%= request.getContextPath()%>/login/logout";
+   	               }	
+      				
+      	    	   else if(event.data == "∀다른 기기에서 새로이 연결 했기에 연결을 끊습니다.") { 
+      	               alert("다른 기기에서 새로이 연결 했기에 연결을 끊습니다.");
+      	               location.href="<%= request.getContextPath()%>/login/logout";
+      	           }
+      				
+      	    	   else if(event.data == "∋접속하는 대화방에 이미 같은 카테고리 번호가 있습니다.") { 
+                   	   alert("이미 대화방에 같은 카테고리 유저가 있기에 연결을 끊습니다.");
+                       location.href="<%= request.getContextPath()%>/login/logout";
+          	   	   }
+      			   
       		       else {
       		    		// event.data 는 수신받은 채팅 문자이다.
       	                $("div#chatMessage").append(event.data);
