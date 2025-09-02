@@ -42,6 +42,7 @@
     object-fit: cover;   /* 비율 유지, 잘림 없이 */
     display: block;
     margin: 5% 0 0 0;      /* 가운데 정렬 */
+    margin-top: 25%;
 }
 @media (max-width: 600px) {
     .category-img {
