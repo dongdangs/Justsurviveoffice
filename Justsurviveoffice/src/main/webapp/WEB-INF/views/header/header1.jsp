@@ -78,7 +78,7 @@
             </c:if>   
               <div class="LBoardRank" style="width:80%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 style="font-weight: bolder; margin: 0;">대사살 <span style="color: red;">Hot!</span> 게시글</h6>
+                    <h6 style="font-weight: bolder; padding-left: 3pt;">대사살 <span style="color: red;">Hot!</span> 게시글</h6>
                 </div>
                 <table class="table table-sm table-borderless">
                     <tbody style="font-size: 10pt;">
@@ -111,7 +111,7 @@
             </div>
             <div class="LBoardRank" style="width: 80%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 style="font-weight: bolder; margin: 0;">대사살 <span style="color:blue;">시끌벅적!</span> 게시글</h6>
+                    <h6 style="font-weight: bolder; padding-left: 3pt;">대사살 <span style="color:blue;">시끌벅적!</span> 게시글</h6>
                 </div>
                 <table class="table table-sm table-borderless">
                     <tbody style="font-size: 10pt;">
