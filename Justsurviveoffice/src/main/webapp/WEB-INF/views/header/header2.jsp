@@ -88,6 +88,7 @@
 	<div id="mycontainer" style="padding:0;">
 		<div class="row justify-content-center">
 			<div class="col-md-12">
+
 				<ul style="border-right:1px solid #000;display:flex;flex-wrap:wrap;justify-content:space-between;">
 				  <li class="admTab" style="background-image: url(/justsurviveoffice/images/logo2.png);display: block;background-size: contain;background-repeat: no-repeat;background-position: center;"></li>
 				  <%-- <li class="admTab">${sessionScope.loginUser.name}</li> --%>

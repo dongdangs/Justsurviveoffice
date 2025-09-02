@@ -34,9 +34,9 @@
 <script src="<%= ctxPath%>/Highcharts-10.3.1/code/modules/data.js"></script>
 <script src="<%= ctxPath%>/Highcharts-10.3.1/code/modules/drilldown.js"></script>
 
-<div class="col-md-10">
+<div class="col">
 <div style="display:flex;width:100%;">
-  <div style="width:100%; min-height:1100px; margin:auto;">
+  <div style="width:90%; min-height:300px; margin: 0 10%;">
     <h2 style="margin: 50px 0;">대사살 통계정보(차트)</h2>
 
     <form name="searchFrm" style="margin: 20px 0 50px 0;">

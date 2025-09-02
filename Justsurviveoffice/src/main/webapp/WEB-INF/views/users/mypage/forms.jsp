@@ -39,7 +39,7 @@
 	  border-radius: 8px;
 	
 	  /* 스크롤바 공간을 미리 확보해서 헤더/본문 폭 어긋남 방지 (지원 브라우저에서) */
-	  scrollbar-gutter: stable both-edges;
+	  /*scrollbar-gutter: stable both-edges;*/
 	}
 	
 	/* 테이블 아래 여백 제거(스크롤 영역 계산 깔끔) */
