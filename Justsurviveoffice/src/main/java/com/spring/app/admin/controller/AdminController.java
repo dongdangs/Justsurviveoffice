@@ -2,6 +2,7 @@ package com.spring.app.admin.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -217,63 +218,72 @@ public class AdminController {
    
 
    /////////////////////////////////////////////////////////////////////////////////////////
-   // 엑셀 저장과 테이블을 보여주기 위한 공통 메소드
-   private Map<String, Object> chartData(String chart, Integer year, Integer month) {
-	    
-	   List<Map<String,String>> list;
-
+	// 엑셀 저장과 테이블을 보여주기 위한 공통 메소드
+	private Map<String, Object> chartData(String chart, Integer year, Integer month) {
+	
+	    List<Map<String, String>> list;
+	
 	    if ("registerDay".equals(chart)) {
-	        list = (month == null) ? usersService.registerChartday()
-	                               : usersService.registerChartday(month);
+	        list = (month == null) 
+	                ? usersService.registerChartday() 
+	                : usersService.registerChartday(month);
 	    } else {
-	        list = (year == null) ? usersService.registerChart()
-	                              : usersService.registerChart(year);
+	        list = (year == null) 
+	                ? usersService.registerChart() 
+	                : usersService.registerChart(year);
 	    }
-
+	
 	    int total = list.stream()
 	                    .mapToInt(row -> Integer.parseInt(row.get("cnt")))
 	                    .sum();
-
+	
 	    Map<String, Object> result = new HashMap<>();
 	    result.put("list", list);
 	    result.put("total", total);
-	    
+	
 	    return result;
 	}
-      
-   // 엑셀 저장을 위한 통계 테이블 페이지
-   @GetMapping("userExcelList")
-   public String userExcelList(@RequestParam(name="chart", required=false, defaultValue="register") String chart,
-                               @RequestParam(name="year", required=false) Integer year,
-                               @RequestParam(name="month", required=false) Integer month,
-                               Model model) {
-
-	   Map<String, Object> paraMap = chartData(chart, year, month);
-
-	   model.addAttribute("chart", chart);
-	   model.addAttribute("year", year);
-	   model.addAttribute("month", month);
-	   model.addAllAttributes(paraMap);
-
-       return "admin/excelList";  // JSP
-   }
-
-   
-   // 액샐 저장
-   @PostMapping("downloadExcelFile")
-   public String downloadExcelFile(@RequestParam(name="chart", defaultValue="register") String chart,
-           						   @RequestParam(name="year", required=false) String year,
-           						   @RequestParam(name="month", required=false) String month,
-           						   Model model) {
-	   
-		Map<String, Object> paraMap = new HashMap<>();
-		paraMap.put("chart", chart);
-		if (year != null && !year.isBlank()) paraMap.put("year", year);
-		if (month != null && !month.isBlank()) paraMap.put("month", month);
-		
-		usersService.userExcelList_to_Excel(paraMap, model);
-		
-		return "excelDownloadView";  // ViewConfig에 등록된 bean
+	
+	// 통계 테이블 페이지
+	@GetMapping("userExcelList")
+	public String userExcelList(@RequestParam(name="chart", defaultValue = "register") String chart,
+	                            @RequestParam(name="year", required = false) Integer year,
+	                            @RequestParam(name="month", required = false) Integer month,
+	                            Model model) {
+	
+	    Map<String, Object> data = chartData(chart, year, month);
+	
+	    model.addAttribute("chart", chart);
+	    model.addAttribute("year", year);
+	    model.addAttribute("month", month);
+	    model.addAllAttributes(data);
+	
+	    return "admin/excelList";
 	}
+	
+	// 엑셀 다운로드
+	@PostMapping("downloadExcelFile")
+	public String downloadExcelFile(@RequestParam(name="chart", defaultValue = "register") String chart,
+	                                @RequestParam(name="year", required = false) Integer year,
+	                                @RequestParam(name="month", required = false) Integer month,
+	                                Model model, Locale locale) {
+	
+	    // 동일한 데이터 로직 사용
+	    Map<String, Object> data = chartData(chart, year, month);
+	    
+	    model.addAttribute("chart", chart);
+	    model.addAttribute("year", year);
+	    model.addAttribute("month", month);
+	    model.addAllAttributes(data);
+	    
+	    model.addAttribute("locale", locale);
+	    model.addAttribute("workbookName", "user_stat"); 
+	
+	    // 실제 엑셀 생성
+	    usersService.userExcelList_to_Excel(chart, year, month, model);
+	
+	    return "excelDownloadView"; // ViewConfig에 등록된 bean
+	}
+
    
 }

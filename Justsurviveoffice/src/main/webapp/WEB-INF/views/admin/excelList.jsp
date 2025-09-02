@@ -28,19 +28,26 @@
 		    <option value="register" ${chart eq 'register' ? 'selected' : ''}>월별 가입자 통계</option>
 		    <option value="registerDay" ${chart eq 'registerDay' ? 'selected' : ''}>일자별 가입자 통계</option>
 		  </select>
+		  
+		  <label for="monthSelect">월: </label>
+		    <select id="monthSelect" name="month" onchange="this.form.submit()">
+		      <c:forEach var="m" begin="1" end="12">
+		        <option value="${m}" ${m eq month ? 'selected' : ''}>${m}월</option>
+		      </c:forEach>
+		    </select>
 		</form>
 		
 		<!-- ✅ 엑셀 다운로드 버튼 --> 
 		<div class="action-buttons"> 
-			<form id="downloadForm" method="post">
-			  <input type="hidden" name="chart" value="${chart}" />
-			  <input type="hidden" name="year" value="${year}" />
-			  <c:if test="${chart eq 'registerDay'}">
-			    <input type="hidden" name="month" value="${month}" />
-			  </c:if>
-			  <button type="button" id="btnExcel">엑셀 다운로드</button>
-			</form>
-		</div> 
+		  <form id="downloadForm" method="post">
+		    <input type="hidden" name="chart" value="${chart}" />
+		    <input type="hidden" name="year" value="${year}" />
+		    <c:if test="${chart eq 'registerDay'}">
+		      <input type="hidden" name="month" value="${month}" />
+		    </c:if>
+		    <button type="button" id="btnExcel">엑셀 다운로드</button>
+		  </form>
+		</div>
 		
 		<!-- ✅ 데이터 테이블 --> 
 		<div class="table-container"> 

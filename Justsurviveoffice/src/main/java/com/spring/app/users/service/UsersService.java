@@ -75,6 +75,6 @@ public interface UsersService {
  	}
 
  	// 엑셀 저장
-	void userExcelList_to_Excel(Map<String, Object> paraMap, Model model);
+	void userExcelList_to_Excel(String chart, Integer year, Integer month, Model model);
 	 
 }
