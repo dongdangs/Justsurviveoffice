@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor  // @RequiredArgsConstructor는 Lombok 라이브러리에서 제공하는 애너테이션으로, final 필드 또는 @NonNull이 붙은 필드에 대해 생성자를 자동으로 생성해준다.
-@RequestMapping("/admin/")
+@RequestMapping("admin/")
 public class AdminController {
    
    // === 생성자 주입(Constructor Injection) === //
@@ -183,6 +184,38 @@ public class AdminController {
        			   				  : usersService.registerChartday(month);
    }
    
+   // <문자메시지 관련 순서3>
+   // 관리자전용 회원에게 문자메시지 보내기
+   @PostMapping("smsSend")
+   @ResponseBody
+   public Map<String, Object> smsSend(@RequestParam(name = "mobile") String mobile,
+		   				 @RequestParam(name = "smsContent") String smsContent,
+		   				 @RequestParam(name = "datetime", required = false) String datetime) {
+	   
+	   Map<String, Object> map = new HashMap<>();
+	   JSONObject jsobj = null;
+	   
+	   // <문자메시지 관련 순서7>
+	   try {
+		   // 문자메시지 보내기 관련 코드 작성, import org.json.simple.JSONObject;
+		   jsobj = adminService.smsSend(mobile, smsContent, datetime);
+
+		   map.put("success_count", jsobj.get("success_count"));
+		   map.put("error_count", jsobj.get("error_count"));
+		   
+	   } catch (Exception e) {
+		   e.printStackTrace();
+		   
+		   map.put("success_count", 0);
+		   map.put("error_count", 1);
+		   map.put("message", "문자메시지 보내기 실패!!");
+	   }
+	   
+	   return map;
+   }
+   
+   
+
    /////////////////////////////////////////////////////////////////////////////////////////
    // 엑셀 저장과 테이블을 보여주기 위한 공통 메소드
    private Map<String, Object> chartData(String chart, Integer year, Integer month) {
@@ -242,8 +275,5 @@ public class AdminController {
 		
 		return "excelDownloadView";  // ViewConfig에 등록된 bean
 	}
-   
-   
-   
    
 }

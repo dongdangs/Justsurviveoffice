@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.model.BoardDAO;
+import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.comment.domain.CommentDTO;
 import com.spring.app.comment.model.CommentDAO;
 import com.spring.app.common.FileManager;
@@ -170,8 +171,8 @@ public class BoardService_imple implements BoardService {
 	
 	// 메인페이지 카테고리 자동 불러오기 메서드
 	@Override
-	public List<Map<String, String>> getIndexList(String fk_categoryNo) {
-		List<Map<String, String>> IndexList = boardDao.getIndexList(fk_categoryNo);
+	public List<CategoryDTO> getIndexList() {
+		List<CategoryDTO> IndexList = boardDao.getIndexList();
 		return IndexList;
 	}
 

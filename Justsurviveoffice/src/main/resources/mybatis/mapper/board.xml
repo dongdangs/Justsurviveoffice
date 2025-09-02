@@ -186,24 +186,41 @@
 
 	
 	 <select id="getIndexList" parameterType="string" resultType="map">
-          select
-			    C.categoryNo         AS "categoryNo",
-			    C.categoryName       AS "categoryName",
-			    C.categoryDescribe   AS "categoryDescribe",
-			    C.categoryImagePath  AS "categoryImagePath",
-			    COUNT(B.boardNo)     AS "boardCount"
-			  from category C
-			  left join board B
-			  on B.fk_categoryNo = C.categoryNo
-			  <where>
-			    <if test="_parameter != null and _parameter != ''">
-			      C.categoryNo = #{_parameter}
-			    </if>
-			  </where>
-			  group by
-			    C.categoryNo, C.categoryName, C.categoryDescribe, C.categoryImagePath
-			  order by C.categoryNo
-	</select>
+	  SELECT
+	      C.categoryNo         AS "categoryNo",
+	      C.categoryName       AS "categoryName",
+	      C.categoryDescribe   AS "categoryDescribe",
+	      C.categoryImagePath  AS "categoryImagePath",
+	      COUNT(B.boardNo)     AS "boardCount",
+	      NVL(MAX(TA.tags), '') AS "tags"
+	  FROM category C
+		  LEFT JOIN board B
+		         ON B.fk_categoryNo = C.categoryNo
+		  LEFT JOIN (
+		      SELECT
+		          T.fk_categoryNo AS categoryNo,
+		          LISTAGG('#' || T.tagName, ' ') WITHIN GROUP (ORDER BY T.tagNo) AS tags
+		      FROM tag T
+		      GROUP BY T.fk_categoryNo
+		  ) TA
+		  ON TA.categoryNo = C.categoryNo
+	<where>
+		 <if test="_parameter != null and _parameter != ''">
+		    C.categoryNo = TO_NUMBER(#{_parameter})
+		  </if>
+	  </where>
+	  GROUP BY
+	      C.categoryNo, C.categoryName, C.categoryDescribe, C.categoryImagePath
+	  ORDER BY C.categoryNo
+</select>
+	 
+	 <!-- <select id="getIndexList" resultType="CategoryDTO">
+          select categoryNo, categoryName, categoryImagePath, categoryDescribe,
+          		 LISTAGG(tagName, ',') WITHIN GROUP (ORDER BY tagNo) AS tags 
+          from category C join tag T  
+          on C.categoryNo = T.fk_categoryNo 
+          group by (categoryNo, categoryName, categoryImagePath,categoryDescribe)
+	</select> -->
       
    
    <!-- 서브쿼리 쓴 이유 (김예준)

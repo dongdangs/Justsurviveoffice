@@ -94,6 +94,13 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 	    		 GROUP BY TO_CHAR(u.registerday,'dd')
 	    		""", nativeQuery = true)
 	 List<DayCount> findBydayRegister(@Param("month") int month);
-	
+	 
+	 
+	 // 카테고리 포함 데이터 가져오기
+/*	 
+	 @Query(value = "SELECT * FROM Users U LEFT JOIN category C ON U.FK_CATEGORYNO = C.categoryNo WHERE id = :id",
+			nativeQuery = true)
+	 Optional<Users> findByIdWithCategory(@Param("id") String id);
+*/	
 }
 

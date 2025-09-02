@@ -3,6 +3,7 @@ package com.spring.app.admin.service;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 
 import com.spring.app.category.domain.CategoryDTO;
@@ -19,5 +20,8 @@ public interface AdminService {
 
 	// 카테고리별 인원 통계 (장유민 제작)
 	List<CategoryDTO> categoryChart();
+	
+	// 문자메시지 보내기 관련 코드 작성
+	JSONObject smsSend(String mobile, String smsContent, String datetime) throws Exception;
 	
 }
