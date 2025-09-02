@@ -18,6 +18,29 @@
     background-attachment: fixed;       /* 스크롤 시 고정 */
     background-blend-mode: overlay;     /* 색상 오버레이 효과 동일 */
 }
+
+
+.card-img-top {
+    width: 100%;
+    height: 220px;       /* 원하는 고정 높이 값 */
+    object-fit: cover;   /* 비율 유지하며 잘라내기 */
+    border-radius: 10px; /* 둥근 모서리 유지 */
+    display: block;
+       margin-bottom: 0;     /* ✅ 이미지와 텍스트 간격 최소화 */
+    
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 380px; /* 카드 전체 높이 고정 (원하는 값으로 조절) */
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+
+
 </style>
 	
 <div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');display:flex;justify-content:center; border-radius: 10px">
@@ -27,7 +50,7 @@
 				    <div class="col-sm-6 col-md-6 col-lg-4 mb-4">
 						<a href="<%= ctxPath%>/categoryTest/survey" class="card text-decoration-none h-100" style="background-color: #3C396B; border-radius: 15px">
 							<div style="margin: 5% 5%; height:60%;">
-								<img src="<%= ctxPath%>/images/unassigned.png" class="card-img-top" alt="테스트" style="width:100%; height:100%; object-fit:cover;">
+								<img src="<%= ctxPath%>/images/unassigned.png" class="card-img-top" alt="테스트">
 							</div>
 							<div class="card-body">
 								<h4 class="card-title" style="font-weight: bold; color: #39FF14;">테스트</h4>
@@ -41,7 +64,7 @@
 						<a href="<%= ctxPath%>/board/list/${indexList.categoryNo}" class="card text-decoration-none h-100" style="background-color: #3C396B; border-radius: 15px">
 						  	<div style= "margin: 5% 5%;height: 60%;">
 						  		<img src="${pageContext.request.contextPath}/images/${indexList.categoryImagePath}" alt="${indexList.categoryDTO.categoryName}" 
-						  					style="width:100%; height:100%; object-fit:cover; border-radius: 10px">
+						  					   class="card-img-top">
 						  	</div>
 						  	<div class="card-body">
 						      <h4 class="card-title" style="font-weight: bold; color: #39FF14;">${indexList.categoryName}</h4>
