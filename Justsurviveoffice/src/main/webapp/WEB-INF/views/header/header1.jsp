@@ -36,7 +36,7 @@
 <style type="text/css">
 .category-img {
     width: 100%;
-    min-width: 30%; /* 최대 크기 지정, 필요시 조정 */
+    min-width: 10%; /* 최대 크기 지정, 필요시 조정 */
     height: auto;
     border-radius: 10px; /* 둥글게, 옵션 */
     object-fit: cover;   /* 비율 유지, 잘림 없이 */
@@ -51,7 +51,7 @@
 </style>
 </head>
 
-   <div id="mycontainer">
+   <div id="mycontainer"  style="background-image: url('<%= ctxPath %>/images/background.png');">
       <div id="myheader">
          <jsp:include page="../menu/menu1.jsp" />
       </div>
