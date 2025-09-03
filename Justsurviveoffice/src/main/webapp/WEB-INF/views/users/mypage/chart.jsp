@@ -33,11 +33,31 @@
 	
 	/* 사이드바 */
 	body { background: #f7f7fb; font-family: 'Noto Sans KR', sans-serif; }
-	.sidebar { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
-	.sidebar img { max-width: 100%; border-radius: 10px; margin-bottom: 10px; }
-	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none; font-weight: 500; 
-					  transition: all 0.2s ease-in-out; }
-	.sidebar-menu a:hover { color: #6c63ff; padding-left: 5px; }
+	.sidebar {
+     display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        flex: 1; /* 자동 비율 */
+        
+        box-shadow: 0 8px 24px rgba(0,0,0,.06);
+        
+    }
+    .sidebar img {
+        max-width: 100%;
+        border-radius: 10px;
+    }
+    .sidebar-menu a {
+        display: block;
+        padding: 8px 0;
+        color: #333;
+        text-decoration: none;
+    }
+    .sidebar-menu a:hover {
+        color: #6c63ff;
+    }
 	.content { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
    	
    	/* 차트 */
@@ -335,8 +355,7 @@
 
         	<!-- 사이드바 -->
         	<div class="col-lg-3 mb-3">
-            	<h3 class="mb-1">MYPAGE</h3>
-            	<div class="sidebar text-center">
+            	<div class="sidebar text-center"  style="height:585px;">
                 	<img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
                 	<div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
                 	<div class="mb-3">

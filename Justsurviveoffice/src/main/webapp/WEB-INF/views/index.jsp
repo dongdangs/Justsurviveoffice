@@ -66,15 +66,15 @@
 	
 <div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');display:flex;justify-content:center; border-radius: 10px">
 				
-				<div class="row" style="width: 90%; margin: 5%; max-width:1000px;">
+				<div class="row" style="width: 90%; margin: 4%; max-width:1000px;">
 				<!-- 테스트 카드 (고정) --> 
 				    <div class="col-sm-6 col-md-6 col-lg-4 mb-4">
 						<a href="<%= ctxPath%>/categoryTest/survey" class="card text-decoration-none" style="background-color: #3C396B; border-radius: 15px">
 							<div style="margin: 5% 5%; height:60%;">
 								<img src="<%= ctxPath%>/images/unassigned.png" class="card-img-top" alt="테스트">
 							</div>
-							<div class="card-body" style="text-align: center; margin-top: 10%;">
-								<h4 class="card-title">테스트</h4>
+							<div class="card-body" style="text-align: center; margin-top: 5%;">
+								<h4 class="card-title" style="padding:15px;">테스트</h4>
 								<p class="card-text">당신의 성향을 알아보세요!</p>
 							</div>
 						</a>
@@ -88,7 +88,7 @@
 						  					   class="card-img-top">
 						  	</div>
 						  	<div class="card-body">
-						      <h4 class="card-title" style="font-weight: bold; color: #39FF14; margin-top: 10%;">${indexList.categoryName}</h4>
+						      <h4 class="card-title" style="font-weight: bold; color: #39FF14; margin-top: 5%;">${indexList.categoryName}</h4>
    						      <p class="card-text" style="color: white; margin-bottom:10px;">${indexList.tags}</p>
 						      <p class="card-text" style="color: white; font-size:1.0rem; font-weight: bold;">${indexList.categoryDescribe}</p>
 			<%-- =======
