@@ -106,12 +106,25 @@
 border: 2px solid #ddd;
 border-radius: 8px;
 padding: 5px;
-background: ;
-transition: 0.2s;
+background: #F9F0FA;
+transition: 0.3s;
 font-size: 20px; 
 font-weight: bold; 
 color: gray;
 margin: 25% 0 5% 0;
+}
+.plus-btn {
+border: 2px solid #ddd;
+justify-content: center;
+align-items: center;
+margin-left: 5pt;
+background: #F9F0FA;
+padding: 1pt 2pt;
+border-radius: 25%;  
+font-size: 5%;
+font-weight: bold;   
+color: black;              
+cursor: pointer;
 }
 </style> 
 
@@ -181,8 +194,13 @@ margin: 25% 0 5% 0;
 		  <c:forEach var="boardDto" items="${boardList}">
 		    <!-- 카테고리 이름이 바뀌었을 때만 출력 -->
 		    <c:if test="${changeCategory ne boardDto.categoryName}">
-		      <div class="category-block">
+		      <div class="category-block mt-3 mb-3">
 		        <span class="categoryDiv">${boardDto.categoryName.replace('형','')}들의 생존 게시판</span>
+		     	 <!-- + 버튼 추가! -->
+			    <span class="plus-btn"
+			          onclick="window.location.href='<%=ctxPath%>/board/list/${boardDto.fk_categoryNo}'">
+			      	더보기<i class="fa fa-plus"></i>
+			    </span>
 		      </div>
 		      <c:set var="changeCategory" value="${boardDto.categoryName}" />
 		    </c:if>
