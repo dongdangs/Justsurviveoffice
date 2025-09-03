@@ -469,4 +469,9 @@
 		where fk_id = #{id} and (sysdate - createdAtBoard) &lt;= 1
   	</select>
   	
+  	<update id="recoveryBoard" parameterType="String">
+  		update board set boardDeleted = 0
+  		where boardNo = #{boardNo}
+  	</update>
+  	
 </mapper>

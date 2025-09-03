@@ -179,5 +179,12 @@ public class BoardDAO_imple implements BoardDAO {
         paramMap.put("fk_boardNo", fk_boardNo);
 		return sql.delete("boardLike.deleteBoardLike", paramMap);
 	}
+	
+	// 마이페이지 게시글 복구하기
+	@Override
+	public int recoveryBoard(String boardNo) {
+		int data = sql.update("board.recoveryBoard", boardNo);
+		return data;
+	}
 
 }

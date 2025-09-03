@@ -311,6 +311,13 @@ public class BoardService_imple implements BoardService {
 		
 		return keyword_top;
 	}
+	
+	// 마이페이지 게시글 복구하기
+	@Override
+	public int recoveryBoard(String boardNo) {
+		int data = boardDao.recoveryBoard(boardNo);
+		return data;
+	}
 
 
 	
