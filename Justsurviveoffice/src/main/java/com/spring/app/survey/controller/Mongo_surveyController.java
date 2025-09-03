@@ -70,7 +70,7 @@ public class Mongo_surveyController {
     	
     	for( Map.Entry<String, Integer> categoryMap : categoryCount.entrySet() ) {
     		int k = categoryMap.getValue();
-    		System.out.println(k);
+    		// System.out.println(k);
     		if(k > maxValue) {
     			maxValue = k;
     			maxCategoryList.clear();	// 리스트 비우기
@@ -81,7 +81,7 @@ public class Mongo_surveyController {
     			maxCategoryList.add(categoryMap.getKey());
     		}
     	}// end of for---------------------------
-    	System.out.println("확인용 max : " + maxCategoryList);
+    	// System.out.println("확인용 max : " + maxCategoryList);
     	String categoryNo = "";
     	
     	if(maxCategoryList.size() >= 4) {	// 값이 4개 이상 저장되어 있을 경우 리더형
