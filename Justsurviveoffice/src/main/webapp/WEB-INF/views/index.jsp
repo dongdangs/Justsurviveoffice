@@ -18,6 +18,83 @@
     background-attachment: fixed;       /* 스크롤 시 고정 */
     background-blend-mode: overlay;     /* 색상 오버레이 효과 동일 */
 }
+/* 카드 기본 스타일 */
+.card {
+    background-color: #3C396B;
+    border-radius: 15px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+/* 이미지 반응형 */
+.card img {
+    width: 80%;
+	min-height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* 카드 hover 효과 */
+.card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    animation: shake 0.4s ease-in-out;
+}
+
+/* 흔들림 애니메이션 */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px) rotate(-1deg); }
+    50% { transform: translateX(5px) rotate(1deg); }
+    75% { transform: translateX(-3px) rotate(-1deg); }
+    100% { transform: translateX(0); }
+}
+
+/* 카드 제목 */
+.card-title {
+    font-weight: bold;
+    color: #39FF14;
+}
+
+/* 카드 설명 텍스트 */
+.card-text {
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+/* 반응형 대응 */
+@media (max-width: 992px) { /* 태블릿 이하 */
+    .card img {
+        max-height: 180px;
+    }
+}
+
+@media (max-width: 768px) { /* 모바일 */
+    .card img {
+        max-height: 150px;
+    }
+    .card-title {
+        font-size: 1.1rem;
+    }
+    .card-text {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) { /* 초소형 모바일 */
+    .card {
+        border-radius: 10px;
+    }
+    .card img {
+        max-height: 120px;
+    }
+    .card-title {
+        font-size: 1rem;
+    }
+    .card-text {
+        font-size: 0.8rem;
+    }
+}
+
 </style>
 	
 

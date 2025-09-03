@@ -110,7 +110,7 @@ background: #F9F0FA;
 transition: 0.3s;
 font-size: 20px; 
 font-weight: bold; 
-color: gray;
+color: #6E6B6B;
 margin: 25% 0 5% 0;
 }
 .plus-btn {
@@ -181,8 +181,22 @@ cursor: pointer;
 	
 	
    <h2 style="margin: 30px 0; font-size: 25pt; font-weight: bold;">글목록</h2>
-      <span><a href="<%=ctxPath %>/board/write/${loginUser.getCategory().getCategoryNo()}" class="btn btn-secondary btn-sm" 
-            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">글쓰기</a></span>
+      <c:if test="${loginUser.getCategory().getCategoryNo() ne 6}">
+      	<span><a href="<%=ctxPath %>/board/write/${loginUser.getCategory().getCategoryNo()}" class="btn btn-secondary btn-sm" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">내 유형으로 글쓰러 가기</a></span>
+      </c:if>
+      <c:if test="${loginUser.getCategory().getCategoryNo() eq 6}">
+    	<span><a href="<%=ctxPath %>/board/write/1" class="btn btn-secondary btn-sm mb-1" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">MZ유형으로 글쓰러 가기</a></span>
+        <span><a href="<%=ctxPath %>/board/write/2" class="btn btn-secondary btn-sm mb-1" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">꼰대유형으로 글쓰러 가기</a></span>
+        <span><a href="<%=ctxPath %>/board/write/3" class="btn btn-secondary btn-sm mb-1" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">노예유형으로 글쓰러 가기</a></span>
+        <div><span><a href="<%=ctxPath %>/board/write/4" class="btn btn-secondary btn-sm mb-1" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">마이웨이유형으로 글쓰러 가기</a></span>
+        <span><a href="<%=ctxPath %>/board/write/5" class="btn btn-secondary btn-sm mb-1" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">금쪽이유형으로 글쓰러 가기</a></span></div>
+      </c:if>      
       <!-- <span><input type="hidden" name="category"/></span> -->
    
    <%--  특정 글제목을 클릭했을때, 특정 글1개를 보여줄때 POST 방식으로 넘기기 위해 form 태그를 만들겠다. --%>
@@ -194,7 +208,7 @@ cursor: pointer;
 		  <c:forEach var="boardDto" items="${boardList}">
 		    <!-- 카테고리 이름이 바뀌었을 때만 출력 -->
 		    <c:if test="${changeCategory ne boardDto.categoryName}">
-		      <div class="category-block mt-3 mb-3">
+		      <div class="category-block mt-4 mb-2">
 		        <span class="categoryDiv">${boardDto.categoryName.replace('형','')}들의 생존 게시판</span>
 		     	 <!-- + 버튼 추가! -->
 			    <span class="plus-btn"

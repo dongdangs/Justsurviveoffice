@@ -169,7 +169,8 @@ public class BoardController {
 		} 
 		// 카테고리 번호가 현재 페이지의 카테고리와 같은 경우면 글쓰기
 		else if(loginUser.getCategory().getCategoryNo() != null &&
-				loginUser.getCategory().getCategoryNo() == Integer.parseInt(category)) {
+				(loginUser.getCategory().getCategoryNo() == Integer.parseInt(category)
+				|| loginUser.getCategory().getCategoryNo() == 6)) {
 			modelview.addObject("category", category); // 카테고리 번호가 게시판마다 따라가야함!
 			modelview.setViewName("board/write");
 		} 
