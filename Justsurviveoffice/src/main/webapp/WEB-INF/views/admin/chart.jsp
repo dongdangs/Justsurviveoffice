@@ -91,6 +91,18 @@
     background-position: left top, left top, right 12px center;
     background-size: auto, auto, 14px 14px;
   }
+  
+  #searchMonth {
+	border: none;
+	outline: none;
+	font-size: 14px;
+	padding: 0 30px 0 0 !important;
+	padding: 1%;
+	border-radius: 9999px;
+	box-shadow: inset 0 0 0 1px var(--line);
+	cursor: pointer;
+    }
+	
   #searchType:focus{
     box-shadow: 0 0 0 3px rgba(108,127,242,.25);
   }
@@ -232,6 +244,12 @@
     $('#searchType').change(function(e){
       func_choice($(e.target).val());
     });
+	
+	// 이게 셀렉트박스 옵션 추가임
+	$('#searchMonth').change(function(){
+	  const type = $('#searchType').val();
+	  if(type) func_choice(type);
+	});
 
     // 최초 로딩 시 월별 선택 후 실행
     $('#searchType').val("register").trigger("change");
@@ -241,9 +259,11 @@
     switch(searchTypeVal) {
       case "":
         $('#chart_container, #table_container, #highcharts-data-table').empty();
+		$('#searchMonth').hide();  // 일별에서만 셀렉트박스 보이도록 추가--
         break;
 
 		case "register": // 월별 가입자
+		$('#searchMonth').hide(); 
 		  $.ajax({
 		    url: "<%= ctxPath%>/admin/chart/registerChart",
 		    dataType: "json",
@@ -322,31 +342,40 @@
 		  });
 		  break;
 	
-		case "registerDay": // 일자별 가입자
-			  $.ajax({
-			    url: "<%= ctxPath%>/admin/chart/registerChartday",
-			    dataType: "json",
-			    success: function(json){
-			      $('#chart_container, #table_container, #highcharts-data-table').empty();
+		  case "registerDay": // 일자별 가입자
+		  $('#searchMonth').show();
+		    $.ajax({
+		      url: "<%= ctxPath%>/admin/chart/registerChartday",
+		      dataType: "json",
+		      data: (function(){
+		        const m = $('#searchMonth').val();
+		        return m ? { month: parseInt(m, 10) } : {};
+		      })(),
+		      success: function(json){
+		        $('#chart_container, #table_container, #highcharts-data-table').empty();
 
-			      // 1) 고정 라벨
-			      const labelsFixed = Array.from({length:31}, (_,i)=> String(i+1).padStart(2,'0'));
-			      var nowmonth = (json && json.length && json[0].nowmonth)? String(json[0].nowmonth).padStart(2, '0') : String(new Date().getMonth() + 1).padStart(2, '0');
-			      // 2) 응답을 dd->cnt 맵으로 만들고, 고정 라벨 순서대로 값(없으면 0) 채우기
-			      const dayMap = {};
-			      (json || []).forEach(({dd, cnt}) => {
-			    	  dayMap[String(dd).padStart(2,'0')] = Number(cnt || 0);
-			      });
-			      const data = labelsFixed.map(dd => dayMap[dd] ?? 0);
-				
-			      const total = data.reduce((a,b)=>a+b, 0);
-			      			      
-			      // 3) Highcharts: 세로 막대(컬럼). 가로 막대 원하면 type: 'bar' 로 설정 하면됨
-			      Highcharts.chart('chart_container', {
-			        chart: { type: 'column' }, // 'bar'로 바꾸면 가로 막대임
-			        title: { text: '2025년&nbsp;' + (parseInt(nowmonth, 10)) +'월 가입자수'},
-			        xAxis: { categories: labelsFixed, title: { text: '일' } },
-			        yAxis: { min: 0, allowDecimals: false, title: { text: '가입자 수(명)' } },
+		        const labelsFixed = Array.from({length:31}, (_,i)=> String(i+1).padStart(2,'0'));
+
+		        let selectedMonth = $('#searchMonth').val();
+		        let nowmonth = (selectedMonth && selectedMonth !== "")
+		                         ? parseInt(selectedMonth, 10)
+		                         : (json && json.length && json[0].nowmonth)
+		                            ? parseInt(json[0].nowmonth, 10)
+		                            : (new Date().getMonth() + 1);
+
+		        const dayMap = {};
+		        (json || []).forEach(({dd, cnt}) => {
+		          dayMap[String(dd).padStart(2,'0')] = Number(cnt || 0);
+		        });
+		        const data = labelsFixed.map(dd => dayMap[dd] ?? 0);
+		        const total = data.reduce((a,b)=>a+b, 0);
+
+		        // ▼ 제목에서 nowmonth 반영
+		        Highcharts.chart('chart_container', {
+		          chart: { type: 'column' },
+		          title: { text: (new Date().getFullYear()) + '년 ' + nowmonth + '월 가입자 수' },
+		          xAxis: { categories: labelsFixed, title: { text: '일' } },
+		          yAxis: { min: 0, allowDecimals: false, title: { text: '가입자 수(명)' } },
 			        tooltip: {
 			          formatter: function () {
 			            const pct = total === 0 ? 0 : (this.y * 100 / total);

@@ -41,49 +41,18 @@
 		.admTab:hover {background-color:#fff;}
 		#clock {font-size:0.8rem;}
 		.pc-menu {border-right:1px solid #000;display:flex;flex-wrap:wrap;justify-content:space-between;}
-		
-		.hamburger {
-		  font-size: 2rem;
-		  background: none;
-		  border: none;
-		  position: fixed;
-		  top: 15px;
-		  right: 20px;
-		  z-index: 2001;
-		  cursor: pointer;
-		  display: none; 
-		  color:#000 !important;
-		}
-		
-		#adminMenu {
-		  position: fixed;
-		  top: 0; left: 0;
-		  width: 100%; height: 100%;
-		  background: #fff;
-		  flex-direction: column;
-		  justify-content: center;
-		  align-items: center;
-		  z-index: 2000;
-		  display: none; 
-		  margin: 0;
-		  padding: 0;
-		}
+		.mobileTab{position:fixed;display:none;background-color:#ddd;width:100%;padding:25px 0;z-index:10;}
+		.hamburger {font-size: 2rem;background: none;border: none;position: fixed;top: 15px;right: 20px;z-index: 2001;cursor: pointer;display: none; color:#000 !important;}
+		#adminMenu {position: fixed;top: 0; left: 0;width: 100%; height: 100%;background: #fff;flex-direction: column;		  justify-content: center;align-items: center;z-index: 2000;display: none; margin: 0;padding: 0;}
 		#adminMenu.show { display: flex; }
-		#adminMenu li {
-		  list-style: none;
-		  margin: 15px 0;
-		  font-size: 1.3rem;
-		}
-		#adminMenu a, #adminMenu li {
-		  color: #000;
-		  text-decoration: none;
-		}
+		#adminMenu li {list-style: none;margin: 15px 0;font-size: 1.3rem;}
+		#adminMenu a, #adminMenu li {color: #000;text-decoration: none;}
 
-	/* 모바일에서만 햄버거 보이고, 기존 가로 메뉴 숨김 */
-	@media screen and (max-width:1300px){
-	  .pc-menu { display: none; }    /* 모바일에서 PC 메뉴 숨김 */
-	  .hamburger { display: block !important; }
-	}
+		/* 모바일에서만 햄버거 보이고, 기존 가로 메뉴 숨김 */
+		@media screen and (max-width:1300px){
+		  .pc-menu { display: none; }    /* 모바일에서 PC 메뉴 숨김 */
+		  .hamburger, .mobileTab { display: block !important; }
+		}
 	</style>
 </head>
 <script type="text/javascript">
@@ -142,7 +111,7 @@
 	   if (el) el.textContent = timeString;
 	 }
 </script>
-			<div class="col-md-12">
+			<div class="col-md-12 p-0">
 			
 				<ul id="pcMenu" class="pc-menu">
 				  <li class="admTab" style="background-image: url(/justsurviveoffice/images/logo2.png);display: block;background-size: contain;background-repeat: no-repeat;background-position: center;" onclick="location.href='<%= ctxPath%>/'"></li>
@@ -154,8 +123,9 @@
 				  <li class="admTab"><i class="fa-solid fa-rotate-left"></i><a href="javascript:history.back();">&nbsp;뒤로가기</a></li>
 				  <li class="admTab"><div id="clock"></div></li>
 				</ul>			
-			
-				<button id="menuToggle" class="hamburger d-md-none">&#9776;</button>
+				<div class="mobileTab">
+					<button id="menuToggle" class="hamburger d-md-none">&#9776;</button>
+				</div>
 				<ul id="adminMenu">
 				  <li><a href="chart">회원 통계보기</a></li>
 				  <li><a href="usersList">사용자 관리</a></li>
@@ -165,6 +135,6 @@
 				</ul>
 			</div>
 
-<body>
-	<div id="mycontainer" style="padding:0;">
-		<div class="row justify-content-center">
+	<body>
+		<div id="mycontainer" style="padding:0;">
+			<div class="row justify-content-center">
