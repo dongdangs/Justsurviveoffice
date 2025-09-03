@@ -33,8 +33,8 @@ public class Mongo_surveyController {
 	
 	@GetMapping("survey")
 	public String survey() {
-		return "/categoryTest/survey";
-		//	/WEB-INF/views/rdg7203Work/survey.jsp 파일을 만들어야 한다.
+		return "categoryTest/survey";
+		//	/WEB-INF/views/categoryTest/survey.jsp 파일을 만들어야 한다.
 	}
 	
 	
