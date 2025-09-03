@@ -810,7 +810,6 @@ textarea:focus {
    
    
 </script>
-<body style="background-image: url('<%= ctxPath %>/images/background.png'); "></body>
  <div class="col-md-9 ListHeight" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; ">
    <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray;">
       <input name="fk_categoryNo" style="display: none;"
