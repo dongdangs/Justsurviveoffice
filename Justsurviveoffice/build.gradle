@@ -31,7 +31,7 @@ dependencies {
    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
    implementation 'org.jsoup:jsoup:1.18.1'
 
-<<<<<<< HEAD
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-mail' 
@@ -55,7 +55,7 @@ dependencies {
 	implementation 'org.mongodb:mongodb-driver-sync:5.2.1'
 	
 	// Redis 의존성 추가
-=======
+
    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
    implementation 'org.springframework.boot:spring-boot-starter-web'
    implementation 'org.springframework.boot:spring-boot-starter-mail' 
@@ -79,7 +79,7 @@ dependencies {
    implementation 'org.mongodb:mongodb-driver-sync:5.2.1'
    
    // Redis 의존성 추가
->>>>>>> refs/heads/dongdangs
+
     //implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     
    
@@ -140,7 +140,7 @@ dependencies {
         
         AOP 구현시 필요한 프록시객체 생성관련 라이브러리 추가하기 
         (#스프링보안02) Spring Security 어노테이션을 사용하기 위해서는 cglib 가 필요하다. 
-<<<<<<< HEAD
+
 	*/
 	// https://mvnrepository.com/artifact/cglib/cglib
 	// 대사살 스프링 시큐리티02 >> 프록시(대리자) 객체 만들 때 필요한 라이브러리
@@ -229,8 +229,7 @@ dependencies {
 	// 대사살 스프링 시큐리티01 >> <sec:authorize> 같은 태그 사용할 수 있는 라이브러리
 	implementation 'org.springframework.security:spring-security-taglibs:6.4.2'
 	
-=======
-   */
+
    // https://mvnrepository.com/artifact/cglib/cglib
    // 대사살 스프링 시큐리티02 >> 프록시(대리자) 객체 만들 때 필요한 라이브러리
    implementation 'cglib:cglib:3.3.0'
@@ -318,17 +317,17 @@ dependencies {
    // 대사살 스프링 시큐리티01 >> <sec:authorize> 같은 태그 사용할 수 있는 라이브러리
    implementation 'org.springframework.security:spring-security-taglibs:6.4.2'
    
->>>>>>> refs/heads/dongdangs
+
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
-<<<<<<< HEAD
+
 	//implementation 'org.springframework.boot:spring-boot-starter-security'
 	// 대사살 스프링 시큐리티01 >> 여기도 주석 해제!!!!!
 	implementation 'org.springframework.boot:spring-boot-starter-security:3.4.1'
-=======
+
    //implementation 'org.springframework.boot:spring-boot-starter-security'
    // 대사살 스프링 시큐리티01 >> 여기도 주석 해제!!!!!
    implementation 'org.springframework.boot:spring-boot-starter-security:3.4.1'
->>>>>>> refs/heads/dongdangs
+
     
     // https://mvnrepository.com/artifact/org.springframework.security/spring-security-test
    //testImplementation 'org.springframework.security:spring-security-test'
