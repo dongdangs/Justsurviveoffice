@@ -70,14 +70,14 @@ public class Mongo_surveyController {
     	
     	for( Map.Entry<String, Integer> categoryMap : categoryCount.entrySet() ) {
     		int k = categoryMap.getValue();
-    		
+    		System.out.println(k);
     		if(k > maxValue) {
     			maxValue = k;
     			maxCategoryList.clear();	// 리스트 비우기
     			maxCategoryList.add(categoryMap.getKey());
     		}
     		
-    		else {
+    		else if(k == maxValue){			// k가 쌓이면서 maxValue가 같을때도 수정
     			maxCategoryList.add(categoryMap.getKey());
     		}
     	}// end of for---------------------------

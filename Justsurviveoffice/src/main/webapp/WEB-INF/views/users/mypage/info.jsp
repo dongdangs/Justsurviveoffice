@@ -34,6 +34,7 @@
         padding: 8px 0;
         color: #333;
         text-decoration: none;
+        font-weight:500;
     }
     .sidebar-menu a:hover {
         color: #6c63ff;
@@ -146,23 +147,7 @@ $(function () {
     <div class="row">
 
         <!-- 사이드바 -->
-        <div class="col-lg-3 mb-3">
-            <h3 class="mb-1">MYPAGE</h3>
-            <div class="sidebar text-center">
-                <img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-                <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
-                <div class="mb-3">
-                	<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/>p</b>
-                </div>
-                <hr>
-                <div class="sidebar-menu text-left">
-                    <a href="<%=ctxPath%>/users/logout">로그아웃</a>
-                    <a href="#" id="btnQuit">탈퇴하기</a>
-                    <a href="javascript:history.back()">이전 페이지</a>
-                </div>
-            </div>
-        </div>
+        <jsp:include page="../../menu/sidemenu.jsp"></jsp:include>
 
         <!-- 메인 내용 -->
         <div class="col-lg-9">

@@ -47,7 +47,7 @@
 	  border-radius: 8px;
 	
 	  /* 스크롤바 공간을 미리 확보해서 헤더/본문 폭 어긋남 방지 (지원 브라우저에서) */
-	  scrollbar-gutter: stable both-edges;
+	  /*scrollbar-gutter: stable both-edges;*/
 	}
 	
 	/* 테이블 아래 여백 제거(스크롤 영역 계산 깔끔) */
@@ -237,23 +237,7 @@
 <body>
 <div class="container mt-4">
     <div class="row">
-        <!-- 사이드바 -->
-        <div class="col-lg-3 mb-4">
-            <div class="sidebar text-center">
-                <img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-                <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
-                <div class="mb-3">
-               		<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/>p</b>
-                </div>
-                <hr>
-                <div class="sidebar-menu text-left">
-               	    <a href="<%=ctxPath%>/users/logout">로그아웃</a>
-                    <a href="#" id="btnQuit">탈퇴하기</a>
-                    <a href="javascript:history.back()">이전 페이지</a>
-                </div>
-            </div>
-        </div>
+        <jsp:include page="../../menu/sidemenu.jsp"></jsp:include>
 
         <!-- 메인 내용 -->
         <div class="col-lg-9">
