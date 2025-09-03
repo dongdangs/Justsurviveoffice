@@ -36,7 +36,8 @@
 <style type="text/css">
 .category-img {
     width: 100%;
-    min-width: 10%; /* 최대 크기 지정, 필요시 조정 */
+    min-width: 100pt; /* 최대 크기 지정, 필요시 조정 */
+    max-width: 180pt;
     height: auto;
     border-radius: 10px; /* 둥글게, 옵션 */
     object-fit: cover;   /* 비율 유지, 잘림 없이 */
@@ -46,6 +47,11 @@
     .category-img {
         max-width: 80px;
     }
+}
+.LBoardRank {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 </style>

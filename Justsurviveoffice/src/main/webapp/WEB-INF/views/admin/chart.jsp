@@ -5,25 +5,178 @@
 
 <jsp:include page="../header/header2.jsp" />
 
-<style type="text/css">
-   .highcharts-figure,
-   .highcharts-data-table table { min-width:320px; max-width:800px; margin:1em auto; }
-   div#chart_container { height: 400px; }
-   .highcharts-data-table table {
-       font-family: Verdana, sans-serif; border-collapse: collapse; border: 1px solid #ebebeb;
-       margin: 10px auto; text-align: center; width: 100%; max-width: 500px;
-   }
-   .highcharts-data-table caption { padding: 1em 0; font-size: 1.2em; color: #555; }
-   .highcharts-data-table th { font-weight: 600; padding: 0.5em; }
-   .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption { padding: 0.5em; }
-   .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) { background: #f8f8f8; }
-   .highcharts-data-table tr:hover { background: #f1f7ff; }
-   input[type="number"] { min-width: 50px; }
+<style>
+  /* ========= 톡방 느낌의 둥글둥글 + 반응형 기본값 ========= */
+  :root{
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --text:#222;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --brand:#6C7FF2;
+    --brand-weak:#EEF1FF;
+    --shadow: 0 10px 25px rgba(0,0,0,.06);
+    --radius-xl: 20px;
+    --radius-lg: 16px;
+    --radius-sm: 10px;
+  }
 
-   div#table_container table { width:100% }
-   div#table_container th, div#table_container td { border: 1px solid gray; text-align:center; }
-   div#table_container th { background-color:#595959; color: white; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* 페이지 레이아웃 살짝 여백 */
+  .col > div {
+    padding: 12px 0;
+  }
+
+  /* 제목 스타일 */
+  h2 {
+    margin: 28px 0 18px 0 !important;
+    font-size: clamp(20px, 2.1vw, 28px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #121826;
+  }
+
+  /* ========= 카드(버블) 컨테이너 ========= */
+  #chart_container,
+  #table_container {
+    background: var(--card);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--line);
+    padding: clamp(14px, 2.2vw, 22px);
+  }
+
+  /* 차트 높이 */
+  #chart_container { min-height: 360px; }
+
+  /* Highcharts 기본 배경 투명 처리로 카드와 어울리게 */
+  .highcharts-background { fill: transparent; }
+  .highcharts-title { font-weight: 700 !important; fill: #111 !important; }
+
+  /* ========= 폼/셀렉트(알약 모양) ========= */
+  form[name="searchFrm"]{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 9999px;
+    padding: 8px 12px;
+    width: fit-content;
+    box-shadow: var(--shadow);
+  }
+  #searchType{
+    border: none;
+    outline: none;
+    font-size: 14px;
+    padding: 1%;
+    border-radius: 9999px;
+    box-shadow: inset 0 0 0 1px var(--line);
+    cursor: pointer;
+  }
+  /* 셀렉트 오른쪽 화살표 */
+  #searchType{
+    background-image:
+      linear-gradient(180deg, #fff, #fff),
+      linear-gradient(180deg, var(--brand-weak), var(--brand-weak)),
+      url("data:image/svg+xml,%3Csvg width='14' height='14' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 5l4 4 4-4' stroke='%236C7FF2' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-position: left top, left top, right 12px center;
+    background-size: auto, auto, 14px 14px;
+  }
+  #searchType:focus{
+    box-shadow: 0 0 0 3px rgba(108,127,242,.25);
+  }
+
+  /* ========= 표(테이블) 톡방 버블 느낌 ========= */
+  #table_container { margin-top: 18px; overflow: hidden; }
+  #table_container table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 560px;            /* 내용 넘치면 가로 스크롤 */
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  #table_container thead th{
+    background: var(--brand-weak);
+    color: #27314a;
+    font-weight: 700;
+    text-align: center;
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  #table_container td{
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    text-align: right;
+    white-space: nowrap;
+  }
+  #table_container td:first-child,
+  #table_container th:first-child{
+    text-align: center;
+  }
+
+  /* 지브라 + 호버 */
+  #table_container tbody tr:nth-child(even){ background: #fafafa; }
+  #table_container tbody tr:hover{
+    background: #f1f5ff;
+    transition: background .2s ease;
+  }
+
+  /* 테이블이 작은 화면에서 넘치면 스크롤 */
+  #table_container{
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ========= Highcharts 데이터 테이블(접근성)도 동일한 톤 ========= */
+  .highcharts-data-table table{
+    width: 100%;
+    max-width: none;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .highcharts-data-table thead tr,
+  .highcharts-data-table tr:nth-child(even){ background: #fafafa; }
+  .highcharts-data-table tr:hover{ background: #f1f7ff; }
+
+  /* ========= 미세 인터랙션 ========= */
+  #chart_container, #table_container, form[name="searchFrm"]{
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  #chart_container:hover,
+  #table_container:hover,
+  form[name="searchFrm"]:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(0,0,0,.08);
+  }
+
+  /* ========= 반응형 ========= */
+  @media (max-width: 900px){
+    #chart_container{ min-height: 320px; }
+  }
+  @media (max-width: 640px){
+    h2{ margin: 18px 0 12px 0 !important; }
+    form[name="searchFrm"]{ padding: 6px 10px; }
+    #searchType{ padding: 9px 34px 9px 12px; font-size: 13px; }
+    #table_container table{ min-width: 520px; }
+  }
+  @media (max-width: 420px){
+    #table_container table{ min-width: 480px; }
+  }
 </style>
+
 
 <!-- Highcharts -->
 <script src="<%= ctxPath%>/Highcharts-10.3.1/code/highcharts.js"></script>
