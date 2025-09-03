@@ -36,16 +36,16 @@
 <style type="text/css">
 
 	@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
-        
     body {
+ 		background-color: #9da6ae;
+ 		background-image: url("<%= ctxPath%>/images/background.png");
   		font-family: 'Noto Sans KR', sans-serif;
-  		background-image: url("<%= ctxPath%>/images/background.png");
     	background-size: cover;
     	background-position: center;
     	background-attachment: fixed;
     	background-blend-mode: overlay;
 	}
-
+ 
     .error {
    		color: #ef4444;
         font-size: 0.875rem;

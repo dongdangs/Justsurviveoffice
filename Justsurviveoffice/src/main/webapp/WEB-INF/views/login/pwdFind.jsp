@@ -149,9 +149,9 @@
         <div class="bg-indigo-600 py-4 px-6">
         	 <!-- 뒤로가기 아이콘 -->
             <p style="background-image:url('<%= ctxPath%>/images/backIco.png');
-                     position:absolute;top:16px;left:10px;width:30px;height:30px;
+                     position:absolute;top:24px;left:10px;width:30px;height:30px;
                      background-size:cover;cursor:pointer;"
-               onclick="location.href='http://localhost:9089/justsurviveoffice/'"></p>
+               onclick="location.href='javascript:history.back()'"></p>
             <h1 class="text-2xl font-bold text-white" style="text-align: center;font-family: italic">
             비밀번호 찾기</h1>
         </div>
@@ -170,7 +170,6 @@
                         </div>
                     </td>
         		 </tr>
-        		 
         		 <!-- 이메일 -->
         		 <tr class="mb-4 flex flex-col md:flex-row">
         		 	<td class="w-full md:w-1/4 font-medium text-gray-700 mb-1 md:mb-0 md:pr-4">
