@@ -276,7 +276,16 @@ public class AdminController {
 	    model.addAllAttributes(data);
 
 	    model.addAttribute("locale", locale);
-	    model.addAttribute("workbookName", "회원통계"); 
+	    
+	    // ✅ 파일 이름 분기
+	    String workbookName = "user_stat";
+	    if ("registerDay".equals(chart)) {
+	    	 workbookName = (month != null) ? "일자별 가입자 통계_" + month + "월" : "일자별 가입자 통계";
+	    } else if ("register".equals(chart)) {
+	        workbookName = "월별 가입자 통계"; 
+	    }
+	    
+	    model.addAttribute("workbookName", workbookName); 
 
 	    usersService.userExcelList_to_Excel(chart, month, model);
 

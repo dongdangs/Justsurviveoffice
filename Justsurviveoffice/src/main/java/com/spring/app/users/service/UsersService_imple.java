@@ -466,7 +466,20 @@ public class UsersService_imple implements UsersService {
 
 	    // workbook을 model에 담아서 View에서 write
 	    model.addAttribute("workbook", workbook);
-	    model.addAttribute("workbookName", "회원가입 통계 정보");
+	    
+	    // ✅ 파일 이름 분기
+	    String workbookName;
+	    if ("registerDay".equals(chart)) {
+	        // 일자별 통계
+	        workbookName = (month != null) 
+	            ? "일자별_가입자통계_" + month + "월" 
+	            : "일자별_가입자통계";
+	    } else {
+	        // 월별 통계
+	        workbookName = "월별_가입자통계";
+	    }
+
+	    model.addAttribute("workbookName", workbookName);
 		 
 	}
 
