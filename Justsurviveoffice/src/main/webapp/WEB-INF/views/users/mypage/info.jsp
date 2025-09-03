@@ -16,9 +16,8 @@
 <script src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
-    body {
-        background: #f7f7fb;
-    }
+   	body { background: #f7f7fb; font-family: 'Noto Sans KR', sans-serif; }
+
     .sidebar {
         background: #fff;
         border-radius: 12px;
@@ -51,10 +50,7 @@
     	align-items: stretch;
    	}
    	
-   	.sidebar,
-   	.content {
-   		height : 100% ;
-   	}
+  
    	
    	
 </style>

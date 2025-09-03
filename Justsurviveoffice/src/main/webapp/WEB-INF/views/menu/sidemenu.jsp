@@ -8,7 +8,7 @@
   
  <!-- 사이드바 -->
         <div class="col-lg-3 mb-4">
-            <div class="sidebar text-center">
+            <div class="sidebar text-center"  style="height:585px;">
                 <img src="${pageContext.request.contextPath}/images/${sessionScope.loginUser.category.categoryImagePath}" alt="프로필" class="mb-3">
                 <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
                 <div class="mb-3">
