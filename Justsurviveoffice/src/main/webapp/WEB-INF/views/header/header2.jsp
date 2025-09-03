@@ -40,9 +40,50 @@
 		.admTab {width:calc(100% / 7);background-color:#d5d5d5; display:block;color:#000;border-bottom:1px solid #5f0f0f;padding:1.5% 0; text-align:center;}
 		.admTab:hover {background-color:#fff;}
 		#clock {font-size:0.8rem;}
-		@media screen and (max-width:1000px){
-			
+		.pc-menu {border-right:1px solid #000;display:flex;flex-wrap:wrap;justify-content:space-between;}
+		
+		.hamburger {
+		  font-size: 2rem;
+		  background: none;
+		  border: none;
+		  position: fixed;
+		  top: 15px;
+		  right: 20px;
+		  z-index: 2001;
+		  cursor: pointer;
+		  display: none; 
+		  color:#000 !important;
 		}
+		
+		#adminMenu {
+		  position: fixed;
+		  top: 0; left: 0;
+		  width: 100%; height: 100%;
+		  background: #fff;
+		  flex-direction: column;
+		  justify-content: center;
+		  align-items: center;
+		  z-index: 2000;
+		  display: none; 
+		  margin: 0;
+		  padding: 0;
+		}
+		#adminMenu.show { display: flex; }
+		#adminMenu li {
+		  list-style: none;
+		  margin: 15px 0;
+		  font-size: 1.3rem;
+		}
+		#adminMenu a, #adminMenu li {
+		  color: #000;
+		  text-decoration: none;
+		}
+
+	/* 모바일에서만 햄버거 보이고, 기존 가로 메뉴 숨김 */
+	@media screen and (max-width:1300px){
+	  .pc-menu { display: none; }    /* 모바일에서 PC 메뉴 숨김 */
+	  .hamburger { display: block !important; }
+	}
 	</style>
 </head>
 <script type="text/javascript">
@@ -50,6 +91,25 @@
 		
 		updateClock();
 		setInterval(updateClock, 1000);
+		 $('#menuToggle').on('click', function(){
+			    $('#adminMenu').toggleClass('show');
+
+			    if($('#adminMenu').hasClass('show')){
+
+			      $(this).html('&times;'); // ✖
+			    } else {
+
+			      $(this).html('&#9776;'); // ☰
+			    }
+			  });
+
+			  // 창 크기 늘려서 PC 화면으로 갔을 때 자동 닫기
+			  $(window).on('resize', function(){
+			    if($(window).width() > 1000){
+			      $('#adminMenu').removeClass('show');
+			      $('#menuToggle').html('&#9776;'); // 항상 햄버거로 복구
+			    }
+			  });
 		
 	}) // end of function(){}
 	
@@ -81,163 +141,30 @@
 	   var el = document.getElementById('clock');
 	   if (el) el.textContent = timeString;
 	 }
-
-
 </script>
-<body>
-	<div id="mycontainer" style="padding:0;">
-		<div class="row justify-content-center">
 			<div class="col-md-12">
-				
-				<ul style="border-right:1px solid #000;display:flex;flex-wrap:wrap;justify-content:space-between;">
-				  <li class="admTab" style="background-image: url(/justsurviveoffice/images/logo2.png);display: block;background-size: contain;background-repeat: no-repeat;background-position: center;"></li>
+			
+				<ul id="pcMenu" class="pc-menu">
+				  <li class="admTab" style="background-image: url(/justsurviveoffice/images/logo2.png);display: block;background-size: contain;background-repeat: no-repeat;background-position: center;" onclick="location.href='<%= ctxPath%>/'"></li>
 				  <%-- <li class="admTab">${sessionScope.loginUser.name}</li> --%>
 				  <li class="admTab"><i class="fa-solid fa-chart-simple"></i>&nbsp;<a href="chart">회원 통계보기</a></li>
 				  <li class="admTab"><i class="fa-solid fa-user"></i>&nbsp;<a href="usersList">사용자 관리</a></li>
 				  <li class="admTab"><i class="fa-solid fa-user"></i>&nbsp;<a href="userExcelList">회원목록 엑셀</a></li>
-				  <li class="admTab admOut"  onclick="admOut()"><i class="fa-solid fa-house">&nbsp;</i>로그아웃</li>
+				  <li class="admTab admOut" onclick="admOut()"><i class="fa-solid fa-house">&nbsp;</i>로그아웃</li>
 				  <li class="admTab"><i class="fa-solid fa-rotate-left"></i><a href="javascript:history.back();">&nbsp;뒤로가기</a></li>
 				  <li class="admTab"><div id="clock"></div></li>
-				</ul>
-			</div>
+				</ul>			
 			
-			<nav class="gnb">
-			<h3 class="blind">Global Navi</h3>
-			<ul>
-				<li><a href="javascript:void(0);" class=""><b>SAMSUNG SDI</b></a>
-					<button class="depth_open">Open</button>
-					<ul style="display: none;">
-						<li><a href="/about-sdi/index.html" title="회사소개로 이동하기">회사소개</a></li>
-						<li><a href="/about-sdi/history.html" title="연혁으로 이동하기">연혁</a></li>
-						<li><a href="/about-sdi/ci.html" title="CI로 이동하기">CI</a></li>
-						<li><a href="/about-sdi/research-development.html" title="연구개발로 이동하기">연구개발</a></li>
-						<li><a href="/about-sdi/global-network.html" title="글로벌 네트워크로 이동하기">글로벌 네트워크</a></li>
-					</ul>
-				</li>
-				<li><a href="javascript:void(0);"><b>BUSINESS</b></a>
-					<button class="depth_open">Open</button>
-					<ul>
-						<li><a href="/business/index.html" title="배터리로 이동하기">배터리</a></li>
-						<li><a href="/business/electronic-materials.html" title="전자재료로 이동하기">전자재료</a></li>
-					</ul>
-				</li>
-				<li><a href="javascript:void(0);"><b>IR</b></a>
-					<button class="depth_open">Open</button>
-					<ul>
-						<li><a href="javascript:void(0);">주식정보</a><button class="depth_detail_open">Open</button>
-							<ul>
-								<li><a href="/ir/stock/index.html" title="주가정보로 이동하기"><span>주가정보</span></a></li>
-								<li><a href="/ir/stock/stock-listing-info.html" title="주식 상장 현황으로 이동하기"><span>주식 상장 현황</span></a></li>
-								<li><a href="/ir/stock/dividend-details.html" title="배당 현황으로 이동하기"><span>배당 현황</span></a></li>
-								<li><a href="/ir/stock/shareholders.html" title="주주 구성으로 이동하기"><span>주주 구성</span></a></li>
-							</ul>
-						</li>
-						<li><a href="javascript:void(0);">재무정보</a><button class="depth_detail_open">Open</button>
-							<ul>
-								<li><a href="/ir/financial/index.html" title="주요 재무지표로 이동하기"><span>주요 재무지표</span></a></li>
-								<li><a href="/ir/financial/credit-rating.html" title="신용등급으로 이동하기"><span>신용등급</span></a></li>
-								<li><a href="/ir/financial/audit-report.html" title="감사 보고서로 이동하기"><span>감사 보고서</span></a></li>
-								<li><a href="/ir/financial/business-report.html" title="사업 보고서로 이동하기"><span>사업 보고서</span></a></li>
-							</ul>
-						</li>
-						<li><a href="#">주주총회</a><button class="depth_detail_open">Open</button>
-							<ul>
-								<li><a href="/ir/corporate/index.html" title="주주총회 소집/결과로 이동하기"><span>주주총회 소집/결과</span></a></li>
-								<li><a class="outline" href="https://dividend.samsungsdi.com/" title="배당금 조회 새 창 열기" target="_blank"><span>배당금 조회</span></a></li>
-							</ul>
-						</li>
-						<li><a href="#">공시</a><button class="depth_detail_open">Open</button>
-							<ul>
-								<li><a href="/ir/disclosure/index.html" title="공시 자료로 이동하기">공시 자료</a></li>
-								<li><a href="/ir/disclosure/notice.html" title="전자공고로 이동하기">전자공고</a></li>
-							</ul>
-						</li>
-						<li><a href="#">IR활동</a><button class="depth_detail_open">Open</button>
-							<ul>
-								<li><a href="/ir/ir-activity/index.html" title="IR활동내역으로 이동하기"><span>IR활동내역</span></a></li>
-								<li><a href="/ir/ir-activity/earning-releases.html" title="실적발표회로 이동하기"><span>실적발표회</span></a></li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-				<li><a href="javascript:void(0);" class=""><b>CAREER</b></a>
-					<button class="depth_open">Open</button>
-					<ul>
-						<li><a href="/career/index.html" title="인재상으로 이동하기">인재상</a></li>
-						<li><a href="javascript:void(0);">지원하기</a><button class="depth_detail_open">Open</button>
-							<ul>
-								<li><a href="/career/employment-procedure.html" title="채용전형으로 이동하기"><span>채용전형</span></a></li>
-								<li><a href="/career/job-description.html" title="직무소개로 이동하기"><span>직무소개</span></a></li>
-								<li><a href="/career/benefit.html" title="복리후생으로 이동하기"><span>복리후생</span></a></li>
-								<li><a class="outline" href="https://www.samsungcareers.com/subsid/detail/C31" title="채용공고 새 창 열기" target="_blank"><span>채용공고</span></a></li>
-							</ul>
-						</li>
-						<li><a href="/career/sdi-life/all/list.html" title="삼성SDI Life로 이동하기">삼성SDI Life</a></li>
-					</ul>
-				</li>
-				<li><a href="javascript:void(0);"><b>ESG</b></a>
-					<button class="depth_open">Open</button>
-					<ul>
-						<li><a href="javascript:void(0);">ESG 전략</a><button class="depth_detail_open">Open</button>
-							<ul>
-								<li><a href="/esg/sustainability/index.html" title="지속가능경영 전략 체계로 이동하기"><span>지속가능경영 전략 체계</span></a></li>
-								<li><a href="/esg/sustainability/important-issue.html" title="이중 중대성 평가로 이동하기"><span>이중 중대성 평가</span></a></li>
-								<li><a href="/esg/sustainability/risk-management.html" title="리스크 관리로 이동하기"><span>리스크 관리</span></a></li>
-								<li><a href="/esg/sustainability/sustainable-policy.html" title="지속가능경영 정책으로 이동하기"><span>지속가능경영 정책</span></a></li>
-								<li><a href="/esg/sustainability/initiative.html" title="글로벌 이니셔티브로 이동하기"><span>글로벌 이니셔티브</span></a></li>
-							</ul>
-						</li>
-						<li><a href="javascript:void(0);">환경</a><button class="depth_detail_open">Open</button>
-							<ul>
-								<li><a href="/esg/environment/index.html" title="환경경영으로 이동하기"><span>환경경영</span></a></li>
-								<li><a href="/esg/environment/net-zero.html" title="기후 위기 대응"><span>기후 위기 대응</span></a></li>
-								<li><a href="/esg/environment/circulation.html" title="자원 순환"><span>자원 순환</span></a></li>
-							</ul>
-						</li>
-						<li><a href="javascript:void(0);">사회</a><button class="depth_detail_open">Open</button>
-							<ul>
-								<li><a href="/esg/social/index.html" title="안전보건으로 이동하기"><span>안전보건</span></a></li>
-								<li><a href="/esg/social/winwin-partnership.html" title="상생협력으로 이동하기"><span>상생협력</span></a></li>
-								<li><a href="/esg/social/social-responsibility.html" title="공급망 관리로 이동하기"><span>공급망 관리</span></a></li>
-								<li><a href="/esg/social/social-contribution.html" title="사회공헌으로 이동하기"><span>사회공헌</span></a></li>
-								<li><a href="/esg/social/news.html" title="사회공헌 소식으로 이동하기"><span>사회공헌 소식</span></a></li>
-								<li><a href="/esg/social/social-diversity.html" title="다양성 및 포용성으로 이동하기"><span>다양성 및 포용성</span></a></li>
-							</ul>
-						</li>
-						<li><a href="javascript:void(0);">지배구조</a><button class="depth_detail_open">Open</button>
-							<ul>
-								<li><a href="/esg/governance/index.html" title="이사회로 이동하기"><span>이사회</span></a></li>
-								<li><a href="/esg/governance/operation-of-bod.html" title="위원회로 이동하기"><span>위원회</span></a></li>
-								<li><a href="/esg/governance/articles-of-incorporation.html" title="정관으로 이동하기"><span>정관</span></a></li>
-								<li><a href="/esg/governance/directorate.html" title="이해관계자로 이동하기"><span>이해관계자</span></a></li>
-								<li><a href="/esg/governance/compliance.html" title="준법경영으로 이동하기"><span>준법경영</span></a></li>
-								<li><a href="/esg/governance/ethics.html" title="윤리경영으로 이동하기"><span>윤리경영</span></a></li>
-								<li><a href="/esg/governance/protection.html" title="정보보호로 이동하기"><span>정보보호</span></a></li>
-							</ul>
-						</li>
-						<li><a href="/esg/report/index.html" title="지속가능경영보고서로 이동하기">지속가능경영보고서</a></li>
-					</ul>
-				</li>
-				<li><a href="javascript:void(0);"><b>PR Center</b></a>
-					<button class="depth_open">Open</button>
-					<ul>
-						<li><a href="/sdi-now/sdi-news/list.html" title="뉴스로 이동하기"><span>뉴스</span></a></li>
-						
-						<li><a href="/sdi-now/sdi-media/list.html" title="유튜브로 이동하기"><span>유튜브</span></a></li>
-					</ul>
-				</li>
-				<!-- <li><a href="javascript:void(0);"><b>고객센터</b></a>
-					<button class="depth_open">Open</button>
-					<ul>
-						<li><a href="/etc/information.html" title="문의하기로 이동하기">문의하기</a></li>
-					</ul>
-				</li> -->
-			</ul>
-			<div class="sns_wrap">
-				<ul class="sns">
-					<li><a href="https://www.facebook.com/samsungsdi" title="삼성SDI 페이스북 새 창 열기" target="_blank"><img src="/resources/images/layout/ico_sns_facebook_w.svg" alt="Facebook"></a></li>
-					<li><a href="https://www.youtube.com/user/SDISamsung" title="삼성SDI 유투브 새 창 열기" target="_blank"><img src="/resources/images/layout/ico_sns_utube_w.svg" alt="YouTube"></a></li>
-					<li><a href="https://news.samsungsdi.com/ko" title="삼성SDI NEWS 새 창 열기" target="_blank"><img src="/resources/images/layout/ico_sns_news_w.png" alt="NEWS"></a></li>
+				<button id="menuToggle" class="hamburger d-md-none">&#9776;</button>
+				<ul id="adminMenu">
+				  <li><a href="chart">회원 통계보기</a></li>
+				  <li><a href="usersList">사용자 관리</a></li>
+				  <li><a href="userExcelList">회원목록 엑셀</a></li>
+				  <li onclick="admOut()">로그아웃</li>
+				  <li><div id="clock"></div></li>
 				</ul>
 			</div>
-		</nav>
+
+<body>
+	<div id="mycontainer" style="padding:0;">
+		<div class="row justify-content-center">

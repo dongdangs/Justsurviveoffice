@@ -166,6 +166,11 @@
   @media (max-width: 900px){
     #chart_container{ min-height: 320px; }
   }
+  
+  @media screen and (max-width:800px){
+  	.chartAdm {margin:0 auto !important;}
+  }
+  
   @media (max-width: 640px){
     h2{ margin: 18px 0 12px 0 !important; }
     form[name="searchFrm"]{ padding: 6px 10px; }
@@ -188,24 +193,40 @@
 <script src="<%= ctxPath%>/Highcharts-10.3.1/code/modules/drilldown.js"></script>
 
 <div class="col">
-<div style="display:flex;width:100%;">
-  <div style="width:90%; min-height:300px; margin: 0 10%;">
-    <h2 style="margin: 50px 0;">대사살 통계정보(차트)</h2>
-
-    <form name="searchFrm" style="margin: 20px 0 50px 0;">
-      <select name="searchType" id="searchType" style="height:30px;">
-        <option value="">통계선택하세요</option>
-        <option value="register">회원가입 인원통계(월별)</option>
-        <option value="registerDay">회원가입 인원통계(일자별)</option>
-      </select>
-    </form>
-
-    <div id="chart_container"></div>
-    <div id="table_container" style="margin-top:40px;"></div>
-  </div>
+	<div style="display:flex;width:100%;">
+	  <div class="chartAdm" style="width:90%; min-height:300px; margin: 0 10%;">
+	    <h2 style="margin: 50px 0;">대사살 통계정보(차트)</h2>
+	
+	    <form name="searchFrm" style="margin: 20px 0 50px 0;">
+	      <select name="searchType" id="searchType" style="height:30px;">
+	         <option value="">통계선택하세요</option>
+	         <option value="register">회원가입 인원통계(월별)</option>
+	         <option value="registerDay">회원가입 인원통계(일자별)</option>
+	      </select>
+	      <select name="searchMonth" id="searchMonth" style="height:30px;">
+	       	 <option value="">월을 선택하세요</option>
+	       	 <option value="1">1월</option>
+	       	 <option value="2">2월</option>
+	       	 <option value="3">3월</option>
+	       	 <option value="4">4월</option>
+	       	 <option value="5">5월</option>
+	       	 <option value="6">6월</option>
+	       	 <option value="7">7월</option>
+	       	 <option value="8">8월</option>
+	       	 <option value="9">9월</option>
+	       	 <option value="10">10월</option>
+	       	 <option value="11">11월</option>
+	       	 <option value="12">12월</option>
+	       </select>
+	    </form>
+	
+	    <div id="chart_container"></div>
+	    <div id="table_container" style="margin-top:40px;"></div>
+	  </div>
+	</div>
+	<!-- end of chart !-->
 </div>
-<!-- end of chart !-->
-</div>
+
 <script type="text/javascript">
   $(function(){
     $('#searchType').change(function(e){
@@ -292,6 +313,7 @@
 		        </tr>`;
 
 		      v_html += `</tbody></table>`;
+		      
 		      $('#table_container').html(v_html);
 		    },
 		    error: function(request, status, error){
@@ -309,9 +331,7 @@
 
 			      // 1) 고정 라벨
 			      const labelsFixed = Array.from({length:31}, (_,i)=> String(i+1).padStart(2,'0'));
-			      var nowmonth = (json && json.length && json[0].nowmonth)
-			            		  ? String(json[0].nowmonth).padStart(2, '0')
-			            		  : String(new Date().getMonth() + 1).padStart(2, '0');
+			      var nowmonth = (json && json.length && json[0].nowmonth)? String(json[0].nowmonth).padStart(2, '0') : String(new Date().getMonth() + 1).padStart(2, '0');
 			      // 2) 응답을 dd->cnt 맵으로 만들고, 고정 라벨 순서대로 값(없으면 0) 채우기
 			      const dayMap = {};
 			      (json || []).forEach(({dd, cnt}) => {
@@ -320,8 +340,7 @@
 			      const data = labelsFixed.map(dd => dayMap[dd] ?? 0);
 				
 			      const total = data.reduce((a,b)=>a+b, 0);
-			      
-			      
+			      			      
 			      // 3) Highcharts: 세로 막대(컬럼). 가로 막대 원하면 type: 'bar' 로 설정 하면됨
 			      Highcharts.chart('chart_container', {
 			        chart: { type: 'column' }, // 'bar'로 바꾸면 가로 막대임
