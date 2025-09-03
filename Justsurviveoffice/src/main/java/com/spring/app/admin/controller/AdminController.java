@@ -64,7 +64,6 @@ public class AdminController {
          }
          
          totalDataCount = pageUsers.getTotalElements();   // 전체 데이터의 개수
-         
          List<UsersDTO> UsersDtoList = pageUsers.getContent();   // 현재 페이지의 데이터 목록
       /*   
          // 현재 페이지의 데이터 목록인 List<Users> 를 List<UsersDTO> 로 변환한다.
@@ -78,39 +77,29 @@ public class AdminController {
             model.addAttribute("searchType", searchType);   // view 단 페이지에서 검색타입 유지
             model.addAttribute("searchWord", searchWord);   // view 단 페이지에서 검색어 유지
          }
-         
-         
          // ================ 페이지바 만들기 시작 ================ //
-         
          int blockSize = 10;
          // blockSize 는 1개 블럭(토막)당 보여지는 페이지번호의 개수이다.
-         
          int loop = 1;
          /*
              loop는 1부터 증가하여 1개 블럭을 이루는 페이지번호의 개수[ 지금은 10개(== blockSize) ] 까지만 증가하는 용도이다.
          */
-         
          int pageno = ((currentShowPageNo - 1)/blockSize) * blockSize + 1;
          // *** !! 공식이다. !! *** //
-         
          String url = request.getContextPath() + "/admin/usersList";
-         
          // === [맨처음][이전] 만들기 === //
          pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+ "&sizePerPage=" + sizePerPage + "&pageno=1'>⏪</a></li>";
          
          if(pageno != 1) {
             pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+ "&sizePerPage=" + sizePerPage + "&pageno="+(pageno-1)+"'>◀️</a></li>"; 
          }
-         
          while( !(loop > blockSize || pageno > totalPage) ) {
-            
             if(pageno == currentShowPageNo) {
                pageBar += "<li class='page-item active'><a class='page-link' href='#'>"+pageno+"</a></li>";
             }
             else {
                pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+ "&sizePerPage=" + sizePerPage + "&pageno="+pageno+"'>"+pageno+"</a></li>"; 
             }
-            
             loop++;
             pageno++;
          }// end of while------------------------
@@ -119,13 +108,10 @@ public class AdminController {
          if(pageno <= totalPage) {
             pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+ "&sizePerPage=" + sizePerPage + "&pageno="+pageno+"'>▶️</a></li>";
          }
-         
          pageBar += "<li class='page-item'><a class='page-link' href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+ "&sizePerPage=" + sizePerPage + "&pageno="+totalPage+"'>⏩</a></li>"; 
          
          model.addAttribute("pageBar", pageBar);
-         
          // ================ 페이지바 만들기 끝 ================ //
-         
          model.addAttribute("totalDataCount", totalDataCount); // 페이징 처리시 보여주는 순번을 나타내기 위한 것임. 
          model.addAttribute("currentShowPageNo", currentShowPageNo); // 페이징 처리시 보여주는 순번을 나타내기 위한 것임.
          model.addAttribute("sizePerPage", sizePerPage); // 페이징 처리시 보여주는 순번을 나타내기 위한 것임.
@@ -133,11 +119,9 @@ public class AdminController {
          // 페이징 처리되어진 후 특정 글제목을 클릭하여 상세내용을 본 이후
          // 사용자가 "검색된결과목록보기" 버튼을 클릭했을때 돌아갈 페이지를 알려주기 위해 현재 페이지 URL 주소를 쿠키에 저장한다.
          String listURL = MyUtil.getCurrentURL(request);
-         
          Cookie cookie = new Cookie("listURL", listURL); 
          // new Cookie(쿠키명, 쿠키값); 
          // Cookie 클래스 임포트시 jakarta.servlet.http.Cookie 임.
-         
          cookie.setMaxAge(24*60*60); // 쿠키수명은 1일로 함
          cookie.setPath("/admin/");  // 쿠키가 브라우저에서 전송될 URL 경로 범위(Path)를 지정하는 설정임
          /*
@@ -146,7 +130,6 @@ public class AdminController {
              * /, /index, /login 등의 다른 경로에서는 이 쿠키는 사용되지 않음.   
          */
          response.addCookie(cookie); // 쿠키에 저장. 접속한 클라이언트 PC로 쿠키를 보내줌
-         
       } catch (Exception e) {
          e.printStackTrace();
       }

@@ -35,9 +35,14 @@
     <script type="text/javascript" src="<%=ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.js"></script>
 	
 	<style>
+		body{overflow-x:hidden;}
 		.col-md-2 ul {height:100%;background-color:green;display:flex;}
-		.admTab {width:100%;background-color:#d5d5d5; display:block;color:#000;border-bottom:1px solid #5f0f0f;padding:1.5% 0; text-align:center;}
+		.admTab {width:calc(100% / 7);background-color:#d5d5d5; display:block;color:#000;border-bottom:1px solid #5f0f0f;padding:1.5% 0; text-align:center;}
 		.admTab:hover {background-color:#fff;}
+		#clock {font-size:0.8rem;}
+		@media screen and (max-width:1000px){
+			
+		}
 	</style>
 </head>
 <script type="text/javascript">
@@ -81,9 +86,10 @@
 </script>
 <body>
 	<div id="mycontainer" style="padding:0;">
-		<div class="row">
+		<div class="row justify-content-center">
 			<div class="col-md-12">
-				<ul style="border-right:1px solid #000;display:flex;">
+
+				<ul style="border-right:1px solid #000;display:flex;flex-wrap:wrap;justify-content:space-between;">
 				  <li class="admTab" style="background-image: url(/justsurviveoffice/images/logo2.png);display: block;background-size: contain;background-repeat: no-repeat;background-position: center;"></li>
 				  <%-- <li class="admTab">${sessionScope.loginUser.name}</li> --%>
 				  <li class="admTab"><i class="fa-solid fa-chart-simple"></i>&nbsp;<a href="chart">회원 통계보기</a></li>

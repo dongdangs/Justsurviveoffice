@@ -36,40 +36,45 @@
 <style type="text/css">
 .category-img {
     width: 100%;
-    max-width: 100%; /* 최대 크기 지정, 필요시 조정 */
+    min-width: 100pt; /* 최대 크기 지정, 필요시 조정 */
+    max-width: 180pt;
     height: auto;
     border-radius: 10px; /* 둥글게, 옵션 */
     object-fit: cover;   /* 비율 유지, 잘림 없이 */
     display: block;
-    margin: 5% 0 0 0;      /* 가운데 정렬 */
+    max-width:330px;
 }
-.profileImg {max-width:230px;}
 @media (max-width: 600px) {
     .category-img {
-        max-width: 80px;
+        max-width: 230px;
     }
+}
+.LBoardRank {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 </style>
 </head>
 
-   <div id="mycontainer">
+   <div id="mycontainer"  style="background-image: url('<%= ctxPath %>/images/background.png');">
       <div id="myheader">
          <jsp:include page="../menu/menu1.jsp" />
       </div>
       
-      <div id="mycontent">
+      <div id="mycontent" class="mt-5">
          <div class="row" style="margin:0 auto;"> 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
             <c:if test="${not empty sessionScope.loginUser}">   
                <div>
                <c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() eq null}">
-                     <img src="<%=ctxPath%>/images/unassigned.png" alt="프로필" class="category-img mb-3 profileImg">
+               		<img src="<%=ctxPath%>/images/unassigned.png" alt="프로필"  class="category-img mb-3">
                </c:if>
-                  <c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() ne null}">
-                     <img src="<%=ctxPath%>/images/${sessionScope.loginUser.getCategory().getCategoryImagePath()}" alt="프로필" 
-                         class="category-img mb-3 profileImg">
-                  </c:if>
+               	<c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() ne null}">
+               		<img src="<%=ctxPath%>/images/${sessionScope.loginUser.getCategory().getCategoryImagePath()}" alt="프로필" 
+               			 class="category-img mb-3">
+               	</c:if>
                    <div class="text-muted small mb-3 ml-3">${sessionScope.loginUser.email}</div>
                    <div class="mb-3 ml-3">
                       <div style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </div>
@@ -77,23 +82,23 @@
                    </div>
                </div>
             </c:if>   
-               <div class="LBoardRank" style="width:70%;">
+              <div class="LBoardRank" style="width:80%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 style="font-weight: bolder; margin: 0;" class="hotTitle">대사살 <span style="color: red;">Hot!</span> 게시글</h6>
+                    <h6 class="hotTitle" style="font-weight: bolder; margin: 0;">대사살 <span style="color: red;">Hot!</span> 게시글</h6>
                 </div>
                 <table class="table table-sm table-borderless">
                     <tbody style="font-size: 10pt;">
                         <c:forEach var="hotRead" items="${hotReadList}">
                             <form id="viewForm${hotRead.boardNo}" 
-                           action="<%= ctxPath %>/board/view" 
-                           method="get" 
-                           style="display:none;">
+		                           action="<%= ctxPath %>/board/view" 
+		                           method="get" 
+		                           style="display:none;">
                          <input type="hidden" name="category" value="${hotRead.fk_categoryNo}">
                          <input type="hidden" name="boardNo" value="${hotRead.boardNo}">
                      </form>
                      <tr>
                          <td style="width: 5%; font-weight: bold;">
-                             ${hotRead.rank}
+                             ${hotRead.rank}.
                          </td>
                          <td style="width: 95%;">
                              <a href="javascript:void(0);" 
@@ -110,24 +115,24 @@
                     </tbody>
                 </table>
             </div>
-            <div class="LBoardRank" style="width: 70%;">
+            <div class="LBoardRank" style="width: 80%;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="hotTitle" style="font-weight: bolder; margin: 0;">대사살 댓글많은 게시글</h6>
+                    <h6 class="hotTitle" style="font-weight: bolder; margin: 0;"> 대사살 <span style="color:blue;">시끌벅적!</span> 게시글</h6>
                 </div>
                 <table class="table table-sm table-borderless">
                     <tbody style="font-size: 10pt;">
                         <c:forEach var="hotComment" items="${hotCommentList}">
                            <form id="viewForm${hotComment.boardNo}" 
-                           action="<%= ctxPath %>/board/view" 
-                           method="get" 
-                           style="display:none;">
+		                           action="<%= ctxPath %>/board/view" 
+		                           method="get" 
+		                           style="display:none;">
                          <input type="hidden" name="category" value="${hotComment.fk_categoryNo}">
                          <input type="hidden" name="boardNo" value="${hotComment.boardNo}">
                      </form>
                      
                      <tr>
                          <td style="width: 5%; font-weight: bold;">
-                             ${hotComment.rank}
+                             ${hotComment.rank}.
                          </td>
                          <td style="width: 95%;">
                              <a href="javascript:void(0);" 
@@ -135,9 +140,6 @@
                                 style="color: #000;">
                                  ${hotComment.boardName}
                              </a>
-                             <span class="fa-regular fa-eye text-muted" style="font-size: 8pt; color:#fff !important">
-                                 (${hotComment.commentCount})
-                             </span>
                          </td>
                      </tr>
                         </c:forEach>

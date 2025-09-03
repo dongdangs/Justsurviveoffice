@@ -61,13 +61,12 @@ public class AdminService_imple implements AdminService {
    @Override
    public Page<UsersDTO> getPageUserList(String searchType, String searchWord, int currentShowPageNo, int sizePerPage) 
                               throws Exception {
-      
       try {
            aes = new AES256(SecretMyKey.KEY);
        } catch (Exception e) {
            e.printStackTrace(); // 키 초기화 실패 시 로그
        }
-      
+
       Page<UsersDTO> page = Page.empty();   // 기본값으로 내용이 없는 빈 페이지임. null 아니므로 안전하게 메서드 호출 가능함.
       // 검색 결과가 없을 때, 기본값으로 반환
       
@@ -237,6 +236,6 @@ public class AdminService_imple implements AdminService {
 	} catch (CoolsmsException e) {
 		throw e;
 	}
-   }
+  }
    
 }

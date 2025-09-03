@@ -141,6 +141,7 @@ h1 a {color: white;text-decoration: none;}
 #searchFrm #searchIco {position:absolute;right:15px;top:8px;}
 #searchFrm .btnSubmit {position:absolute;right:10px;top:1px;display:block;width:100%;max-width:30px;height:100%;background-color:transparent;border:0;}
 
+.hotTitle {font-size:1.8rem;line-height:2rem;}
 .ListHeight {min-height:900px;}
 .LBoardRank {margin-top:30%;}
 .page-btn {font-size:1.35rem;margin:0 5px;}

@@ -54,7 +54,6 @@
 		
 		if(method != "POST") {
 			$('div#div_findResult').prop('hidden', true);
-			
 		} 
 		else {
 			$('div#div_findResult').prop('hidden', false);
@@ -62,17 +61,14 @@
 			$('input:text[name="email"]').val("${requestScope.email}");
 			<%-- idfind class파일에서 setAttribute에서 name과 email을 넘겨줘서 여기서 쓸 수 있었다.--%>
 		} 
-
 	   	$('button.btn-success').click(function(){
 	      	goFind();
 	   	});
-   
    		$('input:text[name="email"]').bind('keyup',function(e){
       		if(e.keyCode == 13){
          		goFind();
       		}
    		});
-   
 	}); 
 	
 	
@@ -117,9 +113,9 @@
         <div class="bg-indigo-600 py-4 px-6 relative">
             <!-- 뒤로가기 아이콘 -->
             <p style="background-image:url('<%= ctxPath%>/images/backIco.png');
-                     position:absolute;top:16px;left:10px;width:30px;height:30px;
+                     position:absolute;top:24px;left:10px;width:30px;height:30px;
                      background-size:cover;cursor:pointer;"
-               onclick="location.href='http://localhost:9089/justsurviveoffice/'"></p>
+               onclick="location.href='javascript:history.back()'"></p>
 
             <h1 class="text-2xl font-bold text-white text-center">아이디 찾기</h1>
         </div>

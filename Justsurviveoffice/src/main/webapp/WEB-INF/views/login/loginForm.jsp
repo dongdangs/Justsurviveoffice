@@ -7,40 +7,44 @@
  <script src="https://cdn.tailwindcss.com"></script>
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
  <style>
-        .kakao-bg {
-            background-color: #FEE500;
-        }
-        .kakao-text {
-            color: #3A1D1D;
-        }
-        .naver-bg {
-            background-color: #03C75A;
-        }
-        .naver-text {
-            color: white;
-        }
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: #9CA3AF;
-        }
-        .divider::before,
-        .divider::after {
-            content: "";
-            flex: 1;
-            border-bottom: 1px solid #E5E7EB;
-        }
-        .divider:not(:empty)::before {
-            margin-right: 1em;
-        }
-        .divider:not(:empty)::after {
-            margin-left: 1em;
-        }
-        .input-focus:focus {
-            border-color: #6366F1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
+ body {
+ 	background-color: #9da6ae;
+ 	background-image: url("<%= ctxPath%>/images/background.png");
+ }
+ .kakao-bg {
+     background-color: #FEE500;
+ }
+ .kakao-text {
+     color: #3A1D1D;
+ }
+ .naver-bg {
+     background-color: #03C75A;
+ }
+ .naver-text {
+     color: white;
+ }
+ .divider {
+     display: flex;
+     align-items: center;
+     text-align: center;
+     color: #9CA3AF;
+ }
+ .divider::before,
+ .divider::after {
+     content: "";
+     flex: 1;
+     border-bottom: 1px solid #E5E7EB;
+ }
+ .divider:not(:empty)::before {
+     margin-right: 1em;
+ }
+ .divider:not(:empty)::after {
+     margin-left: 1em;
+ }
+ .input-focus:focus {
+     border-color: #6366F1;
+     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+ }
     </style>
 </head>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -132,11 +136,20 @@
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
     <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full max-w-md">
         <!--  헤더 섹션 -->
-        <div class="bg-indigo-600 py-6 px-8 text-center">
-            <h1 class="text-2xl font-bold text-white">로그인</h1>
-            <p class="text-indigo-100 mt-1">계정에 로그인하세요</p>
-        </div>
-        
+		<div class="bg-indigo-600 py-6 px-8 flex items-center justify-center relative">
+		  <!-- 뒤로가기 아이콘 -->
+		  <p 
+		    style="background-image:url('<%= ctxPath%>/images/backIco.png');"
+		    class="absolute left-4 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-cover cursor-pointer"
+		    onclick="history.back()"
+		  ></p>
+		
+		  <!-- 로그인 텍스트 그룹 -->
+		  <div class="text-center">
+		    <h1 class="text-2xl font-bold text-white">로그인</h1>
+		    <p class="text-indigo-100 mt-1">계정에 로그인하세요</p>
+		  </div>
+		</div>
         <!-- 로그인 폼 -->
         <div class="p-8">
             <form class="space-y-6 loginFrm" id="loginFrm" name="loginFrm">
@@ -144,24 +157,20 @@
                     <label for="id" class="block text-sm font-medium text-gray-700 mb-1">아이디</label>
                     <input type="id" name="id" id="id" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition input-focus" placeholder="example@example.com">
                 </div>
-                
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-1">비밀번호</label>
                     <input type="password" name="password" id="password" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition input-focus" placeholder="••••••••">
                 </div>
-                
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
                         <input id="saveid" name="saveid" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                         <label for="saveid" class="ml-2 block text-sm text-gray-700">아이디 저장</label>
                     </div>
-                    
                     <div class="text-sm">
-                    	<a href="<%=ctxPath %>/users/idFind" class="font-medium text-indigo-600 hover:text-indigo-500">아이디 찾기</a>
+                    	<a href="<%=ctxPath %>/users/idFind" class="font-medium text-indigo-600 hover:text-indigo-500">아이디 찾기</a> / 
                         <a href="<%=ctxPath %>/users/pwdFindForm" class="font-medium text-indigo-600 hover:text-indigo-500">비밀번호 찾기</a>
                     </div>
                 </div>
-                
                 <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition loginSubmit" id="loginSubmit" name="loginSubmit" 
                 onclick=""> 
                     로그인

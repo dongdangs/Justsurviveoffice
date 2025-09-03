@@ -517,7 +517,8 @@ textarea:focus {
    // 글 수정하기 >> restAPI
    function edit() {
       if(!confirm("수정하시겠습니까?")) {
-         return alert("취소되었습니다.");
+    	  alert("취소되었습니다.");
+    	  return;
       }
       const form = document.delnEditForm;
       form.method = "get";

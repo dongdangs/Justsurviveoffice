@@ -1,14 +1,10 @@
 @charset "UTF-8";
 
-body {font-family: Arial, Helvetica, sans-serif, 돋움; }
-
 #mycontainer	{ padding:20px; }
 #myheader		{ display: flex; position: relative; top: 60px;}
 
-#mycontent		{ min-height:900px; position: relative; padding-top: 40px;
-					padding-left: 10px; background-color: gray; border-radius: 10px;}
-/* #myfooter		{ display: flex; min-height:120px; position: relative; top:60px; background-color:#555555; margin-bottom: 70px;}
- */	
+#mycontent		{ min-height:500px; position: relative; padding: 10px 10px 10px 0;background-color: #B0AEAE; border-radius: 10px;}
+
 #myheader a {text-decoration:none;}
 
 #myfooter		{ display: flex; min-height:120px; position: relative; top:60px; background-color:#555555; margin-bottom: 70px;}
