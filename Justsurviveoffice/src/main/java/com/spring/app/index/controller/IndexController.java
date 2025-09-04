@@ -55,6 +55,23 @@ public class IndexController {
 		return "index";
 	}
 	
+	// footer 개인정책 jsp
+    @GetMapping("privacy/privacy")
+    public String privacyPolicy() {
+        return "privacy/privacy";
+    }
+    
+    // footer 오시는 길 jsp
+    @GetMapping("privacy/location")
+    public String location() {
+        return "privacy/location";
+    }
+    
+    // footer 회사소개 jsp
+    @GetMapping("company/company")
+    public String company() {
+        return "company/company";
+    }
 	
 	@GetMapping("users/list")
 	public String memberList() {

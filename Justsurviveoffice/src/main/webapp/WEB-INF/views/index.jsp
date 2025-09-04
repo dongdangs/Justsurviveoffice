@@ -132,5 +132,4 @@
 			</div>
 		</div>
 	</div>
-</body>
-</html>
+<jsp:include page="footer/footer1.jsp"></jsp:include>

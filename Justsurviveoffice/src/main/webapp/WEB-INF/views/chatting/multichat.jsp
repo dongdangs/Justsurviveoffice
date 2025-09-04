@@ -368,3 +368,5 @@
 		   </div></div></div></div>
 		</div>  <%-- row --%>
 	</div>  <%-- end of <div class="container-fluid"> --%>
+</div>	
+<jsp:include page="../footer/footer1.jsp"></jsp:include>

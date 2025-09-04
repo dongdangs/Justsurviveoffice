@@ -23,7 +23,10 @@
 	
 </style>
 
-<script type="text/javascript">
+</head>
+<jsp:include page="../header/header2.jsp" />	
+
+	<script type="text/javascript">
 	
 	$(function(){
 		
@@ -67,9 +70,6 @@
 	
 </script>
 
-</head>
-<jsp:include page="../header/header2.jsp" />	
-
 	<!-- 사용자 검색 및 목록 박스 -->
 	<div class="container mt-4 mb-5 p-5" id="userListBox">
 		
@@ -77,7 +77,7 @@
 		<div class="bg-white rounded-xl shadow-sm p-4 mb-4">
 			<form name="user_search_frm" class="form-inline d-flex flex-wrap align-items-center gap-2">
 				<select name="searchType" class="form-control mr-2" style="max-width: initial;">
-					<option value="name">회원명</option>
+					<option value="name" selected>회원명</option>
 					<option value="id">아이디</option>
 					<option value="email">이메일</option>
 					<option value="categoryName">카테고리명</option>

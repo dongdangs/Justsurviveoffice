@@ -45,6 +45,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 			        		         "/css/**",
 			        	             "/images/**",
 			        		         "/resources/**",
+			        		         "/privacy/**",
+			        		         "/company/**",
 			        	             "/smarteditor/**");
 		
 		registry.addInterceptor(adminLoginCheckInterceptor)

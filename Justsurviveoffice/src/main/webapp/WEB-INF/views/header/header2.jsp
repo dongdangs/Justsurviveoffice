@@ -42,8 +42,8 @@
 		#clock {font-size:0.8rem;}
 		.pc-menu {border-right:1px solid #000;display:flex;flex-wrap:wrap;justify-content:space-between;}
 		.mobileTab{position:fixed;display:none;background-color:#ddd;width:100%;padding:25px 0;z-index:10;}
-		.hamburger {font-size: 2rem;background: none;border: none;position: fixed;top: 15px;right: 20px;z-index: 2001;cursor: pointer;display: none; color:#000 !important;}
-		#adminMenu {position: fixed;top: 0; left: 0;width: 100%; height: 100%;background: #fff;flex-direction: column;		  justify-content: center;align-items: center;z-index: 2000;display: none; margin: 0;padding: 0;}
+		.hamburger {font-size: 2rem;background: none;border: none;position: fixed;top: 11px;right: 20px;z-index: 2001;cursor: pointer;display: none; color:#000 !important;}
+		#adminMenu {position: fixed;top: 0; left: 0;width: 100%; height: 100%;background: #fff;flex-direction: column;justify-content: center;align-items: center;z-index: 2000;display: none; margin: 0;padding: 0;}
 		#adminMenu.show { display: flex; }
 		#adminMenu li {list-style: none;margin: 15px 0;font-size: 1.3rem;}
 		#adminMenu a, #adminMenu li {color: #000;text-decoration: none;}

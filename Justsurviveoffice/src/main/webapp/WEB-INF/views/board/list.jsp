@@ -40,6 +40,7 @@ a {text-decoration: none !important;}
 .keyword-table tbody tr:hover {background: rgba(0,0,0,0.035);}
 .keyword-word {white-space: nowrap;text-overflow: ellipsis;overflow: hidden;max-width: 160px;display: inline-block;}
 .listTitle {line-height:2.5rem;margin:30px 0;}
+#searchWord {width:70%;}
 
 @media screen and (max-width:1300px){
 	.keyword-panel {position:relative;top:initial;right:initial;}
@@ -197,8 +198,7 @@ a {text-decoration: none !important;}
    
 </script>
 
-<div class="col-md-9 ListHeight" style="border-radius: 10pt; 
-		background-image: url('<%= ctxPath %>/images/background.png');">
+<div class="col-md-9 ListHeight" style="border-radius: 10pt; background-image: url('<%= ctxPath %>/images/background.png');">
     <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 5% 0">
 		<c:if test="${requestScope.category eq 1}">
 			<span>MZ들의&nbsp;</span></c:if>
@@ -412,3 +412,5 @@ a {text-decoration: none !important;}
    </div>
    
   </div>   
+ </div>
+  <jsp:include page="../footer/footer1.jsp"></jsp:include>

@@ -173,6 +173,10 @@
     transform: translateY(-2px);
     box-shadow: 0 14px 28px rgba(0,0,0,.08);
   }
+  
+  @media screen and (max-width:1300px) {
+  	.chartAdm {padding:40px 0 0;}
+  }
 
   /* ========= 반응형 ========= */
   @media (max-width: 900px){
