@@ -85,6 +85,32 @@ public class BoardService_imple implements BoardService {
 		return boardList;
 	}
 
+	// 카테고리별 게시물이 3개씩 있는 리스트를 추출해오며, 검색 목록이 있는 경우도 포함.
+	@Override
+	public List<BoardDTO> boardListAll(Map<String, String> paraMap) {
+		List<BoardDTO> boardList = boardDao.selectBoardListAll(paraMap);
+		
+		for(BoardDTO dto : boardList) {
+			// 1. 텍스트 변환
+			String textForBoardList = Jsoup.clean(dto.getBoardContent()
+					.replaceAll("(?i)<br\\s*/?>", "\n")	// 대소문자 구분 없이, <br>, <br/>, <br >, <BR/> 같은 줄바꿈 태그를 전부 찾기, 및 공백 변환
+					.replace("&nbsp;", " "), Safelist.none());
+			dto.setTextForBoardList(textForBoardList.length() > 20
+									? textForBoardList.substring(0,20) + "..."
+									: textForBoardList);
+			// 2. 이미지 체크 및 추출
+			Element img = Jsoup.parse(dto.getBoardContent()).selectFirst("img[src]");	// import org.jsoup.nodes.Element;
+			if (img != null) {
+				String imgForBoardList = img.attr("src");
+				dto.setImgForBoardList(imgForBoardList);
+			} 
+		}
+		//이렇게 하지않으면, JSP가 HTML 스마트 에디터의 태그까지 문자열로 찍어주기 때문에 레이아웃이 깨짐!
+
+		return boardList;
+	}
+	
+	
 	// 스마트에디터파일을 DB에서 받아와, List로 반환하기.
 	@Override
 	public List<String> fetchPhoto_upload_boardFileNameList(Long boardNo) {
@@ -246,8 +272,6 @@ public class BoardService_imple implements BoardService {
 		return boardDao.getLikeCount(fk_boardNo);
 	}
 		
-		
-
 	
 
 	
@@ -286,6 +310,13 @@ public class BoardService_imple implements BoardService {
 		List<Map<String, Object>> keyword_top = boardDao.getBoardContents(category);
 		
 		return keyword_top;
+	}
+	
+	// 마이페이지 게시글 복구하기
+	@Override
+	public int recoveryBoard(String boardNo) {
+		int data = boardDao.recoveryBoard(boardNo);
+		return data;
 	}
 
 

@@ -10,6 +10,7 @@
     
 <!DOCTYPE html>
 <html>
+
 <head>
    <%-- Required meta tags --%>
    <meta charset="UTF-8">
@@ -32,49 +33,117 @@
 
    <%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
    
-   <script>
-   
-   
-   </script>
-   
-   
+<style type="text/css">
+
+/* 프로필 카테고리 이미지 */
+.category-img {
+    width: 100%;
+    max-width: 20rem;   /* 약 320px */
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 1rem auto; /* 중앙정렬 + 하단 여백 */
+}
+
+/* 랭킹 보드 */
+.LBoardRank {
+    width: 100%;
+    max-width: 20rem;   /* category-img와 동일 */
+    box-sizing: border-box;
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    padding: 0.75rem;
+    background: #FFFCFF; /* 완전 white 아님 */
+    transition: all 0.3s ease-in-out;
+    font-weight: bold;
+    color: #6E6B6B;
+    margin: 1rem auto;  /* 반응형 간격 */
+}
+
+/* 타이틀 */
+.hotTitle {
+    font-size: 1rem;   /* 반응형 단위 */
+}
+
+/* 모바일 화면 대응 */
+@media (max-width: 768px) {
+    .category-img,
+    .LBoardRank {
+        max-width: 15rem; /* 240px 정도 */
+    }
+
+    .hotTitle {
+        font-size: 0.9rem;
+    }
+
+    .LBoardRank {
+        padding: 0.5rem;
+    }
+}
+
+/* 아주 작은 화면 (예: 400px 이하) */
+@media (max-width: 400px) {
+    .category-img,
+    .LBoardRank {
+        max-width: 100%;  /* 화면 가득 */
+    }
+
+    .hotTitle {
+        font-size: 0.85rem;
+    }
+
+    table tbody {
+        font-size: 0.75rem; /* 가독성 위해 글씨 더 작게 */
+    }
+}
+
+</style>
 </head>
 
-   <div id="mycontainer">
+   <div id="mycontainer"  style="background-image: url('<%= ctxPath %>/images/background.png');">
       <div id="myheader">
          <jsp:include page="../menu/menu1.jsp" />
       </div>
       
-      <div id="mycontent">
+      <div id="mycontent" class="mt-5">
          <div class="row" style="margin:0 auto;"> 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
             <c:if test="${not empty sessionScope.loginUser}">   
-               <div>
-                  <img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-                   <div class="text-muted small mb-3 ml-3">${sessionScope.loginUser.email}</div>
-                   <div class="mb-3 ml-3">
-                      <span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-                      <div>포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> point</b></div>
+               <div style="text-align: center;">
+               <c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() eq null}">
+               		<img src="<%=ctxPath%>/images/unassigned.png" alt="프로필"  class="category-img mb-3">
+               </c:if>
+               	<c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() ne null}">
+               		<img src="<%=ctxPath%>/images/${sessionScope.loginUser.getCategory().getCategoryImagePath()}" alt="프로필" 
+               			 class="category-img mb-3">
+               	</c:if>
+                   <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
+                   <div class="mb-3">
+                      <div style="size:20pt; color:blue; font-weight: bold;">${sessionScope.loginUser.name} 님 </div>
+                      <div>포인트 : <b style="color: #5CFF5C; font-weight: bold;">
+                      				<fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> 
+                      				point</b></div>
                    </div>
                </div>
             </c:if>   
-               <div style="width: 70%; margin-top:30%;">
+              <div class="LBoardRank">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 style="font-weight: bolder; margin: 0;">대사살 <span style="color: red;">Hot!</span> 게시글</h6>
+                    <h6 class="hotTitle" style="font-weight: bolder; margin: 0;">대사살 <span style="color: red;">Hot!</span> 게시글</h6>
                 </div>
                 <table class="table table-sm table-borderless">
                     <tbody style="font-size: 10pt;">
                         <c:forEach var="hotRead" items="${hotReadList}">
                             <form id="viewForm${hotRead.boardNo}" 
-                           action="<%= ctxPath %>/board/view" 
-                           method="get" 
-                           style="display:none;">
+		                           action="<%= ctxPath %>/board/view" 
+		                           method="get" 
+		                           style="display:none;">
                          <input type="hidden" name="category" value="${hotRead.fk_categoryNo}">
                          <input type="hidden" name="boardNo" value="${hotRead.boardNo}">
                      </form>
                      <tr>
                          <td style="width: 5%; font-weight: bold;">
-                             ${hotRead.rank}
+                             ${hotRead.rank}.
                          </td>
                          <td style="width: 95%;">
                              <a href="javascript:void(0);" 
@@ -82,7 +151,7 @@
                                 style="color: #000;">
                                  ${hotRead.boardName}
                              </a>
-                             <span class="fa-regular fa-eye text-muted" style="font-size: 8pt; color:#fff !important">
+                             <span class="fa-regular fa-eye text-muted" style="font-size: 8pt; color:black !important">
                                  (${hotRead.readCount})
                              </span>
                          </td>
@@ -91,24 +160,24 @@
                     </tbody>
                 </table>
             </div>
-            <div style="width: 70%; margin-top:30%;">
+            <div class="LBoardRank">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 style="font-weight: bolder; margin: 0;">대사살 댓글많은 게시글</h6>
+                    <h6 class="hotTitle" style="font-weight: bolder; margin: 0;"> 대사살 <span style="color:blue;">시끌벅적!</span> 게시글</h6>
                 </div>
                 <table class="table table-sm table-borderless">
                     <tbody style="font-size: 10pt;">
                         <c:forEach var="hotComment" items="${hotCommentList}">
                            <form id="viewForm${hotComment.boardNo}" 
-                           action="<%= ctxPath %>/board/view" 
-                           method="get" 
-                           style="display:none;">
+		                           action="<%= ctxPath %>/board/view" 
+		                           method="get" 
+		                           style="display:none;">
                          <input type="hidden" name="category" value="${hotComment.fk_categoryNo}">
                          <input type="hidden" name="boardNo" value="${hotComment.boardNo}">
                      </form>
                      
                      <tr>
                          <td style="width: 5%; font-weight: bold;">
-                             ${hotComment.rank}
+                             ${hotComment.rank}.
                          </td>
                          <td style="width: 95%;">
                              <a href="javascript:void(0);" 
@@ -116,9 +185,7 @@
                                 style="color: #000;">
                                  ${hotComment.boardName}
                              </a>
-                             <span class="fa-regular fa-eye text-muted" style="font-size: 8pt; color:#fff !important">
-                                 (${hotComment.commentCount})
-                             </span>
+                             <%-- <span>${hotComment.fk_categoryName}</span> --%>
                          </td>
                      </tr>
                         </c:forEach>

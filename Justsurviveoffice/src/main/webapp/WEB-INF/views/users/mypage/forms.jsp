@@ -23,7 +23,7 @@
 	body { background: #f7f7fb; }
 	.sidebar { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
 	.sidebar img { max-width: 100%; border-radius: 10px; }
-	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none; }
+	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none;font-weight:500;}
 	.sidebar-menu a:hover { color: #6c63ff; } 
 	.content { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
 	.table th, .table td { vertical-align: middle; }
@@ -39,7 +39,7 @@
 	  border-radius: 8px;
 	
 	  /* 스크롤바 공간을 미리 확보해서 헤더/본문 폭 어긋남 방지 (지원 브라우저에서) */
-	  scrollbar-gutter: stable both-edges;
+	  /*scrollbar-gutter: stable both-edges;*/
 	}
 	
 	/* 테이블 아래 여백 제거(스크롤 영역 계산 깔끔) */
@@ -178,7 +178,38 @@
 	    
 	    // 첫 화면 로딩 시 데이터 불러오기
 	    loadMore();
-	
+		
+	    
+	    $('#boardList').on('click', "button[data-fk_boardno]", function(){
+	    	const boardNo = $(this).data('fk_boardno');
+	    	if (!boardNo) return;
+	    	
+	    	if (!confirm('이 게시글을 복구하시겠습니까?')) return;
+	    	
+	    //	alert(boardNo);
+	    	
+	    	$.ajax({
+	    		url:"<%=ctxPath%>/mypage/myBoardRecovery",
+	    		type: "GET",
+	    		data:{"boardNo":boardNo},
+	    		success:function(data){
+	    			if(data.length = 1) {
+	    				alert("복구 완료");
+	    				location.reload();
+	    			}
+	    			else {
+	    				alert("복구 실패");
+	    			}
+	    		},
+	    		error: function() {
+	                $(".loading").hide();
+	                isLoading = false;
+	                alert("데이터 로딩 실패");
+	            }
+	    	});
+	    	
+	    })
+	    
 	});
 	
 </script>
@@ -189,23 +220,8 @@
 	<div class="container mt-4">
 	    <div class="row">
 	        <!-- 사이드바 -->
-	        <div class="col-lg-3 mb-4">
-	            <div class="sidebar text-center">             
-	                <img src="<%=ctxPath%>/images/mz.png" alt="프로필" class="mb-3">
-	                <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
-	                <div class="mb-3">
-	                    <span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
-	                    포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/>p</b>
-	                </div>
-	                <hr>
-	                <div class="sidebar-menu text-left">
-	                    <a href="<%=ctxPath%>/users/logout">로그아웃</a>
-	                    <a href="#" id="btnQuit">탈퇴하기</a>
-	                    <a href="javascript:history.back()">이전 페이지</a>
-	                </div>
-	            </div>
-	        </div>
-	
+	        <jsp:include page="../../menu/sidemenu.jsp"></jsp:include>
+	        
 	        <!-- 메인 내용 -->
 	        <div class="col-lg-9">
 	            <div class="content">

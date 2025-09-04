@@ -148,7 +148,14 @@ public class MyPageController {
     }
     
     
-	   
+	// 마이페이지 게시글 복구하기
+    @GetMapping("myBoardRecovery")
+    @ResponseBody
+    public int myBoardRecovery(@RequestParam(name = "boardNo") String boardNo) {
+    	int data = boardService.recoveryBoard(boardNo);
+    	return data;
+    }
+    
     
     
 }

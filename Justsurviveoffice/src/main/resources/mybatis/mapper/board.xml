@@ -127,6 +127,51 @@
 	  	WHERE A.boardNo = #{boardNo} and A.fk_categoryNo = C.categoryNo
 	</select>
   	
+  	<!-- 모든 카테고리와, 각 카테고리별 게시물을 3개씩 가져오는 메소드 -->
+  	<select id="selectBoardListAll" parameterType="HashMap" resultType="BoardDTO">
+		select *
+		from (
+		    select
+		        boardNo, fk_id,
+		        case when length(boardName) &gt; 12 
+		             then substr(boardName, 1, 12)
+		             else boardName end as boardName,
+		        boardContent, BoardFileName, BoardFileOriginName, readcount,
+		        to_char(updatedAtBoard, 'yyyy-mm-dd hh24:mi:ss') AS updatedAtBoard,
+		        case
+		            when (SYSDATE - updatedAtBoard) * 24 * 60 &lt; 60 
+		                then trunc((SYSDATE - updatedAtBoard) * 24 * 60) || '분 전'
+		            when (SYSDATE - updatedAtBoard) * 24 &lt; 24
+		                then trunc((SYSDATE - updatedAtBoard) * 24) || '시간 전'
+		            when (SYSDATE - updatedAtBoard) &lt; 7
+		                then trunc(SYSDATE - updatedAtBoard) || '일 전'
+		            else to_char(updatedAtBoard, 'yyyy-mm-dd')
+		        end as formattedDate,
+		        fk_categoryNo, categoryName,
+		        row_number() over (partition by fk_categoryNo order by boardNo desc) as rnum
+		    from board join category on fk_categoryNo = categoryNo 
+		    where boardDeleted = 0
+		    <choose>
+		            <when test='searchType == "boardName" and searchWord != ""'>
+		                and lower(boardName) like '%'||lower(#{searchWord})||'%'
+		            </when>
+		            <when test='searchType == "boardContent" and searchWord != ""'>
+		                and lower(boardContent) like '%'||lower(#{searchWord})||'%'
+		            </when>
+		            <when test='searchType == "boardName_boardContent" and searchWord != ""'>
+		                and ( lower(boardName) like '%'||lower(#{searchWord})
+		               		||'%' or lower(boardContent) like '%'||lower(#{searchWord})||'%' ) 
+		            </when>
+		            <when test='searchType == "fk_id" and searchWord != ""'>
+		            	and lower(fk_id) like '%'||lower(#{searchWord})||'%'
+		            </when>
+				</choose>
+		) sub
+		where sub.rnum &lt;= 3
+		order by sub.fk_categoryNo, sub.boardNo desc   		
+  	</select>
+  	
+  	
   	<update id="softDeleteBoard" parameterType="Long">
  		update board 
   		set boardDeleted = 1
@@ -140,31 +185,42 @@
 	</update>
 
 	
-	 <select id="getIndexList" resultType="CategoryDTO">
+	 <select id="getIndexList" parameterType="string" resultType="map">
+	  SELECT
+	      C.categoryNo         AS "categoryNo",
+	      C.categoryName       AS "categoryName",
+	      C.categoryDescribe   AS "categoryDescribe",
+	      C.categoryImagePath  AS "categoryImagePath",
+	      COUNT(B.boardNo)     AS "boardCount",
+	      NVL(MAX(TA.tags), '') AS "tags"
+	  FROM category C
+		  LEFT JOIN board B
+		         ON B.fk_categoryNo = C.categoryNo
+		  LEFT JOIN (
+		      SELECT
+		          T.fk_categoryNo AS categoryNo,
+		          LISTAGG('#' || T.tagName, ' ') WITHIN GROUP (ORDER BY T.tagNo) AS tags
+		      FROM tag T
+		      GROUP BY T.fk_categoryNo
+		  ) TA
+		  ON TA.categoryNo = C.categoryNo
+	<where>
+		 <if test="_parameter != null and _parameter != ''">
+		    C.categoryNo = TO_NUMBER(#{_parameter})
+		  </if>
+	  </where>
+	  GROUP BY
+	      C.categoryNo, C.categoryName, C.categoryDescribe, C.categoryImagePath
+	  ORDER BY C.categoryNo
+</select>
+	 
+	 <!-- <select id="getIndexList" resultType="CategoryDTO">
           select categoryNo, categoryName, categoryImagePath, categoryDescribe,
           		 LISTAGG(tagName, ',') WITHIN GROUP (ORDER BY tagNo) AS tags 
           from category C join tag T  
           on C.categoryNo = T.fk_categoryNo 
           group by (categoryNo, categoryName, categoryImagePath,categoryDescribe)
-          
-          <!-- select
-			    C.categoryNo         AS "categoryNo",
-			    C.categoryName       AS "categoryName",
-			    C.categoryDescribe   AS "categoryDescribe",
-			    C.categoryImagePath  AS "categoryImagePath",
-			    COUNT(B.boardNo)     AS "boardCount"
-			  from category C
-			  left join board B
-			  on B.fk_categoryNo = C.categoryNo
-			  <where>
-			    <if test="_parameter != null and _parameter != ''">
-			      C.categoryNo = #{_parameter}
-			    </if>
-			  </where>
-			  group by
-			    C.categoryNo, C.categoryName, C.categoryDescribe, C.categoryImagePath
-			  order by C.categoryNo -->
-	</select>
+	</select> -->
       
    
    <!-- 서브쿼리 쓴 이유 (김예준)
@@ -412,5 +468,10 @@
   		select count(*) from board
 		where fk_id = #{id} and (sysdate - createdAtBoard) &lt;= 1
   	</select>
+  	
+  	<update id="recoveryBoard" parameterType="String">
+  		update board set boardDeleted = 0
+  		where boardNo = #{boardNo}
+  	</update>
   	
 </mapper>

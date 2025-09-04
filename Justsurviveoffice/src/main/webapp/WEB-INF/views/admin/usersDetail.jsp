@@ -192,11 +192,14 @@
                                         <div class="w-1/3 font-semibold text-gray-600 flex items-center">
                                             <i class="fas fa-image mr-2"></i> Category
                                         </div>
-                                        <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded">
-                                        	<c:if test="${not empty requestScope.usersDto.category.categoryImagePath}">
-                                        		<img src="<%= ctxPath%>/images/${requestScope.usersDto.category.categoryImagePath}" alt="카테고리이미지패스" style="width: 150px; height: 150px;">
-                                        	</c:if>
-                                        </div>
+                                        <div class="w-2/3 text-gray-800 bg-gray-50 p-2 rounded flex justify-center items-center">
+										    <c:if test="${not empty requestScope.usersDto.category.categoryImagePath}">
+										        <img src="<%= ctxPath%>/images/${requestScope.usersDto.category.categoryImagePath}" alt="카테고리이미지패스" style="width: 150px; height: 150px;">
+										    </c:if>
+										    <c:if test="${empty requestScope.usersDto.category.categoryImagePath}">
+										        <img src="<%= ctxPath%>/images/unassigned.png" alt="카테고리이미지패스" style="width: 150px; height: 150px;">
+										    </c:if>
+										</div>
                                     </div>
                                     <div class="flex items-start">
                                         <div class="w-1/3 font-semibold text-gray-600 flex items-center">

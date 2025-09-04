@@ -70,18 +70,18 @@ public class Mongo_surveyController {
     	
     	for( Map.Entry<String, Integer> categoryMap : categoryCount.entrySet() ) {
     		int k = categoryMap.getValue();
-    		
-    		if(k > maxValue) {
-    			maxValue = k;
-    			maxCategoryList.clear();	// 리스트 비우기
+
+    		System.out.println(k);
+    		if(k > maxValue) {	// 새로운 값이 더 높다면,
+    			maxValue = k;	// 리스트를 비우자!
+    			maxCategoryList.clear();
     			maxCategoryList.add(categoryMap.getKey());
     		}
-    		
-    		else {
+    		else if(k == maxValue){	// k가 쌓이면서 maxValue가 같을때는 리스트 추가!
     			maxCategoryList.add(categoryMap.getKey());
     		}
     	}// end of for---------------------------
-    	System.out.println("확인용 max : " + maxCategoryList);
+    	// System.out.println("확인용 max : " + maxCategoryList);
     	String categoryNo = "";
     	
     	if(maxCategoryList.size() >= 4) {	// 값이 4개 이상 저장되어 있을 경우 리더형
@@ -101,6 +101,7 @@ public class Mongo_surveyController {
     	JSONObject jsonObj = new JSONObject();	// {} 최종 오브젝트
 		jsonObj.put("categoryName", cdto.getCategoryName());
 		jsonObj.put("categoryImagePath", cdto.getCategoryImagePath());
+		
 		
 		JSONArray tagArr = new JSONArray();	// []
 		for(String tag : cdto.getTags().split(",")) {
