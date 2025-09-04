@@ -132,5 +132,12 @@
 			</div>
 		</div>
 	</div>
+	
+	<c:if test="${param.error == '1'}">
+		<script>
+			alert('관리자 계정은 중복 로그인이 허용되지 않습니다.');
+		</script>
+	</c:if>
+	
 </body>
 </html>
