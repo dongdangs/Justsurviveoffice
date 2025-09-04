@@ -48,6 +48,14 @@
     border: 1px solid #f0f0f0;
 }
 
+/* board-content 내부 이미지 크기 자동 조절 너무너무 중요!*/
+.board-content img {
+    max-width: 100%;  /* div의 너비를 넘지 않음 */
+    height: auto;     /* 비율 유지하면서 줄어듦 */
+    display: block;   /* inline 속성 해제 (간격 정리용) */
+    margin: 10px auto; /* 가운데 정렬 (옵션) */
+}
+
 /* 첨부파일 이미지 */
 .board-file img {
     max-width: 300px;
@@ -296,7 +304,7 @@ textarea:focus {
     color: #3f80ff;  /* hover 시 강조 */
 }
 
-.row {margin:0;}
+
 </style>
 
 <script type="text/javascript">
@@ -810,7 +818,6 @@ textarea:focus {
    
    
 </script>
-<body style="background-image: url('<%= ctxPath %>/images/background.png'); "></body>
  <div class="col-md-9 ListHeight" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; ">
    <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray;">
       <input name="fk_categoryNo" style="display: none;"

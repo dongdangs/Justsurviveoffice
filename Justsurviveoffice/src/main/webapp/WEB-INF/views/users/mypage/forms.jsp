@@ -178,7 +178,38 @@
 	    
 	    // 첫 화면 로딩 시 데이터 불러오기
 	    loadMore();
-	
+		
+	    
+	    $('#boardList').on('click', "button[data-fk_boardno]", function(){
+	    	const boardNo = $(this).data('fk_boardno');
+	    	if (!boardNo) return;
+	    	
+	    	if (!confirm('이 게시글을 복구하시겠습니까?')) return;
+	    	
+	    //	alert(boardNo);
+	    	
+	    	$.ajax({
+	    		url:"<%=ctxPath%>/mypage/myBoardRecovery",
+	    		type: "GET",
+	    		data:{"boardNo":boardNo},
+	    		success:function(data){
+	    			if(data.length = 1) {
+	    				alert("복구 완료");
+	    				location.reload();
+	    			}
+	    			else {
+	    				alert("복구 실패");
+	    			}
+	    		},
+	    		error: function() {
+	                $(".loading").hide();
+	                isLoading = false;
+	                alert("데이터 로딩 실패");
+	            }
+	    	});
+	    	
+	    })
+	    
 	});
 	
 </script>

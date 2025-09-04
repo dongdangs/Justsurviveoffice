@@ -18,7 +18,7 @@
 .board-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1px;
 }
 
 .board-card {
@@ -106,12 +106,25 @@
 border: 2px solid #ddd;
 border-radius: 8px;
 padding: 5px;
-background: ;
-transition: 0.2s;
+background: #F9F0FA;
+transition: 0.3s;
 font-size: 20px; 
 font-weight: bold; 
-color: gray;
+color: #6E6B6B;
 margin: 25% 0 5% 0;
+}
+.plus-btn {
+border: 2px solid #ddd;
+justify-content: center;
+align-items: center;
+margin-left: 5pt;
+background: #F9F0FA;
+padding: 1pt 2pt;
+border-radius: 25%;  
+font-size: 5%;
+font-weight: bold;   
+color: black;              
+cursor: pointer;
 }
 </style> 
 
@@ -161,16 +174,6 @@ margin: 25% 0 5% 0;
 	    });
 	 }// end of function Bookmark(boardNo,fk_id)———————————
 	
-  // === 글목록 검색하기 요청 === //
-  function searchBoard() {
-     const form = document.searchForm;
-    
-     form.method = "get";
-     form.action = "<%= ctxPath%>/board/list/${boardDto.fk_categoryNo}";
-       
-     form.submit();
-   }
-	 
 </script>
 
 <div class="col-md-9 ListHeight" style="border-radius: 10pt; 
@@ -178,29 +181,23 @@ margin: 25% 0 5% 0;
 	
 	
    <h2 style="margin: 30px 0; font-size: 25pt; font-weight: bold;">글목록</h2>
-   <%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
-   <form name="searchForm" style="margin-top: 20px;">
-      <select name="searchType" style="height: 26px;">
-         <option value="boardName">글제목</option>
-         <option value="boardContent">글내용</option>
-         <option value="boardName_boardContent">글제목+글내용</option>
-         <option value="fk_id">글쓴이</option>
-      </select>
-      
-       <!-- 입력창 + 자동완성 드롭다운을 한 박스로 묶기 -->
-      <span class="autocomplete">
-      	<input id="searchWord" type="text" name="searchWord" size="50" autocomplete="off" />
-      	<div id="displayList"></div>
-      </span>
-       
-      <input type="text" style="display: none;"/> <%-- form 태그내에 input 태그가 오로지 1개 뿐일경우에는 엔터를 했을 경우 검색이 되어지므로 이것을 방지하고자 만든것이다. --%>  
-      <button type="button" class="btn btn-secondary btn-sm" onclick="searchBoard()">검색</button> 
-      
-      <span><a href="<%=ctxPath %>/board/write/${loginUser.getCategory().getCategoryNo()}" class="btn btn-secondary btn-sm" 
-            id="writeBtn" style="background-color: navy;">글쓰기</a></span>
+      <c:if test="${loginUser.getCategory().getCategoryNo() ne 6}">
+      	<span><a href="<%=ctxPath %>/board/write/${loginUser.getCategory().getCategoryNo()}" class="btn btn-secondary btn-sm" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">내 유형으로 글쓰러 가기</a></span>
+      </c:if>
+      <c:if test="${loginUser.getCategory().getCategoryNo() eq 6}">
+    	<span><a href="<%=ctxPath %>/board/write/1" class="btn btn-secondary btn-sm mb-1" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">MZ유형으로 글쓰러 가기</a></span>
+        <span><a href="<%=ctxPath %>/board/write/2" class="btn btn-secondary btn-sm mb-1" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">꼰대유형으로 글쓰러 가기</a></span>
+        <span><a href="<%=ctxPath %>/board/write/3" class="btn btn-secondary btn-sm mb-1" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">노예유형으로 글쓰러 가기</a></span>
+        <div><span><a href="<%=ctxPath %>/board/write/4" class="btn btn-secondary btn-sm mb-1" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">마이웨이유형으로 글쓰러 가기</a></span>
+        <span><a href="<%=ctxPath %>/board/write/5" class="btn btn-secondary btn-sm mb-1" 
+            id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">금쪽이유형으로 글쓰러 가기</a></span></div>
+      </c:if>      
       <!-- <span><input type="hidden" name="category"/></span> -->
-   </form> 
-   
    
    <%--  특정 글제목을 클릭했을때, 특정 글1개를 보여줄때 POST 방식으로 넘기기 위해 form 태그를 만들겠다. --%>
    
@@ -211,8 +208,13 @@ margin: 25% 0 5% 0;
 		  <c:forEach var="boardDto" items="${boardList}">
 		    <!-- 카테고리 이름이 바뀌었을 때만 출력 -->
 		    <c:if test="${changeCategory ne boardDto.categoryName}">
-		      <div class="category-block">
-		        <span class="categoryDiv">${boardDto.categoryName}들의 생존 게시판</span>
+		      <div class="category-block mt-4 mb-2">
+		        <span class="categoryDiv">${boardDto.categoryName.replace('형','')}들의 생존 게시판</span>
+		     	 <!-- + 버튼 추가! -->
+			    <span class="plus-btn"
+			          onclick="window.location.href='<%=ctxPath%>/board/list/${boardDto.fk_categoryNo}'">
+			      	더보기<i class="fa fa-plus"></i>
+			    </span>
 		      </div>
 		      <c:set var="changeCategory" value="${boardDto.categoryName}" />
 		    </c:if>
@@ -272,88 +274,3 @@ margin: 25% 0 5% 0;
    </div>
    
 </div>
-
-<script type="text/javascript">
-$(function(){
-
-	   $('span.boardName').hover(function(e){
-		   $(e.target).addClass("boardNameStyle");
-		   },function(e){
-		   $(e.target).removeClass("boardNameStyle");
-	   });
-		   
-	   // 글검색시 글검색어 입력후 엔터를 했을 경우 이벤트 작성하기
-	   $('input:text[name="searchWord"]').bind("keyup", function(e){
-		   if(e.keyCode == 13) { // 엔터를 했을 경우
-			   searchBoard();
-		   }
-	   });
-		   
-	   // 글목록 검색시 검색조건 및 검색어 값 유지시키기
-	   if(${not empty requestScope.searchType}) {
-		   $('select[name="searchType"]').val("${requestScope.searchType}");
-	   }
-	   if(${not empty requestScope.searchWord}) {
-		   $('input[name="searchWord"]').val("${requestScope.searchWord}");
-	   }
-		   
-	   <%-- === 검색어 입력시 자동글 완성하기 === --%>
-	   // 입력이 없던 초기 div 숨기기.
-	   $('div#displayList').hide();
-	   $('input[name="searchWord"]').keyup(function(){
-		   const wordLength = $(this).val().trim().length;
-		   // 검색어에서 공백을 제거한 길이를 알아온다.
-		   if(wordLength == 0) {
-			   $('div#displayList').hide();
-			   // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안 나오도록 해야 한다. 
-		   }
-		   else {
-			   if( $('select[name="searchType"]').val() == "boardName" || 
-				   $('select[name="searchType"]').val() == "boardContent" || 
-				   $('select[name="searchType"]').val() == "boardName_boardContent" ||
-				   $('select[name="searchType"]').val() == "fk_id") {
-				   
-				   $.ajax({
-					   url:"<%= ctxPath%>/board/wordSearchShow",
-					   type:"get",
-					   data:{"searchType":$('select[name="searchType"]').val()
-						    ,"searchWord":$('input[name="searchWord"]').val()
-						    ,"category":${category}},
-					   dataType:"json",
-					   success:function(json){
-						   if(json.length > 0) {
-							   // 검색된 데이터가 있는 경우임.
-							   let v_html = ``;
-							   $.each(json, function(index, item){
-								   const word = item.word;
-								   const idx = word.toLowerCase().indexOf($('input[name="searchWord"]').val().toLowerCase());
-								   const len = $('input[name="searchWord"]').val().length;
-							       const result = word.substring(0, idx) + "<span style='color:red;'>"+word.substring(idx, idx+len)+"</span>" + word.substring(idx+len);
-							       v_html += `<span class='result'>\${result}</span>`;
-							   });// end of $.each(json, function(index, item){})-------------------
-							   
-							   const input_width = $('input[name="searchWord"]').css("width"); // 검색어 input 태그 width 값 알아오기 
-							   $('div#displayList').css({"width":input_width}); // 검색결과 div 의 width 크기를 검색어 입력 input 태그의 width 와 일치시키기 
-							   $('div#displayList').html(v_html).show();
-						   }
-					   },
-					   error: function(request, status, error){
-						   console.log("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-					   } 
-				   });
-			   }
-		   }
-	   });// end of $('input[name="searchWord"]').keyup(function(){})-----------------
-	   
-	   <%-- === 검색어 입력시 자동글 완성하기  === --%>
-	   $(document).on('click', 'span.result', function(e){
-		    const word = $(this).text()
-		    $('input[name="searchWord"]').val(word); // 텍스트박스에 검색된 결과의 문자열을 입력해준다.
-		    $('div#displayList').hide();
-		    searchBoard(); // 글목록 검색하기 요청
-	   });
-		   
-	 }); // end of $(function(){})--------------------------
-
-</script>
-   

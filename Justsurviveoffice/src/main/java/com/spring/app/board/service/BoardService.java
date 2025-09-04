@@ -82,6 +82,9 @@ public interface BoardService {
 	
 	// == 키워드 메소드 작성 해봄 == // 
 	public List<Map<String, Object>> getKeyWord(String category);
+	
+	// 마이페이지 게시글 복구하기
+	public int recoveryBoard(String boardNo);
 
 
 //	
