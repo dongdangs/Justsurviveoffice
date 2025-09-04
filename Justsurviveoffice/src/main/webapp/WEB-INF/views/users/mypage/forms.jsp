@@ -195,6 +195,7 @@
 	    		success:function(data){
 	    			if(data.length = 1) {
 	    				alert("복구 완료");
+	    				location.reload();
 	    			}
 	    			else {
 	    				alert("복구 실패");
