@@ -794,7 +794,6 @@ textarea:focus {
                icon.removeClass("fa-solid fa-thumbs-down text-warning fa-regular");
                likeIcon.removeClass("fa-solid fa-thumbs-up text-warning fa-regular");
 
-
                if (isreplyDisliked) { //이미 싫어요가 눌러져있다면
                    icon.addClass("fa-solid fa-thumbs-down text-warning");
                } else {
