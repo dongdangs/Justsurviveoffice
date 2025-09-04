@@ -31,7 +31,6 @@ dependencies {
    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
    implementation 'org.jsoup:jsoup:1.18.1'
 
-
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-mail' 
@@ -55,7 +54,6 @@ dependencies {
 	implementation 'org.mongodb:mongodb-driver-sync:5.2.1'
 	
 	// Redis 의존성 추가
-
    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
    implementation 'org.springframework.boot:spring-boot-starter-web'
    implementation 'org.springframework.boot:spring-boot-starter-mail' 
@@ -180,6 +178,7 @@ dependencies {
 	 poi-ooxml은 excel 2007이후 버전이며 이때 schemas도 같이 porting을 해줘야 xlsx 파일을 읽어들인다. 
 	 poi는 excel 2007포함한 이전 버전이다.  
 	*/
+	
 	// https://mvnrepository.com/artifact/org.apache.poi/poi
 	implementation 'org.apache.poi:poi:5.3.0'
 		
@@ -229,7 +228,6 @@ dependencies {
 	// 대사살 스프링 시큐리티01 >> <sec:authorize> 같은 태그 사용할 수 있는 라이브러리
 	implementation 'org.springframework.security:spring-security-taglibs:6.4.2'
 	
-
    // https://mvnrepository.com/artifact/cglib/cglib
    // 대사살 스프링 시큐리티02 >> 프록시(대리자) 객체 만들 때 필요한 라이브러리
    implementation 'cglib:cglib:3.3.0'
@@ -317,7 +315,6 @@ dependencies {
    // 대사살 스프링 시큐리티01 >> <sec:authorize> 같은 태그 사용할 수 있는 라이브러리
    implementation 'org.springframework.security:spring-security-taglibs:6.4.2'
    
-
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
 
 	//implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -328,14 +325,12 @@ dependencies {
    // 대사살 스프링 시큐리티01 >> 여기도 주석 해제!!!!!
    implementation 'org.springframework.boot:spring-boot-starter-security:3.4.1'
 
-    
-    // https://mvnrepository.com/artifact/org.springframework.security/spring-security-test
    //testImplementation 'org.springframework.security:spring-security-test'
-//   testImplementation 'org.springframework.security:spring-security-test:6.4.2'   
+   //testImplementation 'org.springframework.security:spring-security-test:6.4.2'   
    
    // === Query DSL 에 필요한 것들 ===
    // 1. SQL 쿼리를 자바코드로 생성해주는 것
-    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+   implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     
     // 2. QClass(쿼리클래스) 를 생성해주는 것
     /*

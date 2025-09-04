@@ -74,6 +74,9 @@ public interface BoardDAO {
 	// 키워드 테이블에서 데이터 가져오기
 	public List<Map<String, Object>> getBoardContents(String category);
 	// =====================0827 rdg7203 수정 끝 =============================== //
+	
+	// 마이페이지 게시글 복구하기
+	public int recoveryBoard(String boardNo);
 
 
 

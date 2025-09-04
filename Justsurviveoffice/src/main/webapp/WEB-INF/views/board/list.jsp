@@ -10,9 +10,9 @@
 <jsp:include page="../header/header1.jsp" /> 
 
 <style type="text/css">
-    th {background-color: #ddd}
-    .boardNameStyle {font-weight: bold;color: navy;cursor: pointer;}
-    a {text-decoration: none !important;} /* 페이지바의 a 태그에 밑줄 없애기 */
+th {background-color: #ddd}
+.boardNameStyle {font-weight: bold;color: navy;cursor: pointer;}
+a {text-decoration: none !important;}
 .board-list {display: flex;flex-direction: column;gap: 16px;}
 .board-card {border: 1px solid #ddd;border-radius: 8px;padding: 12px;margin-right: 10%;background: #fff;cursor: pointer;transition: box-shadow 0.2s;}
 .board-card:hover {box-shadow: 0 2px 8px rgba(0,0,0,0.15);}
@@ -20,102 +20,29 @@
 .board-card .preview {font-size: 0.9rem;color: #555;margin-bottom: 8px;}
 .board-card .thumbnail {width: 80px;height: 80px;object-fit: cover;margin-bottom: 8px;}
 .board-card .meta {font-size: 0.8rem;color: #888;display: flex;gap: 10px;align-items:center;}
-.title,content { /* 제목과 내용의 라인을 한줄로 제한하고, 이상이되면 안보이게! */white-space: nowrap;overflow: hidden;}
+.title,content {white-space: nowrap;overflow: hidden;}
 
-/* 입력창-자동완성 래퍼 */
 .autocomplete { position: relative; display: inline-block; }
 
-/* 자동검색 박스 */
-#displayList{position: absolute;top: 100%;left: 0; right: 0;background: #fff;border: 1px solid #ccc;border-top: none;box-shadow: 0 4px 12px rgba(0,0,0,.12);z-index: 1000;display: none;max-height: 180px;/* 대략 6줄 */overflow-y: auto;/* 넘치면 스크롤 */overflow-x: hidden;border-radius: 0 0 6px 6px;}
-/* 항목 스타일 */
-#displayList .result{display: block;            /* 줄바꿈 대신 블록으로 */padding: 6px 8px;line-height: 24px;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;cursor: pointer;
-}
+#displayList{position: absolute;top: 100%;left: 0; right: 0;background: #fff;border: 1px solid #ccc;border-top: none;box-shadow: 0 4px 12px rgba(0,0,0,.12);z-index: 1000;display: none;max-height: 180px;overflow-y: auto;overflow-x: hidden;border-radius: 0 0 6px 6px;}
+#displayList .result{display: block;padding: 6px 8px;line-height: 24px;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;cursor: pointer;}
 #displayList .result:hover{ background:#f5f7fa; }
-#displayList .result span{ color:#d00; font-weight:600; } /* 강조색 */
+#displayList .result span{ color:#d00; font-weight:600; } 
 
+.col-md-9 {border-radius: 10pt;background-size: cover;  background-position: center;background-repeat: no-repeat;background-attachment: fixed;background-blend-mode: overlay;}
+.keyword-panel {position: absolute;top: 16px;    right: 16px; width: 180px;background: rgba(255,255,255,0.35); border: 1px solid rgba(0,0,0,0.08);border-radius: 10px;box-shadow: 0 6px 18px rgba(0,0,0,0.08);backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);overflow: hidden;z-index: 5;                    }
+.keyword-header {padding: 10px 12px;font-weight: 700;font-size: 0.95rem;color: #333;background: rgba(255,255,255,0.25);border-bottom: 1px solid rgba(0,0,0,0.06);}
+.keyword-table-wrap {max-height: 260px;overflow: auto;}
+.keyword-table {width: 100%;border-collapse: collapse;table-layout: fixed;font-size: 0.92rem;color: #222;}
+.keyword-table th, .keyword-table td {padding: 8px 10px;border-bottom: 1px solid rgba(0,0,0,0.06);background: transparent;}
+.keyword-table th {text-align: left;color: #444;font-weight: 600;position: sticky;top: 0;background: rgba(255,255,255,0.28); backdrop-filter: blur(4px);}
+.keyword-table td:nth-child(2) {text-align: right;width: 64px;color: #555;}
+.keyword-table tbody tr:hover {background: rgba(0,0,0,0.035);}
+.keyword-word {white-space: nowrap;text-overflow: ellipsis;overflow: hidden;max-width: 160px;display: inline-block;}
+.listTitle {line-height:2.5rem;margin:30px 0;}
 
-/* ------------------------------------------------  */
-.col-md-9 {
-    border-radius: 10pt;
-    background-size: cover;       /* 화면 전체에 꽉 차게 */
-    background-position: center;  /* 중앙 기준으로 배치 */
-    background-repeat: no-repeat; /* 이미지 반복 안 함 */
-    background-attachment: fixed;       /* 스크롤 시 고정 */
-    background-blend-mode: overlay;     /* 색상 오버레이 효과 동일 */
-}
-
-.keyword-panel {
-  position: absolute;
-  top: 16px;      /* 상단 여백 */
-  right: 16px;    /* 우측 여백 */
-  width: 180px;
-  background: rgba(255,255,255,0.35); /* 반투명 */
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  backdrop-filter: blur(4px);         /* 지원 브라우저에서 유리 느낌 */
-  -webkit-backdrop-filter: blur(4px);
-  overflow: hidden;
-  z-index: 5;                         /* 상단 레이어 */
-}
- 
-.keyword-header {
-  padding: 10px 12px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: #333;
-  background: rgba(255,255,255,0.25);
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-}
-
-.keyword-table-wrap {
-  max-height: 260px;      /* 스크롤 높이 */
-  overflow: auto;
-}
-
-/* 테이블을 “투명 스타일”로 */
-.keyword-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-size: 0.92rem;
-  color: #222;
-}
-
-.keyword-table th, .keyword-table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  background: transparent;  /* 투명 */
-}
-
-.keyword-table th {
-  text-align: left;
-  color: #444;
-  font-weight: 600;
-  position: sticky;
-  top: 0;
-  background: rgba(255,255,255,0.28); /* 헤더만 약간 더 보이게 */
-  backdrop-filter: blur(4px);
-}
-
-.keyword-table td:nth-child(2) {
-  text-align: right;
-  width: 64px;
-  color: #555;
-}
-
-/* 행 hover */
-.keyword-table tbody tr:hover {
-  background: rgba(0,0,0,0.035);
-}
-
-/* 너무 긴 키워드는 말줄임 */
-.keyword-word {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: 160px;
-  display: inline-block;
+@media screen and (max-width:1300px){
+	.keyword-panel {position:relative;top:initial;right:initial;}
 }
 
 </style> 
@@ -313,7 +240,7 @@
 	  </div>
 	</div>
 	
-   <h2 style="margin-bottom: 30px; font-size: 25pt; font-weight: bold;">글목록</h2>
+   <h2 class="listTitle" style="font-size: 25pt; font-weight: bold;">글목록</h2>
    <%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
    <form name="searchForm" style="margin-top: 20px;">
       <select name="searchType" style="height: 26px;">

@@ -370,7 +370,7 @@
 		        const data = labelsFixed.map(dd => dayMap[dd] ?? 0);
 		        const total = data.reduce((a,b)=>a+b, 0);
 
-		        // ▼ 제목에서 nowmonth 반영
+		        // 제목에서 nowmonth 반영
 		        Highcharts.chart('chart_container', {
 		          chart: { type: 'column' },
 		          title: { text: (new Date().getFullYear()) + '년 ' + nowmonth + '월 가입자 수' },
