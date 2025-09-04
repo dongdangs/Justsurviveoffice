@@ -27,6 +27,7 @@ public class UsersDTO {
 	private LocalDateTime passwordChanged;
 	private int isDormant;
 	private int isDeleted;
+	private String role;
 	
 	private Category category;
 	
