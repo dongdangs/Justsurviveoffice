@@ -100,6 +100,8 @@
 
 <script type="text/javascript">
 	
+	const isLogin = ${not empty sessionScope.loginUser};
+	
 	$(function(){
 		
 		$('div.loader').hide();	// CSS 로딩화면 감추기
@@ -225,16 +227,25 @@
 					<div class="card-body text-center">
 						<h3 class="text-muted mb-1">\${json.categoryName}</h3>
 					</div>
-				</div>
-				
-				<div class="mt-4">
-					<button class="btn btn-primary btn-lg w-100 fw-bold mb-2" onclick="saveResult()">
-						로그인 후 결과 저장하기
-					</button>
-					<button class="btn btn-outline-primary btn-lg w-100 fw-bold" onclick="retryTest()">
-						테스트 다시하기
-					</button>
 				</div>`;
+				
+			    if (!isLogin) {
+			        r_html += `<button class="btn btn-outline-primary btn-lg w-100 fw-bold" 
+			        			onclick="login()">
+			        			로그인하고 성향 저장하기</button>`;
+			    } else {
+			        r_html += `
+				        <button class="btn btn-outline-primary btn-lg w-100 fw-bold"
+			        			onclick="saveCategory()">
+			        			성향 GET!</button>
+	        			<form name="surveyForm" class="mt-4">	
+			        	  <input name="categoryNo" value="\${json.categoryNo}" type="hidden"/>	
+        				</form>`;
+			    }
+				r_html +=
+			    	`<button class="btn btn-outline-primary btn-lg w-100 fw-bold" onclick="retryTest()">
+						테스트 다시하기
+					</button>`;
 				
 				$('div.survey-container').html(r_html);
 				
@@ -249,12 +260,17 @@
 		
 	}// end of function submitAnswers(answer_arr)-------------------------------
 	
-	
-	function saveResult() {
-		alert("로그인 후 저장 안만듬!");
+	function login() {
+		location.href = '<%= ctxPath %>/users/loginForm';
 	}
-	
-	
+	function saveCategory() {
+		const form = document.surveyForm;
+		if(confirm("한 번 저장한 성향은 변경할 수 없습니다.\n저장하시겠습니까?")){
+			form.method = "post";
+		    form.action = "<%= ctxPath %>/categoryTest/saveCategoryNo";
+		    form.submit();			
+		}
+	}
 	function retryTest() {
 		location.href = '<%= ctxPath %>/categoryTest/survey';
 	}

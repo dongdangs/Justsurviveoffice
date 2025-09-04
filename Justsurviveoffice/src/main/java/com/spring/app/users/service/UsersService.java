@@ -71,5 +71,8 @@ public interface UsersService {
  	default List<Map<String, String>> registerChartday(){
  		return registerChartday(java.time.LocalDate.now().getMonthValue());
  	}
+ 	
+ 	// 성향테스트 이후 카테고리 저장하기
+	UsersDTO saveCategoryNo(String id, Long categoryNo);
 	 
 }

@@ -184,9 +184,7 @@
 	    	const boardNo = $(this).data('fk_boardno');
 	    	if (!boardNo) return;
 	    	
-	    	if (!confirm('이 게시글을 복구하시겠습니까?')) return;
-	    	
-	    //	alert(boardNo);
+	    	if (!confirm('복구 시 첨부파일은 사라진 상태로 복구됩니다.\n이 게시글을 복구하시겠습니까?')) return;
 	    	
 	    	$.ajax({
 	    		url:"<%=ctxPath%>/mypage/myBoardRecovery",

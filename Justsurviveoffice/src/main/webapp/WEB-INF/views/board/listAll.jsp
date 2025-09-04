@@ -180,8 +180,9 @@ cursor: pointer;
 		background-image: url('<%= ctxPath %>/images/background.png');">
 	
 	
-   <h2 style="margin: 30px 0; font-size: 25pt; font-weight: bold;">글목록</h2>
-      <c:if test="${loginUser.getCategory().getCategoryNo() ne 6}">
+   <h2 style="margin: 30px 0; font-size: 25pt; font-weight: bold;">전체 글목록</h2>
+      <c:if test="${loginUser.getCategory().getCategoryNo() ne 6 
+      				and loginUser.getCategory().getCategoryNo() ne null}">
       	<span><a href="<%=ctxPath %>/board/write/${loginUser.getCategory().getCategoryNo()}" class="btn btn-secondary btn-sm" 
             id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">내 유형으로 글쓰러 가기</a></span>
       </c:if>
@@ -197,9 +198,6 @@ cursor: pointer;
         <span><a href="<%=ctxPath %>/board/write/5" class="btn btn-secondary btn-sm mb-1" 
             id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">금쪽이유형으로 글쓰러 가기</a></span></div>
       </c:if>      
-      <!-- <span><input type="hidden" name="category"/></span> -->
-   
-   <%--  특정 글제목을 클릭했을때, 특정 글1개를 보여줄때 POST 방식으로 넘기기 위해 form 태그를 만들겠다. --%>
    
    <br><br>
     <c:if test="${not empty requestScope.boardList}">

@@ -61,7 +61,7 @@
 
 <script>
 $(function () {
-	
+	let emailChecked = true;
 
     // 회원탈퇴
     $("#btnQuit").on("click", function(e) {
@@ -96,7 +96,11 @@ $(function () {
             alert("비밀번호가 일치하지 않습니다.");
             return;
         }
-
+		if(emailChecked == false) {
+			alert("이메일 중복체크는 필수입니다.");
+			return;
+		}
+        
         if(confirm("회원정보를 수정하시겠습니까?")) {
             $("#editForm").submit();
         }
@@ -117,6 +121,9 @@ $(function () {
         }
     });
     
+    $('input#email').on("change", function() {
+    	emailChecked = false
+    });
     $("#btnEmailDup").on("click", function () {
     	  const email = $("#email").val().trim();
     	  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -128,10 +135,10 @@ $(function () {
 
     	  $.get("<%=ctxPath%>/mypage/emailDuplicate", { email: email }, function (res) {
     	    if (res.duplicated) {
-    	      emailOk = false;
+    	      emailChecked = false;
     	      alert("이미 사용 중인 이메일입니다.");
     	    } else {
-    	      emailOk = true;
+    	      emailChecked = true;
     	      alert("사용 가능한 이메일입니다.");
     	    }
     	  }).fail(function () {

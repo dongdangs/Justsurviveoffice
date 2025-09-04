@@ -115,21 +115,25 @@ public class UsersController {
 	}
 	
 	@PostMapping("registerUser")
-    public String registerUser(@RequestParam(name="hp1") String hp1,
+    public String registerUser(
+			    		@RequestParam(name="id") String id,
+			            @RequestParam(name="password") String Pwd,
+    					@RequestParam(name="hp1") String hp1,
                         @RequestParam(name="hp2") String hp2,
                         @RequestParam(name="hp3") String hp3,
                         Users user, 
                         HttpServletRequest request, HttpSession session) {
-      // 연락처 합치기
+       // 연락처 합치기
        String mobile = hp1 + hp2 + hp3;
        user.setMobile(mobile);
 
        try {
           // 회원가입
           usersService.registerUser(user);
-          
+          UsersDTO usersDto = usersService.getUser(id, Pwd);
+          usersDto.getCategory().setCategoryImagePath(mobile);
           // 세션에 로그인 정보 저장
-          session.setAttribute("loginUser", user);
+          session.setAttribute("loginUser", usersDto);
           
           return "redirect:/index";
           

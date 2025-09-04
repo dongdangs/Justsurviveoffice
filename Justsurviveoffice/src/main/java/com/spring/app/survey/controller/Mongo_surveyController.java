@@ -13,30 +13,42 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.survey.domain.Mongo_QuestionDTO;
 import com.spring.app.survey.model.SurveyDAO;
 import com.spring.app.survey.service.SurveyMongoOperations;
+import com.spring.app.survey.service.SurveyService_imple;
+import com.spring.app.users.domain.UsersDTO;
+import com.spring.app.users.service.UsersService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 //== 몽고DB 설문 관련 순서2
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("categoryTest/")
 public class Mongo_surveyController {
+
+    private final SurveyService_imple surveyService_imple;
 	
 	private final SurveyMongoOperations surveyMongo;
 	
-	private final SurveyDAO sdao;
+	private final SurveyDAO surveyDao;
+	private final UsersService usersService;
+
+	
 	
 	@GetMapping("survey")
 	public String survey() {
 		return "/categoryTest/survey";
 		//	/WEB-INF/views/rdg7203Work/survey.jsp 파일을 만들어야 한다.
 	}
-	
 	
 	// 몽고DB에서 설문 데이터 가져오기
     @GetMapping("surveyStart")
@@ -83,7 +95,7 @@ public class Mongo_surveyController {
     	System.out.println("확인용 max : " + maxCategoryList);
     	String categoryNo = "";
     	
-    	if(maxCategoryList.size() >= 4) {	// 값이 4개 이상 저장되어 있을 경우 리더형
+    	if(maxCategoryList.size() >= 3) {	// 값이 4개 이상 저장되어 있을 경우 리더형
     		categoryNo = "6";
     	}
     	else if(maxCategoryList.size() == 1) {	// 값이 1개 있는 경우
@@ -94,16 +106,16 @@ public class Mongo_surveyController {
     		categoryNo = maxCategoryList.get(idx);
     	}
     	
-    	CategoryDTO cdto = sdao.selectCategory(categoryNo);	// 해당 카테고리의 유형 정보 가져오기
+    	CategoryDTO categoryDTO = surveyDao.selectCategory(categoryNo);	// 해당 카테고리의 유형 정보 가져오기
     	
     	// {"categoryName":"MZ", "categoryImagePath ":"~", "tags":["에어팟필수", "칼퇴", "딴생각장인", "지각러버"]}
     	JSONObject jsonObj = new JSONObject();	// {} 최종 오브젝트
-		jsonObj.put("categoryName", cdto.getCategoryName());
-		jsonObj.put("categoryImagePath", cdto.getCategoryImagePath());
-		
+    	jsonObj.put("categoryNo", categoryDTO.getCategoryNo());
+    	jsonObj.put("categoryName", categoryDTO.getCategoryName());
+		jsonObj.put("categoryImagePath", categoryDTO.getCategoryImagePath());
 		
 		JSONArray tagArr = new JSONArray();	// []
-		for(String tag : cdto.getTags().split(",")) {
+		for(String tag : categoryDTO.getTags().split(",")) {
 			tag = tag.trim();	// 혹시 모를 공백 제거
 			tagArr.put(tag);
 		}
@@ -111,6 +123,34 @@ public class Mongo_surveyController {
 		jsonObj.put("tags", tagArr);
 		
 		return jsonObj.toString();	
+    }
+
+    // 성향테스트 이후 카테고리 저장하기
+    @PostMapping("saveCategoryNo")
+    public ModelAndView saveCategoryNo(ModelAndView modelview,
+    								   HttpSession session,
+    								   HttpServletRequest request,
+    		@RequestParam(name="categoryNo", defaultValue = "") String categoryNo) {
+    	
+    	System.out.println(categoryNo);
+    	if(categoryNo == "" ) {
+        	modelview.addObject("message","접근이 불가합니다.");
+        	modelview.addObject("loc","redirect:/index");
+        	modelview.setViewName("msg");
+        	return modelview;
+    	}
+    	
+    	UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+    	loginUser = usersService.saveCategoryNo(loginUser.getId(), Long.parseLong(categoryNo));
+
+    	session = request.getSession();
+	    session.setAttribute("loginUser", loginUser);
+    	
+    	modelview.addObject("message","성향이 저장되었습니다");
+    	modelview.addObject("loc", request.getContextPath() + "/index");
+    	modelview.setViewName("msg");
+    	
+    	return modelview;
     }
     
 }

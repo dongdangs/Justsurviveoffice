@@ -20,6 +20,7 @@ import com.spring.app.common.AES256;
 import com.spring.app.common.SecretMyKey;
 
 import com.spring.app.common.Sha256;
+import com.spring.app.entity.Category;
 import com.spring.app.entity.LoginHistory;
 import com.spring.app.entity.Users;
 import com.spring.app.model.HistoryRepository;
@@ -27,6 +28,7 @@ import com.spring.app.model.UsersRepository;
 import com.spring.app.users.domain.LoginHistoryDTO;
 import com.spring.app.users.domain.UsersDTO;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -56,20 +58,19 @@ public class UsersService_imple implements UsersService {
         Users users = user.get();
         // java.util.Optional.get() 은 값이 존재하면 값을 리턴시켜주고, 값이 없으면 NoSuchElementException 을 유발시켜준다.
         
-        
-           try {
-              usersDto = users.toDTO();
-              System.out.println(usersDto.getId());
-              System.out.println(Sha256.encrypt(Pwd));
-              // usersDto.setPassword(Sha256.encrypt(Pwd));
-              
- 			 // 복호화해서 DTO에 담기
- 	        usersDto.setEmail(aes.decrypt(users.getEmail()));
- 	        usersDto.setMobile(aes.decrypt(users.getMobile()));
- 	        usersDto.setPoint((users.getPoint()));
-           } catch (Exception e) {   
-              e.printStackTrace();
-           }
+        try {
+        	usersDto = users.toDTO();
+        	System.out.println(usersDto.getId());
+        	System.out.println(Sha256.encrypt(Pwd));
+        	// usersDto.setPassword(Sha256.encrypt(Pwd));
+          
+          	// 복호화해서 DTO에 담기
+	        usersDto.setEmail(aes.decrypt(users.getEmail()));
+	        usersDto.setMobile(aes.decrypt(users.getMobile()));
+	        usersDto.setPoint((users.getPoint()));
+        } catch (Exception e) {   
+          e.printStackTrace();
+       }
         
      } catch(NoSuchElementException e) {
         // member.get() 에서 데이터가 존재하지 않는 경우
@@ -260,7 +261,7 @@ public class UsersService_imple implements UsersService {
        return false;
     }
 
-
+    // 게시글을 쓰거나 댓글을 달면 해당 포인트를 주는 메소드. 
 	@Override
 	public void getPoint(Map<String, String> paraMap) {
 		String id = paraMap.get("id");
@@ -357,5 +358,43 @@ public class UsersService_imple implements UsersService {
 	        }
 	        return result;
 	    }
+
+
+	 @Override
+	 public UsersDTO saveCategoryNo(String id, Long categoryNo) {
+	     Users users = usersRepository.findById(id).orElse(null);
+	     UsersDTO usersDto = null;
+	     if (users != null) {
+	         // 카테고리 엔티티 프록시 생성 (DB 조회 안 함)
+	         Category category = new Category();
+	         category.setCategoryNo(categoryNo);
+
+	         // Users 엔티티에 카테고리 세팅
+	         users.setCategory(category);
+	         
+	         usersRepository.save(users); // 카테고리가 세팅된 유저 자체를 저장!
+	         
+	         try {
+	        	 users = usersRepository.findById(id).orElse(null);	// 카테고리 포함 데이터 가져오기
+	             aes = new AES256(SecretMyKey.KEY);
+	             
+	             try {
+	             	usersDto = users.toDTO();
+	               	// 복호화해서 DTO에 담기
+	     	        usersDto.setEmail(aes.decrypt(users.getEmail()));
+	     	        usersDto.setMobile(aes.decrypt(users.getMobile()));
+	     	        usersDto.setPoint((users.getPoint()));
+	             } catch (Exception e) {   
+	               e.printStackTrace();
+	            }
+	          } catch(NoSuchElementException e) {
+	             // users 데이터가 존재하지 않는 경우
+	          } catch (Exception e) {
+	     		e.printStackTrace();
+	     	  }
+	     }
+	     return usersDto;
+	 }
+
 
 }
