@@ -34,7 +34,6 @@
 			    Client 소켓에서 연결요청을 하면(올바른 port로 들어왔을 때) Server 소켓이 허락을 하여 통신을 할 수 있도록 연결(connection)되는 것이다. 
 			*/
 			
-			$('div#mycontent').css({"background-color":"#cce0ff"});
 			// div#mycontent 는 /myspring/src/main/webapp/WEB-INF/views/header/header1.jsp 
 			// 파일의 내용에 들어있는 <div id="mycontent"> 이다.
 			
@@ -42,25 +41,20 @@
 			const url = window.location.host;
 			// alert("url : " + url);
 			// url : localhost:9089
-			
 			const pathname = window.location.pathname; // 최초 '/' 부터 오른쪽에 있는 모든 경로
 			// alert("pathname : " + pathname); 
 			// pathname : /justsurviveoffice/chatting/multichat
-			
 			const appCtx = pathname.substring(0, pathname.lastIndexOf("/"));
 			// 마지막으로 나오는 '/' 앞까지만 나오도록 할려고 한다.
 			// "전체 문자열".lastIndexOf("검사할 문자"); 
   			// alert("appCtx : " + appCtx);
   			// appCtx : /justsurviveoffice/chatting
-  			
   			const root = url + appCtx;
   			// alert("root : " + root);
   			// root : localhost:9089/justsurviveoffice/chatting
-  			
   			const wsUrl = "ws://"+root+"/multichatstart";
 			// 웹소켓통신을 하기위해서는 http:// 을 사용하는 것이 아니라 ws:// 을 사용해야 한다.    
 			// "/chatting/multichatstart" 에 대한 것은 com.spring.app.config.WebSocketConfiguration 에서 설정을 해두었음. 
-				  
 			const websocket = new WebSocket(wsUrl);
 			// 즉, const websocket = new WebSocket("ws://192.168.10.213:9089/Justsurviveoffice/chatting/multichatstart"); 이다. 
 
@@ -69,12 +63,10 @@
 		       // === 웹소켓에 최초로 연결이 되었을 경우에 실행되어지는 콜백함수 정의하기 === //
 			      websocket.onopen = function() {
 			    	// alert("웹소켓 연결됨!!");
-			    	  
 			        // messageObj.message = "채팅방에 <span style='color: red;'>입장</span> 했습니다.";
 			        // messageObj.type = "all"; // messageObj.type = "all"; 은 "1 대 다" 채팅을 뜻하는 것이고, messageObj.type = "one"; 은 "1 대 1" 채팅을 뜻하는 것으로 하겠다.
 			        // messageObj.to = "all";   // messageObj.to = "all"; 은 수신자는 모두를 뜻하는 것이고, messageObj.to = "eomjh"; 이라면  eomjh 인 사람과 1대1 채팅(귓속말)을 뜻하는 것으로 하겠다.
 			        // 또는 
-			        
 			        messageObj = {message : "채팅방에 <span style='color: red;'>입장</span> 했습니다."
                          ,type : "all"
                            ,to : "all"}; // 자바스크립트에서 객체의 데이터값 초기화
@@ -89,15 +81,12 @@
 				              JSON.stringify([1, 'false', false]); // '[1,"false",false]'
 				              JSON.stringify({ x: 5 });            // '{"x":5}'
 				     */ 
-                           
 			      } // end of websocket.onopen = function() { 
 		     		
       			// === 메세지 수신시 콜백함수 정의하기 == //
       			websocket.onmessage = function(event){
-      				
       				// event.data 는 수신되어진 메시지이다. 
       		        // 채팅서버에 연결된 사용자를 수신된 메시지는 예를 들어  「엄정화 엄정화 」 
-      				
       		       if(event.data.substr(0,1)=="「" && event.data.substr(event.data.length-1)=="」") {
       				
       					$("div#connectingUserList").html(event.data);
@@ -108,7 +97,6 @@
       		    	 	$("table#tbl > tbody").html(event.data);
       		       
       		       }
-      				
       		     	else if(event.data.substr(0,24)=="∋이미 다른 기기에서 채팅에 참여중 입니다.") 
       		     	{ 
       	              if(confirm(event.data.substring(1)) ) { // 이미 다른 기기에서 채팅에 참여중 입니다. 다른 기기의 연결을 끊고 새로이 연결 하시겠습니까?
@@ -125,22 +113,18 @@
       	            	  location.href="<%= request.getContextPath()%>/index";
       	              }
       	           }
-      				
       		       else if(event.data == "∋접속하는 대화방 인원이 꽉 찼습니다.") { 
    	                   alert("대화방 인원이 꽉 찼습니다.");
    	                   location.href="<%= request.getContextPath()%>/login/logout";
    	               }	
-      				
       	    	   else if(event.data == "∀다른 기기에서 새로이 연결 했기에 연결을 끊습니다.") { 
       	               alert("다른 기기에서 새로이 연결 했기에 연결을 끊습니다.");
       	               location.href="<%= request.getContextPath()%>/login/logout";
       	           }
-      				
       	    	   else if(event.data == "∋접속하는 대화방에 이미 같은 카테고리 번호가 있습니다.") { 
                    	   alert("이미 대화방에 같은 카테고리 유저가 있기에 연결을 끊습니다.");
                        location.href="<%= request.getContextPath()%>/login/logout";
           	   	   }
-      			   
       		       else {
       		    		// event.data 는 수신받은 채팅 문자이다.
       	                $("div#chatMessage").append(event.data);
@@ -152,15 +136,9 @@
       			
       			// === 웹소켓 연결 해제시 콜백함수 정의하기 === //
       		    websocket.onclose = function(){
-      		        
       		    }
-      			
-      			// ============================================== //
-      			
-      			
       			// ================ 메세지 보내기==================== //
       			let isOnlyOneDialog = false; // 귀속말 여부. true 이면 귀속말, false 이면 모두에게 공개되는 말
-      			
       			
       			// === 메시지 입력후 엔터하기 === //
       		     $("input#message").keyup(function(key){
@@ -172,16 +150,13 @@
       			$("input#btnSendMessage").click(function(){
       			
       				if( $("input#message").val().trim() != "" ) {
-      		           
       		          // ==== 자바스크립트에서 replace를 replaceAll 처럼 사용하기 ====
       		          // 자바스크립트에서 replaceAll 은 없다.
       		          // 정규식을 이용하여 대상 문자열에서 모든 부분을 수정해 줄 수 있다.
       		          // 수정할 부분의 앞뒤에 슬래시를 하고 뒤에 gi 를 붙이면 replaceAll 과 같은 결과를 볼 수 있다. 
-      		          
       		             let messageVal = $("input#message").val();
       		             messageVal = messageVal.replace(/<script/gi, "&lt;script"); 
       		             // 스크립트 공격을 막으려고 한 것임.
-      		             
       		             <%-- 
       		              messageObj = {message : messageVal
       		                           ,type : "all"
@@ -203,7 +178,6 @@
       		             // JSON.stringify() 는 값을 그 값을 나타내는 JSON 표기법의 문자열로 변환한다
       		          
       		             // 위에서 자신이 보낸 메시지를 웹소켓으로 보낸 다음에 자신이 보낸 메시지 내용을 웹페이지에 보여지도록 한다. 
-      		             
       		             const now = new Date();
       		             let ampm = "오전 ";
       		             let hours = now.getHours();
@@ -212,21 +186,17 @@
       		                hours = hours - 12;
       		                ampm = "오후 ";
       		             }
-      		             
       		             if(hours == 0) {
       		                hours = 12;
       		             }
-      		             
       		             if(hours == 12) {
       		                 ampm = "오후 ";
       		             }
-      		             
       		             let minutes = now.getMinutes();
       		             
       		             if(minutes < 10) {
       		                minutes = "0"+minutes;
       		             }
-      		           
       		             const currentTime = ampm + hours + ":" + minutes; 
       		             
       		             if(isOnlyOneDialog == false) { // 귓속말이 아닌 경우
@@ -237,9 +207,7 @@
       		                  $("div#chatMessage").append("<div style='background-color: #ffff80; display: inline-block; max-width: 60%; float: right; padding: 7px; border-radius: 15%; word-break: break-all; color: red;'>" + messageVal + "</div> <div style='display: inline-block; float: right; padding: 20px 5px 0 0; font-size: 7pt;'>"+currentTime+"</div> <div style='clear: both;'>&nbsp;</div>");
       		                                                                                                                                                                          /* word-break: break-all; 은 공백없이 영어로만 되어질 경우 해당구역을 빠져나가므로 이것을 막기위해서 사용한다. */
       		             }
-      		             
       		             $("div#chatMessage").scrollTop(99999999);
-      		             
       		             $("input#message").val("");
       		             $("input#message").focus();
       		        }
@@ -283,37 +251,120 @@
 			
 	</script>
 	
-	<style>
-	.row .col-md-3 {display:none !important;}
-	</style>
-	
-	<table id="tbl" class="table table-bordered table-dark">
-	  <tbody></tbody>
-	</table>
+<style>
 
+/* 채팅 컨테이너를 로그인 박스처럼 */
+.chat-wrapper {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  max-width: 400px; 
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+}
+/* 채팅 메시지 영역 */
+#chatMessage {
+  flex: 1;
+  background: #fefefe;
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  overflow-y: auto;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+}
+/* 내 메시지 */
+#chatMessage .me {
+  background: #ffe082;
+  padding: 8px 12px;
+  border-radius: 18px 18px 4px 18px;
+  margin: 6px 0;
+  max-width: 70%;
+  align-self: flex-end;
+  word-break: break-word;
+}
+/* 상대방 메시지 */
+#chatMessage .other {
+  background: #e0f7fa;
+  padding: 8px 12px;
+  border-radius: 18px 18px 18px 4px;
+  margin: 6px 0;
+  max-width: 70%;
+  align-self: flex-start;
+  word-break: break-word;
+}
+/* 입력창 */
+#message {
+  border-radius: 25px;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  outline: none;
+  transition: 0.2s;
+}
+#message:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 6px rgba(74,144,226,0.3);
+}
+/* 버튼들 */
+#btnSendMessage,
+.btn-danger,
+#btnAllDialog {
+  border-radius: 25px;
+  padding: 8px 18px;
+  font-size: 14px;
+}
+/* 접속자 리스트 */
+#connectingUserList {
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 8px;
+  margin: 10px 0;
+  font-size: 13px;
+  max-height: 80px;
+  overflow-y: auto;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+/* 반응형 */
+@media (max-width: 500px) {
+  .chat-wrapper {
+    max-width: 95%;
+    height: 85vh;
+    margin: 20px auto;
+  }
+}
+
+</style>
+	
+<!-- 	<table id="tbl" class="table table-bordered table-dark">
+	  <tbody></tbody>
+	</table> -->
+ <div class="col-md-9 ListHeight" style="flex-grow: 1; padding: 20px; background: gray; border-radius: 10px; ">
 	<div class="container-fluid">
 		<div class="row justify-content-center">
 			<div class="col-md-6">
+		 	 <div class="chat-wrapper">
 			   <div id="chatStatus"></div>
-			   <div class="my-3">
-			   - 상대방의 대화내용이 검정색으로 보이면 채팅에 참여한 모두에게 보여지는 것입니다.<br>
-			   - 상대방의 대화내용이 <span style="color: red;">붉은색</span>으로 보이면 나에게만 보여지는 1:1 귓속말 입니다.<br>
-			   - 1:1 채팅(귓속말)을 하시려면 예를 들어, 채팅시 보이는 [이순신]대화내용 에서 이순신을 클릭하시면 됩니다.
+			   <div class="my-2 small text-muted">
+			    - <span style="color:black;">검정색</span>: 모두에게 보이는 메시지<br>
+			    - <span style="color:red;">붉은색</span>: 나에게만 보이는 귓속말<br>
+			    - 상대 이름을 클릭하면 귓속말 가능
 			   </div>
 			   <input type="hidden" id="to" placeholder="귓속말대상웹소켓.getId()"/>
 			   <br/>
-			   ♡ 귓속말대상 : <span id="privateWho" style="font-weight: bold; color: red;"></span>
-			   <br>
-			   <button type="button" id="btnAllDialog" class="btn btn-secondary btn-sm">귀속말대화끊기</button>
+			   ♡ 귓속말 대상 : <span id="privateWho" style="font-weight: bold; color: red;"></span>
+  			   <button type="button" id="btnAllDialog" class="btn btn-secondary btn-sm">귓속말대화끊기</button>
+
 			   <br><br>
 			   현재접속자명단:<br/>
-			   <div id="connectingUserList" style=" max-height: 100px; overFlow: auto;"></div>
-			   
-			   <div id="chatMessage" style="max-height: 500px; overFlow: auto; margin: 20px 0;"></div>
+			   <div id="connectingUserList"></div>
+			   <div id="chatMessage"></div>
 			
-			   <input type="text"   id="message" class="form-control" placeholder="메시지 내용"/>
-			   <input type="button" id="btnSendMessage" class="btn btn-success btn-sm my-3" value="메시지보내기" />
-			   <input type="button" class="btn btn-danger btn-sm my-3 mx-3" onclick="javascript:location.href='<%=request.getContextPath() %>/index'" value="채팅방나가기" />
-			</div>
+			   <input type="text" id="message" class="form-control" placeholder="메시지 입력" />
+			   <div class="d-flex justify-content-between mt-2">
+			    <input type="button" id="btnSendMessage" class="btn btn-success btn-sm" value="보내기" />
+			    <input type="button" class="btn btn-danger btn-sm" onclick="javascript:location.href='<%=request.getContextPath() %>/index'" value="나가기" />
+		   </div></div></div></div>
 		</div>  <%-- row --%>
 	</div>  <%-- end of <div class="container-fluid"> --%>

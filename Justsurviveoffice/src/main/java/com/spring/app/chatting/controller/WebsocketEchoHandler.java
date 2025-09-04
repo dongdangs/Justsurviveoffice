@@ -150,7 +150,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
            먼저 HttpSession에 저장되어진 값들을 읽어 들여, WebsocketEchoHandler 클래스에서 사용할 수 있도록 처리해준다.  
         */
     	
-    	String connectingUserName = "「"; // 「 은 자음 ㄴ 을 하면 나온다.
+    	String connectingUserId = "「"; // 「 은 자음 ㄴ 을 하면 나온다.
     	
     	for(WebSocketSession webSocketSession : connectedUsers) {
     		
@@ -164,7 +164,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
     		UsersDTO loginUser = (UsersDTO) map.get("loginUser");
     		// "loginUser" 은 HttpSession에 저장된 키 값으로 로그인 되어진 사용자이다.
     		
-    		connectingUserName += loginUser.getName()+" "; 
+    		connectingUserId += loginUser.getId()+"님"; 
     		
     		// === 웹소켓 서버에 접속시 채팅에 접속한 사용자ID, 성명, 이메일 정보를 보여주기 위한 것 시작 === //
     		if(usersDto_list.size() > 0) {
@@ -186,32 +186,32 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
     		
     	}// end of for----------------------------------
     	
-    	connectingUserName += "」"; // 」 은 자음 ㄴ 을 하면 나온다.
+    	connectingUserId += "」"; // 」 은 자음 ㄴ 을 하면 나온다.
 		
    //	System.out.println("~~~ 확인용 connectingUserName : " + connectingUserName);
      //	~~~ 확인용 connectingUserName : 「엄정화 강감찬 서영학 」
     	
     	for(WebSocketSession webSocketSession : connectedUsers) {
-    		webSocketSession.sendMessage(new TextMessage(connectingUserName));
+    		webSocketSession.sendMessage(new TextMessage(connectingUserId));
     	}// end of for------------------------------------
     	
     	// ==== 웹소켓 서버에 접속시 접속자 명단을 알려주기 위한 것 끝 ==== //
     	
     	
     	// >>>> 웹소켓 서버에 접속시 채팅에 접속한 사용자ID, 성명, 이메일 정보를 보여주기 위한 것 시작 <<<< //
-    	String v_html = "⊆";  // 'ㄷ'에 있는 것임
-        if(usersDto_list.size() > 0) {
-        	for(UsersDTO usersDto : usersDto_list) {
-        		v_html += "<tr>"
-        				+ "<td>"+usersDto.getId()+"</td>"
-        				+ "<td>"+usersDto.getName()+"</td>"
-        				+ "<td>"+usersDto.getEmail()+"</td>"
-        				+ "</tr>";
-        	}
-        	for(WebSocketSession webSocketSession : connectedUsers) {
-            	webSocketSession.sendMessage(new TextMessage(v_html));
-            }// end of for------------------------
-        }
+//    	String v_html = "⊆";  // 'ㄷ'에 있는 것임
+//        if(usersDto_list.size() > 0) {
+//        	for(UsersDTO usersDto : usersDto_list) {
+//        		v_html += "<div class='chat-bubble'>"
+//        		        + "<span class='chat-id'>" + usersDto.getId() + "</span>"
+//        		        + "<span class='chat-name'>" + usersDto.getName() + "</span>"
+//        		        + "<span class='chat-email'>" + usersDto.getEmail() + "</span>"
+//        		        + "</div>";
+//        	}
+//        	for(WebSocketSession webSocketSession : connectedUsers) {
+//            	webSocketSession.sendMessage(new TextMessage(v_html));
+//            }// end of for------------------------
+//        }
     	// >>>> 웹소켓 서버에 접속시 채팅에 접속한 사용자ID, 성명, 이메일 정보를 보여주기 위한 것 끝 <<<< //
     	
         
@@ -235,7 +235,6 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
      				            + str_created + "\n" 
      				            + list.get(i).getCurrentTime() + "\n");
      		*/   
-     		   // =================================================== //
      		   
      		   boolean is_newDay = true; // 대화내용의 날짜가 같은 날짜인지 새로운 날짜인지 알기위한 용도임.
      		   
@@ -392,7 +391,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
                 	// wsession.getId() 와  webSocketSession.getId() 는 자동증가되는 고유한 값으로 나옴 
         	
         			webSocketSession.sendMessage(
-        					new TextMessage("<span style='display:none;'>"+wsession.getId()+"</span>&nbsp;[<span style='font-weight:bold; cursor:pointer;' class='loginUserName'>" +loginUser.getName()+ "</span>]<br><div style='background-color: white; display: inline-block; max-width: 60%; padding: 7px; border-radius: 15%; word-break: break-all;'>"+ messageDto.getMessage() +"</div> <div style='display: inline-block; padding: 20px 0 0 5px; font-size: 7pt;'>"+currentTime+"</div> <div>&nbsp;</div>")); 
+        					new TextMessage("<span style='display:none;'>"+wsession.getId()+"</span>&nbsp;[<span style='font-weight:bold; cursor:pointer;' class='loginUserName'>" +loginUser.getId()+ "</span>]<br><div style='background-color: white; display: inline-block; max-width: 60%; padding: 7px; border-radius: 15%; word-break: break-all;'>"+ messageDto.getMessage() +"</div> <div style='display: inline-block; padding: 20px 0 0 5px; font-size: 7pt;'>"+currentTime+"</div> <div>&nbsp;</div>")); 
         			                                                                                                                                                                                                                                                                                                               /* word-break: break-all; 은 공백없이 영어로만 되어질 경우 해당구역을 빠져나가므로 이것을 막기위해서 사용한다. */
         		}
         	}
@@ -406,7 +405,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
         		if(messageDto.getTo().equals(ws_id) ) {
         		// messageDto.getTo() 는 클라이언트가 보내온 귓속말대상웹소켓.getId() 임.
         			webSocketSession.sendMessage(
-        					new TextMessage("<span style='display:none;'>"+wsession.getId()+"</span>&nbsp;[<span style='font-weight:bold; cursor:pointer;' class='loginUserName'>" +loginUser.getName()+ "</span>]<br><div style='background-color: white; display: inline-block; max-width: 60%; padding: 7px; border-radius: 15%; word-break: break-all; color: red;'>"+ messageDto.getMessage() +"</div> <div style='display: inline-block; padding: 20px 0 0 5px; font-size: 7pt;'>"+currentTime+"</div> <div>&nbsp;</div>")); 
+        					new TextMessage("<span style='display:none;'>"+wsession.getId()+"</span>&nbsp;[<span style='font-weight:bold; cursor:pointer;' class='loginUserName'>" +loginUser.getId()+ "</span>]<br><div style='background-color: white; display: inline-block; max-width: 60%; padding: 7px; border-radius: 15%; word-break: break-all; color: red;'>"+ messageDto.getMessage() +"</div> <div style='display: inline-block; padding: 20px 0 0 5px; font-size: 7pt;'>"+currentTime+"</div> <div>&nbsp;</div>")); 
         			                                                                                                                                                                                                                                                                                                             /* word-break: break-all; 은 공백없이 영어로만 되어질 경우 해당구역을 빠져나가므로 이것을 막기위해서 사용한다. */
         		    break; // 지금의 특정대상(지금은 귓속말대상 웹소켓id)은 1개이므로 
                            // 특정대상(지금은 귓속말대상 웹소켓id 임)에게만 메시지를 보내고  break;를 한다.
@@ -471,7 +470,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
         	// 퇴장했다라는 메시지를 자기자신을 뺀 나머지 모든 사용자들에게 메시지를 보내도록 한다.
         	if (!wsession.getId().equals(webSocketSession.getId())) { 
                 webSocketSession.sendMessage(
-                	new TextMessage("[<span style='font-weight:bold;'>" +loginUser.getName()+ "</span>]님이 <span style='color: red;'>퇴장</span>했습니다.")     
+                	new TextMessage("[<span style='font-weight:bold;'>" +loginUser.getId()+ "</span>]님이 <span style='color: red;'>퇴장</span>했습니다.")     
                 ); 
             }
         }// end of for------------------------------------------
@@ -482,7 +481,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
     	// 웹소켓 서버에 연결되어진 클라이언트 목록에서 연결은 끊은 클라이언트는 삭제시킨다.
     	
     	// ===== 접속을 끊을시 현재 남아있는 접속자명단을 알려주기 위한 것 시작 ===== //
-    	String connectingUserName = "「"; // 「 은 자음 ㄴ 을 하면 나온다.
+    	String connectingUserId = "「"; // 「 은 자음 ㄴ 을 하면 나온다.
     	
     	for(WebSocketSession webSocketSession : connectedUsers) {
     		
@@ -490,13 +489,13 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
     		UsersDTO loginUser2 = (UsersDTO) map2.get("loginUser");
     		// "loginUser" 은 HttpSession에 저장된 키 값으로 로그인 되어진 사용자이다.
     		
-    		connectingUserName += loginUser2.getName()+" "; 
+    		connectingUserId += loginUser2.getId()+" "; 
     	}// end of for----------------------------------
     	
-    	connectingUserName += "」"; // 」 은 자음 ㄴ 을 하면 나온다.    	
+    	connectingUserId += "」"; // 」 은 자음 ㄴ 을 하면 나온다.    	
     	
         for (WebSocketSession webSocketSession : connectedUsers) {
-             webSocketSession.sendMessage(new TextMessage(connectingUserName));     
+             webSocketSession.sendMessage(new TextMessage(connectingUserId));     
         }// end of for------------------------------------------
         // ===== 접속을 끊을시 현재 남아있는 접속자명단을 알려주기 위한 것 끝 ===== //
         
@@ -513,11 +512,9 @@ public class WebsocketEchoHandler extends TextWebSocketHandler {
              	String v_html = "⊆";  // 'ㄷ'에 있는 것임
                  if(usersDto_list.size() > 0) {
                  	for(UsersDTO memberDto : usersDto_list) {
-                 		v_html += "<tr>"
-                 				+ "<td>"+memberDto.getId()+"</td>"
-                 				+ "<td>"+memberDto.getName()+"</td>"
-                 				+ "<td>"+memberDto.getEmail()+"</td>"
-                 				+ "</tr>";
+                 		v_html += "<div>"
+                 				+ "<div>"+memberDto.getId()+"</div>"
+                 				+ "</div>";
                  	}
                  	for(WebSocketSession webSocketSession : connectedUsers) {
                      	webSocketSession.sendMessage(new TextMessage(v_html));
