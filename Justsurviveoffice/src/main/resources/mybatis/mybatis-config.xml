@@ -10,6 +10,7 @@
   	<typeAlias type="com.spring.app.board.domain.BoardLikeDTO" alias="BoardLikeDTO"/>
   	<typeAlias type="com.spring.app.category.domain.CategoryDTO" alias="CategoryDTO"/>
   	<typeAlias type="com.spring.app.pointlog.domain.PointLogDTO" alias="PointLogDTO"/>
+  	<typeAlias type="com.spring.app.users.domain.UsersDTO" alias="UsersDTO"/>
   </typeAliases>
 
 </configuration>

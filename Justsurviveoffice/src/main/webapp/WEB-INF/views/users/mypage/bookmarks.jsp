@@ -21,10 +21,10 @@
 
 <style type="text/css">
 	body { background: #f7f7fb; font-family: 'Noto Sans KR', sans-serif; }
-	.sidebar { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06);}
-	.sidebar img { max-width: 100%; border-radius: 10px; margin-bottom: 10px; }
-	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none; font-weight: 500; transition: all 0.2s ease-in-out; }
-	.sidebar-menu a:hover { color: #6c63ff; padding-left: 5px; }
+	.sidebar { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+	.sidebar img { max-width: 100%; border-radius: 10px; }
+	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none;font-weight:500;}
+	.sidebar-menu a:hover { color: #6c63ff; } 
 	.content { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
 	/* 북마크 테이블 */
 	.table { border-collapse: separate; border-spacing: 0 8px; }
@@ -237,6 +237,7 @@
 <body>
 <div class="container mt-4">
     <div class="row">
+        <!-- 사이드바 -->
         <jsp:include page="../../menu/sidemenu.jsp"></jsp:include>
 
         <!-- 메인 내용 -->

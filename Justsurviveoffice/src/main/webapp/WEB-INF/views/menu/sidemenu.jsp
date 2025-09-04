@@ -9,7 +9,7 @@
   
  <!-- 사이드바 -->
         <div class="col-lg-3 mb-4">
-            <div class="sidebar text-center">
+            <div class="sidebar text-center"  style="height:585px;">
             	<c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() ne null}">
                 	<img src="${pageContext.request.contextPath}/images/${sessionScope.loginUser.category.categoryImagePath}" alt="프로필" class="mb-3">
                 </c:if>
@@ -22,7 +22,7 @@
                     포인트 : <b><fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/>p</b>
                 </div>
                 <hr>
-                <div class="sidebar-menu text-left">
+                <div class="sidebar-menu text-left" style="margin:5px;">
                	    <a href="<%=ctxPath%>/users/logout">로그아웃</a>
                     <a href="#" id="btnQuit">탈퇴하기</a>
                     <a href="javascript:history.back()">이전 페이지</a>
