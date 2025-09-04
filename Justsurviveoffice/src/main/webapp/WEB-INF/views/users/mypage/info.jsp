@@ -16,45 +16,13 @@
 <script src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
-    body {
-        background: #f7f7fb;
-    }
-    .sidebar {
-        background: #fff;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 8px 24px rgba(0,0,0,.06);
-    }
-    .sidebar img {
-        max-width: 100%;
-        border-radius: 10px;
-    }
-    .sidebar-menu a {
-        display: block;
-        padding: 8px 0;
-        color: #333;
-        text-decoration: none;
-        font-weight:500;
-    }
-    .sidebar-menu a:hover {
-        color: #6c63ff;
-    }
-    .content {
-        background: #fff;
-        border-radius: 12px;
-        padding: 24px;
-        box-shadow: 0 8px 24px rgba(0,0,0,.06);
-    }
-    
-    .row{
-    	display:flex;
-    	align-items: stretch;
-   	}
-   	
-   	.sidebar,
-   	.content {
-   		height : 100% ;
-   	}
+   	body { background: #f7f7fb; font-family: 'Noto Sans KR', sans-serif; }
+
+    .sidebar { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+	.sidebar img { max-width: 100%; border-radius: 10px; }
+	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none;font-weight:500;}
+	.sidebar-menu a:hover { color: #6c63ff; } 
+	.content { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
    	
    	
 </style>
@@ -154,6 +122,7 @@ $(function () {
     <div class="row">
 
         <!-- 사이드바 -->
+
         <jsp:include page="../../menu/sidemenu.jsp"></jsp:include>
 
         <!-- 메인 내용 -->

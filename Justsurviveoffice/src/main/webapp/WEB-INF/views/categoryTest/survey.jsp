@@ -1,266 +1,336 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+   pageEncoding="UTF-8"%>
 
 <%
-	String ctxPath = request.getContextPath();
+   String ctxPath = request.getContextPath();
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <title>설문 시작 페이지</title>
 
 <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" type="text/css">
-
-<%-- Font Awesome 6 Icons --%>
+<link rel="stylesheet" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-<%-- Optional JavaScript --%>
-<script type="text/javascript" src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
-<script type="text/javascript" src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
-<script type="text/javascript" src="<%=ctxPath%>/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
+<script src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
+<script src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
 
-<%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
-<link rel="stylesheet" type="text/css" href="<%=ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.css" />
-<script type="text/javascript" src="<%=ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.min.js"></script>
+<style>
+   html{display:flex;align-items:center;height:100%;justify-content:center;}
+   .survey-container {
+      max-width: 450px;
+      margin: 9% auto;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 20px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+   }
+   .survey-image img {
+      border-radius: 16px;
+   }
+   .btn-start {
+      background-color: #4da3ff;
+      border: none;
+      padding: 14px;
+      font-weight: bold;
+      border-radius: 30px;
+      color: white;
+      width: 100%;
+   }
+   .btn-start:hover { background-color: #368ce8; }
 
-<style type="text/css">
-	
-	.survey-container {
-		max-width: 500px;
-		margin: 100px auto;
-		text-align: center;
-		overflow: hidden; /* 슬라이드 이동 시 바깥 내용 숨김 */
-	}
-	.survey-image {
-		border-radius: 12px;
-		overflow: hidden;
-		margin: 20px 0;
-	}
-	.btn-start {
-		background-color: #4da3ff;
-		border: none;
-		padding: 12px 24px;
-		font-weight: bold;
-		border-radius: 25px;
-		color: white;
-	}
-	.btn-start:hover {
-		background-color: #368ce8;
-	}
-	
-	/* -- CSS 로딩화면 구현 시작(bootstrap 에서 가져옴) -- */    
-	div.loader {
-		border: 16px solid #f3f3f3;
-		border-radius: 50%;
-		border-top: 12px dotted blue;
-		border-right: 12px dotted green; 
-		border-bottom: 12px dotted red; 
-		border-left: 12px dotted pink; 
-		width: 120px;
-		height: 120px;
-		-webkit-animation: spin 2s linear infinite;
-		animation: spin 2s linear infinite;
-	}
-	
-	@-webkit-keyframes spin {
-		0% { -webkit-transform: rotate(0deg); }
-		100% { -webkit-transform: rotate(360deg); }
-	}
-	
-	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
-	}
-	/* -- CSS 로딩화면 구현 끝(bootstrap 에서 가져옴) -- */
-	
+   /* 로딩 */
+   .loader {
+      border: 12px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 12px solid #007bff;
+      width: 80px;
+      height: 80px;
+      animation: spin 1.5s linear infinite;
+   }
+   @keyframes spin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+   #loading-screen {
+      position: fixed; inset:0;
+      background: rgba(255,255,255,0.7);
+      display:flex; justify-content:center; align-items:center;
+      z-index:9999;
+   }
+
+   /* 슬라이드 */
+   .slides-wrapper {
+      overflow: hidden;
+      width: 100%;
+   }
+   .slides {
+      display: flex;
+      transition: transform .35s ease;
+   }
+   .slide {
+      min-width: 100%;
+      box-sizing: border-box;
+   }
+
+   /* 질문/옵션 버블 */
+   .question-bubble {
+      background: #fff;
+      border-radius: 20px;
+      padding: 15px 20px;
+      margin-bottom: 35px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      text-align: left;
+   }
+   .question-bubble .QNo {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #3399FF; /* 진한 파랑 */
+      margin-bottom: 10px;
+   }
+   .question-bubble .QText {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #333;
+   }
+   .option-bubble {
+      background: #e9f3ff;
+      border-radius: 20px;
+      padding: 12px 18px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      text-align: left;
+   }
+   .option-bubble:hover { background: #cfe7ff; }
+   .option-bubble:active { background: #b5d9ff; }
+
+   /* 결과 화면 꾸밈 (축소 버전) */
+   .result-bubble {
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px;              /* 여백 줄임 */
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      margin-top: 15px;           /* 위 간격 줄임 */
+      text-align: center;
+   }
+   .result-image {
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      max-height: 200px;          /* 이미지 높이 제한 */
+      object-fit: cover;          /* 비율 유지 자르기 */
+   }
+   /* 결과 제목 반짝반짝 효과 */
+   .result-title {
+       font-size: 1.2rem;
+       font-weight: 600;
+       color: #3399ff;
+       margin-top: 10px;
+       animation: glow 2s ease-in-out infinite alternate;
+   }
+   
+   @keyframes glow {
+       from {
+           text-shadow: 0 0 5px #99ccff, 0 0 10px #99ccff;
+       }
+       to {
+           text-shadow: 0 0 15px #3399ff, 0 0 30px #66b2ff;
+       }
+   }
+   .result-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;                   /* 태그 간격 줄임 */
+      margin: 12px 0;             /* 여백 줄임 */
+   }
+   /* 태그 버블 반짝임 */
+   .tag-bubble {
+       background: #e9f3ff;
+       color: #3399ff;
+       font-weight: 600;
+       padding: 5px 12px;
+       border-radius: 16px;
+       font-size: 0.85rem;
+       position: relative;
+       overflow: hidden;
+   }
+   .tag-bubble::after {
+       content: "";
+       position: absolute;
+       top: -50%;
+       left: -50%;
+       width: 200%;
+       height: 200%;
+       background: radial-gradient(circle, rgba(255,255,255,0.6) 20%, transparent 60%);
+       animation: sparkle 3s infinite linear;
+   }
+   @keyframes sparkle {
+       from { transform: translate(0,0) rotate(0deg); }
+       to { transform: translate(50%,50%) rotate(360deg); }
+   }
+   /* 떨어지는 별 */
+   .falling-star {
+       position: absolute;
+       color: #ffd700;   /* 금색 별 */
+       font-size: 1rem;
+       opacity: 0;
+       animation: fall 5s linear infinite;
+   }
+   
+   @keyframes fall {
+       0% {
+           transform: translateY(-20px) scale(0.8);
+           opacity: 0;
+       }
+       20% {
+           opacity: 1;
+       }
+       80% {
+           opacity: 1;
+       }
+       100% {
+           transform: translateY(250px) scale(0.5);
+           opacity: 0;
+       }
+   }
 </style>
-
 </head>
-<body style="background-color: #f8f9fa;">
-	
-	<%-- CSS 로딩화면 구현한것--%>
-	<div style="display: flex">
-		<div class="loader" style="margin: auto"></div>
-	</div>
-	
-	<div class="survey-container" style="border: solid 2px blue;">
-		
-		<h4 class="font-weight-bold text-primary">성향 TEST</h4>
-		<p class="text-muted">어떤 유형인지 알아보세요.</p>
-		
-		<div class="survey-image">
-			<img src="<%= ctxPath %>/images/mz.png" class="img-fluid">
-		</div>
-		
-		<button type="button" class="btn-start">설문 시작하기</button>
-	</div>
+<body class="bg-light">
+   
+   <!-- 로딩 -->
+   <div id="loading-screen">
+      <div class="loader"></div>
+   </div>
+   
+   <!-- 시작 화면 -->
+   <div class="survey-container text-center">
+      <h4 class="fw-bold text-primary">성향 TEST</h4>
+      <p class="text-muted">어떤 유형인지 알아보세요.</p>
+      
+      <div class="survey-image my-3">
+         <img src="<%= ctxPath %>/images/mz.png" class="img-fluid w-100" alt="성향 이미지">
+      </div>
+      
+      <button type="button" class="btn-start">설문 시작하기</button>
+   </div>
 
-<script type="text/javascript">
-	
-	const isLogin = ${not empty sessionScope.loginUser};
-	
-	$(function(){
-		
-		$('div.loader').hide();	// CSS 로딩화면 감추기
-		
-		$('button.btn-start').click(function(){
-			$('div.survey-container').empty();
-			
-			surveyStart();	// 설문 내용 호출
-		});
-		
-	});// end of $(function(){})--------------------------------------
-	
-	
-	// Function Declaration
-	function surveyStart() {
-		
-		$.ajax({
-			url:"<%= ctxPath%>/categoryTest/surveyStart",
-			dataType:"json",
-			success:function(json){
-			//	console.log(JSON.stringify(json));
-				/*
-					[{"questionNo": 1,"questionContent": "팀 프로젝트에서 당신의 역할은?",
-					"options": [{ "optionNo": 10, "optionText": "리더가 좋다"}
-							   ,{ "optionNo": 11, "optionText": "서포터가 편하다"}
-					 ]}, ...
-					]
-				*/
-				
-				// === 슬라이드 문제 만들기 시작 === //
-				let v_html = `<div class="slides" id="slides" style="display:flex; width:100%; transition:transform .35s ease;">`;
-				
-				$.each(json, function(index, item){
-					
-					v_html += `
-						<div class="slide" style="min-width:100%; padding:10px 20px; box-sizing:border-box;">
-							<div class="QNo mt-5 text-danger font-weight-bold" style="font-size: 20pt;">Q\${index + 1}</div>
-							<div class="QText my-5 font-weight-bold" style="font-size:1.2rem;">\${item.text}</div>
-					`;
-					
-					$.each(item.options, function(opt_index, opt_item){
-						v_html += `
-							<button class="opt-btn btn btn-danger btn-lg btn-block my-5" 
-										data-qstno="\${index}" 
-										data-opt="\${opt_index + 1}"
-										data-cat="\${opt_item.categoryNo}">
-								\${opt_item.text}
-							</button>
-						`;
-					});
-					
-					v_html += `
-						</div>
-					`;
-					
-				})// end of $.each(json, function(index, item){})-------------------------------------
-				
-				v_html += `</div>`;
-				
-				$('div.survey-container').html(v_html);	// 화면에 삽입해주기
-				
-				const total = json.length;
-				const answer_arr = [];
-				let nowNumber = 0;	// 현재 보여줄 슬라이드 번호
-				
-				// 답 관련 버튼 클릭 동적 함수 작성
-				$('div.survey-container').on('click', '.opt-btn', function(){
-					
-					const qstno = Number($(this).data('qstno'));	// 몇 번째 질문인지 체크
-					const optionNo = Number($(this).data('cat'));	// 선택한 옵션번호 에 달려있는 카테고리 번호
-					answer_arr[qstno] = optionNo;
-					
-					if(qstno < total - 1){	// 문제에서 버튼 클릭시 다음 슬라이드
-						nowNumber = qstno + 1;
-						$('#slides').css('transform', `translateX(-\${nowNumber * 100}%)`);
-					} 
-					else {	// 마지막이면 제출
-						submitAnswers(answer_arr);	// 고른 답 제출하기
-					}
-				});// end of $('div.survey-container').on('click', '.opt-btn', function(){})--------------------------------
-				// === 슬라이드 문제 만들기 끝 === //
-			},
-			error: function(request, status, error){
-				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			}
-		});
-		
-	}// end of function surveyStart()--------------------------------------
-	
-	
-	// 결과 제출 함수
-	function submitAnswers(answer_arr) {
-		
-		$("div.loader").show(); // CSS 로딩화면 보여주기
-		
-		$.ajax({
-			url:"<%= ctxPath%>/categoryTest/submit",
-			method:"POST",
-			data:{"answer_arr":answer_arr},
-			dataType:"json",
-			success:function(json){
-			//	console.log(JSON.stringify(json));
-				// {"categoryName":"MZ", "categoryImagePath ":"~", "tags":["에어팟필수", "칼퇴", "딴생각장인", "지각러버"]}
-				
-				$('div.survey-container').empty();
-				
-				let r_html = `
-				<div class="card shadow-sm border-0">
-					<img src="<%= ctxPath %>/images/\${json.categoryImagePath}" class="card-img-top" alt="\${json.categoryName}">
-				</div>
-				
-				<div class="bg-primary text-white rounded mt-3 p-3 fw-bold">`;
-				
-				$.each(json.tags, function(index, item){
-					r_html += `#\${item} `;
-					if(index % 4 === 3) r_html += `<br>`;
-				});// end of $.each(json, function(index, item){})---------------------------
-				
-				r_html += `
-				</div>
-				
-				<div class="card shadow-sm border-0 mt-4">
-					<div class="card-body text-center">
-						<h3 class="text-muted mb-1">\${json.categoryName}</h3>
-					</div>
-				</div>`;
-				
-			    if (!isLogin) {
-			        r_html += `<button class="btn btn-outline-primary btn-lg w-100 fw-bold" 
-			        			onclick="login()">
-			        			로그인하고 성향 저장하기</button>`;
-			    } else {
-			        r_html += `
-				        <button class="btn btn-outline-primary btn-lg w-100 fw-bold"
-			        			onclick="saveCategory()">
-			        			성향 GET!</button>
-	        			<form name="surveyForm" class="mt-4">	
-			        	  <input name="categoryNo" value="\${json.categoryNo}" type="hidden"/>	
-        				</form>`;
-			    }
-				r_html +=
-			    	`<button class="btn btn-outline-primary btn-lg w-100 fw-bold" onclick="retryTest()">
-						테스트 다시하기
-					</button>`;
-				
-				$('div.survey-container').html(r_html);
-				
-			},
-			error: function(request, status, error){
-				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			},
-			complete: function() {	// 해당 ajax 가 성공하든 실패하든 실행 하는 코드
-				$("div.loader").hide(); // CSS 로딩화면 감추기
-			}
-		});
-		
-	}// end of function submitAnswers(answer_arr)-------------------------------
-	
-	function login() {
+<script>
+   const isLogin = ${not empty sessionScope.loginUser};
+   
+   $(function(){
+      $("#loading-screen").hide();
+      $(".btn-start").click(function(){
+         $(".survey-container").empty();
+         $("#loading-screen").show();
+         surveyStart();
+      });
+   });
+
+   // 설문 시작
+   function surveyStart() {
+      $.ajax({
+         url:"<%= ctxPath%>/categoryTest/surveyStart",
+         dataType:"json",
+         success:function(json){
+            let v_html = `
+            <div class="slides-wrapper">
+               <div class="slides" id="slides">`;
+            
+            $.each(json, function(index, item){
+               v_html += `
+               <div class="slide px-2">
+                  <div class="question-bubble">
+                     <div class="QNo">Q\${index+1}</div>
+                     <div class="QText">\${item.text}</div>
+                  </div>`;
+               
+               $.each(item.options, function(opt_index, opt_item){
+                  v_html += `
+                     <div class="option-bubble opt-btn" 
+                        data-qstno="\${index}" 
+                        data-cat="\${opt_item.categoryNo}">
+                        \${opt_item.text}
+                     </div>`;
+               });
+               
+               v_html += `</div>`;
+            });
+            
+            v_html += `</div></div>`;
+            $(".survey-container").html(v_html);
+            
+            const total = json.length;
+            const answer_arr = [];
+            
+            $(".survey-container").on("click", ".opt-btn", function(){
+               const qstno = Number($(this).data("qstno"));
+               const optionNo = Number($(this).data("cat"));
+               answer_arr[qstno] = optionNo;
+               
+               if(qstno < total-1){
+                  $("#slides").css("transform", `translateX(-\${(qstno+1)*100}%)`);
+               } else {
+                  submitAnswers(answer_arr);
+               }
+            });
+         },
+         complete:function(){
+            $("#loading-screen").hide();
+         }
+      });
+   }
+
+   // 결과 제출
+   function submitAnswers(answer_arr) {
+      $("#loading-screen").show();
+      
+      $.ajax({
+         url:"<%= ctxPath%>/categoryTest/submit",
+         method:"POST",
+         data:{"answer_arr":answer_arr},
+         dataType:"json",
+         success:function(json){
+            let r_html = `
+            <div class="result-bubble">
+               
+                 <!-- 흩날리는 별들 (떨어지는 효과) -->
+                 <i class="fa-solid fa-star falling-star" style="top:-10px; left:20%; animation-delay:0s;"></i>
+                 <i class="fa-solid fa-star falling-star" style="top:-10px; left:50%; animation-delay:1s;"></i>
+                 <i class="fa-solid fa-star falling-star" style="top:-10px; left:75%; animation-delay:2s;"></i>
+            
+               <img src="<%= ctxPath %>/images/\${json.categoryImagePath}" class="img-fluid result-image mb-3" alt="\${json.categoryName}">
+               
+               <h3 class="result-title">\${json.categoryName}</h3>
+               
+               <div class="result-tags">`;
+            
+            $.each(json.tags, function(i, tag){
+               r_html += `<span class="tag-bubble">#\${tag}</span>`;
+            });
+            
+            r_html += `</div></div>`;
+            
+            if (!isLogin) {
+               r_html += `<button class="btn btn-outline-primary btn-lg w-100 mt-3 fw-bold" onclick="login()">로그인하고 성향 저장하기</button>`;
+            } else {
+               r_html += `
+           	   <button class="btn btn-outline-primary btn-lg w-100 fw-bold" onclick="saveCategory()">성향 GET!</button>
+               <form name="surveyForm" class="mt-4">   
+                  <input type="hidden" name="categoryNo" value="\${json.categoryNo}"/>   
+               </form>`;
+            }
+            
+            r_html += `<button class="btn btn-outline-secondary btn-lg w-100 mt-3 fw-bold" onclick="retryTest()">테스트 다시하기</button>`;
+            
+            $(".survey-container").html(r_html);
+         },
+         complete:function(){
+            $("#loading-screen").hide();
+         }
+      });
+    }
+    function login() {
 		location.href = '<%= ctxPath %>/users/loginForm';
 	}
 	function saveCategory() {
@@ -274,8 +344,6 @@
 	function retryTest() {
 		location.href = '<%= ctxPath %>/categoryTest/survey';
 	}
-	
 </script>
-
 </body>
 </html>

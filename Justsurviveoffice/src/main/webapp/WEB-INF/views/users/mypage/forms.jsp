@@ -20,7 +20,8 @@
 <script src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
 
 <style type="text/css">
-	body { background: #f7f7fb; }
+	body { background: #f7f7fb; font-family: 'Noto Sans KR', sans-serif; }
+
 	.sidebar { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
 	.sidebar img { max-width: 100%; border-radius: 10px; }
 	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none;font-weight:500;}

@@ -6,6 +6,8 @@
     String ctxPath = request.getContextPath();
 %>
 <jsp:include page="../header/header1.jsp" /> 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <html>
 <style>
 
@@ -96,6 +98,32 @@
     color: #f1c40f;
 }
 
+/* 신고 아이콘 기본 스타일 */
+.report-icon {
+    width: 15px;            /* 북마크 아이콘 크기와 동일하게 맞춤 */
+    height: 18px;
+    cursor: pointer;
+    display: inline-block;
+    transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
+}
+
+/* 마우스 올렸을 때만 반짝임 + 흔들림 */
+.report-icon:hover {
+    animation: blink 0.8s infinite alternate, shake 1.2s infinite ease-in-out;
+    transform: scale(1.15);    /* 살짝 확대 */
+    filter: drop-shadow(0 0 6px red);  /* 반짝이는 효과 */
+}
+
+/* 반짝이는 효과 */
+@keyframes blink {
+    0%   { filter: brightness(1); }
+    50%  { filter: brightness(2); }
+    100% { filter: brightness(1); }
+}
+
+
+--------------------------------------
+
 /* 댓글 섹션 */
 .comment-section {
     margin-top: 35px;
@@ -126,6 +154,43 @@
     justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
     gap: 8px;
     margin-top: 8px;
+}
+
+/* 댓글 작성 폼 */
+form[name="commentform"] {
+    display: flex;                /* 가로 배치 */
+    align-items: center;          /* 세로 중앙 정렬 */
+    gap: 10px;                    /* 입력창과 버튼 사이 간격 */
+    margin-top: 15px;
+}
+
+/* 댓글 입력창 */
+form[name="commentform"] textarea {
+    flex: 1;                      /* 남은 공간 전부 차지 */
+    border-radius: 6px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    resize: none;
+    min-height: 45px;
+    max-height: 120px;
+    font-size: 14px;
+}
+
+/* 댓글 등록 버튼 */
+form[name="commentform"] #addComment {
+    padding: 10px 18px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    background-color: #6c63ff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    height: 45px;
+}
+
+form[name="commentform"] #addComment:hover {
+    background-color: #5848e5;
 }
 
 .comment:hover {
@@ -500,7 +565,6 @@ textarea:focus {
            form.submit();
        });
        
-       
 
        $('#download').click(function(){
            const form = document.downloadForm;
@@ -525,8 +589,8 @@ textarea:focus {
    // 글 수정하기 >> restAPI
    function edit() {
       if(!confirm("수정하시겠습니까?")) {
-    	  alert("취소되었습니다.");
-    	  return;
+         alert("취소되었습니다.");
+         return;
       }
       const form = document.delnEditForm;
       form.method = "get";
@@ -573,7 +637,7 @@ textarea:focus {
    //댓글 좋아요
    function commentLike(commentNo,fk_id) {
 
-	   const icon = $('#commentLike-icon-' + commentNo);
+      const icon = $('#commentLike-icon-' + commentNo);
        const dislikeIcon = $('#commentDislike-icon-' + commentNo);
        const likeCountSpan = $('#commentLikeCount-' + commentNo);
        const dislikeCountSpan = $('#commentDislikeCount-' + commentNo);
@@ -584,7 +648,7 @@ textarea:focus {
            dataType: "json", 
            data: { commentNo: commentNo },
            success: function(json) {
-        	   
+              
               // 로그인 안 한 경우 처리
              if (json.notLogin) {
                  alert(json.message);
@@ -690,7 +754,7 @@ textarea:focus {
                } else {
                    icon.addClass("fa-regular fa-thumbs-up");
                }
-	
+   
                // 싫어요는 항상 해제 상태로 갱신
                dislikeIcon.addClass("fa-regular fa-thumbs-down");
                
@@ -728,7 +792,6 @@ textarea:focus {
                const isreplyDisliked = json.status === "disliked";
                icon.removeClass("fa-solid fa-thumbs-down text-warning fa-regular");
                likeIcon.removeClass("fa-solid fa-thumbs-up text-warning fa-regular");
-
 
                if (isreplyDisliked) { //이미 싫어요가 눌러져있다면
                    icon.addClass("fa-solid fa-thumbs-down text-warning");
@@ -798,6 +861,54 @@ textarea:focus {
        });
     }// end of function Bookmark(boardNo,fk_id)———————————
    
+   <!-- 게시글 신고하기-->
+    //  신고 모달 열기
+   function openReportModal(boardNo) {
+       console.log("모달열엇다 boardNo"+boardNo);
+       $("#report-boardNo").val(boardNo); // 숨겨진 필드에 boardNo 저장
+       $("#reportReason").val("");       // 이전 입력값 초기화
+       $("#reportModal").modal("show");  // 모달 열기
+   }
+    
+   // 신고 전송
+   $(document).on("click", "#submitReport", function() {
+       const boardNo = $("#report-boardNo").val();
+       const fk_id = $("#report-userId").val();
+
+       console.log("신고 게시글:", boardNo);
+       console.log("신고자 ID:", fk_id);
+
+       // 선택된 체크박스 값 배열로 가져오기
+       const selectedReasons = [];
+       $("input[name='reportReason']:checked").each(function() {
+           selectedReasons.push($(this).val());
+       });
+
+       console.log("선택한 신고 사유:", selectedReasons);
+       
+       $.ajax({
+           url: "<%=ctxPath%>/board/reportAdd",
+           type: "POST",
+           dataType: "json",
+           data: {
+               fk_boardNo: boardNo,
+               fk_id: fk_id,
+               reportReason: selectedReasons.join(", ") // 선택된 사유를 문자열로 합침
+           },
+           success: function(json) {
+               if (json.success) {
+                   alert("🚨 신고가 접수되었습니다.");
+                   $("#reportModal").modal("hide");
+               } else {
+                   alert(json.message || "신고 접수 중 오류가 발생했습니다.");
+               }
+           },
+           error: function(request, status, error) {
+               alert("code:" + request.status + "\nmessage:" + request.responseText);
+           }
+       });
+   });
+    
    function goViewA(){
        const frm = document.goViewFrm;
        frm.boardNo.value = ${boardDto.preNo};
@@ -864,6 +975,7 @@ textarea:focus {
                 class="thumbnail" 
                 style="max-width: 100%; height: auto; display: block; margin: 0 auto;" />
      </div> --%>
+     
     </c:if>
     
     
@@ -903,6 +1015,15 @@ textarea:focus {
              </i>
          </form> 
          
+         <!-- 신고하기 아이콘 (본인 글 제외) -->
+      <c:if test="${not empty sessionScope.loginUser and sessionScope.loginUser.id ne boardDto.fk_id}">
+          <img src="<%=ctxPath%>/images/reporticon.png"
+               alt="신고하기"
+               class="report-icon"
+               title="신고하기"
+               onclick="openReportModal(${boardDto.boardNo})">
+      </c:if>
+         
            <form name="delnEditForm" style="display:inline;margin: auto; ">
               <c:if test="${loginUser.id eq boardDto.fk_id}">
                  <input name="fk_categoryNo" style="display: none;" value="${boardDto.fk_categoryNo}"/>
@@ -918,108 +1039,108 @@ textarea:focus {
        </div>
    </div>
    
-	<!-- ======== 댓글 목록 ======== -->
-	<div class="comment-section">
-	    <h3 style="font-weight: bold;">댓글 <span>${fn:length(commentList)}</span></h3>
-	    <c:forEach var="comment" items="${commentList}">
-	        <div class="comment" id="comment-${comment.commentNo}">
-	            <div class="meta">
-	                <span>${comment.fk_id}</span> |
-	                <span>${fn:replace(comment.createdAtComment, "T", " ")}</span>
-	            </div>
-	            <div class="content">${comment.content}</div>
-	   
-	         <!-- 댓글 좋아요/싫어요 -->
-	         <div class="commentlikedislike">
-	             <i id="commentLike-icon-${comment.commentNo}" 
-	               class="fa-thumbs-up ${comment.commentLiked ? 'fa-solid text-warning' : 'fa-regular'}"
-	               data-liked="${comment.commentLiked}"
-	               onclick="commentLike(${comment.commentNo})"></i>
-	            <span id="commentLikeCount-${comment.commentNo}">
-	                ${comment.commentLikeCount}
-	            </span>
-	         
-	             <i id="commentDislike-icon-${comment.commentNo}" 
-	               class="fa-thumbs-down ${comment.commentDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
-	               data-liked="${comment.commentDisliked}"
-	               onclick="commentDislike(${comment.commentNo})"></i>
-	            <span id="commentDislikeCount-${comment.commentNo}">
-	                ${comment.commentDislikeCount}
-	            </span>
-	         </div>
-	
-	
-	            <!-- 버튼 영역 -->
-	            <div class="actions">
-	                <c:if test="${not empty loginUser}">
-	                    <button class="btn reply-btn" data-id="${comment.commentNo}">답글</button>
-	                </c:if>
-	                <c:if test="${loginUser.id == comment.fk_id}">
-	                    <button type="button" class="btn update-comment" data-id="${comment.commentNo}">수정</button>
-	                    <button type="button" class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
-	                    <button type="button" class="btn btn-sm save-edit" data-id="${comment.commentNo}" style="display:none;">저장</button>
-	                    <button type="button" class="btn btn-sm cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
-	                </c:if>
-	            </div>
-	
-	            <!-- 수정 textarea -->
-	            <textarea class="form-control edit-content" style="display:none;">${comment.content}</textarea>
-	
-	            <!-- 대댓글 입력폼 + 리스트 -->
-	            <div class="reply-form" id="reply-form-${comment.commentNo}" style="display:none; margin-top:5px;">
-	                <textarea id="reply-content-${comment.commentNo}" rows="3" placeholder="대댓글을 입력하세요"></textarea>
-	                <div class="button-group">
-	                   <button type="button" class="btn add-reply" data-parent="${comment.commentNo}">등록</button>
-	                   <button type="button" class="btn cancel-reply" data-parent="${comment.commentNo}">취소</button>
-	                 </div>
-	            </div>
-	            <div class="replies meta" id="replies-${comment.commentNo}" style="margin-left:20px; margin-top:10px;">
-	                <c:forEach var="reply" items="${comment.replyList}">
-	                   <div class="reply" id="reply-${reply.commentNo}">
-	                   	<span>${reply.fk_id}</span>&nbsp;|&nbsp; 
-	                      <span>${fn:replace(reply.createdAtComment, "T", " ")}</span>
-	                  	<div class="content">${reply.content}</div>
-	                 <!-- 대댓글 좋아요/싫어요 -->
-	                 <div class="replylikedislike">
-	                     <i id="replyLike-icon-${reply.commentNo}" 
-	                       class="fa-thumbs-up ${reply.replyLiked ? 'fa-solid text-warning' : 'fa-regular'}"
-	                       data-liked="${reply.replyLiked}"
-	                       onclick="replyLike(${reply.commentNo})"></i>
-	                    <span id="replyLikeCount-reply-${reply.commentNo}">
-	                        ${reply.replyLikeCount}
-	                    </span>
-	                 
-	                     <i id="replyDislike-icon-${reply.commentNo}" 
-	                       class="fa-thumbs-down ${reply.replyDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
-	                       data-liked="${reply.replyDisliked}"
-	                       onclick="replyDislike(${reply.commentNo})"></i>
-	                    <span id="replyDislikeCount-reply-${reply.commentNo}">
-	                        ${reply.replyDislikeCount}
-	                    </span>
-	                 </div>
-	                       <c:if test="${loginUser.id == reply.fk_id}">
-	                          <span><button class="btn delete-reply" data-id="${reply.commentNo}" data-parent="${comment.commentNo}">삭제</button>
-	                      		</span>
-	                       </c:if>
-	                   </div>
-	                        
-	                </c:forEach>
-	            </div>
-	        </div>
-	    </c:forEach>
-	</div>
-	
-	<!-- 댓글 작성 -->
-    <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
-        <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
-        <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
-        <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
-        <button type="button" class="btn" id="addComment">댓글 등록</button>
-    </form>
+   <!-- ======== 댓글 목록 ======== -->
+   <div class="comment-section">
+       <h3 style="font-weight: bold;">댓글 <span>${fn:length(commentList)}</span></h3>
+       <c:forEach var="comment" items="${commentList}">
+           <div class="comment" id="comment-${comment.commentNo}">
+               <div class="meta">
+                   <span>${comment.fk_id}</span> |
+                   <span>${fn:replace(comment.createdAtComment, "T", " ")}</span>
+               </div>
+               <div class="content">${comment.content}</div>
+      
+            <!-- 댓글 좋아요/싫어요 -->
+            <div class="commentlikedislike">
+                <i id="commentLike-icon-${comment.commentNo}" 
+                  class="fa-thumbs-up ${comment.commentLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+                  data-liked="${comment.commentLiked}"
+                  onclick="commentLike(${comment.commentNo})"></i>
+               <span id="commentLikeCount-${comment.commentNo}">
+                   ${comment.commentLikeCount}
+               </span>
+            
+                <i id="commentDislike-icon-${comment.commentNo}" 
+                  class="fa-thumbs-down ${comment.commentDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
+                  data-liked="${comment.commentDisliked}"
+                  onclick="commentDislike(${comment.commentNo})"></i>
+               <span id="commentDislikeCount-${comment.commentNo}">
+                   ${comment.commentDislikeCount}
+               </span>
+            </div>
+   
+   
+               <!-- 버튼 영역 -->
+               <div class="actions">
+                   <c:if test="${not empty loginUser}">
+                       <button class="btn reply-btn" data-id="${comment.commentNo}">답글</button>
+                   </c:if>
+                   <c:if test="${loginUser.id == comment.fk_id}">
+                       <button type="button" class="btn update-comment" data-id="${comment.commentNo}">수정</button>
+                       <button type="button" class="btn delete-comment" data-id="${comment.commentNo}">삭제</button>
+                       <button type="button" class="btn btn-sm save-edit" data-id="${comment.commentNo}" style="display:none;">저장</button>
+                       <button type="button" class="btn btn-sm cancel-edit" data-id="${comment.commentNo}" style="display:none;">취소</button>
+                   </c:if>
+               </div>
+   
+               <!-- 수정 textarea -->
+               <textarea class="form-control edit-content" style="display:none;">${comment.content}</textarea>
+   
+               <!-- 대댓글 입력폼 + 리스트 -->
+               <div class="reply-form" id="reply-form-${comment.commentNo}" style="display:none; margin-top:5px;">
+                   <textarea id="reply-content-${comment.commentNo}" rows="3" placeholder="대댓글을 입력하세요"></textarea>
+                   <div class="button-group">
+                      <button type="button" class="btn add-reply" data-parent="${comment.commentNo}">등록</button>
+                      <button type="button" class="btn cancel-reply" data-parent="${comment.commentNo}">취소</button>
+                    </div>
+               </div>
+               <div class="replies meta" id="replies-${comment.commentNo}" style="margin-left:20px; margin-top:10px;">
+                   <c:forEach var="reply" items="${comment.replyList}">
+                      <div class="reply" id="reply-${reply.commentNo}">
+                         <span>${reply.fk_id}</span>&nbsp;|&nbsp; 
+                         <span>${fn:replace(reply.createdAtComment, "T", " ")}</span>
+                        <div class="content">${reply.content}</div>
+                    <!-- 대댓글 좋아요/싫어요 -->
+                    <div class="replylikedislike">
+                        <i id="replyLike-icon-${reply.commentNo}" 
+                          class="fa-thumbs-up ${reply.replyLiked ? 'fa-solid text-warning' : 'fa-regular'}"
+                          data-liked="${reply.replyLiked}"
+                          onclick="replyLike(${reply.commentNo})"></i>
+                       <span id="replyLikeCount-reply-${reply.commentNo}">
+                           ${reply.replyLikeCount}
+                       </span>
+                    
+                        <i id="replyDislike-icon-${reply.commentNo}" 
+                          class="fa-thumbs-down ${reply.replyDisliked ? 'fa-solid text-warning' : 'fa-regular'}"
+                          data-liked="${reply.replyDisliked}"
+                          onclick="replyDislike(${reply.commentNo})"></i>
+                       <span id="replyDislikeCount-reply-${reply.commentNo}">
+                           ${reply.replyDislikeCount}
+                       </span>
+                    </div>
+                          <c:if test="${loginUser.id == reply.fk_id}">
+                             <span><button class="btn delete-reply" data-id="${reply.commentNo}" data-parent="${comment.commentNo}">삭제</button>
+                               </span>
+                          </c:if>
+                      </div>
+                           
+                   </c:forEach>
+               </div>
+           </div>
+       </c:forEach>
+   </div>
+   
+   <!-- 댓글 작성 -->
+    <form name="commentform" action="${ctxPath}/comment/writeComment" method="post">
+       <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+       <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+       <textarea name="content" rows="2" placeholder="댓글을 입력하세요"></textarea>
+       <button type="button" class="btn" id="addComment">댓글 등록</button>
+   </form>
  
        
     <!-- 목록 버튼, 이전글 다음글 -->
-    <div style="display:flex; margin-top:3px;"> 
+    <div style="display:flex; margin-top:10px;"> 
     <div class="mr-3">
         <a href="<%=ctxPath %>/board/list/${boardDto.fk_categoryNo}" class="btn">목록</a>
     </div>
@@ -1037,6 +1158,63 @@ textarea:focus {
    <input type="hidden" id="NextNo" name="nextNo" value="${boardDto.nextNo}" />
    </div>
 </div>
-
+   <!-- 게시글 신고 모달 -->
+   <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-dialog-centered" role="document">
+           <div class="modal-content">
+   
+               <!-- 모달 헤더 -->
+               <div class="modal-header bg-danger text-white">
+                   <h5 class="modal-title" id="reportModalLabel">
+                       🚨 게시글 신고하기
+                   </h5>
+                   <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                       <span aria-hidden="true">&times;</span>
+                   </button>
+               </div>
+   
+               <!-- 모달 본문 -->
+               <div class="modal-body">
+                   <form id="reportForm">
+                       <input type="hidden" id="report-boardNo" name="fk_boardNo" value="">
+                       <input type="hidden" id="report-userId" name="fk_id" value="${sessionScope.loginUser.id}">
+   
+                       <p class="mb-2"><strong>신고 사유를 선택하세요</strong></p>
+   
+                       <div class="form-check">
+                           <input class="form-check-input" type="checkbox" name="reportReason" value="욕설/비방" id="reason1">
+                           <label class="form-check-label" for="reason1">욕설/비방</label>
+                       </div>
+   
+                       <div class="form-check">
+                           <input class="form-check-input" type="checkbox" name="reportReason" value="광고/도배" id="reason2">
+                           <label class="form-check-label" for="reason2">광고/도배</label>
+                       </div>
+   
+                       <div class="form-check">
+                           <input class="form-check-input" type="checkbox" name="reportReason" value="허위정보" id="reason3">
+                           <label class="form-check-label" for="reason3">허위정보</label>
+                       </div>
+   
+                       <div class="form-check">
+                           <input class="form-check-input" type="checkbox" name="reportReason" value="음란물/불법컨텐츠" id="reason4">
+                           <label class="form-check-label" for="reason4">음란물/불법컨텐츠</label>
+                       </div>
+   
+                       <div class="form-check">
+                           <input class="form-check-input" type="checkbox" name="reportReason" value="기타" id="reason5">
+                           <label class="form-check-label" for="reason5">기타</label>
+                       </div>
+                   </form>
+               </div>
+   
+               <!-- 모달 하단 버튼 -->
+               <div class="modal-footer">
+                   <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                   <button type="button" class="btn btn-danger" id="submitReport">신고하기</button>
+               </div>
+           </div>
+       </div>
+   </div>
 
 </html>

@@ -114,6 +114,12 @@ public class UsersController {
 		return "users/register";
 	}
 	
+	// 회원가입 약관 (iframe 용)
+    @GetMapping("/agree")
+    public String agreePage() {
+        return "users/agree";
+    }
+	
 	@PostMapping("registerUser")
     public String registerUser(
 			    		@RequestParam(name="id") String id,
@@ -241,13 +247,13 @@ public class UsersController {
 		if(certification_code != null && certification_code.equals(userCertificationCode)) {
 			
 			message = "인증이 성공되었습니다.";
-			loc = request.getContextPath() + "/login/pwdUpdate?id=" + id;
+			loc = request.getContextPath() + "/users/pwdUpdate?id=" + id;
 			
 		}
 		else {
 			
 			message = "발급된 인증코드가 아닙니다. 인증코드를 다시 발급받으세요.";
-			loc = request.getContextPath() + "/login/pwdFindForm";
+			loc = request.getContextPath() + "/users/pwdFindForm";
 			
 		}
 		
@@ -277,7 +283,7 @@ public class UsersController {
 		usersService.updatePassword(id, newPassword);
 		
 		String message = "비밀번호가 변경되었습니다.";
-		String loc = request.getContextPath() + "/login/loginForm";
+		String loc = request.getContextPath() + "/users/loginForm";
 		
 		request.setAttribute("message", message);
 		request.setAttribute("loc", loc);

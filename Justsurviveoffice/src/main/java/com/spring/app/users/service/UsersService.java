@@ -3,6 +3,8 @@ package com.spring.app.users.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.ui.Model;
+
 import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.entity.Users;
 import com.spring.app.users.domain.LoginHistoryDTO;
@@ -74,5 +76,8 @@ public interface UsersService {
  	
  	// 성향테스트 이후 카테고리 저장하기
 	UsersDTO saveCategoryNo(String id, Long categoryNo);
+
+ 	// 엑셀 저장
+	void userExcelList_to_Excel(String chart, Integer month, Model model);
 	 
 }

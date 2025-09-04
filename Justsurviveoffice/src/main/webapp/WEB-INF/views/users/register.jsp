@@ -199,6 +199,18 @@
                         </div> 
                     </td>
                 </tr>
+                
+                <tr>
+                    <td colspan="2">
+                       <label for="agree">이용약관에 동의합니다</label>&nbsp;&nbsp;<input type="checkbox" id="agree" />
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td colspan="2">
+                       <iframe src="<%= ctxPath%>/users/agree" width="100%" height="150px" style="border: solid 1px navy;"></iframe>
+                    </td>
+                </tr>
 			
             </table>
 

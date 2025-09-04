@@ -46,8 +46,8 @@ public class Mongo_surveyController {
 	
 	@GetMapping("survey")
 	public String survey() {
-		return "/categoryTest/survey";
-		//	/WEB-INF/views/rdg7203Work/survey.jsp 파일을 만들어야 한다.
+		return "categoryTest/survey";
+		//	/WEB-INF/views/categoryTest/survey.jsp 파일을 만들어야 한다.
 	}
 	
 	// 몽고DB에서 설문 데이터 가져오기
@@ -82,6 +82,7 @@ public class Mongo_surveyController {
     	
     	for( Map.Entry<String, Integer> categoryMap : categoryCount.entrySet() ) {
     		int k = categoryMap.getValue();
+
     		System.out.println(k);
     		if(k > maxValue) {	// 새로운 값이 더 높다면,
     			maxValue = k;	// 리스트를 비우자!
@@ -92,7 +93,7 @@ public class Mongo_surveyController {
     			maxCategoryList.add(categoryMap.getKey());
     		}
     	}// end of for---------------------------
-    	System.out.println("확인용 max : " + maxCategoryList);
+    	// System.out.println("확인용 max : " + maxCategoryList);
     	String categoryNo = "";
     	
     	if(maxCategoryList.size() >= 3) {	// 값이 4개 이상 저장되어 있을 경우 리더형

@@ -30,6 +30,8 @@
 .card img {
     width: 80%;
 	min-height: 200px;
+	max-height: 250px;
+	
     object-fit: cover;
     border-radius: 10px;
 }

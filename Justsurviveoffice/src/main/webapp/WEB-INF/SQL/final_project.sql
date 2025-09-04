@@ -117,6 +117,7 @@ constraint fk_Tag_category
 
 CREATE SEQUENCE tag_seq START WITH 1 INCREMENT BY 1 NOCYCLE NOCACHE;
 
+select * from board;
 
 select * from tab;
 
@@ -140,7 +141,8 @@ select * from tag;
 update users set email='dbals010321@naver.com' where id='jangym';
 
 commit;
-select * from users;
+
+select registerday from users order by registerday desc;
 
 select To_char(sysdate,'MM') from users;
 

@@ -2,7 +2,6 @@ package com.spring.app.users.service;
 
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -11,14 +10,20 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import com.spring.app.category.domain.CategoryDTO;
 import com.spring.app.common.AES256;
-
 import com.spring.app.common.SecretMyKey;
-
 import com.spring.app.common.Sha256;
 import com.spring.app.entity.Category;
 import com.spring.app.entity.LoginHistory;
@@ -339,25 +344,25 @@ public class UsersService_imple implements UsersService {
         return result;
     }
 
-	 @Override
-	    public List<Map<String, String>> registerChartday(int month) {
-	        int[] bucket = new int[31];
-	        List<UsersRepository.DayCount> rows = usersRepository.findBydayRegister(month);
-	        
-	        for (UsersRepository.DayCount r : rows) {
-	            int idx = Integer.parseInt(r.getDd()); // "01" -> 0
-	            bucket[idx] = r.getCnt().intValue();
-	        }
+	@Override	
+    public List<Map<String, String>> registerChartday(int month) {
+        int[] bucket = new int[31];
+        List<UsersRepository.DayCount> rows = usersRepository.findBydayRegister(month);
+        
+        for (UsersRepository.DayCount r : rows) {
+            int idx = Integer.parseInt(r.getDd())-1; // "01" -> 0
+            bucket[idx] = r.getCnt().intValue();
+        }
 
-	        List<Map<String, String>> result = new ArrayList<>(31);
-	        for (int i = 1; i <= 31; i++) {
-	            Map<String, String> row = new LinkedHashMap<>();
-	            row.put("dd", String.format("%02d", i));
-	            row.put("cnt", String.valueOf(bucket[i - 1]));
-	            result.add(row);
-	        }
-	        return result;
-	    }
+        List<Map<String, String>> result = new ArrayList<>(31);
+        for (int i = 1; i <= 31; i++) {
+            Map<String, String> row = new LinkedHashMap<>();
+            row.put("dd", String.format("%02d", i));
+            row.put("cnt", String.valueOf(bucket[i - 1]));
+            result.add(row);
+        }
+        return result;
+     }
 
 
 	 @Override
@@ -395,6 +400,124 @@ public class UsersService_imple implements UsersService {
 	     }
 	     return usersDto;
 	 }
+	 // 엑셀 저장
+	 @Override
+	 public void userExcelList_to_Excel(String chart, Integer month, Model model) {
+		
+		 SXSSFWorkbook workbook = new SXSSFWorkbook();
+			
+		 // 시트생성
+		 SXSSFSheet sheet = workbook.createSheet("회원가입 통계 정보");
+		 
+		// 시트 열 너비 설정
+		sheet.setColumnWidth(0, 2000);
+		sheet.setColumnWidth(1, 4000);
+		sheet.setColumnWidth(2, 2000);
+		
+		// 행의 위치를 나타내는 변수
+		int rowLocation = 0;
+		
+		// 병합할 행 만들기
+		Row mergeRow = sheet.createRow(rowLocation); // 엑셀에서 행의 시작은 0 부터 시작한다.
+		
+		// 병합할 행에 "회원가입 통계 정보" 로 셀을 만들어 셀에 스타일을 주기
+		for(int i=0; i<3; i++) {
+			Cell cell = mergeRow.createCell(i);
+			cell.setCellValue("회원가입 통계 정보");
+		} // end of for
+		
+		// 셀 병합하기
+		sheet.addMergedRegion(new CellRangeAddress(rowLocation, rowLocation, 0, 2)); // 시작 행, 끝 행, 시작 열, 끝 열
+		
+		// 헤더 행 만들기
+		Row headerRow = sheet.createRow(++rowLocation); // 엑셀에서 행의 시작은 0 부터 시작한다.
+														// ++rowLocation 은 전위연산자임.
+		
+		// 헤더 행의 첫번째 열 셀 만들기
+		Cell headerCell = headerRow.createCell(0);
+		headerCell.setCellValue("registerDay".equals(chart) ? "일" : "월");
+		
+		// 헤더 행의 두번째 열 셀 만들기
+		headerCell = headerRow.createCell(1);
+		headerCell.setCellValue("가입자수");
+		
+		// 헤더 행의 세번째 열 셀 만들기
+		headerCell = headerRow.createCell(2);
+		headerCell.setCellValue("퍼센티지");
+		
+		// ==== 데이터 조회 ==== //
+		List<Map<String, String>> statList;
+
+		if ("registerDay".equals(chart)) {
+		    statList = (month == null) ? registerChartday() : registerChartday(month);
+		} else {
+		    statList = registerChart(); // 월별은 month 무시
+		}
+
+	    int total = statList.stream()
+	                        .mapToInt(row -> Integer.parseInt(row.get("cnt")))
+	                        .sum();
+	    
+	    // 오른쪽 정렬 스타일 적용
+	    CellStyle rightAlignStyle = workbook.createCellStyle();
+	    rightAlignStyle.setAlignment(HorizontalAlignment.RIGHT);
+	    
+	    // ==== 데이터 행 ====
+	    for (int i = 0; i < statList.size(); i++) {
+	        Map<String, String> rowMap = statList.get(i);
+	        Row bodyRow = sheet.createRow(i + (rowLocation + 1));
+
+	        // ✅ 월/일 구분
+	        if ("registerDay".equals(chart)) {
+	            bodyRow.createCell(0).setCellValue(rowMap.get("dd"));
+	        } else {
+	            bodyRow.createCell(0).setCellValue(rowMap.get("mm"));
+	        }
+
+	        // 가입자수
+	        Cell cntCell = bodyRow.createCell(1);
+	        cntCell.setCellValue(rowMap.get("cnt") + "명");
+	        cntCell.setCellStyle(rightAlignStyle);
+	        
+	        // 퍼센티지
+	        double percent = (total > 0)
+	                ? (Double.parseDouble(rowMap.get("cnt")) * 100.0 / total)
+	                : 0.0;
+	        bodyRow.createCell(2).setCellValue(String.format("%.2f%%", percent));
+	    }
+	    
+	    // ==== 합계 행 추가 ====
+	    Row totalRow = sheet.createRow(statList.size() + (rowLocation + 1));
+
+	    // 첫 번째 열: "합계"
+	    totalRow.createCell(0).setCellValue("합계");
+
+	    // 두 번째 열: 총 가입자 수
+	    Cell totalCntCell = totalRow.createCell(1);
+	    totalCntCell.setCellValue(total + "명");
+	    totalCntCell.setCellStyle(rightAlignStyle);
+
+	    // 세 번째 열: 퍼센티지 합계 (항상 100% 또는 0%)
+	    totalRow.createCell(2).setCellValue(total > 0 ? "100.00%" : "0.00%");
+
+	    // workbook을 model에 담아서 View에서 write
+	    model.addAttribute("workbook", workbook);
+	    
+	    //  파일 이름 분기
+	    String workbookName;
+	    if ("registerDay".equals(chart)) {
+	        // 일자별 통계
+	        workbookName = (month != null) 
+	            ? "일자별_가입자통계_" + month + "월" 
+	            : "일자별_가입자통계";
+	    } else {
+	        // 월별 통계
+	        workbookName = "월별_가입자통계";
+	    }
+
+	    model.addAttribute("workbookName", workbookName);
+		 
+	}
 
 
 }
