@@ -18,7 +18,6 @@
     background-attachment: fixed;       /* 스크롤 시 고정 */
     background-blend-mode: overlay;     /* 색상 오버레이 효과 동일 */
 }
-<<<<<<< HEAD
 
 .card {
     display: flex;
@@ -61,7 +60,6 @@
     margin: 2px 0;               /* 태그·설명 간격 최소화 */
     line-height: 1.3;
     overflow: hidden;
-=======
 /* 카드 기본 스타일 */
 .card {
     background-color: #3C396B;
@@ -137,7 +135,6 @@
     .card-text {
         font-size: 0.8rem;
     }
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
 }
 
 </style>
