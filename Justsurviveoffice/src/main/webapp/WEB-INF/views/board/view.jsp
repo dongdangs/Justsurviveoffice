@@ -863,36 +863,53 @@ textarea:focus {
        });
     }// end of function Bookmark(boardNo,fk_id)———————————
    
-    // 신고하기
-    function openReportModal(boardNo, fk_id) {
-	    const reason = prompt("🚨 신고 사유를 입력해주세요:");
-	    if (!reason || reason.trim() === "") {
-	        alert("신고 사유를 입력해야 합니다.");
-	        return;
-	    }
+   <!-- 게시글 신고하기-->
+    //  신고 모달 열기
+	function openReportModal(boardNo) {
+    	console.log("모달열엇다 boardNo"+boardNo);
+	    $("#report-boardNo").val(boardNo); // 숨겨진 필드에 boardNo 저장
+	    $("#reportReason").val("");       // 이전 입력값 초기화
+	    $("#reportModal").modal("show");  // 모달 열기
+	}
 	
+	// 신고 전송
+	$(document).on("click", "#submitReport", function() {
+	    const boardNo = $("#report-boardNo").val();
+	    const fk_id = $("#report-userId").val();
+
+	    console.log("신고 게시글:", boardNo);
+	    console.log("신고자 ID:", fk_id);
+
+	    // 선택된 체크박스 값 배열로 가져오기
+	    const selectedReasons = [];
+	    $("input[name='reportReason']:checked").each(function() {
+	        selectedReasons.push($(this).val());
+	    });
+
+	    console.log("선택한 신고 사유:", selectedReasons);
+	    
 	    $.ajax({
 	        url: "<%=ctxPath%>/board/reportAdd",
 	        type: "POST",
 	        dataType: "json",
 	        data: {
 	            fk_boardNo: boardNo,
-	            fk_id: userId,
-	            reportReason: reason
+	            fk_id: fk_id,
+	            reportReason: selectedReasons.join(", ") // 선택된 사유를 문자열로 합침
 	        },
 	        success: function(json) {
 	            if (json.success) {
 	                alert("🚨 신고가 접수되었습니다.");
+	                $("#reportModal").modal("hide");
 	            } else {
 	                alert(json.message || "신고 접수 중 오류가 발생했습니다.");
 	            }
 	        },
 	        error: function(request, status, error) {
-	               alert("code:" + request.status + "\nmessage:" + request.responseText);
-           }
-    });
-}
-    
+	            alert("code:" + request.status + "\nmessage:" + request.responseText);
+	        }
+	    });
+	});
     
    function goViewA(){
        const frm = document.goViewFrm;
@@ -1000,13 +1017,13 @@ textarea:focus {
          </form> 
          
          <!-- 신고하기 아이콘 (본인 글 제외) -->
-	    <c:if test="${not empty sessionScope.loginUser and sessionScope.loginUser.id ne boardDto.fk_id}">
-		<img src="<%=ctxPath%>/images/reporticon.png"
-		     alt="신고하기"
-		     class="report-icon"
-		     title="신고하기"
-		     onclick="openReport(${boardDto.boardNo}, '${sessionScope.loginUser.id}')">
-	    </c:if>
+		<c:if test="${not empty sessionScope.loginUser and sessionScope.loginUser.id ne boardDto.fk_id}">
+		    <img src="<%=ctxPath%>/images/reporticon.png"
+		         alt="신고하기"
+		         class="report-icon"
+		         title="신고하기"
+		         onclick="openReportModal(${boardDto.boardNo})">
+		</c:if>
          
            <form name="delnEditForm" style="display:inline;margin: auto; ">
               <c:if test="${loginUser.id eq boardDto.fk_id}">
@@ -1142,6 +1159,63 @@ textarea:focus {
    <input type="hidden" id="NextNo" name="nextNo" value="${boardDto.nextNo}" />
    </div>
 </div>
-
+	<!-- 게시글 신고 모달 -->
+	<div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-dialog-centered" role="document">
+	        <div class="modal-content">
+	
+	            <!-- 모달 헤더 -->
+	            <div class="modal-header bg-danger text-white">
+	                <h5 class="modal-title" id="reportModalLabel">
+	                    🚨 게시글 신고하기
+	                </h5>
+	                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	            </div>
+	
+	            <!-- 모달 본문 -->
+	            <div class="modal-body">
+	                <form id="reportForm">
+	                    <input type="hidden" id="report-boardNo" name="fk_boardNo" value="">
+	                    <input type="hidden" id="report-userId" name="fk_id" value="${sessionScope.loginUser.id}">
+	
+	                    <p class="mb-2"><strong>신고 사유를 선택하세요</strong></p>
+	
+	                    <div class="form-check">
+	                        <input class="form-check-input" type="checkbox" name="reportReason" value="욕설/비방" id="reason1">
+	                        <label class="form-check-label" for="reason1">욕설/비방</label>
+	                    </div>
+	
+	                    <div class="form-check">
+	                        <input class="form-check-input" type="checkbox" name="reportReason" value="광고/도배" id="reason2">
+	                        <label class="form-check-label" for="reason2">광고/도배</label>
+	                    </div>
+	
+	                    <div class="form-check">
+	                        <input class="form-check-input" type="checkbox" name="reportReason" value="허위정보" id="reason3">
+	                        <label class="form-check-label" for="reason3">허위정보</label>
+	                    </div>
+	
+	                    <div class="form-check">
+	                        <input class="form-check-input" type="checkbox" name="reportReason" value="음란물/불법컨텐츠" id="reason4">
+	                        <label class="form-check-label" for="reason4">음란물/불법컨텐츠</label>
+	                    </div>
+	
+	                    <div class="form-check">
+	                        <input class="form-check-input" type="checkbox" name="reportReason" value="기타" id="reason5">
+	                        <label class="form-check-label" for="reason5">기타</label>
+	                    </div>
+	                </form>
+	            </div>
+	
+	            <!-- 모달 하단 버튼 -->
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+	                <button type="button" class="btn btn-danger" id="submitReport">신고하기</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 
 </html>

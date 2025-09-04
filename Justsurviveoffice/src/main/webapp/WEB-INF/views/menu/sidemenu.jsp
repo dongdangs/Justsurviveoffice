@@ -9,18 +9,13 @@
   
  <!-- 사이드바 -->
         <div class="col-lg-3 mb-4">
-<<<<<<< HEAD
             <div class="sidebar text-center"  style="height:585px;">
-                <img src="${pageContext.request.contextPath}/images/${sessionScope.loginUser.category.categoryImagePath}" alt="프로필" class="mb-3">
-=======
-            <div class="sidebar text-center">
             	<c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() ne null}">
                 	<img src="${pageContext.request.contextPath}/images/${sessionScope.loginUser.category.categoryImagePath}" alt="프로필" class="mb-3">
                 </c:if>
 				<c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() eq null}">
                		<img src="<%=ctxPath%>/images/unassigned.png" alt="프로필"  class="category-img mb-3">
                </c:if>
->>>>>>> branch 'main' of https://github.com/dongdangs/Justsurviveoffice.git
                 <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
                 <div class="mb-3">
                		<span style="size:20pt; color:blue;">${sessionScope.loginUser.name} 님 </span>
