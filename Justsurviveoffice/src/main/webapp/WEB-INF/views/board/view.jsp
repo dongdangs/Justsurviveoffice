@@ -871,7 +871,7 @@ textarea:focus {
 	    $("#reportReason").val("");       // 이전 입력값 초기화
 	    $("#reportModal").modal("show");  // 모달 열기
 	}
-	
+    
 	// 신고 전송
 	$(document).on("click", "#submitReport", function() {
 	    const boardNo = $("#report-boardNo").val();
