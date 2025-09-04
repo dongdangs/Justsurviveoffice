@@ -53,7 +53,7 @@
 </style>
 
 <script>  
-	// 250331 김예준 햄버거메뉴(모바일) 시 토글누르면 메뉴보이도록 함
+	// 250331 김예준 햄버거메뉴(모바일) 시 토글누르면 메뉴보이도록 함>> 굿!!
 	$(function () {
 	  $("button#menuToggle").on("click", function () {
 	    let $nav = $("#mainNav");
@@ -78,7 +78,7 @@
   
 </script>
 
-<header style="opacity: 0.7; display: flex;">
+<header style="opacity: 0.8; background-color:#A4B1DE; display: flex;">
   <h1><a href="<%=ctxPath%>/index" style="color: white;text-decoration: none;background-image: url(/justsurviveoffice/images/logo2.png);width: 173px;height: 50px;display: block;background-size: cover;background-repeat: no-repeat;background-position: center;"></a></h1>
 
   <button id="menuToggle" aria-label="메뉴 토글" aria-expanded="false">&#9776;</button>
