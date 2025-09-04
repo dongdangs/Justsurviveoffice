@@ -29,6 +29,70 @@ a {text-decoration: none !important;}
 #displayList .result:hover{ background:#f5f7fa; }
 #displayList .result span{ color:#d00; font-weight:600; } 
 
+/* 검색 폼 스타일 */
+form[name="searchForm"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 15px;
+}
+
+/* 드롭다운 */
+form[name="searchForm"] select {
+  border-radius: 5px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* 검색창 */
+form[name="searchForm"] .autocomplete {
+  min-width: 160px;
+}
+
+form[name="searchForm"] input[name="searchWord"] {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+
+/* 자동완성 드롭다운 */
+#displayList {
+  border-radius: 0 0 5px 5px;
+  font-size: 14px;
+}
+
+/* 버튼 */
+form[name="searchForm"] button,
+form[name="searchForm"] a.btn {
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 6px 12px;
+  white-space: nowrap;
+}
+
+/* navy 글쓰기 버튼 */
+form[name="searchForm"] #writeBtn {
+  background-color: navy !important;
+  border: none;
+}
+
+/* 반응형 */
+@media (max-width: 640px) {
+  form[name="searchForm"] {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  form[name="searchForm"] select,
+  form[name="searchForm"] button,
+  form[name="searchForm"] a.btn {
+    width: 100%;
+  }
+}
+
+
 .col-md-9 {border-radius: 10pt;background-size: cover;  background-position: center;background-repeat: no-repeat;background-attachment: fixed;background-blend-mode: overlay;}
 .keyword-panel {position: absolute;top: 16px;    right: 16px; width: 180px;background: rgba(255,255,255,0.35); border: 1px solid rgba(0,0,0,0.08);border-radius: 10px;box-shadow: 0 6px 18px rgba(0,0,0,0.08);backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);overflow: hidden;z-index: 5;                    }
 .keyword-header {padding: 10px 12px;font-weight: 700;font-size: 0.95rem;color: #333;background: rgba(255,255,255,0.25);border-bottom: 1px solid rgba(0,0,0,0.06);}
@@ -279,7 +343,7 @@ a {text-decoration: none !important;}
 
 <div class="col-md-9 ListHeight" style="border-radius: 10pt; 
 		background-image: url('<%= ctxPath %>/images/background.png');">
-    <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 5% 0">
+    <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 2% 0">
 		<c:if test="${requestScope.category eq 1}">
 			<span>MZ들의&nbsp;</span></c:if>
 		<c:if test="${requestScope.category eq 2}">
@@ -327,7 +391,7 @@ a {text-decoration: none !important;}
    <h2 class="listTitle" style="font-size: 25pt; font-weight: bold;">글목록</h2>
    <%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
    <form name="searchForm" style="margin-top: 20px;">
-      <select name="searchType" style="height: 26px;">
+      <select name="searchType" style="height: 32px;">
          <option value="boardName">글제목</option>
          <option value="boardContent">글내용</option>
          <option value="boardName_boardContent">글제목+글내용</option>
