@@ -34,27 +34,14 @@
    <%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
    
 <style type="text/css">
-.category-img {
-    width: 100%;
-    min-width: 100pt; /* 최대 크기 지정, 필요시 조정 */
-    max-width: 180pt;
-    height: auto;
-    border-radius: 10px; /* 둥글게, 옵션 */
-    object-fit: cover;   /* 비율 유지, 잘림 없이 */
-    display: block;
-    max-width:330px;
-}
-@media (max-width: 600px) {
-    .category-img {
-        max-width: 230px;
-    }
-}
-.LBoardRank {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
+	.category-img {width: 100%;min-width: 100pt; max-width: 180pt;height: auto;border-radius: 10px;object-fit: cover; display: block;max-width:330px;}
+	.LBoardRank {width: 100%;max-width: 100%;box-sizing: border-box;max-width:250px;}
+	
+  @media screen and (max-width: 600px) {
+	    .category-img {
+	        max-width: 230px;
+	    }
+  }
 </style>
 </head>
 
