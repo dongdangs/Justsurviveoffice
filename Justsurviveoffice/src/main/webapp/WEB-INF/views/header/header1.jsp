@@ -34,6 +34,7 @@
    <%-- 스피너 및 datepicker 를 사용하기 위해 jQueryUI CSS 및 JS --%>
    
 <style type="text/css">
+
 /* 프로필 카테고리 이미지 */
 .category-img {
     width: 100%;
