@@ -23,49 +23,6 @@
 	
 </style>
 
-<script type="text/javascript">
-	
-	$(function(){
-		
-		// 검색시 검색조건 및 검색어 값 유지시키기
-		if( ${requestScope.searchType != "" && requestScope.searchWord != ""} ) {
-			$('select[name="searchType"]').val("${requestScope.searchType}");
-			$('input[name="searchWord"]').val("${requestScope.searchWord}");
-			$('select[name="sizePerPage"]').val("${requestScope.sizePerPage}");
-		}
-		
-		$("input#searchWord").keyup(function(e){
-			if(e.keyCode == 13) {
-				// 검색어에 엔터를 했을 경우
-				goSearch();
-			}
-		});
-		
-		
-		// === 멤버 클릭시 상세 페이지 이동 === //
-		$('table > tbody > tr').on('click', function(){
-			
-			const id = $(this).find('td.id').text().trim();
-		//	alert(id);
-			
-			const frm = document.userDetail_frm
-			frm.id.value = id;
-			frm.action = "<%= ctxPath%>/admin/usersDetail";
-			frm.submit();
-		});
-		
-	});// end of $(function(){})-----------------------------
-	
-	
-	// Function Declaration
-	function goSearch() {
-		const frm = document.user_search_frm;
-		frm.method = "GET";
-		frm.action = "<%= ctxPath%>/admin/usersList";
-		frm.submit();
-	}// end of function goSearch()--------------------
-	
-</script>
 
 </head>
 <jsp:include page="../header/header2.jsp" />	
@@ -90,12 +47,17 @@
 					<i class="fas fa-search mr-1"></i> 검색
 				</button>
 				
+				<%-- 관리자 전용 신고 관리 게시판 추가 --%>
+				<button type="button" onclick="location.href='<%= ctxPath%>/admin/reportList'" class="btn mr-auto" style="background-color: #5f5fff; color: white;">
+					신고 관리
+				</button>
+				
 				<div class="d-flex align-items-center ml-auto">
 					<span class="mr-2 font-weight-bold">페이지당 회원수:</span>
 					<select name="sizePerPage" class="form-control">
-						<option value="10">10명</option>
-						<option value="5">5명</option>
-						<option value="3">3명</option>
+						<option value="10" <c:if test="${requestScope.sizePerPage == 10}">selected</c:if>>10명</option>
+						<option value="5" <c:if test="${requestScope.sizePerPage == 5}">selected</c:if>>5명</option>
+						<option value="3" <c:if test="${requestScope.sizePerPage == 3}">selected</c:if>>3명</option>
 					</select>
 				</div>
 			</form>
@@ -153,3 +115,48 @@
 <form name="userDetail_frm">
 	<input type="hidden" name="id" />
 </form>
+
+<script type="text/javascript">
+	
+	$(function(){
+		
+		// 검색시 검색조건 및 검색어 값 유지시키기
+		if( ${requestScope.searchType != "" && requestScope.searchWord != ""} ) {
+			$('select[name="searchType"]').val("${requestScope.searchType}");
+			$('input[name="searchWord"]').val("${requestScope.searchWord}");
+			$('select[name="sizePerPage"]').val("${requestScope.sizePerPage}");
+		}
+		
+		$("input#searchWord").keyup(function(e){
+			if(e.keyCode == 13) {
+				// 검색어에 엔터를 했을 경우
+				goSearch();
+			}
+		});
+		
+		
+		// === 멤버 클릭시 상세 페이지 이동 === //
+		$('table > tbody > tr').on('click', function(){
+			
+			const id = $(this).find('td.id').text().trim();
+		//	alert(id);
+			
+			const frm = document.userDetail_frm
+			frm.id.value = id;
+			frm.action = "<%= ctxPath%>/admin/usersDetail";
+			frm.submit();
+		});
+		
+	});// end of $(function(){})-----------------------------
+	
+	
+	// Function Declaration
+	function goSearch() {
+		const frm = document.user_search_frm;
+		frm.method = "GET";
+		frm.action = "<%= ctxPath%>/admin/usersList";
+		frm.submit();
+	}// end of function goSearch()--------------------
+	
+</script>
+
