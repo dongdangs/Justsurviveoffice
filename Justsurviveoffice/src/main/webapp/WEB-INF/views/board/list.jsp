@@ -45,6 +45,71 @@ a {text-decoration: none !important;}
 	.keyword-panel {position:relative;top:initial;right:initial;}
 }
 
+/* ------------------------------------------------------------------------------- */
+/* ====== 반응형 개선 ====== */
+/* 가로폭이 줄면 패널 폭 조금 늘리고 글자 약간 작게 */
+@media (max-width: 1200px) {
+  .keyword-panel { width: 220px; right:12px; }
+}
+@media (max-width: 992px) {
+  .keyword-panel { width: min(28vw, 300px); }
+  .keyword-table { font-size: 0.9rem; }
+  .keyword-word { max-width: calc(100% - 74px); }
+}
+
+/* 모바일: 패널은 숨겨두고, 플로팅 버튼으로 열기 */
+.keyword-fab { display:none; } /* 기본은 숨김(데스크탑 X) */
+
+@media (max-width: 640px) {
+  /* 패널을 화면 하단으로 고정 + 기본은 닫힘 상태 */
+  .keyword-panel {
+    position: fixed;
+    right: 12px;
+    left: auto;
+    bottom: 60px;
+    top: auto;
+    width: min(92vw, 360px);
+    max-height: 70vh;
+    transform: translateY(110%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .25s ease, opacity .2s ease;
+  }
+  .keyword-panel.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* 플로팅 버튼 노출 */
+  .keyword-fab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,.08);
+    background: rgba(255,255,255,.9);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    font-weight: 700;
+    font-size: 12px;
+    color: #333;
+    z-index: 6;
+  }
+
+  /* 모바일에서 표 가독성 조정 */
+  .keyword-table { font-size: 0.88rem; }
+  .keyword-table-wrap { max-height: 56vh; }
+  .keyword-word { max-width: calc(100% - 80px); }
+}
+
+
 </style> 
 
 <script type="text/javascript">
@@ -127,6 +192,21 @@ a {text-decoration: none !important;}
 	    searchBoard(); // 글목록 검색하기 요청
    });
 	   
+   
+   /* ------------------------------------------------------ */
+   const panel = document.getElementById('keywordPanel');
+   const fab   = document.getElementById('kwFab');
+   if (!panel || !fab) return;
+
+   fab.addEventListener('click', function() {
+     panel.classList.toggle('open');
+     const open = panel.classList.contains('open');
+     fab.setAttribute('aria-expanded', open);
+     fab.title = open ? 'TOP 키워드 닫기' : 'TOP 키워드 열기';
+   });
+   
+   
+   
  }); // end of $(function(){})--------------------------
    
    
@@ -213,8 +293,12 @@ a {text-decoration: none !important;}
 		<span>생존 게시판</span>
 	</div>
 	
+	<!-- 모바일 전용: 플로팅 버튼 -->
+	<button class="keyword-fab" id="kwFab" aria-expanded="false" aria-controls="keywordPanel" title="TOP 키워드 열기">키워드</button>
+	
+	
 	<!-- === 키워드 패널 (우측 상단) === -->
-	<div class="keyword-panel">
+	<div class="keyword-panel" id="keywordPanel">
 	  <div class="keyword-header text-center">TOP 키워드</div>
 	  <div class="keyword-table-wrap">
 	    <table class="keyword-table" >
