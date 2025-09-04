@@ -103,23 +103,22 @@
 
 /* ------------------------------------------------  */
 .categoryDiv {
-border: 2px solid #ddd;
+border: 1px solid #C7C7C7;
 border-radius: 8px;
-padding: 5px;
-background: #F9F0FA;
+padding: 7px;
+background: #B9C4EB;
 transition: 0.3s;
 font-size: 20px; 
 font-weight: bold; 
-color: #6E6B6B;
+color: white;
 margin: 25% 0 5% 0;
 }
 .plus-btn {
-border: 2px solid #ddd;
 justify-content: center;
 align-items: center;
 margin-left: 5pt;
-background: #F9F0FA;
-padding: 1pt 2pt;
+background: white;
+padding: 1pt 3pt;
 border-radius: 25%;  
 font-size: 5%;
 font-weight: bold;   
