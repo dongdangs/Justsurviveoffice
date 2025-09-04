@@ -64,7 +64,8 @@
 
 </style>
 	
-<div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');display:flex;justify-content:center; border-radius: 10px">
+
+<div class="col-md-9" style="background-image: url('<%= ctxPath %>/images/background.png');display:flex;justify-content:center; border-radius: 10px;background-position:center;background-size:cover;">
 				
 				<div class="row" style="width: 90%; margin: 4%; max-width:1000px;">
 				<!-- 테스트 카드 (고정) --> 
@@ -88,22 +89,13 @@
 						  					   class="card-img-top">
 						  	</div>
 						  	<div class="card-body">
-						      <h4 class="card-title" style="font-weight: bold; color: #39FF14; margin-top: 5%;">${indexList.categoryName}</h4>
-   						      <p class="card-text" style="color: white; margin-bottom:10px;">${indexList.tags}</p>
-						      <p class="card-text" style="color: white; font-size:1.0rem; font-weight: bold;">${indexList.categoryDescribe}</p>
-			<%-- =======
-						      <p class="card-text" style="color: white;">
-							      <c:forEach var="tag" items="${indexList.tags}">
-							      	  #${tag}
-							      </c:forEach>
-						      </p>
-						      <br>
-						      <p class="card-text" style="color: white;">설명: ${indexList.categoryDescribe}</p>
-			>>>>>>> refs/heads/rdg7203 --%>
+						      <h4 class="card-title" style="font-weight: bold; color: #39FF14;">${indexList.categoryName}</h4>
+   						      <p class="card-text" style="color: white;"> ${indexList.tags}</p>
+						      <p class="card-text" style="color: white;margin-bottom:10px;">설명: ${indexList.categoryDescribe}</p>
 						    </div>
 						 </a>
 					  </div>
-					</c:forEach>
+				</c:forEach>
 			</div>
 		</div>
 	</div>

@@ -292,8 +292,8 @@
 	</table>
 
 	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-10 offset-md-1">
+		<div class="row justify-content-center">
+			<div class="col-md-6">
 			   <div id="chatStatus"></div>
 			   <div class="my-3">
 			   - 상대방의 대화내용이 검정색으로 보이면 채팅에 참여한 모두에게 보여지는 것입니다.<br>

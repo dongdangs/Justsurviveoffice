@@ -120,6 +120,43 @@
     margin-top: 8px;
 }
 
+/* 댓글 작성 폼 */
+form[name="commentform"] {
+    display: flex;                /* 가로 배치 */
+    align-items: center;          /* 세로 중앙 정렬 */
+    gap: 10px;                    /* 입력창과 버튼 사이 간격 */
+    margin-top: 15px;
+}
+
+/* 댓글 입력창 */
+form[name="commentform"] textarea {
+    flex: 1;                      /* 남은 공간 전부 차지 */
+    border-radius: 6px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    resize: none;
+    min-height: 45px;
+    max-height: 120px;
+    font-size: 14px;
+}
+
+/* 댓글 등록 버튼 */
+form[name="commentform"] #addComment {
+    padding: 10px 18px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    background-color: #6c63ff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    height: 45px;
+}
+
+form[name="commentform"] #addComment:hover {
+    background-color: #5848e5;
+}
+
 .comment:hover {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
@@ -517,7 +554,8 @@ textarea:focus {
    // 글 수정하기 >> restAPI
    function edit() {
       if(!confirm("수정하시겠습니까?")) {
-         return alert("취소되었습니다.");
+    	  alert("취소되었습니다.");
+    	  return;
       }
       const form = document.delnEditForm;
       form.method = "get";
@@ -1002,16 +1040,16 @@ textarea:focus {
 	</div>
 	
 	<!-- 댓글 작성 -->
-    <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
-        <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
-        <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
-        <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
-        <button type="button" class="btn" id="addComment">댓글 등록</button>
-    </form>
+    <form name="commentform" action="${ctxPath}/comment/writeComment" method="post">
+	    <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+	    <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+	    <textarea name="content" rows="2" placeholder="댓글을 입력하세요"></textarea>
+	    <button type="button" class="btn" id="addComment">댓글 등록</button>
+	</form>
  
        
     <!-- 목록 버튼, 이전글 다음글 -->
-    <div style="display:flex; margin-top:3px;"> 
+    <div style="display:flex; margin-top:10px;"> 
     <div class="mr-3">
         <a href="<%=ctxPath %>/board/list/${boardDto.fk_categoryNo}" class="btn">목록</a>
     </div>
