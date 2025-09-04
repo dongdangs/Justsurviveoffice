@@ -261,7 +261,7 @@ a {text-decoration: none !important;}
       
       <span><a href="<%=ctxPath %>/board/write/${category}" class="btn btn-secondary btn-sm" 
             id="writeBtn" style="background-color: navy;">글쓰기</a></span>
-      <!-- <span><input type="hidden" name="category"/></span> -->
+      <!-- <span><input type="hidden" name="category"/></span> 1-->
    </form> 
    
    
