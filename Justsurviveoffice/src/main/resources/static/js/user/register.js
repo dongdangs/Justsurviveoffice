@@ -371,6 +371,15 @@ function register() {
 	}	
     // **** "이메일중복확인" 을 클릭했는지 검사하기 끝 **** //
 	
+	// **** 약관에 동의를 했는지 검사하기 시작 **** //
+	const checkbox_checked_length = $('input:checkbox[id="agree"]:checked').length;
+		
+	if(checkbox_checked_length == 0) {
+		alert("이용약관에 동의하셔야 합니다.");
+		return; // register() 함수를 종료한다.
+	}
+	// **** 약관에 동의를 했는지 검사하기 끝 **** //
+	
 	const form = document.registerForm;
 	form.method = "post";
  	form.action =  ctxPath + "/users/registerUser";

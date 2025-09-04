@@ -1,7 +1,9 @@
 package com.spring.app.admin.controller;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -167,7 +169,6 @@ public class AdminController {
        			   				  : usersService.registerChartday(month);
    }
    
-   
    // <문자메시지 관련 순서3>
    // 관리자전용 회원에게 문자메시지 보내기
    @PostMapping("smsSend")
@@ -197,5 +198,82 @@ public class AdminController {
 	   
 	   return map;
    }
+   
+   
+
+   /////////////////////////////////////////////////////////////////////////////////////////
+	// 엑셀 저장과 테이블을 보여주기 위한 공통 메소드
+   	private Map<String, Object> chartData(String chart, Integer month) {
+
+   		List<Map<String, String>> list;
+
+   	    if ("registerDay".equals(chart)) {
+   	        list = (month == null) 
+   	                ? usersService.registerChartday() 
+   	                : usersService.registerChartday(month);
+   	    } else {
+   	        list = usersService.registerChart(); // 월별은 month 필요 없음
+   	    }
+
+   	    int total = list.stream()
+   	                    .mapToInt(row -> Integer.parseInt(row.get("cnt")))
+   	                    .sum();
+
+   	    Map<String, Object> result = new HashMap<>();
+   	    result.put("list", list);
+   	    result.put("total", total);
+
+   	    return result;
+	}
+	
+	// 통계 테이블 페이지
+	@GetMapping("userExcelList")
+	public String userExcelList(@RequestParam(name="chart", defaultValue = "register") String chart,
+	                            @RequestParam(name="month", required = false) Integer month,
+	                            Model model) {
+		
+		if ("registerDay".equals(chart) && month == null) {
+	        month = LocalDate.now().getMonthValue(); // 1~12
+	    }
+	
+	    Map<String, Object> data = chartData(chart, month);
+	
+	    model.addAttribute("chart", chart);
+	    model.addAttribute("month", month);
+	    model.addAllAttributes(data);
+	
+	    return "admin/excelList";
+	}
+	
+	// 엑셀 다운로드
+	@PostMapping("downloadExcelFile")
+	public String downloadExcelFile(@RequestParam(name="chart", defaultValue = "register") String chart,
+	                                @RequestParam(name="month", required = false) Integer month,
+	                                Model model, Locale locale) {
+	
+	    // 동일한 데이터 로직 사용
+		Map<String, Object> data = chartData(chart, month);
+
+	    model.addAttribute("chart", chart);
+	    model.addAttribute("month", month);
+	    model.addAllAttributes(data);
+
+	    model.addAttribute("locale", locale);
+	    
+	    // ✅ 파일 이름 분기
+	    String workbookName = "user_stat";
+	    if ("registerDay".equals(chart)) {
+	    	 workbookName = (month != null) ? "일자별 가입자 통계_" + month + "월" : "일자별 가입자 통계";
+	    } else if ("register".equals(chart)) {
+	        workbookName = "월별 가입자 통계"; 
+	    }
+	    
+	    model.addAttribute("workbookName", workbookName); 
+
+	    usersService.userExcelList_to_Excel(chart, month, model);
+
+	    return "excelDownloadView"; // ViewConfig에 등록된 bean
+	}
+
    
 }

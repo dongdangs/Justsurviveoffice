@@ -114,6 +114,12 @@ public class UsersController {
 		return "users/register";
 	}
 	
+	// 회원가입 약관 (iframe 용)
+    @GetMapping("/agree")
+    public String agreePage() {
+        return "users/agree";
+    }
+	
 	@PostMapping("registerUser")
     public String registerUser(@RequestParam(name="hp1") String hp1,
                         @RequestParam(name="hp2") String hp2,
