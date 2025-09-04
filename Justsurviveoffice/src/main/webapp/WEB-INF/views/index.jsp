@@ -96,7 +96,25 @@
         font-size: 0.8rem;
     }
 }
-
+   /* 태그 버블 반짝임 */
+   .tag-bubble {
+       color: #3399ff;
+       font-weight: 600;
+       padding: 5px 10px;
+       font-size: 0.85rem;
+       position: relative;
+       overflow: hidden;
+   }
+   .tag-bubble::after {
+       content: "";
+       position: absolute;
+       top: -50%;
+       left: -50%;
+       width: 200%;
+       height: 200%;
+       background: radial-gradient(circle, rgba(255,255,255,0.6) 10%, transparent 60%);
+       animation: sparkle 3s infinite linear;
+   }
 </style>
 	
 
@@ -125,8 +143,8 @@
 						  	</div>
 						  	<div class="card-body">
 						      <h4 class="card-title" style="font-weight: bold; color: #39FF14;">${indexList.categoryName}</h4>
-						      <p class="card-text" style="color: white;margin-bottom:10px;">설명: ${indexList.categoryDescribe}</p>
-						      <p class="card-text" style="color: white;">태그: ${indexList.tags}</p>
+						      <p class="card-text tag-bubble" style="color: white;">${indexList.tags}</p>
+						      <p class="card-text" style="color: white;margin-bottom:10px;">${indexList.categoryDescribe}</p>
 						    </div>
 						 </a>
 					  </div>
