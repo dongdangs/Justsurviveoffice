@@ -783,5 +783,19 @@ public class BoardController {
   		
   		return mapList;
   	}
+  	
+  	
+  	//게시글 신고하기
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
 	
 }

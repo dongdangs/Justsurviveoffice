@@ -6,6 +6,8 @@
     String ctxPath = request.getContextPath();
 %>
 <jsp:include page="../header/header1.jsp" /> 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <html>
 <style>
 
@@ -95,6 +97,32 @@
 .fa-bookmark {
     color: #f1c40f;
 }
+
+/* 신고 아이콘 기본 스타일 */
+.report-icon {
+    width: 15px;            /* 북마크 아이콘 크기와 동일하게 맞춤 */
+    height: 18px;
+    cursor: pointer;
+    display: inline-block;
+    transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
+}
+
+/* 마우스 올렸을 때만 반짝임 + 흔들림 */
+.report-icon:hover {
+    animation: blink 0.8s infinite alternate, shake 1.2s infinite ease-in-out;
+    transform: scale(1.15);    /* 살짝 확대 */
+    filter: drop-shadow(0 0 6px red);  /* 반짝이는 효과 */
+}
+
+/* 반짝이는 효과 */
+@keyframes blink {
+    0%   { filter: brightness(1); }
+    50%  { filter: brightness(2); }
+    100% { filter: brightness(1); }
+}
+
+
+--------------------------------------
 
 /* 댓글 섹션 */
 .comment-section {
@@ -835,6 +863,37 @@ textarea:focus {
        });
     }// end of function Bookmark(boardNo,fk_id)———————————
    
+    // 신고하기
+    function openReportModal(boardNo, fk_id) {
+	    const reason = prompt("🚨 신고 사유를 입력해주세요:");
+	    if (!reason || reason.trim() === "") {
+	        alert("신고 사유를 입력해야 합니다.");
+	        return;
+	    }
+	
+	    $.ajax({
+	        url: "<%=ctxPath%>/board/reportAdd",
+	        type: "POST",
+	        dataType: "json",
+	        data: {
+	            fk_boardNo: boardNo,
+	            fk_id: userId,
+	            reportReason: reason
+	        },
+	        success: function(json) {
+	            if (json.success) {
+	                alert("🚨 신고가 접수되었습니다.");
+	            } else {
+	                alert(json.message || "신고 접수 중 오류가 발생했습니다.");
+	            }
+	        },
+	        error: function(request, status, error) {
+	               alert("code:" + request.status + "\nmessage:" + request.responseText);
+           }
+    });
+}
+    
+    
    function goViewA(){
        const frm = document.goViewFrm;
        frm.boardNo.value = ${boardDto.preNo};
@@ -939,6 +998,15 @@ textarea:focus {
                 onclick="bookmark(${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
              </i>
          </form> 
+         
+         <!-- 신고하기 아이콘 (본인 글 제외) -->
+	    <c:if test="${not empty sessionScope.loginUser and sessionScope.loginUser.id ne boardDto.fk_id}">
+		<img src="<%=ctxPath%>/images/reporticon.png"
+		     alt="신고하기"
+		     class="report-icon"
+		     title="신고하기"
+		     onclick="openReport(${boardDto.boardNo}, '${sessionScope.loginUser.id}')">
+	    </c:if>
          
            <form name="delnEditForm" style="display:inline;margin: auto; ">
               <c:if test="${loginUser.id eq boardDto.fk_id}">
