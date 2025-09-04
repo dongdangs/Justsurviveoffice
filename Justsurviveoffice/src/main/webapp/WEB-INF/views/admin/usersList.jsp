@@ -8,21 +8,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>유저리스트 임시 작업 페이지</title>
-
-<!-- Bootstrap CSS -->
-<link rel="stylesheet" href="<%= ctxPath%>/bootstrap-4.6.2-dist/css/bootstrap.min.css" type="text/css">
-
-<%-- Font Awesome 6 Icons --%>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
-<%-- Optional JavaScript --%>
-<script type="text/javascript" src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
-<script type="text/javascript" src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js" ></script>
 <script type="text/javascript" src="<%=ctxPath%>/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 
 <style type="text/css">
@@ -84,7 +69,6 @@
 
 </head>
 <jsp:include page="../header/header2.jsp" />	
-<body>
 
 	<!-- 사용자 검색 및 목록 박스 -->
 	<div class="container mt-4 mb-5 p-5" id="userListBox">
@@ -169,6 +153,3 @@
 <form name="userDetail_frm">
 	<input type="hidden" name="id" />
 </form>
-	
-</body>
-</html>
