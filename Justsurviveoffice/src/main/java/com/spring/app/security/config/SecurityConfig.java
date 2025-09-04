@@ -10,6 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+import com.spring.app.security.filter.AdminFilter;
 import com.spring.app.security.filter.SecurityUserFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -56,16 +57,15 @@ public class SecurityConfig {
 		 	그래서 POST, PUT, DELETE 같은 상태 변경 요청에는 CSRF 토큰이 꼭 필요
 		*/
 		// 지금은 비활성화 해주는 코드 작성 (대사살 프로젝트용)
-		
 		http
 			.csrf((csrfConfig) -> csrfConfig
 				.disable()
 		);
 		
-		
-		
 		http.authorizeHttpRequests((auth) -> auth	// authorizeHttpRequests 는 스프링 시큐리티 DSL(도메인 특화 언어) 문법
 													// 요청 URL 별로 접근 권한을 어떻게 줄지 설정하는 구간
+				.requestMatchers("/admin/filter/**").permitAll()
+				
 				.requestMatchers("/admin/**").hasRole("ADMIN")	// requestMatchers() → 특정 URL 패턴을 지정
 																// hasRole("네이밍") → "ROLE_네이밍" 권한이 있는 사용자만 접근 가능
 				.anyRequest().permitAll()	// anyRequest() → requestMatchers(...) 로 지정하지 않은 나머지 모든 요청을 선택하는 예약 메소드
@@ -76,6 +76,9 @@ public class SecurityConfig {
 		// addFilterBefore() -> 시큐리티에게 내 필터를 이 기준(시큐리티) 필터 앞에 추가하라는 것(커스텀 필터이므로)
 		http.addFilterBefore(securityUserFilter, UsernamePasswordAuthenticationFilter.class);
         
+		 // 관리자 MFA 강제 필터(브릿지 이후에 동작)
+	//	http.addFilterAfter(new AdminFilter(), SecurityUserFilter.class);
+		
 		return http.build();	// 지금까지 설정한 보안 정책을 반영한 SecurityFilterChain Bean 을 반환
 	}
 	
