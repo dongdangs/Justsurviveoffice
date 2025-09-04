@@ -65,7 +65,7 @@ public class SecurityUserFilter extends OncePerRequestFilter {
                         if (hasOtherActive) {
                             // 새 로그인(현재 세션)을 거절: 세션 날리고 로그인으로 돌려보냄
                             session.invalidate();
-                            response.sendRedirect(request.getContextPath() + "/index");
+                            response.sendRedirect(request.getContextPath() + "/index?error=1");
                             return; // 더 진행하지 않음
                         }
                     }

@@ -2,6 +2,8 @@ package com.spring.app.admin.service;
 
 import static com.spring.app.entity.QCategory.category;
 import static com.spring.app.entity.QUsers.users;
+import static com.spring.app.entity.QReport.report;
+import static com.spring.app.entity.QBoard.board;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +22,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.spring.app.entity.Report;
 import com.spring.app.entity.Users;
 import com.spring.app.admin.model.AdminRepository;
 import com.spring.app.category.domain.CategoryDTO;
@@ -220,5 +224,51 @@ public class AdminService_imple implements AdminService {
 		throw e;
 	}
   }
+   
+   
+   // 신고목록 전체보기(페이징 처리)
+   @Override
+   public Page<Report> getPageReport(int currentShowPageNo, int sizePerPage) throws Exception {
+	   
+	   Page<Report> page = Page.empty();
+	   
+	   try {
+		   Pageable pageable = PageRequest.of(currentShowPageNo - 1, sizePerPage, Sort.by(Sort.Direction.DESC, "reportno"));
+		   
+		   List<Report> reports = jPAQueryFactory
+				   				 .selectFrom(report)
+				   				// .join(report.users, users).fetchJoin()
+				   				 .join(report.board, board).fetchJoin()
+				   				 .limit(pageable.getPageSize())
+				   				 .orderBy(report.reportNo.desc())
+				   				 .fetch();
+		   
+		   Long total = jPAQueryFactory
+				   	.select(report.count())
+				   	.from(report)
+				   	.fetchOne();
+		   
+		   page = new PageImpl<>(reports, pageable, total != null ? total : 0);
+		   
+	   } catch (Exception e) {
+		   e.printStackTrace();
+	   }
+	   
+	   return page;
+   }
+   
+   // 신고 처리 완료해주기
+   @Override
+   @Transactional("transactionManager")
+   public int reportComplete(Long reportNo) {
+	   
+	   int n = (int) jPAQueryFactory
+			   .update(report)
+			   .set(report.reportStatus, 1)
+			   .where(report.reportNo.eq(reportNo))
+			   .execute();
+	   
+	   return n;
+   }
    
 }
