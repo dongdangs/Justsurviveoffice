@@ -150,11 +150,12 @@
 <script>
 	$(function(){
 		// 검색 조건 및 검색어 값 유지
-		if( ${requestScope.searchType != "" && requestScope.searchWord != ""} ) {
+		if( "${requestScope.searchType}" !== "" && "${requestScope.searchWord}" !== "" ) {
 			$('select[name="searchType"]').val("${requestScope.searchType}");
 			$('input[name="searchWord"]').val("${requestScope.searchWord}");
 			$('select[name="sizePerPage"]').val("${requestScope.sizePerPage}");
 		}
+		
 		
 		$("input#searchWord").keyup(function(e){
 			if(e.keyCode == 13) {
@@ -189,7 +190,7 @@
 		<div class="search-box">
 			<form name="user_search_frm" class="form-inline d-flex flex-wrap align-items-center gap-2">
 				<select name="searchType" class="form-control mr-2" style="max-width: initial;">
-					<option value="name" selected>회원명</option>
+					<option value="name">회원명</option>
 					<option value="id">아이디</option>
 					<option value="email">이메일</option>
 					<option value="categoryName">카테고리명</option>
@@ -207,7 +208,7 @@
 					<span class="mr-2 font-weight-bold">페이지당 회원수:</span>
 					<select name="sizePerPage" class="form-control">
 						<option value="10">10명</option>
-						<option value="5">5명</option>
+						<option value="5" selected>5명</option>
 						<option value="3">3명</option>
 					</select>
 				</div>
