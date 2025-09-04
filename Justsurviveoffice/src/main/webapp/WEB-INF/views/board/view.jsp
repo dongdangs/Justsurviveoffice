@@ -565,7 +565,6 @@ textarea:focus {
            form.submit();
        });
        
-       
 
        $('#download').click(function(){
            const form = document.downloadForm;
