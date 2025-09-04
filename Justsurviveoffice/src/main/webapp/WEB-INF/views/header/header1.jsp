@@ -188,7 +188,9 @@
                                 style="color: #000;">
                                  ${hotComment.boardName}
                              </a>
-                             <%-- <span>${hotComment.fk_categoryName}</span> --%>
+                             <span class="fa-regular fa-comment text-muted" style="font-size: 8pt; color:black !important">
+                                 (${hotComment.commentCount})
+                             </span>
                          </td>
                      </tr>
                         </c:forEach>
