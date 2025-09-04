@@ -349,7 +349,7 @@ public class UsersService_imple implements UsersService {
 	        List<UsersRepository.DayCount> rows = usersRepository.findBydayRegister(month);
 	        
 	        for (UsersRepository.DayCount r : rows) {
-	            int idx = Integer.parseInt(r.getDd()); // "01" -> 0
+	            int idx = Integer.parseInt(r.getDd())-1; // "01" -> 0
 	            bucket[idx] = r.getCnt().intValue();
 	        }
 
