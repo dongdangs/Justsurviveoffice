@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -27,6 +29,15 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 	
 //	private final SecurityUserFilter securityUserFilter;
+	
+	// 해당 빈을 만든 이유 스프링부트 시작시 임시코드 알려주고 로그인 하라는데 이를 방지하기 위해서 추가했음
+	@Bean
+    public UserDetailsService userDetailsService() {
+        // 사용자 0명짜리 InMemoryUserDetailsManager 등록
+        // → Spring Boot가 "기본 계정"을 자동 생성하지 않음
+        return new InMemoryUserDetailsManager();
+    }
+	
 	
 	// ✅ [추가] SessionRegistry Bean – 누가 어떤 세션을 쓰는지 관리하는 저장소
 	@Bean
