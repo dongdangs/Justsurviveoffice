@@ -31,7 +31,7 @@
    .survey-image img {
       border-radius: 16px;
    }
-   .btn-start {
+   .btn-blue {
       background-color: #4da3ff;
       border: none;
       padding: 14px;
@@ -40,7 +40,7 @@
       color: white;
       width: 100%;
    }
-   .btn-start:hover { background-color: #368ce8; }
+   .btn-blue:hover { background-color: #368ce8; }
 
    /* 로딩 */
    .loader {
@@ -212,7 +212,8 @@
          <img src="<%= ctxPath %>/images/mz.png" class="img-fluid w-100" alt="성향 이미지">
       </div>
       
-      <button type="button" class="btn-start">설문 시작하기</button>
+      <button type="button" class="btn-start btn-blue">설문 시작하기</button>
+      <button type="button" class="btn-home btn-blue mt-3 ">게시판으로 돌아가기</button>
    </div>
 
 <script>
@@ -220,11 +221,16 @@
    
    $(function(){
       $("#loading-screen").hide();
-      $(".btn-start").click(function(){
+      $(".btn-start").click(function(){ // 설문을 시작하는 버튼.
          $(".survey-container").empty();
          $("#loading-screen").show();
          surveyStart();
       });
+      
+      $(".btn-home").click(function(){ // index로 돌아가는 버튼.
+    	 location.href = '<%= ctxPath %>/index';
+      });
+      
    });
 
    // 설문 시작
