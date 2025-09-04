@@ -901,6 +901,7 @@ textarea:focus {
                 class="thumbnail" 
                 style="max-width: 100%; height: auto; display: block; margin: 0 auto;" />
      </div> --%>
+     
     </c:if>
     
     
