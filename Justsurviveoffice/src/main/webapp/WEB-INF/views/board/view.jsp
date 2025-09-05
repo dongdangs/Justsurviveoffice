@@ -867,9 +867,11 @@ textarea:focus {
          <span>금쪽이들의&nbsp;</span></c:if>
       <span>생존 게시판</span>
       
-      <button type="button" class="btn btn-outline-danger btn-sm btn-delete" data-board-no="${boardDto.boardNo}">
-      	영구삭제
-      </button>
+      <c:if test="${sessionScope.loginUser.id eq 'admin'}">
+	      <button type="button" class="btn btn-outline-danger btn-sm btn-delete" data-board-no="${boardDto.boardNo}">
+	      	영구삭제
+	      </button>
+      </c:if>
       
       <br><br><br>
    </div>

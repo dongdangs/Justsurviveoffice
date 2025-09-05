@@ -77,6 +77,9 @@ public interface BoardDAO {
 	
 	// 마이페이지 게시글 복구하기
 	public int recoveryBoard(String boardNo);
+	
+	// 관리자용 게시글 영구삭제
+	public int adminDelete(Long boardNo);
 
 
 

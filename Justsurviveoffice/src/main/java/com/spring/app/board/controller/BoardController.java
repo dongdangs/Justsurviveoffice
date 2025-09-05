@@ -787,7 +787,9 @@ public class BoardController {
   	// 관리자용 게시글 영구삭제 버튼
   	@PostMapping("adminDelete")
   	@ResponseBody
-  	public Map<String, Object> adminDelete(@RequestParam(name = "boardNo") Long boardNo){
+  	public Map<String, Object> adminDelete(@RequestParam(name = "boardNo") Long boardNo,
+  										   HttpSession session,
+  										   HttpServletRequest request){
   		
   		Map<String, Object> resultMap = new HashMap<>();
   		
@@ -795,8 +797,53 @@ public class BoardController {
   		
   		if(boardDto != null) {
   			
-  			System.out.println("확인용" + boardDto.getAttach());
+  			int n = boardService.adminDelete(boardNo);	// 관리자용 게시글 영구삭제
+  			resultMap.put("n", n);
   			
+  			if(n == 1) {
+  				
+  				MultipartFile attach = boardDto.getAttach();
+
+  				session = request.getSession(); // WAS(톰캣)의 절대경로 알아오기.
+  				String root = session.getServletContext().getRealPath("/");
+  				String path = root+"resources"+File.separator+"files";
+  		///Users/dong/git/Justsurviveoffice/Justsurviveoffice/src/main/webapp/resources/files		
+  				
+  				String oldBoardFileName = boardDto.getBoardFileName();
+  				
+  			//	첨부파일은 오로지 1개이기 때문에, jsp 에서 받아온 이름으로 삭제할 것.
+  				if(!oldBoardFileName.isEmpty()) { // 이전 파일이 있는 경우 삭제.
+  					try { // 이전 파일 삭제해주기!
+  						fileManager.doFileDelete(oldBoardFileName, path);
+  						boardDto.setBoardFileName(null);
+  						boardDto.setBoardFileOriginName(null);
+  					} catch (Exception e) {
+  						e.printStackTrace();
+  					}
+  				}
+  				
+  				// 스마트에디터파일은 여러 개이기 때문에, DB에서 받아온 내용을 List로 받아서 삭제할 것.
+  				List<String> photo_upload_boardFileNameList 
+  					= boardService.fetchPhoto_upload_boardFileNameList(boardDto.getBoardNo());
+  				path = root+"resources"+File.separator+"photo_upload";
+  				for(String photo_uploadFile : photo_upload_boardFileNameList) {
+  					try { // 이전 스마트에디터 파일들 삭제해주기!
+  						fileManager.doFileDelete(photo_uploadFile, path);
+  					} catch (Exception e) {
+  						e.printStackTrace();
+  					}
+  				}
+  				
+  			}// end of if------
+  			
+  			else {
+  				resultMap.put("message", "이미 삭제되었거나 존재하지 않는 게시글입니다.");
+  			}
+  		}
+  		
+  		else {
+  			resultMap.put("n", 0);
+  			resultMap.put("message", "이미 삭제되었거나 존재하지 않는 게시글입니다.");
   		}
   		
   		return resultMap;
