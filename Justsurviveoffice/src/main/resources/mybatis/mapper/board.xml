@@ -57,7 +57,7 @@
 		            then trunc(sysdate - updatedAtBoard)||'일 전'
 		        else to_char(updatedAtBoard, 'yyyy-mm-dd')
 		        end as formattedDate
-			   from board 
+			   from board
 			   where boardDeleted = 0
 			<if test='categoryNo != ""'>
 				and fk_categoryNo = to_number(#{category})

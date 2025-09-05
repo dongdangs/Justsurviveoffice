@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -5,7 +6,6 @@
     
 <%
     String ctxPath = request.getContextPath();
-    //     /myspring
 %>    
     
 <!DOCTYPE html>
@@ -26,6 +26,7 @@
     <%-- 직접 만든 CSS 1 --%>
     <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/style1.css" />
     <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/footer1.css" />
     
     <%-- Optional JavaScript --%>
     <script type="text/javascript" src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
@@ -111,22 +112,22 @@
       
       <div id="mycontent" class="mt-5">
          <div class="row" style="margin:0 auto;"> 
-            <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
+            <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" id="leftSess">
             <c:if test="${not empty sessionScope.loginUser}">   
                <div style="text-align: center;">
                <c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() eq null}">
-               		<img src="<%=ctxPath%>/images/unassigned.png" alt="프로필"  class="category-img mb-3">
+                     <img src="<%=ctxPath%>/images/unassigned.png" alt="프로필"  class="category-img mb-3">
                </c:if>
-               	<c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() ne null}">
-               		<img src="<%=ctxPath%>/images/${sessionScope.loginUser.getCategory().getCategoryImagePath()}" alt="프로필" 
-               			 class="category-img mb-3">
-               	</c:if>
+                  <c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() ne null}">
+                     <img src="<%=ctxPath%>/images/${sessionScope.loginUser.getCategory().getCategoryImagePath()}" alt="프로필" 
+                         class="category-img mb-3">
+                  </c:if>
                    <div class="text-muted small mb-3">${sessionScope.loginUser.email}</div>
                    <div class="mb-3">
                       <div style="size:20pt; color:blue; font-weight: bold;">${sessionScope.loginUser.name} 님 </div>
                       <div>포인트 : <b style="color: #5CFF5C; font-weight: bold;">
-                      				<fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> 
-                      				point</b></div>
+                                  <fmt:formatNumber value="${sessionScope.loginUser.point}" pattern="#,###"/> 
+                                  point</b></div>
                    </div>
                </div>
             </c:if>   
@@ -138,9 +139,9 @@
                     <tbody style="font-size: 10pt;">
                         <c:forEach var="hotRead" items="${hotReadList}">
                             <form id="viewForm${hotRead.boardNo}" 
-		                           action="<%= ctxPath %>/board/view" 
-		                           method="get" 
-		                           style="display:none;">
+                                 action="<%= ctxPath %>/board/view" 
+                                 method="get" 
+                                 style="display:none;">
                          <input type="hidden" name="category" value="${hotRead.fk_categoryNo}">
                          <input type="hidden" name="boardNo" value="${hotRead.boardNo}">
                      </form>
@@ -171,9 +172,9 @@
                     <tbody style="font-size: 10pt;">
                         <c:forEach var="hotComment" items="${hotCommentList}">
                            <form id="viewForm${hotComment.boardNo}" 
-		                           action="<%= ctxPath %>/board/view" 
-		                           method="get" 
-		                           style="display:none;">
+                                 action="<%= ctxPath %>/board/view" 
+                                 method="get" 
+                                 style="display:none;">
                          <input type="hidden" name="category" value="${hotComment.fk_categoryNo}">
                          <input type="hidden" name="boardNo" value="${hotComment.boardNo}">
                      </form>
