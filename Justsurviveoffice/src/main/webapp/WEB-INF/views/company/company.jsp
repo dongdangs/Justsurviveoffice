@@ -15,7 +15,7 @@
 <body>
 	<div class="companyTop">
 		<h2 class="cpTop">대사살</h2>
-		<article class="cpInfo">직장인들이 모여 자유롭게 얘기할 수 있는 커뮤니티 사이트입니다.</article>
+		<article class="cpInfo">신입들과 직장인들이 모여 자유롭게 얘기할 수 있는 커뮤니티 사이트입니다.</article>
 	</div>
 </div>        
 <jsp:include page="../footer/footer1.jsp" />
