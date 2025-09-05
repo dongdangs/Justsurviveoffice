@@ -137,7 +137,6 @@ public class UsersController {
           // 회원가입
           usersService.registerUser(user);
           UsersDTO usersDto = usersService.getUser(id, Pwd);
-          usersDto.getCategory().setCategoryImagePath(mobile);
           // 세션에 로그인 정보 저장
           session.setAttribute("loginUser", usersDto);
           

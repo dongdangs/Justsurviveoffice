@@ -29,7 +29,8 @@
 
 <script>
 $(function () {
-	let emailChecked = true;
+	 let emailChecked = false;      //  중복확인을 눌렀는지 여부
+    let emailDuplicated = false;   //  입력한 이메일이 중복인지 여부
 
     // 회원탈퇴
     $("#btnQuit").on("click", function(e) {
@@ -41,11 +42,11 @@ $(function () {
                 data: { "id": "${sessionScope.loginUser.id}" },
                 dataType: "json",
                 success: function(json) {
-                    if(json.n == 1) {
+                    if(json.success) {
                         alert("탈퇴되었습니다.");
                         location.href = "<%= ctxPath%>/index";
                     } else {
-                        alert("탈퇴실패");
+                        alert(json.message);
                     }
                 },
                 error: function(request, status, error) {
@@ -89,12 +90,16 @@ $(function () {
         }
     });
     
+    //이메일 입력값 변경시 다시 중복확인 필요
     $('input#email').on("change", function() {
-    	emailChecked = false
+    	emailChecked = false;
+        emailDuplicated = false;
     });
+    
     $("#btnEmailDup").on("click", function () {
     	  const email = $("#email").val().trim();
     	  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    	  
     	  if (!re.test(email)) {
     	    alert("올바른 이메일 형식이 아닙니다.");
     	    $("#email").focus();
@@ -102,11 +107,13 @@ $(function () {
     	  }
 
     	  $.get("<%=ctxPath%>/mypage/emailDuplicate", { email: email }, function (res) {
+             emailChecked = true; //  중복확인을 눌렀으므로 true
+             
     	    if (res.duplicated) {
-    	      emailChecked = false;
+   	    	  emailDuplicated = true;
     	      alert("이미 사용 중인 이메일입니다.");
     	    } else {
-    	      emailChecked = true;
+    	      emailDuplicated = false;
     	      alert("사용 가능한 이메일입니다.");
     	    }
     	  }).fail(function () {
