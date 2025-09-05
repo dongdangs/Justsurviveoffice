@@ -105,7 +105,7 @@
 </style>
 </head>
 
-   <div id="mycontainer"  style="background-image: url('<%= ctxPath %>/images/background.png');">
+   <div id="mycontainer headerCon"  style="background-image: url('<%= ctxPath %>/images/background.png');">
       <div id="myheader">
          <jsp:include page="../menu/menu1.jsp" />
       </div>

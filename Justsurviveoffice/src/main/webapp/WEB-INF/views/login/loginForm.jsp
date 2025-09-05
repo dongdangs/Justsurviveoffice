@@ -177,26 +177,6 @@
                 </button>
             </form>
             
-            <!-- 소셜 로그인 구분선 -->
-            <div class="mt-8">
-                <div class="divider text-sm">소셜 계정으로 로그인</div>
-            </div>
-            
-            <!-- 소셜 로그인 버튼 -->
-            <div class="mt-6 grid grid-cols-2 gap-3">
-                <!-- 카카오 로그인 버튼 -->
-                <a href="#" class="w-full inline-flex justify-center py-3 px-4 rounded-md shadow-sm text-sm font-medium kakao-bg kakao-text hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition">
-                    <i class="fas fa-comment mr-2 text-lg"></i>
-                    카카오 로그인
-                </a>
-                
-                <!-- 네이버 로그인 버튼 -->
-                <a href="/oauth2/authorization/naver" class="w-full inline-flex justify-center py-3 px-4 rounded-md shadow-sm text-sm font-medium naver-bg naver-text hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition" id="naver_id_login">
-                    <i class="fas fa-n mr-2 text-lg"></i>
-                    네이버 로그인
-                </a>
-            </div>
-            
             <!-- 회원가입 링크 -->
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">

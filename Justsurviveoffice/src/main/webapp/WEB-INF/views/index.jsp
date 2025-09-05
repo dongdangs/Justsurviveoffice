@@ -9,6 +9,22 @@
 
 <jsp:include page="header/header1.jsp" />
 
+<c:if test="${param.error eq '1'}">
+   <script>
+      alert("관리자 중복로그인은 불가능 합니다!");
+      
+      (function(){
+         try {
+            var url = new URL(window.location.href);
+            url.searchParams.delete('error');
+            var qs = url.searchParams.toString();
+            var newUrl = url.pathname + (qs ? '?' + qs : '') + url.hash;
+            window.history.replaceState({}, document.title, newUrl);
+         } catch (e) {}
+      })();   /* IIFE (() => { ... })(); 는 "즉시 실행"이라 DOM 준비를 기다리지 않음. */
+   </script>
+</c:if>
+
 <style>
 .col-md-9 {
     border-radius: 10pt;
@@ -25,6 +41,8 @@
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     overflow: hidden;
 }
+
+.card-body {max-height:168px;}
 
 /* 이미지 반응형 */
 .card img {
@@ -71,6 +89,7 @@
 }
 
 @media (max-width: 768px) { /* 모바일 */
+
     .card img {
         max-height: 150px;
     }

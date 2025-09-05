@@ -1216,6 +1216,5 @@ textarea:focus {
            </div>
        </div>
    </div>
-
 </div>
 <jsp:include page="../footer/footer1.jsp"></jsp:include>

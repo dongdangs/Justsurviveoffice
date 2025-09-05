@@ -94,7 +94,7 @@ form[name="searchForm"] #writeBtn {
 
 
 .col-md-9 {border-radius: 10pt;background-size: cover;  background-position: center;background-repeat: no-repeat;background-attachment: fixed;background-blend-mode: overlay;}
-.keyword-panel {position: absolute;top: 16px;    right: 16px; width: 180px;background: rgba(255,255,255,0.35); border: 1px solid rgba(0,0,0,0.08);border-radius: 10px;box-shadow: 0 6px 18px rgba(0,0,0,0.08);backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);overflow: hidden;z-index: 5;                    }
+.keyword-panel {position: absolute;top:6px; right:16px;width: 180px;background: rgba(255,255,255,0.35); border: 1px solid rgba(0,0,0,0.08);border-radius: 10px;box-shadow: 0 6px 18px rgba(0,0,0,0.08);backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);overflow: hidden;z-index: 5;                    }
 .keyword-header {padding: 10px 12px;font-weight: 700;font-size: 0.95rem;color: #333;background: rgba(255,255,255,0.25);border-bottom: 1px solid rgba(0,0,0,0.06);}
 .keyword-table-wrap {max-height: 260px;overflow: auto;}
 .keyword-table {width: 100%;border-collapse: collapse;table-layout: fixed;font-size: 0.92rem;color: #222;}
@@ -343,9 +343,6 @@ form[name="searchForm"] #writeBtn {
 </script>
 
 <div class="col-md-9 ListHeight" style="border-radius: 10pt; background-image: url('<%= ctxPath %>/images/background.png');">
-    <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 5% 0">
-<div class="col-md-9 ListHeight" style="border-radius: 10pt; 
-		background-image: url('<%= ctxPath %>/images/background.png');">
     <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 2% 0">
 		<c:if test="${requestScope.category eq 1}">
 			<span>MZ들의&nbsp;</span></c:if>
@@ -564,4 +561,6 @@ form[name="searchForm"] #writeBtn {
    
   </div>   
  </div>
-  <jsp:include page="../footer/footer1.jsp"></jsp:include>
+</div>
+</div>
+ <jsp:include page="../footer/footer1.jsp"></jsp:include>

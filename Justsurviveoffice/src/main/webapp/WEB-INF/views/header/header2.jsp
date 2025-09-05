@@ -43,10 +43,12 @@
 		.pc-menu {border-right:1px solid #000;display:flex;flex-wrap:wrap;justify-content:space-between;}
 		.mobileTab{position:fixed;display:none;background-color:#fff;width:100%;padding:25px 0;z-index:10;border-bottom:1px solid #ddd;}
 		.hamburger {font-size: 2rem;background: none;border: none;position: fixed;top: 11px;right: 20px;z-index: 2001;cursor: pointer;display: none; color:#000 !important;}
-		#adminMenu {position: fixed;top: 0; left: 0;width: 100%; height: 100%;background: #fff;flex-direction: column;justify-content: center;align-items: center;z-index: 2000;display: none; margin: 0;padding: 0;}
+		#adminMenu {position: fixed;top: 35px; left: 10px;width: 100%; height: 100%;background: #fff;flex-direction: column;justify-content: center;align-items: center;z-index: 2000;display: none; margin: 0;padding: 0;}
 		#adminMenu.show { display: flex; }
 		#adminMenu li {list-style: none;margin: 15px 0;font-size: 1.3rem;}
 		#adminMenu a, #adminMenu li {color: #000;text-decoration: none;}
+		.mobileTab.is-open { display: block !important; }
+		.hamburger.is-open { display: block !important; }
 
 		/* 모바일에서만 햄버거 보이고, 기존 가로 메뉴 숨김 */
 		@media screen and (max-width:1300px){
@@ -56,31 +58,30 @@
 	</style>
 </head>
 <script type="text/javascript">
-	$(function(){
-		
-		updateClock();
-		setInterval(updateClock, 1000);
-		 $('#menuToggle').on('click', function(){
-			    $('#adminMenu').toggleClass('show');
+$(function(){
+	 updateClock();
+	  setInterval(updateClock, 1000);
 
-			    if($('#adminMenu').hasClass('show')){
+	  $('#menuToggle').on('click', function(){
+	    const opened = $('#adminMenu').toggleClass('show').hasClass('show');
 
-			      $(this).html('&times;'); // ✖
-			    } else {
+	    // 아이콘 전환
+	    $(this).toggleClass('is-open', opened)
+	           .html(opened ? '&times;' : '&#9776;');
 
-			      $(this).html('&#9776;'); // ☰
-			    }
-			  });
+	    // 데스크톱 폭에서도 닫기버튼 보이도록 부모도 강제 노출
+	    $('.mobileTab').toggleClass('is-open', opened);
+	  });
 
-			  // 창 크기 늘려서 PC 화면으로 갔을 때 자동 닫기
-			  $(window).on('resize', function(){
-			    if($(window).width() > 1000){
-			      $('#adminMenu').removeClass('show');
-			      $('#menuToggle').html('&#9776;'); // 항상 햄버거로 복구
-			    }
-			  });
-		
-	}) // end of function(){}
+	  $(window).on('resize', function(){
+	    if($(window).width() > 1000){
+	      $('#adminMenu').removeClass('show');
+	      $('#menuToggle').removeClass('is-open').html('&#9776;');
+	      $('.mobileTab').removeClass('is-open');   // 부모도 원복
+	    }
+	  });
+	  
+	}); // end of function(){}
 	
 	function admOut(){
 	   if(confirm('로그아웃 하시겠어요?')) {
@@ -120,12 +121,14 @@
 				  <li class="admTab"><i class="fa-solid fa-user"></i>&nbsp;<a href="usersList">사용자 관리</a></li>
 				  <li class="admTab"><i class="fa-solid fa-user"></i>&nbsp;<a href="userExcelList">회원목록 엑셀</a></li>
 				  <li class="admTab"><i class="fa-solid fa-rotate-left"></i><a href="javascript:history.back();">&nbsp;뒤로가기</a></li>
-				  <li class="admTab admOut" onclick="admOut()"><i class="fa-solid fa-house">&nbsp;</i>로그아웃</li>
+				  <li class="admTab admOut" onclick="admOut()"><i class="fa-solid fa-house">&nbsp;</i><a href="#">로그아웃</a></li>
 				  <li class="admTab"><div id="clock"></div></li>
 				</ul>			
+				
 				<div class="mobileTab">
 					<button id="menuToggle" class="hamburger d-md-none">&#9776;</button>
 				</div>
+				
 				<ul id="adminMenu">
 				  <li><a href="chart">회원 통계보기</a></li>
 				  <li><a href="usersList">사용자 관리</a></li>

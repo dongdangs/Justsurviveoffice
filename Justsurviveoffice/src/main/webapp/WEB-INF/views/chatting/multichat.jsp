@@ -346,16 +346,16 @@
 			<div class="col-md-6">
 		 	 <div class="chat-wrapper">
 			   <div id="chatStatus"></div>
-			   <div class="my-2 small text-muted">
+			    <div class="my-2 small text-muted">
 			    - <span style="color:black;">검정색</span>: 모두에게 보이는 메시지<br>
-			    - <span style="color:red;">붉은색</span>: 나에게만 보이는 귓속말<br>
-			    - 상대 이름을 클릭하면 귓속말 가능
+			   <!-- <span style="color:red;">붉은색</span>: 나에게만 보이는 귓속말<br>
+			     상대 이름을 클릭하면 귓속말 가능--> 
 			   </div>
-			   <input type="hidden" id="to" placeholder="귓속말대상웹소켓.getId()"/>
+			  <!-- <input type="hidden" id="to" placeholder="귓속말대상웹소켓.getId()"/>
 			   <br/>
 			   ♡ 귓속말 대상 : <span id="privateWho" style="font-weight: bold; color: red;"></span>
   			   <button type="button" id="btnAllDialog" class="btn btn-secondary btn-sm">귓속말대화끊기</button>
-
+				-->
 			   <br><br>
 			   현재접속자명단:<br/>
 			   <div id="connectingUserList"></div>

@@ -135,12 +135,10 @@ public class UsersController {
 
        try {
           // 회원가입
-          usersService.registerUser(user);
-          UsersDTO usersDto = usersService.getUser(id, Pwd);
-          usersDto.getCategory().setCategoryImagePath(mobile);
+          
+          UsersDTO usersDto = usersService.getUser(id, Pwd);    
           // 세션에 로그인 정보 저장
           session.setAttribute("loginUser", usersDto);
-          
           return "redirect:/index";
           
        } catch (Exception e) {
