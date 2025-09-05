@@ -90,7 +90,7 @@
 			</div>
 		</div>
 		
-		<!-- 페이지네이션 -->
+		<!-- 페이지네이션! -->
 		<div class="bg-white rounded shadow-sm p-3" >
 			<div class="d-flex justify-content-center align-items-center flex-wrap">
 				<ul class="pagination justify-content-center justify-content-sm-end mb-0">
