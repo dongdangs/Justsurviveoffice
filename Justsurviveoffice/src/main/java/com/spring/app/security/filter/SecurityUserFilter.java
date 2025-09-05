@@ -56,7 +56,7 @@ public class SecurityUserFilter extends OncePerRequestFilter {
 				if (user != null) {
 					
 					
-					// ✅ 관리자 동시 로그인 "차단" 로직 (핵심)
+					// 관리자 동시 로그인 "차단" 로직
                     if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                         var existing = sessionRegistry.getAllSessions(user.getId(), false);
                         boolean hasOtherActive = existing.stream()
@@ -101,8 +101,8 @@ public class SecurityUserFilter extends OncePerRequestFilter {
 					SecurityContextHolder.getContext().setAuthentication(auth);
 					
 					// SessionRegistry 등록(중복 제거 후 등록)
-                    sessionRegistry.removeSessionInformation(session.getId());
-                    sessionRegistry.registerNewSession(session.getId(), user.getId());
+					sessionRegistry.removeSessionInformation(session.getId());
+					sessionRegistry.registerNewSession(session.getId(), user.getId());
 					
 				}
             }
