@@ -98,15 +98,15 @@
 
 /* 댓글 섹션 */
 .comment-section {
-    margin-top: 35px; 
+    margin-top: 35px;
     background: #fafafa;
     padding: 15px;
     border-radius: 8px;
     border: 1px solid #f0f0f0;
 
     /* 스크롤바 추가 */
-    height: 400px;
-    overflow-y: auto;
+    max-height: 400px;   /* 원하는 높이 설정 (px, vh 가능) */
+    overflow-y: auto;    /* 세로 스크롤 활성화 */
 }
 
 /* 댓글 단일 아이템 */
@@ -126,6 +126,43 @@
     justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
     gap: 8px;
     margin-top: 8px;
+}
+
+/* 댓글 작성 폼 */
+form[name="commentform"] {
+    display: flex;                /* 가로 배치 */
+    align-items: center;          /* 세로 중앙 정렬 */
+    gap: 10px;                    /* 입력창과 버튼 사이 간격 */
+    margin-top: 15px;
+}
+
+/* 댓글 입력창 */
+form[name="commentform"] textarea {
+    flex: 1;                      /* 남은 공간 전부 차지 */
+    border-radius: 6px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    resize: none;
+    min-height: 45px;
+    max-height: 120px;
+    font-size: 14px;
+}
+
+/* 댓글 등록 버튼 */
+form[name="commentform"] #addComment {
+    padding: 10px 18px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    background-color: #6c63ff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    height: 45px;
+}
+
+form[name="commentform"] #addComment:hover {
+    background-color: #5848e5;
 }
 
 .comment:hover {
@@ -1001,6 +1038,16 @@ textarea:focus {
       <div class="comment-section">
    
           <h3 style="font-weight: bold;">댓글 <span>${fn:length(commentList)}</span></h3>
+          
+          <c:choose>
+             <%-- 댓글이 없는 경우 --%>
+           <c:when test="${empty commentList}">
+               <p style="color: gray; text-align: center; padding: 20px;">
+                   🚫 댓글이 없습니다.
+               </p>
+           </c:when>
+          
+          <c:otherwise>
           <c:forEach var="comment" items="${commentList}">
               <div class="comment" id="comment-${comment.commentNo}">
                   <div class="meta">
@@ -1087,13 +1134,15 @@ textarea:focus {
                   </div>
               </div>
           </c:forEach>
+          </c:otherwise>
+          </c:choose>
       </div>
       
       <!-- 댓글 작성 -->
        <form name="commentform" action="${ctxPath}/comment/writeComment" method="post" style="margin-top: 15px;">
            <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
            <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
-           <textarea name="content" rows="3" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
+           <textarea name="content" rows="2" style="width:100%;" placeholder="댓글을 입력하세요"></textarea>
            <button type="button" class="btn" id="addComment">댓글 등록</button>
        </form>
     
@@ -1177,7 +1226,6 @@ textarea:focus {
        </div>
    </div>
 <%-- <jsp:include page="../footer/footer1.jsp"></jsp:include> --%>
-=======
    <!-- 게시글 신고 모달 -->
    <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
        <div class="modal-dialog modal-dialog-centered" role="document">

@@ -239,6 +239,7 @@ public class AdminService_imple implements AdminService {
 				   				 .selectFrom(report)
 				   				// .join(report.users, users).fetchJoin()
 				   				 .join(report.board, board).fetchJoin()
+				   				 .offset(pageable.getOffset())
 				   				 .limit(pageable.getPageSize())
 				   				 .orderBy(report.reportNo.desc())
 				   				 .fetch();
