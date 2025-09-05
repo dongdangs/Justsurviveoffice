@@ -342,8 +342,6 @@ form[name="searchForm"] #writeBtn {
    
 </script>
 
-<div class="col-md-9 ListHeight" style="border-radius: 10pt; background-image: url('<%= ctxPath %>/images/background.png');">
-    <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 5% 0">
 <div class="col-md-9 ListHeight" style="border-radius: 10pt; 
 		background-image: url('<%= ctxPath %>/images/background.png');">
     <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 2% 0">
@@ -403,7 +401,7 @@ form[name="searchForm"] #writeBtn {
       
        <!-- 입력창 + 자동완성 드롭다운을 한 박스로 묶기 -->
       <span class="autocomplete">
-      	<input id="searchWord" type="text" name="searchWord" size="50" autocomplete="off" />
+      	<input id="searchWord" type="text" name="searchWord" size="60" autocomplete="off" />
       	<div id="displayList"></div>
       </span>
        

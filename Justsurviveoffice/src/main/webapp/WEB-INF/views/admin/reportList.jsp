@@ -83,7 +83,8 @@
 										</c:if>
 										
 										<c:if test="${report.reportStatus != 0}">
-											<button name="success" class="btn btn-success">완료</button>
+											<button type="button" name="success" 
+													class="btn btn-success" disabled>완료</button>
 										</c:if>
 									</td>
 								</tr>

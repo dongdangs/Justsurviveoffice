@@ -19,6 +19,8 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
+  overflow-y: scroll;
+  max-height: 850px;
 }
 
 .board-card {
@@ -59,6 +61,7 @@
   color: #888;
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 .title,content { /* 제목과 내용의 라인을 한줄로 제한하고, 이상이되면 안보이게! */
@@ -141,52 +144,52 @@ cursor: pointer;
   }
 //<!-- 북마크기능 -->
   function bookmark(boardNo, fk_id, isBookmarked) {
-	    const url = isBookmarked
-			        ? "<%= ctxPath%>/bookmark/remove"
-			        : "<%= ctxPath%>/bookmark/add";
-	    $.ajax({
-	        url: url,
-	        type: "POST",
-	        data: { fk_boardNo: boardNo },
-	        success: function(json) {
-	            const icon = $('#bookmark-icon-'+boardNo);
-	            
-	            if (json.success) {
-	            	icon.removeClass("fa-solid fa-bookmark text-warning fa-regular");
-	            	if (isBookmarked) {
-	            	    // 해제된 상태로 변경
-	            	    icon.addClass("fa-regular fa-bookmark");
-	            	    icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', false)");
-	            	} else {
-	            	    // 추가된 상태로 변경
-	            	    icon.addClass("fa-solid fa-bookmark text-warning");
-	            	    icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', true)");
-	            	}
-	            } else {
-	                alert(json.message);
-	                window.location.href = "<%=ctxPath%>/users/loginForm";
-	            }
-	        },
-	        error: function(request, status, error) {
-	            alert("code:" + request.status + "\nmessage:" + request.responseText);
-	        }
-	    });
-	 }// end of function Bookmark(boardNo,fk_id)———————————
-	
+       const url = isBookmarked
+                 ? "<%= ctxPath%>/bookmark/remove"
+                 : "<%= ctxPath%>/bookmark/add";
+       $.ajax({
+           url: url,
+           type: "POST",
+           data: { fk_boardNo: boardNo },
+           success: function(json) {
+               const icon = $('#bookmark-icon-'+boardNo);
+               
+               if (json.success) {
+                  icon.removeClass("fa-solid fa-bookmark text-warning fa-regular");
+                  if (isBookmarked) {
+                      // 해제된 상태로 변경
+                      icon.addClass("fa-regular fa-bookmark");
+                      icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', false)");
+                  } else {
+                      // 추가된 상태로 변경
+                      icon.addClass("fa-solid fa-bookmark text-warning");
+                      icon.attr("onclick", "bookmark(" + boardNo + ", '" + fk_id + "', true)");
+                  }
+               } else {
+                   alert(json.message);
+                   window.location.href = "<%=ctxPath%>/users/loginForm";
+               }
+           },
+           error: function(request, status, error) {
+               alert("code:" + request.status + "\nmessage:" + request.responseText);
+           }
+       });
+    }// end of function Bookmark(boardNo,fk_id)———————————
+   
 </script>
 
 <div class="col-md-9 ListHeight" style="border-radius: 10pt; 
-		background-image: url('<%= ctxPath %>/images/background.png');">
-	
-	
+      background-image: url('<%= ctxPath %>/images/background.png');">
+   
+   
    <h2 style="margin: 30px 0; font-size: 25pt; font-weight: bold;">전체 글목록</h2>
       <c:if test="${loginUser.getCategory().getCategoryNo() ne 6 
-      				and loginUser.getCategory().getCategoryNo() ne null}">
-      	<span><a href="<%=ctxPath %>/board/write/${loginUser.getCategory().getCategoryNo()}" class="btn btn-secondary btn-sm" 
+                  and loginUser.getCategory().getCategoryNo() ne null}">
+         <span><a href="<%=ctxPath %>/board/write/${loginUser.getCategory().getCategoryNo()}" class="btn btn-secondary btn-sm" 
             id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">내 유형으로 글쓰러 가기</a></span>
       </c:if>
       <c:if test="${loginUser.getCategory().getCategoryNo() eq 6}">
-    	<span><a href="<%=ctxPath %>/board/write/1" class="btn btn-secondary btn-sm mb-1" 
+       <span><a href="<%=ctxPath %>/board/write/1" class="btn btn-secondary btn-sm mb-1" 
             id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">MZ유형으로 글쓰러 가기</a></span>
         <span><a href="<%=ctxPath %>/board/write/2" class="btn btn-secondary btn-sm mb-1" 
             id="writeBtn" style="background-color: #FEB5FF; font-weight: bold;">꼰대유형으로 글쓰러 가기</a></span>
@@ -200,68 +203,68 @@ cursor: pointer;
    
    <br><br>
     <c:if test="${not empty requestScope.boardList}">
-		<div class="board-list">
-		  <c:set var="changeCategory" value="" />
-		  <c:forEach var="boardDto" items="${boardList}">
-		    <!-- 카테고리 이름이 바뀌었을 때만 출력 -->
-		    <c:if test="${changeCategory ne boardDto.categoryName}">
-		      <div class="category-block mt-4 mb-2">
-		        <span class="categoryDiv">${boardDto.categoryName.replace('형','')}들의 생존 게시판</span>
-		     	 <!-- + 버튼 추가! -->
-			    <span class="plus-btn"
-			          onclick="window.location.href='<%=ctxPath%>/board/list/${boardDto.fk_categoryNo}'">
-			      	더보기<i class="fa fa-plus"></i>
-			    </span>
-		      </div>
-		      <c:set var="changeCategory" value="${boardDto.categoryName}" />
-		    </c:if>
-		
-		    <!-- 게시글 카드 -->
-		    <div class="board-card">
-		      <div style="display: flex;" onclick="view('${boardDto.boardNo}', '${boardDto.fk_id}')">
-		        <div>
-		          <!-- 제목 -->
-		          <h3 class="title" style="margin-right:0">${boardDto.boardName}</h3>
-		          <!-- 내용 -->
-		          <div class="content" style="color: grey">${boardDto.textForBoardList}</div>
-		        </div>
-		
-		        <!-- 첨부 이미지 썸네일 -->
-		        <c:if test="${boardDto.imgForBoardList ne null}">
-		          <img src="${boardDto.imgForBoardList}" class="thumbnail" style="margin-left: auto;"/>
-		        </c:if>
-		        <c:if test="${boardDto.imgForBoardList eq null}">
-		          <div style="width:100px; height:80px;"></div>
-		        </c:if>
-		      </div>
-		
-		      <!-- 작성자/날짜/조회수 -->
-		      <div class="meta">
-		        <span>${boardDto.fk_id}</span>
-		        <span>${boardDto.formattedDate}</span>
-		        <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
-		        <!-- 북마크 -->
-		        <form id="bookmarkForm-${boardDto.boardNo}">
-		          <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
-		          <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
-		          <i id="bookmark-icon-${boardDto.boardNo}"
-		             class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
-		             style="cursor: pointer;"
-		             onclick="bookmark(${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
-		          </i>
-		        </form>
-		      </div>
-		    </div>
-   		    <form id="viewForm-${boardDto.boardNo}">
-		      <input type="hidden" name="boardNo"/>
-		      <input type="hidden" name="fk_id" /> 
-		      <input type="hidden" name="searchType" />
-		      <input type="hidden" name="searchWord" />
-		      <input type="hidden" name="category" value="${boardDto.fk_categoryNo}" />
-		    </form>
-		  </c:forEach>
-		</div>
-	</c:if>
+      <div class="board-list">
+        <c:set var="changeCategory" value="" />
+        <c:forEach var="boardDto" items="${boardList}">
+          <!-- 카테고리 이름이 바뀌었을 때만 출력 -->
+          <c:if test="${changeCategory ne boardDto.categoryName}">
+            <div class="category-block mt-4 mb-2">
+              <span class="categoryDiv">${boardDto.categoryName.replace('형','')}들의 생존 게시판</span>
+               <!-- + 버튼 추가! -->
+             <span class="plus-btn"
+                   onclick="window.location.href='<%=ctxPath%>/board/list/${boardDto.fk_categoryNo}'">
+                  더보기<i class="fa fa-plus"></i>
+             </span>
+            </div>
+            <c:set var="changeCategory" value="${boardDto.categoryName}" />
+          </c:if>
+      
+          <!-- 게시글 카드 -->
+          <div class="board-card">
+            <div style="display: flex;" onclick="view('${boardDto.boardNo}', '${boardDto.fk_id}')">
+              <div>
+                <!-- 제목 -->
+                <h3 class="title" style="margin-right:0">${boardDto.boardName}</h3>
+                <!-- 내용 -->
+                <div class="content" style="color: grey">${boardDto.textForBoardList}</div>
+              </div>
+      
+              <!-- 첨부 이미지 썸네일 -->
+              <c:if test="${boardDto.imgForBoardList ne null}">
+                <img src="${boardDto.imgForBoardList}" class="thumbnail" style="margin-left: auto;"/>
+              </c:if>
+              <c:if test="${boardDto.imgForBoardList eq null}">
+                <div style="width:100px; height:80px;"></div>
+              </c:if>
+            </div>
+      
+            <!-- 작성자/날짜/조회수 -->
+            <div class="meta">
+              <span>${boardDto.fk_id}</span>
+              <span>${boardDto.formattedDate}</span>
+              <span class="fa-regular fa-eye" style="font-size: 8pt">&nbsp;${boardDto.readCount}</span>
+              <!-- 북마크 -->
+              <form id="bookmarkForm-${boardDto.boardNo}">
+                <input type="hidden" name="fk_boardNo" value="${boardDto.boardNo}">
+                <input type="hidden" name="fk_id" value="${sessionScope.loginUser.id}">
+                <i id="bookmark-icon-${boardDto.boardNo}"
+                   class="fa-bookmark ${boardDto.bookmarked ? 'fa-solid text-warning' : 'fa-regular'}"
+                   style="cursor: pointer;"
+                   onclick="bookmark(${boardDto.boardNo}, '${sessionScope.loginUser.id}', ${boardDto.bookmarked ? true : false})">
+                </i>
+              </form>
+            </div>
+          </div>
+             <form id="viewForm-${boardDto.boardNo}">
+            <input type="hidden" name="boardNo"/>
+            <input type="hidden" name="fk_id" /> 
+            <input type="hidden" name="searchType" />
+            <input type="hidden" name="searchWord" />
+            <input type="hidden" name="category" value="${boardDto.fk_categoryNo}" />
+          </form>
+        </c:forEach>
+      </div>
+   </c:if>
 
     <c:if test="${empty requestScope.boardList}">
       <tr>
@@ -273,4 +276,4 @@ cursor: pointer;
 </div>
 </div>
 
-<jsp:include page="../footer/footer1.jsp"></jsp:include>
+<jsp:include page="../footer/footer1.jsp"></jsp:include>   
