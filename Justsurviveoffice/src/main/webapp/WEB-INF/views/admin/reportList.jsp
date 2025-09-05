@@ -65,7 +65,17 @@
 										<input type="hidden" name="reportNo" value="${report.reportNo}" />
 										</td>
 									<td>${report.fk_id}</td>
-									<td>${report.board.boardName}<input type="hidden" name="boardNo" value="${report.board.boardNo}" /></td>
+									<td>
+										<c:choose>
+											<c:when test="${fn:length(report.board.boardName) < 10}">
+												${report.board.boardName}
+											</c:when>
+											<c:otherwise>
+												${fn:substring(report.board.boardName, 0, 10)}...
+											</c:otherwise>
+										</c:choose>
+										<input type="hidden" name="boardNo" value="${report.board.boardNo}" />
+									</td>
 									<td>${report.reportReason}</td>
 									<td><c:out value="${fn:replace(report.createdAtReport, 'T', ' ')}"/></td>
 									<td>
