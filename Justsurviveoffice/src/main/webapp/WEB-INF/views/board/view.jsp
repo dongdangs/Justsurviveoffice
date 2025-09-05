@@ -509,6 +509,39 @@ textarea:focus {
            form.submit();
        });
        
+       // 영구삭제 버튼 관련 메소드
+       $(document).on('click', 'button.btn-delete', function(e){
+    	   const adminNo = $(this).data('boardNo');
+	//	   alert(adminNo);
+    	   
+    	   if(confirm("영구 삭제 진행하시겠습니까?")) {
+    		   
+    		   $.ajax({
+    			   url:"<%= ctxPath%>/board/adminDelete",
+    			   type:"POST",
+    			   data:{"boardNo":adminNo},
+    			   dataType:"json",
+    			   success:function(json){
+    				   if(json.n == 1) {
+    					   alert("처리 완료");
+    					   window.location.replace("<%= ctxPath %>/admin/reportList");
+    				   }
+    				   else {
+                           alert(json.message);
+                       }
+    			   },
+    			   error: function(request, status, error) {
+                       alert("code:" + request.status + "\nmessage:" + request.responseText);
+                   }
+    		   });
+    		   
+    		   alert("처리완료");
+    	   }
+    	   else {
+    		   alert("취소");
+    	   }
+       });
+       
    }); 
    
    // 글 삭제
@@ -833,6 +866,11 @@ textarea:focus {
       <c:if test="${boardDto.fk_categoryNo eq 5}">
          <span>금쪽이들의&nbsp;</span></c:if>
       <span>생존 게시판</span>
+      
+      <button type="button" class="btn btn-outline-danger btn-sm btn-delete" data-board-no="${boardDto.boardNo}">
+      	영구삭제
+      </button>
+      
       <br><br><br>
    </div>
    

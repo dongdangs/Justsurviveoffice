@@ -784,4 +784,22 @@ public class BoardController {
   		return mapList;
   	}
 	
+  	// 관리자용 게시글 영구삭제 버튼
+  	@PostMapping("adminDelete")
+  	@ResponseBody
+  	public Map<String, Object> adminDelete(@RequestParam(name = "boardNo") Long boardNo){
+  		
+  		Map<String, Object> resultMap = new HashMap<>();
+  		
+  		BoardDTO boardDto = boardService.selectView(boardNo);
+  		
+  		if(boardDto != null) {
+  			
+  			System.out.println("확인용" + boardDto.getAttach());
+  			
+  		}
+  		
+  		return resultMap;
+  	}
+  	
 }
