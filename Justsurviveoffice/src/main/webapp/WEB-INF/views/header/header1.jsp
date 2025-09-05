@@ -26,7 +26,6 @@
     <%-- 직접 만든 CSS 1 --%>
     <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/style1.css" />
     <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/common.css" />
-    <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/footer1.css" />
     
     <%-- Optional JavaScript --%>
     <script type="text/javascript" src="<%=ctxPath%>/js/jquery-3.7.1.min.js"></script>
@@ -105,14 +104,14 @@
 </style>
 </head>
 
-   <div id="mycontainer headerCon"  style="background-image: url('<%= ctxPath %>/images/background.png');">
+   <div id="mycontainer"  style="background-image: url('<%= ctxPath %>/images/background.png');">
       <div id="myheader">
          <jsp:include page="../menu/menu1.jsp" />
       </div>
       
       <div id="mycontent" class="mt-5">
          <div class="row" style="margin:0 auto;"> 
-            <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" id="leftSess">
+            <div class="col-md-3 d-flex flex-column align-items-center justify-content-start" ">
             <c:if test="${not empty sessionScope.loginUser}">   
                <div style="text-align: center;">
                <c:if test="${sessionScope.loginUser.getCategory().getCategoryImagePath() eq null}">

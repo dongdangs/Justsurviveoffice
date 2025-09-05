@@ -188,8 +188,7 @@ public class UsersService_imple implements UsersService {
       int n = 0;
       
       try {
-         usersRepository.deleteById(id);
-         n = 1;
+         n = usersRepository.updateIsDeletedById(id);
       } catch (EmptyResultDataAccessException e) {
       }
       return n;

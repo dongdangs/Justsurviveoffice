@@ -5,10 +5,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.spring.app.entity.Users;
+
+import jakarta.transaction.Transactional;
 
 // Spring Data JPA는 "JpaRepository"라는 기능을 사용하면 매우 간단히 데이터를 입력,수정,삭제,검색을 할 수 있게 해준다.
 
@@ -50,7 +53,14 @@ public interface UsersRepository extends JpaRepository<Users, String> { // Strin
 		String getDd(); 
 		Long getCnt(); 
 	}
-
+	
+	@Modifying
+	@Transactional
+	@Query(value = "update users "
+				 + "set isDeleted = 1"
+				 + "where id = :id",
+				 nativeQuery = true)
+	int updateIsDeletedById(@Param("id") String id);
 	
 	// 카테고리별 게시물 수 통계
 	@Query(value = "select categoryName, categoryImagePath, count(*) as cnt, \n"
