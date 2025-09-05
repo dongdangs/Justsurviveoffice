@@ -16,52 +16,20 @@
 <script src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
-    body {
-        background: #f7f7fb;
-    }
-    .sidebar {
-        background: #fff;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 8px 24px rgba(0,0,0,.06);
-    }
-    .sidebar img {
-        max-width: 100%;
-        border-radius: 10px;
-    }
-    .sidebar-menu a {
-        display: block;
-        padding: 8px 0;
-        color: #333;
-        text-decoration: none;
-        font-weight:500;
-    }
-    .sidebar-menu a:hover {
-        color: #6c63ff;
-    }
-    .content {
-        background: #fff;
-        border-radius: 12px;
-        padding: 24px;
-        box-shadow: 0 8px 24px rgba(0,0,0,.06);
-    }
-    
-    .row{
-    	display:flex;
-    	align-items: stretch;
-   	}
-   	
-   	.sidebar,
-   	.content {
-   		height : 100% ;
-   	}
+   	body { background: #f7f7fb; font-family: 'Noto Sans KR', sans-serif; }
+
+    .sidebar { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+	.sidebar img { max-width: 100%; border-radius: 10px; }
+	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none;font-weight:500;}
+	.sidebar-menu a:hover { color: #6c63ff; } 
+	.content { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
    	
    	
 </style>
 
 <script>
 $(function () {
-	
+	let emailChecked = true;
 
     // 회원탈퇴
     $("#btnQuit").on("click", function(e) {
@@ -96,7 +64,11 @@ $(function () {
             alert("비밀번호가 일치하지 않습니다.");
             return;
         }
-
+		if(emailChecked == false) {
+			alert("이메일 중복체크는 필수입니다.");
+			return;
+		}
+        
         if(confirm("회원정보를 수정하시겠습니까?")) {
             $("#editForm").submit();
         }
@@ -117,6 +89,9 @@ $(function () {
         }
     });
     
+    $('input#email').on("change", function() {
+    	emailChecked = false
+    });
     $("#btnEmailDup").on("click", function () {
     	  const email = $("#email").val().trim();
     	  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -128,10 +103,10 @@ $(function () {
 
     	  $.get("<%=ctxPath%>/mypage/emailDuplicate", { email: email }, function (res) {
     	    if (res.duplicated) {
-    	      emailOk = false;
+    	      emailChecked = false;
     	      alert("이미 사용 중인 이메일입니다.");
     	    } else {
-    	      emailOk = true;
+    	      emailChecked = true;
     	      alert("사용 가능한 이메일입니다.");
     	    }
     	  }).fail(function () {
@@ -147,6 +122,7 @@ $(function () {
     <div class="row">
 
         <!-- 사이드바 -->
+
         <jsp:include page="../../menu/sidemenu.jsp"></jsp:include>
 
         <!-- 메인 내용 -->

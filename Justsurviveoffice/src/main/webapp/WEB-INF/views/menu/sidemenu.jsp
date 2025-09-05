@@ -28,5 +28,5 @@
                     <a href="javascript:history.back()">이전 페이지</a>
                     <a href="<%=ctxPath%>/">메인 페이지</a>
                 </div>
-            </div>
+                </div>
         </div>

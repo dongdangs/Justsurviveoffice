@@ -34,12 +34,10 @@
 	/* 사이드바 */
 	body { background: #f7f7fb; font-family: 'Noto Sans KR', sans-serif; }
 	.sidebar { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
-	.sidebar img { max-width: 100%; border-radius: 10px; margin-bottom: 10px; }
-	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none; font-weight: 500; 
-					  transition: all 0.2s ease-in-out; }
-	.sidebar-menu a:hover { color: #6c63ff; padding-left: 5px; }
-	.content { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
-   	
+	.sidebar img { max-width: 100%; border-radius: 10px; }
+	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none;font-weight:500;}
+	.sidebar-menu a:hover { color: #6c63ff; } 
+	.content { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }   	
    	/* 차트 */
    	.highcharts-figure, .highcharts-data-table table { min-width:320px; max-width:800px; margin:1em auto; }
    	div#chart_container { height: 400px; }
@@ -54,9 +52,13 @@
    	.highcharts-data-table tr:hover { background: #f1f7ff; }
    	input[type="number"] { min-width: 50px; }
 
-   	div#table_container table { width:100% }
-   	div#table_container th, div#table_container td { border: 1px solid gray; text-align:center; }
-   	div#table_container th { background-color:#595959; color: white; }
+	/* 테이블 */
+   	#table_container table { width:100%; border-collapse:separate; border-spacing:0; border:1px solid #e5e7eb; border-radius:16px; box-shadow:0 8px 20px rgba(0,0,0,.05); overflow:hidden; background:#fff; } 
+   	#table_container thead th { background:#EEF1FF; color:#27314a; font-weight:700; text-align:center; padding:12px 10px; border-bottom:1px solid #e5e7eb; } 
+   	#table_container td, #table_container th { padding:10px 12px; border-bottom:1px solid #e5e7eb; text-align:center; vertical-align:middle; }
+	#table_container tbody tr:nth-child(even) { background: #fafafa; }
+	#table_container tbody tr:hover { background: #f1f5ff; }
+
    	img {border-radius: 50px;}
    	
 </style>
@@ -174,18 +176,22 @@
 	              	// ====================================================== //
 	              
 	              	let v_html = `<table>
+	              					<thead>
 	                           			<tr>
 	                              			<th>카테고리</th>
 	                              			<th>게시글 수</th>
 	                              			<th>퍼센티지</th>
-	                           	  </tr>`;
+	                           	  		</tr>
+	                           	  	</thead>
+	                           	  	<tbody>`;
 	                           
 	              	$.each(json, function(index, item){
 	                 	v_html += `<tr>
 	                            		<td>\${item.categoryName}</td>
 	                            		<td>\${item.cnt}</td>
 	                            		<td>\${item.percentage}%</td>
-	                          	   </tr>`;
+	                          	   </tr>
+	                          	   </tbody>`;
 	              	});             
 	                           
 	              	v_html += `</table>`;
@@ -298,18 +304,22 @@
 	              	// ====================================================== //
 	              
 	              	let v_html = `<table>
+	              					<thead>
 	                           			<tr>
 	                              			<th>카테고리</th>
 	                              			<th>게시글 수</th>
 	                              			<th>퍼센티지</th>
-	                           	  </tr>`;
+	                           	  		</tr>
+	                           	  	</thead>
+	                           	  	<tbody>`;
 	                           
 	              	$.each(json, function(index, item){
 	                 	v_html += `<tr>
 	                            		<td>\${item.categoryName}</td>
 	                            		<td>\${item.cnt}</td>
 	                            		<td>\${item.percentage}%</td>
-	                          	   </tr>`;
+	                          	   </tr>
+	                          	   </tbody>`;
 	              	});             
 	                           
 	              	v_html += `</table>`;
@@ -326,7 +336,6 @@
 	}
 	
 </script>
-
 
 </head>
 <body>

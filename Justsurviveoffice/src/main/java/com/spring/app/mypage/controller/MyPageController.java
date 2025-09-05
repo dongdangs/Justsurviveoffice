@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.spring.app.users.domain.BookMarkDTO;
 import com.spring.app.admin.service.AdminService;
 import com.spring.app.board.domain.BoardDTO;
 import com.spring.app.board.service.BoardService;
@@ -86,8 +84,23 @@ public class MyPageController {
     // 회원 정보 수정
     @PostMapping("update")
     public String update(UsersDTO userDto, HttpServletRequest request, HttpSession session) {
-        UsersDTO updatedUser = usersService.updateUser(userDto);
+        UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
 
+        //입력한 이메일이 다른 사용자의 이메일인지 체크하기
+        boolean emailDuplicate = usersService.isEmailDuplicated(userDto.getEmail());
+        
+        // 중복된 이메일이면서, 로그인한 사용자의 이메일도 아닐때 (에러)
+        if(emailDuplicate && !loginUser.getEmail().equals(userDto.getEmail())) {
+        	request.setAttribute("message", "이미 사용 중인 이메일입니다");
+            request.setAttribute("loc", request.getContextPath()+"/mypage/info");
+            
+            return "msg";
+        }
+        
+        // 중복된 이메일이 아니면 회원정보 업데이트
+        UsersDTO updatedUser = usersService.updateUser(userDto);
+	
+        	
         // 세션 갱신
         session.setAttribute("loginUser", updatedUser);
 
@@ -100,27 +113,62 @@ public class MyPageController {
         return "msg";
     }
 
-    // 회원 탈퇴
-    @PostMapping("quit")
-    @ResponseBody
-    public Map<String, Integer> delete(@RequestParam(name = "id") String id, HttpSession session) {
-        int n = usersService.delete(id);
-        if (n == 1) {
-            session.invalidate(); // 로그아웃 처리
-        }
-        return Map.of("n", n);
-    }
-
+    
     // 이메일 중복확인
     @GetMapping("emailDuplicate")
     @ResponseBody
     public Map<String, Object> emailDup(@RequestParam(name = "email") String email, HttpSession session) {
+    	Map<String, Object> paraMap = new HashMap<>();
+
         UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
-        String myId = (loginUser != null ? loginUser.getId() : null);
+
+        // 현재 로그인한 사용자 이메일은 중복으로 보지 않음
+        if (loginUser != null && email.equals(loginUser.getEmail())) {
+        	paraMap.put("duplicated", false);
+        	paraMap.put("message", "현재 사용 중인 이메일입니다.");
+            return paraMap;
+        }
 
         boolean duplicated = usersService.isEmailDuplicated(email);
-        return Map.of("duplicated", duplicated);
+
+        if (duplicated) {
+        	paraMap.put("duplicated", true);
+        	paraMap.put("message", "이미 사용 중인 이메일입니다.");
+        } else {
+        	paraMap.put("duplicated", false);
+        	paraMap.put("message", "사용 가능한 이메일입니다.");
+        }
+
+        return paraMap;
     }
+    
+    // 회원 탈퇴
+    @PostMapping("quit")
+    @ResponseBody
+    public Map<String, Object> delete(@RequestParam(name = "id") String id, HttpSession session) {
+    	
+    	Map<String, Object> paraMap = new HashMap<>();
+
+        try {
+            int result = usersService.delete(id);
+
+            if (result == 1) {
+                session.invalidate();  //  로그아웃
+                paraMap.put("success", true);
+                paraMap.put("message", "회원 탈퇴가 완료되었습니다.");
+            } else {
+            	paraMap.put("success", false);
+            	paraMap.put("message", "회원 탈퇴에 실패했습니다. 다시 시도해주세요.");
+            }
+        } catch (Exception e) {
+        	paraMap.put("success", false);
+        	paraMap.put("message", "서버 에러가 발생했습니다.");
+        }
+
+        return paraMap;
+    }
+
+   
     
     
     // 마이페이지 내 통계로 이동

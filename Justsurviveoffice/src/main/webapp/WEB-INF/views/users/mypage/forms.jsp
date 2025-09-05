@@ -20,7 +20,8 @@
 <script src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
 
 <style type="text/css">
-	body { background: #f7f7fb; }
+	body { background: #f7f7fb; font-family: 'Noto Sans KR', sans-serif; }
+
 	.sidebar { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
 	.sidebar img { max-width: 100%; border-radius: 10px; }
 	.sidebar-menu a { display: block; padding: 8px 0; color: #333; text-decoration: none;font-weight:500;}
@@ -184,9 +185,7 @@
 	    	const boardNo = $(this).data('fk_boardno');
 	    	if (!boardNo) return;
 	    	
-	    	if (!confirm('이 게시글을 복구하시겠습니까?')) return;
-	    	
-	    //	alert(boardNo);
+	    	if (!confirm('복구 시 첨부파일은 사라진 상태로 복구됩니다.\n이 게시글을 복구하시겠습니까?')) return;
 	    	
 	    	$.ajax({
 	    		url:"<%=ctxPath%>/mypage/myBoardRecovery",

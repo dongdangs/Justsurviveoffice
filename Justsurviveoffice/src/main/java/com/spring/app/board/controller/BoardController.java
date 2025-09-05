@@ -26,6 +26,8 @@ import com.spring.app.common.FileManager;
 import com.spring.app.config.Datasource_final_orauser_Configuration;
 import com.spring.app.model.HistoryRepository;
 import com.spring.app.pointlog.model.PointLogDAO;
+import com.spring.app.report.domain.ReportDTO;
+import com.spring.app.report.service.ReportService;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -52,6 +54,7 @@ public class BoardController {
 	private final BookmarkService bookmarkService;
 	private final CommentService commentService;
 	private final PointLogDAO pointLogDao;
+	private final ReportService reportService;
 	
 	private final FileManager fileManager;
 	
@@ -625,7 +628,7 @@ public class BoardController {
 			}
 		}
 	//	스마트에디터파일은 여러 개이기 때문에, DB에서 받아온 내용을 List로 받아서 삭제할 것.
-		List<String> photo_upload_boardFileNameList 
+/*		List<String> photo_upload_boardFileNameList 
 			= boardService.fetchPhoto_upload_boardFileNameList(boardDto.getBoardNo());
 		path = root+"resources"+File.separator+"photo_upload";
 		for(String photo_uploadFile : photo_upload_boardFileNameList) {
@@ -634,7 +637,7 @@ public class BoardController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 	// 기존 파일들의 삭제가 끝났다면, 업데이트 시작.	
 		int n = boardService.updateBoard(boardDto); // 게시판에 수정본 업로드!
 		
@@ -783,5 +786,64 @@ public class BoardController {
   		
   		return mapList;
   	}
+  	
+  	
+  	//게시글 신고하기
+  	@PostMapping("reportAdd")
+  	@ResponseBody
+  	public Map<String, Object> reportAdd(@RequestParam(name="fk_boardNo") Long fk_boardNo,
+  										@RequestParam(name="fk_id") String fk_id,
+  										@RequestParam(name="reportReason") String reportReason,
+  											HttpSession session , ReportDTO reportDto) {
+		
+  		Map<String, Object> result = new HashMap<>();
+  		
+  		UsersDTO loginUser = (UsersDTO) session.getAttribute("loginUser");
+        System.out.println("===> loginUser: " + loginUser);
+        
+        if (loginUser == null) {
+            result.put("success", false);
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+        
+        //중복신고여부 확인
+        boolean isreported = reportService.isReported(loginUser.getId(),fk_boardNo);
+        
+        if(isreported) {
+        	result.put("success", false);
+        	result.put("message", "이미 신고된 게시글입니다.");
+        	
+        	return result;
+        } 
+        
+        reportDto.setFk_id(loginUser.getId());
+        reportDto.setReportReason(reportReason);
+        
+        //신고 추가
+    	int n = reportService.insertReport(reportDto);
+        	
+        if (n==1) {
+        	result.put("success", true);
+        	result.put("message", "🚨 신고가 정상적으로 접수되었습니다.");
+        } else {
+        	result.put("success", false);
+        	result.put("message", "신고 접수 중 오류가 발생했습니다.");
+        }
+
+        return result;
+  		
+  	}
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
 	
 }

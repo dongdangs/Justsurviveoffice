@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 
 import com.spring.app.category.domain.CategoryDTO;
+import com.spring.app.entity.Report;
 import com.spring.app.users.domain.UsersDTO;
 
 public interface AdminService {
@@ -23,5 +24,11 @@ public interface AdminService {
 	
 	// 문자메시지 보내기 관련 코드 작성
 	JSONObject smsSend(String mobile, String smsContent, String datetime) throws Exception;
+	
+	// 신고목록 전체보기(페이징 처리)
+	Page<Report> getPageReport(int currentShowPageNo, int sizePerPage) throws Exception;
+	
+	// 신고 처리 완료해주기
+	int reportComplete(Long reportNo);
 	
 }

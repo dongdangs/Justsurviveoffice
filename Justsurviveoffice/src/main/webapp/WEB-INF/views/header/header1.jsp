@@ -44,6 +44,9 @@
     border-radius: 10px;
     object-fit: cover;
     display: block;
+    margin: 5% 0 0 0;      /* 가운데 정렬 */
+    margin-top: 25%;
+    max-width:330px;
     margin: 0 auto 1rem auto; /* 중앙정렬 + 하단 여백 */
 }
 
@@ -186,7 +189,9 @@
                                 style="color: #000;">
                                  ${hotComment.boardName}
                              </a>
-                             <%-- <span>${hotComment.fk_categoryName}</span> --%>
+                             <span class="fa-regular fa-comment text-muted" style="font-size: 8pt; color:black !important">
+                                 (${hotComment.commentCount})
+                             </span>
                          </td>
                      </tr>
                         </c:forEach>

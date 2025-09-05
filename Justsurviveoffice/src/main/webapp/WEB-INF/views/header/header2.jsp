@@ -37,7 +37,7 @@
 	<style>
 		body{overflow-x:hidden;}
 		.col-md-2 ul {height:100%;background-color:green;display:flex;}
-		.admTab {width:calc(100% / 7);background-color:#d5d5d5; display:block;color:#000;border-bottom:1px solid #5f0f0f;padding:1.5% 0; text-align:center;}
+		.admTab {width:calc(100% / 7);background-color:white; display:block;color:#000;border-bottom:1px solid #D19EFF;padding:1.5% 0; text-align:center;}
 		.admTab:hover {background-color:#fff;}
 		#clock {font-size:0.8rem;}
 		.pc-menu {border-right:1px solid #000;display:flex;flex-wrap:wrap;justify-content:space-between;}
@@ -119,8 +119,8 @@
 				  <li class="admTab"><i class="fa-solid fa-chart-simple"></i>&nbsp;<a href="chart">회원 통계보기</a></li>
 				  <li class="admTab"><i class="fa-solid fa-user"></i>&nbsp;<a href="usersList">사용자 관리</a></li>
 				  <li class="admTab"><i class="fa-solid fa-user"></i>&nbsp;<a href="userExcelList">회원목록 엑셀</a></li>
-				  <li class="admTab admOut" onclick="admOut()"><i class="fa-solid fa-house">&nbsp;</i>로그아웃</li>
 				  <li class="admTab"><i class="fa-solid fa-rotate-left"></i><a href="javascript:history.back();">&nbsp;뒤로가기</a></li>
+				  <li class="admTab admOut" onclick="admOut()"><i class="fa-solid fa-house">&nbsp;</i>로그아웃</li>
 				  <li class="admTab"><div id="clock"></div></li>
 				</ul>			
 				<div class="mobileTab">

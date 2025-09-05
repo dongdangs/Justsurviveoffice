@@ -32,7 +32,6 @@ public class Category {
 	@SequenceGenerator(name="CATEGORY_SEQ_GENERATOR", sequenceName = "category_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CATEGORY_SEQ_GENERATOR")
 	private Long categoryNo;
-
 	
 	@Column(name="categoryname" ,nullable = false, length = 50)
 	private String categoryName;

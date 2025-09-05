@@ -47,7 +47,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 			        		         "/resources/**",
 			        		         "/privacy/**",
 			        		         "/company/**",
-			        	             "/smarteditor/**");
+			        	             "/smarteditor/**",
+			        	             "/report/**");
 		
 		registry.addInterceptor(adminLoginCheckInterceptor)
 		.addPathPatterns("/admin/**")

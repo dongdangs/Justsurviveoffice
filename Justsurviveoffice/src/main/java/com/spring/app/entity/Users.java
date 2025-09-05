@@ -50,6 +50,9 @@ public class Users {
 	
 	@Column(nullable = false) // int형은 자동으로 0이 디폴트값임!!
 	private int point;
+	
+	@Column(name ="role", nullable = false, length = 20)
+	private String role;
 
 // insertable = false 로 설정하면 엔티티 저장(insert)시 이 필드를 빼라는 말이다.
 // updatable = false 로 설정하면 엔티티 변경(update)이 안되게 한다는 뜻이다.
@@ -86,6 +89,7 @@ public class Users {
 					   .email(this.email)
 					   .mobile(this.mobile)
 					   .point(this.point)
+					   .role(this.role)
 					   .registerday(this.registerday)
 					   .passwordChanged(this.passwordChanged)
 					   .category(this.category)

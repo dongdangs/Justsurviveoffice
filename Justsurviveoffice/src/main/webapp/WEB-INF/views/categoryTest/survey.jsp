@@ -19,6 +19,7 @@
 <script src="<%=ctxPath%>/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
+   html{display:flex;align-items:center;height:100%;justify-content:center;}
    .survey-container {
       max-width: 450px;
       margin: 9% auto;
@@ -30,7 +31,7 @@
    .survey-image img {
       border-radius: 16px;
    }
-   .btn-start {
+   .btn-blue {
       background-color: #4da3ff;
       border: none;
       padding: 14px;
@@ -39,7 +40,7 @@
       color: white;
       width: 100%;
    }
-   .btn-start:hover { background-color: #368ce8; }
+   .btn-blue:hover { background-color: #368ce8; }
 
    /* 로딩 */
    .loader {
@@ -72,7 +73,7 @@
       box-sizing: border-box;
    }
 
-   /* 버블 스타일 */
+   /* 질문/옵션 버블 */
    .question-bubble {
       background: #fff;
       border-radius: 20px;
@@ -84,7 +85,7 @@
    .question-bubble .QNo {
       font-size: 1rem;
       font-weight: bold;
-      color: #99CCFF;
+      color: #3399FF; /* 진한 파랑 */
       margin-bottom: 10px;
    }
    .question-bubble .QText {
@@ -104,12 +105,94 @@
    .option-bubble:hover { background: #cfe7ff; }
    .option-bubble:active { background: #b5d9ff; }
 
-   /* 결과 */
+   /* 결과 화면 꾸밈 (축소 버전) */
    .result-bubble {
       background: #fff;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-radius: 16px;
+      padding: 18px;              /* 여백 줄임 */
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      margin-top: 15px;           /* 위 간격 줄임 */
+      text-align: center;
+   }
+   .result-image {
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      max-height: 200px;          /* 이미지 높이 제한 */
+      object-fit: cover;          /* 비율 유지 자르기 */
+   }
+   /* 결과 제목 반짝반짝 효과 */
+   .result-title {
+       font-size: 1.2rem;
+       font-weight: 600;
+       color: #3399ff;
+       margin-top: 10px;
+       animation: glow 2s ease-in-out infinite alternate;
+   }
+   
+   @keyframes glow {
+       from {
+           text-shadow: 0 0 5px #99ccff, 0 0 10px #99ccff;
+       }
+       to {
+           text-shadow: 0 0 15px #3399ff, 0 0 30px #66b2ff;
+       }
+   }
+   .result-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;                   /* 태그 간격 줄임 */
+      margin: 12px 0;             /* 여백 줄임 */
+   }
+   /* 태그 버블 반짝임 */
+   .tag-bubble {
+       background: #e9f3ff;
+       color: #3399ff;
+       font-weight: 600;
+       padding: 5px 12px;
+       border-radius: 16px;
+       font-size: 0.85rem;
+       position: relative;
+       overflow: hidden;
+   }
+   .tag-bubble::after {
+       content: "";
+       position: absolute;
+       top: -50%;
+       left: -50%;
+       width: 200%;
+       height: 200%;
+       background: radial-gradient(circle, rgba(255,255,255,0.6) 20%, transparent 60%);
+       animation: sparkle 3s infinite linear;
+   }
+   @keyframes sparkle {
+       from { transform: translate(0,0) rotate(0deg); }
+       to { transform: translate(50%,50%) rotate(360deg); }
+   }
+   /* 떨어지는 별 */
+   .falling-star {
+       position: absolute;
+       color: #ffd700;   /* 금색 별 */
+       font-size: 1rem;
+       opacity: 0;
+       animation: fall 5s linear infinite;
+   }
+   
+   @keyframes fall {
+       0% {
+           transform: translateY(-20px) scale(0.8);
+           opacity: 0;
+       }
+       20% {
+           opacity: 1;
+       }
+       80% {
+           opacity: 1;
+       }
+       100% {
+           transform: translateY(250px) scale(0.5);
+           opacity: 0;
+       }
    }
 </style>
 </head>
@@ -129,7 +212,8 @@
          <img src="<%= ctxPath %>/images/mz.png" class="img-fluid w-100" alt="성향 이미지">
       </div>
       
-      <button type="button" class="btn-start">설문 시작하기</button>
+      <button type="button" class="btn-start btn-blue">설문 시작하기</button>
+      <button type="button" class="btn-home btn-blue mt-3 ">게시판으로 돌아가기</button>
    </div>
 
 <script>
@@ -137,11 +221,16 @@
    
    $(function(){
       $("#loading-screen").hide();
-      $(".btn-start").click(function(){
+      $(".btn-start").click(function(){ // 설문을 시작하는 버튼.
          $(".survey-container").empty();
          $("#loading-screen").show();
          surveyStart();
       });
+      
+      $(".btn-home").click(function(){ // index로 돌아가는 버튼.
+    	 location.href = '<%= ctxPath %>/index';
+      });
+      
    });
 
    // 설문 시작
@@ -174,7 +263,7 @@
                v_html += `</div>`;
             });
             
-            v_html += `</div></div>`; // slides-wrapper 닫기
+            v_html += `</div></div>`;
             $(".survey-container").html(v_html);
             
             const total = json.length;
@@ -209,26 +298,32 @@
          dataType:"json",
          success:function(json){
             let r_html = `
-            <div class="result-bubble text-center">
-               <img src="<%= ctxPath %>/images/\${json.categoryImagePath}" class="img-fluid rounded mb-3">
-               <div class="bg-primary text-white rounded p-3 fw-bold mb-3">`;
+            <div class="result-bubble">
+               
+                 <!-- 흩날리는 별들 (떨어지는 효과) -->
+                 <i class="fa-solid fa-star falling-star" style="top:-10px; left:20%; animation-delay:0s;"></i>
+                 <i class="fa-solid fa-star falling-star" style="top:-10px; left:50%; animation-delay:1s;"></i>
+                 <i class="fa-solid fa-star falling-star" style="top:-10px; left:75%; animation-delay:2s;"></i>
+            
+               <img src="<%= ctxPath %>/images/\${json.categoryImagePath}" class="img-fluid result-image mb-3" alt="\${json.categoryName}">
+               
+               <h3 class="result-title">\${json.categoryName}</h3>
+               
+               <div class="result-tags">`;
             
             $.each(json.tags, function(i, tag){
-               r_html += `#\${tag} `;
-               if(i % 3 === 2) r_html += `<br>`;
+               r_html += `<span class="tag-bubble">#\${tag}</span>`;
             });
             
-            r_html += `</div>
-               <h3 class="text-muted">\${json.categoryName}</h3>
-            </div>`;
+            r_html += `</div></div>`;
             
             if (!isLogin) {
                r_html += `<button class="btn btn-outline-primary btn-lg w-100 mt-3 fw-bold" onclick="login()">로그인하고 성향 저장하기</button>`;
             } else {
                r_html += `
+           	   <button class="btn btn-outline-primary btn-lg w-100 fw-bold" onclick="saveCategory()">성향 GET!</button>
                <form name="surveyForm" class="mt-4">   
                   <input type="hidden" name="categoryNo" value="\${json.categoryNo}"/>   
-                  <button class="btn btn-outline-primary btn-lg w-100 fw-bold" onclick="saveCategory()">성향 GET!</button>
                </form>`;
             }
             
@@ -240,18 +335,21 @@
             $("#loading-screen").hide();
          }
       });
-   }
-   
-   function login() { location.href = '<%= ctxPath %>/users/loginForm'; }
-   function saveCategory() {
-      const form = document.surveyForm;
-      if(confirm("한 번 저장한 성향은 변경할 수 없습니다.\n저장하시겠습니까?")){
-         form.method = "post";
-         form.action = "<%= ctxPath %>/categoryTest/saveCategory";
-         form.submit();
-      }
-   }
-   function retryTest() { location.href = '<%= ctxPath %>/categoryTest/survey'; }
+    }
+    function login() {
+		location.href = '<%= ctxPath %>/users/loginForm';
+	}
+	function saveCategory() {
+		const form = document.surveyForm;
+		if(confirm("한 번 저장한 성향은 변경할 수 없습니다.\n저장하시겠습니까?")){
+			form.method = "post";
+		    form.action = "<%= ctxPath %>/categoryTest/saveCategoryNo";
+		    form.submit();			
+		}
+	}
+	function retryTest() {
+		location.href = '<%= ctxPath %>/categoryTest/survey';
+	}
 </script>
 </body>
 </html>

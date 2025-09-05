@@ -1,8 +1,11 @@
 package com.spring.app.admin.controller;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
@@ -14,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.spring.app.admin.domain.ReportDTO;
 import com.spring.app.admin.service.AdminService;
 import com.spring.app.common.MyUtil;
+import com.spring.app.entity.Report;
 import com.spring.app.users.domain.UsersDTO;
 import com.spring.app.users.service.UsersService;
 
@@ -167,7 +172,6 @@ public class AdminController {
        			   				  : usersService.registerChartday(month);
    }
    
-   
    // <문자메시지 관련 순서3>
    // 관리자전용 회원에게 문자메시지 보내기
    @PostMapping("smsSend")
@@ -197,5 +201,173 @@ public class AdminController {
 	   
 	   return map;
    }
+   
+
+   /////////////////////////////////////////////////////////////////////////////////////////
+	// 엑셀 저장과 테이블을 보여주기 위한 공통 메소드
+   	private Map<String, Object> chartData(String chart, Integer month) {
+
+   		List<Map<String, String>> list;
+
+   	    if ("registerDay".equals(chart)) {
+   	        list = (month == null) 
+   	                ? usersService.registerChartday() 
+   	                : usersService.registerChartday(month);
+   	    } else {
+   	        list = usersService.registerChart(); // 월별은 month 필요 없음
+   	    }
+
+   	    int total = list.stream()
+   	                    .mapToInt(row -> Integer.parseInt(row.get("cnt")))
+   	                    .sum();
+
+   	    Map<String, Object> result = new HashMap<>();
+   	    result.put("list", list);
+   	    result.put("total", total);
+
+   	    return result;
+	}
+	
+	// 통계 테이블 페이지
+	@GetMapping("userExcelList")
+	public String userExcelList(@RequestParam(name="chart", defaultValue = "register") String chart,
+	                            @RequestParam(name="month", required = false) Integer month,
+	                            Model model) {
+		
+		if ("registerDay".equals(chart) && month == null) {
+	        month = LocalDate.now().getMonthValue(); // 1~12
+	    }
+	
+	    Map<String, Object> data = chartData(chart, month);
+	
+	    model.addAttribute("chart", chart);
+	    model.addAttribute("month", month);
+	    model.addAllAttributes(data);
+	
+	    return "admin/excelList";
+	}
+	
+	// 엑셀 다운로드
+	@PostMapping("downloadExcelFile")
+	public String downloadExcelFile(@RequestParam(name="chart", defaultValue = "register") String chart,
+	                                @RequestParam(name="month", required = false) Integer month,
+	                                Model model, Locale locale) {
+	
+	    // 동일한 데이터 로직 사용
+		Map<String, Object> data = chartData(chart, month);
+
+	    model.addAttribute("chart", chart);
+	    model.addAttribute("month", month);
+	    model.addAllAttributes(data);
+
+	    model.addAttribute("locale", locale);
+	    
+	    // ✅ 파일 이름 분기
+	    String workbookName = "user_stat";
+	    if ("registerDay".equals(chart)) {
+	    	 workbookName = (month != null) ? "일자별 가입자 통계_" + month + "월" : "일자별 가입자 통계";
+	    } else if ("register".equals(chart)) {
+	        workbookName = "월별 가입자 통계"; 
+	    }
+	    
+	    model.addAttribute("workbookName", workbookName); 
+
+	    usersService.userExcelList_to_Excel(chart, month, model);
+
+	    return "excelDownloadView"; // ViewConfig에 등록된 bean
+	}
+
+
+   @GetMapping("reportList")
+   public String reportList(@RequestParam(value="pageno",    defaultValue="1") int currentShowPageNo,   /* 현재 페이지번호 */
+						    Model model,
+				            HttpServletRequest request, HttpServletResponse response) {
+	   
+	   int sizePerPage = 10;	// 한 페이자당 보여질 행의 개수.
+	   
+	   int totalPage = 0;        // 전체 페이지 개수
+	   long totalDataCount = 0;  // 전체 데이터의 개수
+	   String pageBar = "";      // 페이지바
+	   
+	   try {
+		   Page<Report> pageReport = adminService.getPageReport(currentShowPageNo, sizePerPage);
+		   
+		   totalPage = pageReport.getTotalPages();	// 전체 페이지수 개수
+		   
+		   if(currentShowPageNo > totalPage) {
+			   currentShowPageNo = totalPage;
+			   pageReport = adminService.getPageReport(currentShowPageNo, sizePerPage);
+		   }
+		   
+		   totalDataCount = pageReport.getTotalElements();	// 전체 데이터의 개수
+		   
+		   List<Report> reportList = pageReport.getContent();	// 현재 페이지의 데이터 목록
+		   
+		   // 현재 페이지의 데이터 목록인 List<Report> 를 List<ReportDTO> 로 변환한다.
+		   List<ReportDTO> reportDtoList = reportList.stream()
+				   								.map(Report::toDTO)
+				   								.collect(Collectors.toList());
+		   
+		   model.addAttribute("reportDtoList", reportDtoList);
+		   
+		   int blockSize = 10;
+		   int loop = 1;
+		   int pageno = ((currentShowPageNo - 1)/blockSize) * blockSize + 1;
+		   
+		   
+		   String url = request.getContextPath() + "/admin/reportList";
+		   String q = "&sizePerPage=" + sizePerPage; // 페이지 이동 시에도 유지
+		   
+		   // === [맨처음][이전] 만들기 === //
+		   pageBar += "<li class='page-item'><a class='page-link' href='" + url + "?pageno=1" + q + "'>⏪</a></li>";
+		   
+		   if(pageno != 1) {
+			  
+			   pageBar += "<li class='page-item'><a class='page-link' href='" + url + "?pageno=" + (pageno - 1) + q + "'>[이전]</a></li>";
+		   }
+		   
+		   while( !(loop > blockSize || pageno > totalPage) ) {
+			   
+			   if(pageno == currentShowPageNo) {
+				   pageBar += "<li class='page-item active'><a class='page-link' href='#'>" + pageno + "</a></li>";
+			   }
+			   else {
+				   pageBar += "<li class='page-item'><a class='page-link' href='" + url + "?pageno=" + pageno + q + "'>" + pageno + "</a></li>";
+			   }
+			   
+			   loop++;
+			   pageno++;
+		   }// end of while----------------------------
+		   
+		   // === [다음][마지막] 만들기 === //
+		   if(pageno <= totalPage) {
+			   pageBar += "<li class='page-item'><a class='page-link' href='" + url + "?pageno=" + pageno + q + "'>[다음]</a></li>";
+			   
+		   }
+		   pageBar += "<li class='page-item'><a class='page-link' href='" + url + "?pageno=" + totalPage + q + "'>⏩</a></li>";
+		   
+		   model.addAttribute("pageBar", pageBar);
+		   
+		   model.addAttribute("totalDataCount", totalDataCount); // 페이징 처리시 보여주는 순번을 나타내기 위한 것임. 
+		   model.addAttribute("currentShowPageNo", currentShowPageNo); // 페이징 처리시 보여주는 순번을 나타내기 위한 것임.
+		   model.addAttribute("sizePerPage", sizePerPage); // 페이징 처리시 보여주는 순번을 나타내기 위한 것임.
+		   
+	   } catch (Exception e) {
+		   e.printStackTrace();
+	   }
+	   
+	   return "admin/reportList";
+   }
+   
+   
+   @GetMapping("reportComplete")
+   @ResponseBody
+   public int reportComplete(@RequestParam(name = "reportNo") Long reportNo) {
+	   
+	   int n = adminService.reportComplete(reportNo);	// 신고 처리 완료해주기
+	   
+	   return n;
+   }
+   
    
 }

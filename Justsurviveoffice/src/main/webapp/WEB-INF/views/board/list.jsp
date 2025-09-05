@@ -29,6 +29,70 @@ a {text-decoration: none !important;}
 #displayList .result:hover{ background:#f5f7fa; }
 #displayList .result span{ color:#d00; font-weight:600; } 
 
+/* 검색 폼 스타일 */
+form[name="searchForm"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 15px;
+}
+
+/* 드롭다운 */
+form[name="searchForm"] select {
+  border-radius: 5px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* 검색창 */
+form[name="searchForm"] .autocomplete {
+  min-width: 160px;
+}
+
+form[name="searchForm"] input[name="searchWord"] {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+
+/* 자동완성 드롭다운 */
+#displayList {
+  border-radius: 0 0 5px 5px;
+  font-size: 14px;
+}
+
+/* 버튼 */
+form[name="searchForm"] button,
+form[name="searchForm"] a.btn {
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 6px 12px;
+  white-space: nowrap;
+}
+
+/* navy 글쓰기 버튼 */
+form[name="searchForm"] #writeBtn {
+  background-color: navy !important;
+  border: none;
+}
+
+/* 반응형 */
+@media (max-width: 640px) {
+  form[name="searchForm"] {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  form[name="searchForm"] select,
+  form[name="searchForm"] button,
+  form[name="searchForm"] a.btn {
+    width: 100%;
+  }
+}
+
+
 .col-md-9 {border-radius: 10pt;background-size: cover;  background-position: center;background-repeat: no-repeat;background-attachment: fixed;background-blend-mode: overlay;}
 .keyword-panel {position: absolute;top: 16px;    right: 16px; width: 180px;background: rgba(255,255,255,0.35); border: 1px solid rgba(0,0,0,0.08);border-radius: 10px;box-shadow: 0 6px 18px rgba(0,0,0,0.08);backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);overflow: hidden;z-index: 5;                    }
 .keyword-header {padding: 10px 12px;font-weight: 700;font-size: 0.95rem;color: #333;background: rgba(255,255,255,0.25);border-bottom: 1px solid rgba(0,0,0,0.06);}
@@ -45,6 +109,71 @@ a {text-decoration: none !important;}
 @media screen and (max-width:1300px){
 	.keyword-panel {position:relative;top:initial;right:initial;}
 }
+
+/* ------------------------------------------------------------------------------- */
+/* ====== 반응형 개선 ====== */
+/* 가로폭이 줄면 패널 폭 조금 늘리고 글자 약간 작게 */
+@media (max-width: 1200px) {
+  .keyword-panel { width: 220px; right:12px; }
+}
+@media (max-width: 992px) {
+  .keyword-panel { width: min(28vw, 300px); }
+  .keyword-table { font-size: 0.9rem; }
+  .keyword-word { max-width: calc(100% - 74px); }
+}
+
+/* 모바일: 패널은 숨겨두고, 플로팅 버튼으로 열기 */
+.keyword-fab { display:none; } /* 기본은 숨김(데스크탑 X) */
+
+@media (max-width: 640px) {
+  /* 패널을 화면 하단으로 고정 + 기본은 닫힘 상태 */
+  .keyword-panel {
+    position: fixed;
+    right: 12px;
+    left: auto;
+    bottom: 60px;
+    top: auto;
+    width: min(92vw, 360px);
+    max-height: 70vh;
+    transform: translateY(110%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .25s ease, opacity .2s ease;
+  }
+  .keyword-panel.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* 플로팅 버튼 노출 */
+  .keyword-fab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,.08);
+    background: rgba(255,255,255,.9);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    font-weight: 700;
+    font-size: 12px;
+    color: #333;
+    z-index: 6;
+  }
+
+  /* 모바일에서 표 가독성 조정 */
+  .keyword-table { font-size: 0.88rem; }
+  .keyword-table-wrap { max-height: 56vh; }
+  .keyword-word { max-width: calc(100% - 80px); }
+}
+
 
 </style> 
 
@@ -128,6 +257,21 @@ a {text-decoration: none !important;}
 	    searchBoard(); // 글목록 검색하기 요청
    });
 	   
+   
+   /* ------------------------------------------------------ */
+   const panel = document.getElementById('keywordPanel');
+   const fab   = document.getElementById('kwFab');
+   if (!panel || !fab) return;
+
+   fab.addEventListener('click', function() {
+     panel.classList.toggle('open');
+     const open = panel.classList.contains('open');
+     fab.setAttribute('aria-expanded', open);
+     fab.title = open ? 'TOP 키워드 닫기' : 'TOP 키워드 열기';
+   });
+   
+   
+   
  }); // end of $(function(){})--------------------------
    
    
@@ -200,6 +344,9 @@ a {text-decoration: none !important;}
 
 <div class="col-md-9 ListHeight" style="border-radius: 10pt; background-image: url('<%= ctxPath %>/images/background.png');">
     <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 5% 0">
+<div class="col-md-9 ListHeight" style="border-radius: 10pt; 
+		background-image: url('<%= ctxPath %>/images/background.png');">
+    <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray; margin: 2% 0">
 		<c:if test="${requestScope.category eq 1}">
 			<span>MZ들의&nbsp;</span></c:if>
 		<c:if test="${requestScope.category eq 2}">
@@ -213,8 +360,12 @@ a {text-decoration: none !important;}
 		<span>생존 게시판</span>
 	</div>
 	
+	<!-- 모바일 전용: 플로팅 버튼 -->
+	<button class="keyword-fab" id="kwFab" aria-expanded="false" aria-controls="keywordPanel" title="TOP 키워드 열기">키워드</button>
+	
+	
 	<!-- === 키워드 패널 (우측 상단) === -->
-	<div class="keyword-panel">
+	<div class="keyword-panel" id="keywordPanel">
 	  <div class="keyword-header text-center">TOP 키워드</div>
 	  <div class="keyword-table-wrap">
 	    <table class="keyword-table" >
@@ -243,7 +394,7 @@ a {text-decoration: none !important;}
    <h2 class="listTitle" style="font-size: 25pt; font-weight: bold;">글목록</h2>
    <%-- === 글검색 폼 추가하기 : 글제목, 글내용, 글제목+글내용, 글쓴이로 검색을 하도록 한다. === --%>
    <form name="searchForm" style="margin-top: 20px;">
-      <select name="searchType" style="height: 26px;">
+      <select name="searchType" style="height: 32px;">
          <option value="boardName">글제목</option>
          <option value="boardContent">글내용</option>
          <option value="boardName_boardContent">글제목+글내용</option>
