@@ -41,7 +41,7 @@
 		.admTab:hover {background-color:#fff;}
 		#clock {font-size:0.8rem;}
 		.pc-menu {border-right:1px solid #000;display:flex;flex-wrap:wrap;justify-content:space-between;}
-		.mobileTab{position:fixed;display:none;background-color:#ddd;width:100%;padding:25px 0;z-index:10;}
+		.mobileTab{position:fixed;display:none;background-color:#fff;width:100%;padding:25px 0;z-index:10;border-bottom:1px solid #ddd;}
 		.hamburger {font-size: 2rem;background: none;border: none;position: fixed;top: 11px;right: 20px;z-index: 2001;cursor: pointer;display: none; color:#000 !important;}
 		#adminMenu {position: fixed;top: 0; left: 0;width: 100%; height: 100%;background: #fff;flex-direction: column;justify-content: center;align-items: center;z-index: 2000;display: none; margin: 0;padding: 0;}
 		#adminMenu.show { display: flex; }

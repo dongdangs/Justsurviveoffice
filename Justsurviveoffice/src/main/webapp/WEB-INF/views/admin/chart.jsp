@@ -80,6 +80,7 @@
     border-radius: 9999px;
     box-shadow: inset 0 0 0 1px var(--line);
     cursor: pointer;
+    height:30px;
   }
   /* 셀렉트 오른쪽 화살표 */
   #searchType{
@@ -113,7 +114,7 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    min-width: 560px;            /* 내용 넘치면 가로 스크롤 */
+    min-width: 560px;         
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -190,11 +191,9 @@
   @media (max-width: 640px){
     h2{ margin: 18px 0 12px 0 !important; }
     form[name="searchFrm"]{ padding: 6px 10px; }
-    #searchType{ padding: 9px 34px 9px 12px; font-size: 13px; }
-    #table_container table{ min-width: 520px; }
-  }
-  @media (max-width: 420px){
-    #table_container table{ min-width: 480px; }
+    #searchType{ padding: 9px 34px 9px 12px; font-size: 13px; height:40px;}
+    #table_container table{ min-width: 360px; }
+    
   }
 </style>
 
@@ -214,7 +213,7 @@
 	    <h2 style="margin: 50px 0;">대사살 통계정보(차트)</h2>
 	
 	    <form name="searchFrm" style="margin: 20px 0 50px 0;">
-	      <select name="searchType" id="searchType" style="height:30px;">
+	      <select name="searchType" id="searchType">
 	         <option value="">통계선택하세요</option>
 	         <option value="register">회원가입 인원통계(월별)</option>
 	         <option value="registerDay">회원가입 인원통계(일자별)</option>

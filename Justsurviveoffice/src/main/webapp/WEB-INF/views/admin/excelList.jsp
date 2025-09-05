@@ -140,9 +140,14 @@ h2 {
   transition: background .2s ease;
 }
 
+
+
+@media screen and (max-width:1300px){
+  h2{ margin: 11% 0 12px 0 !important; }
+}
+
 /* 반응형 */
 @media(max-width:640px){
-  h2{ margin: 18px 0 12px 0 !important; }
   #searchForm{ padding: 6px 10px; }
   .table-container table{ min-width: 480px; }
 }
