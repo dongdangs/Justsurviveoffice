@@ -111,12 +111,11 @@ public class UsersService_imple implements UsersService {
    @Override
    public void registerUser(Users user) {
       try {
-         
          aes = new AES256(SecretMyKey.KEY);
          user.setMobile(aes.encrypt(user.getMobile()));
          user.setEmail(aes.encrypt(user.getEmail()));
          user.setPassword(Sha256.encrypt(user.getPassword()));
-         
+         user.setRole("USER"); //DB에 접근하지 않는 한, 반드시 유저권한으로 세팅
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -514,9 +513,7 @@ public class UsersService_imple implements UsersService {
 	        // 월별 통계
 	        workbookName = "월별_가입자통계";
 	    }
-
 	    model.addAttribute("workbookName", workbookName);
-		 
 	}
 
 

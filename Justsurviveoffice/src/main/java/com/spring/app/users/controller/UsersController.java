@@ -135,14 +135,14 @@ public class UsersController {
 
        try {
           // 회원가입
-          
-          UsersDTO usersDto = usersService.getUser(id, Pwd);    
+          usersService.registerUser(user);
+          UsersDTO usersDto = usersService.getUser(id, Pwd);
           // 세션에 로그인 정보 저장
           session.setAttribute("loginUser", usersDto);
           return "redirect:/index";
           
        } catch (Exception e) {
-          
+          e.printStackTrace();
           String message = "회원가입 실패!!";
           String loc = request.getContextPath()+"/login/register"; // 로그인 페이지로 이동
 

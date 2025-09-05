@@ -72,7 +72,7 @@
 	    });
 
 	    // 최초 로딩 시 월별 선택 후 실행
-	    $('#searchType').val("categoryByBoard").trigger("change");
+	    $('#searchType').val("categoryByUsers").trigger("change");
 		
 	});
 	
@@ -362,8 +362,8 @@
                 	<form name="searchFrm" style="margin: 20px 0 50px 0;">
 				      	<select name="searchType" id="searchType" style="height:30px;">
 				        	<option value="">------ 선택하세요 ------</option>
+					        <option value="categoryByUsers">카테고리별 인원수 통계</option>				        	
 					        <option value="categoryByBoard">카테고리별 게시물 통계</option>
-					        <option value="categoryByUsers">카테고리별 인원수 통계</option>
 				      	</select>
 				    </form>
 					

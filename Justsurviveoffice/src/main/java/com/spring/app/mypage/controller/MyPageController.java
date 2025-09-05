@@ -161,6 +161,7 @@ public class MyPageController {
             	paraMap.put("message", "회원 탈퇴에 실패했습니다. 다시 시도해주세요.");
             }
         } catch (Exception e) {
+        	e.printStackTrace();
         	paraMap.put("success", false);
         	paraMap.put("message", "서버 에러가 발생했습니다.");
         }

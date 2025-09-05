@@ -134,6 +134,7 @@
        background: radial-gradient(circle, rgba(255,255,255,0.6) 10%, transparent 60%);
        animation: sparkle 3s infinite linear;
    }
+   .card-body {max-height:168px;}
 </style>
 	
 

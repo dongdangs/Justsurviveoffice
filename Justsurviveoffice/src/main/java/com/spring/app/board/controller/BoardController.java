@@ -507,9 +507,13 @@ public class BoardController {
 		}
 		else { // 뒤로가기 혹은 오류로 인한 삭제게시물을 클릭한 경우.
 			modelview.addObject("message", "현재 존재하지 않는 게시물입니다.");
-			modelview.addObject("loc", "list/"+category); // category = fk_categoryNo
-			modelview.setViewName("msg"); 
 			
+			if( referer != null && referer.contains("/mypage/forms")) {
+				modelview.addObject("loc",request.getContextPath()+"/mypage/forms");
+			} else {
+				modelview.addObject("loc", "list/"+category); // category = fk_categoryNo
+			}
+			modelview.setViewName("msg"); 
 			return modelview;
 		}
 	} // ------------------- @GetMapping("view")... END 

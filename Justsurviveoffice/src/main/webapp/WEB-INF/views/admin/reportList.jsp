@@ -40,7 +40,7 @@
 			
 		</div>
 		
-		<!-- 👥 신고 테이블 -->
+		<!-- 신고 테이블 -->
 		<div class="bg-white rounded-xl shadow-sm mb-4">
 			<div class="table-responsive">
 				<table class="table table-hover table-bordered text-center" id="userTbl">
@@ -65,7 +65,16 @@
 										<input type="hidden" name="reportNo" value="${report.reportNo}" />
 										</td>
 									<td>${report.fk_id}</td>
-									<td>${report.board.boardName}<input type="hidden" name="boardNo" value="${report.board.boardNo}" /></td>
+									<td>
+									<c:choose>
+	                                  <c:when test="${fn:length(report.board.boardName) < 10}">
+	                                    ${report.board.boardName}
+	                                  </c:when>
+	                                  <c:otherwise>
+	                                    ${fn:substring(report.board.boardName, 0, 10)}...
+	                                  </c:otherwise>
+	                                </c:choose>
+									<input type="hidden" name="boardNo" value="${report.board.boardNo}" /></td>
 									<td>${report.reportReason}</td>
 									<td><c:out value="${fn:replace(report.createdAtReport, 'T', ' ')}"/></td>
 									<td>
@@ -74,7 +83,8 @@
 										</c:if>
 										
 										<c:if test="${report.reportStatus != 0}">
-											<button name="success" class="btn btn-success">완료</button>
+											<button type="button" name="success" 
+													class="btn btn-success" disabled>완료</button>
 										</c:if>
 									</td>
 								</tr>
