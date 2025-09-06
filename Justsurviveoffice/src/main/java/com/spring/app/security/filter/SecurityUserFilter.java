@@ -24,11 +24,11 @@ import lombok.RequiredArgsConstructor;
 
 // 해당 클래스 만든 이유 -->> 기존 로그인 로직(세션 기반) 과 Spring Security의 권한체크 시스템을 연결(bridge)하기 위해서 필터 패키지에 만듬!
 @Component
-@RequiredArgsConstructor   // ✅ [변경] SessionRegistry 주입을 위해 추가
+@RequiredArgsConstructor   // [변경] SessionRegistry 주입을 위해 추가
 public class SecurityUserFilter extends OncePerRequestFilter {
 	// OncePerRequestFilter > Filter 인터페이스 구현체인데, Spring Security에서 제공하는 편의 추상 클래스
 	
-	private final SessionRegistry sessionRegistry; // ✅ [추가]
+	private final SessionRegistry sessionRegistry; // [추가]
 	
 	// OncePerRequestFilter 안에 정의된 메소드 오버라이드!
 	@Override
