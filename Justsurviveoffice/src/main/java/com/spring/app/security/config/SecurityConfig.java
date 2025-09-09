@@ -9,6 +9,7 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
@@ -39,18 +40,27 @@ public class SecurityConfig {
     }
 	
 	
-	// [추가] SessionRegistry Bean – 누가 어떤 세션을 쓰는지 관리하는 저장소
+	// SessionRegistry Bean – 누가 어떤 세션을 쓰는지 관리하는 저장소
 	@Bean
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
     }
 
-    // [추가] 세션 소멸 이벤트를 Spring Security에 알려줌 (만료/로그아웃 시 정리)
+    // 세션 소멸 이벤트를 Spring Security에 알려줌 (만료/로그아웃 시 정리)
     @Bean
     public HttpSessionEventPublisher httpSessionEventPublisher() {
         return new HttpSessionEventPublisher();
     }
 	
+    // == 403 에러 관련 예외처리(접근권한이 필요한 페이지에 접근권한이 없는 유저가 접속할 경우에 발생하는 에러이며 에러번호가 403임) == //  
+ 	@Bean
+ 	AccessDeniedHandler customAccessDeniedHandler() {
+ 		return (request, response, accessDeniedException) -> {
+ 			response.sendRedirect(request.getContextPath()+"/index?error=2");
+ 			// 접근권한이 필요한 페이지에 접근권한이 없는 유저가 접속할 경우 이동할 주소 지정 
+ 		};
+ 	}
+    
 	
 	@Bean	// 이 메소드를 Bean 으로 정의하는 순간, 기본 설정 대신 내가 만든 정책이 적용
 	public SecurityFilterChain filterChain(HttpSecurity http,
@@ -89,6 +99,12 @@ public class SecurityConfig {
 		// addFilterBefore() -> 시큐리티에게 내 필터를 이 기준(시큐리티) 필터 앞에 추가하라는 것(커스텀 필터이므로)
 		http.addFilterBefore(securityUserFilter, UsernamePasswordAuthenticationFilter.class);
         
+		http
+		.exceptionHandling((customizer) -> customizer
+				.accessDeniedHandler(customAccessDeniedHandler())
+		);	// 403 에러 관련 예외처리(접근권한이 필요한 페이지에 접근권한이 없는 유저가 접속할 경우에 발생하는 에러이며 에러번호가 403임)
+			// customAccessDeniedHandler() 은 맨 위에 설정해 두었음.
+		
 		 // 관리자 MFA 강제 필터(브릿지 이후에 동작)
 	//	http.addFilterAfter(new AdminFilter(), SecurityUserFilter.class);
 		

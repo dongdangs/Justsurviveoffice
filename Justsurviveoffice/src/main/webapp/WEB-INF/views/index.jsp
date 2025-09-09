@@ -25,6 +25,22 @@
    </script>
 </c:if>
 
+<c:if test="${param.error eq '2'}">
+   <script>
+      alert("접근 권한이 없습니다.");
+      
+      (function(){
+         try {
+            var url = new URL(window.location.href);
+            url.searchParams.delete('error');
+            var qs = url.searchParams.toString();
+            var newUrl = url.pathname + (qs ? '?' + qs : '') + url.hash;
+            window.history.replaceState({}, document.title, newUrl);
+         } catch (e) {}
+      })();   /* IIFE (() => { ... })(); 는 "즉시 실행"이라 DOM 준비를 기다리지 않음. */
+   </script>
+</c:if>
+
 <style>
 .col-md-9 {
     border-radius: 10pt;

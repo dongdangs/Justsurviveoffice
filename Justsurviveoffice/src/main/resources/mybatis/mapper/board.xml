@@ -45,7 +45,7 @@
     		   		then substr(boardName, 1, 12)
     		   		else boardName
     		   	end as boardName,
-     		   boardContent,
+     		   NVL(boardContent, ' ') as boardContent,
                BoardFileName, BoardFileOriginName, readcount, 
                to_char(updatedAtBoard, 'yyyy-mm-dd hh24:mi:ss') as updatedAtBoard,
                case
@@ -136,7 +136,7 @@
 		        case when length(boardName) &gt; 12 
 		             then substr(boardName, 1, 12)
 		             else boardName end as boardName,
-		        boardContent, BoardFileName, BoardFileOriginName, readcount,
+		        NVL(boardContent, ' ') AS boardContent, BoardFileName, BoardFileOriginName, readcount,
 		        to_char(updatedAtBoard, 'yyyy-mm-dd hh24:mi:ss') AS updatedAtBoard,
 		        case
 		            when (SYSDATE - updatedAtBoard) * 24 * 60 &lt; 60 

@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityUserFilter extends OncePerRequestFilter {
 	// OncePerRequestFilter > Filter 인터페이스 구현체인데, Spring Security에서 제공하는 편의 추상 클래스
 	
-	private final SessionRegistry sessionRegistry; // [추가]
+	private final SessionRegistry sessionRegistry;
 	
 	// OncePerRequestFilter 안에 정의된 메소드 오버라이드!
 	@Override
@@ -56,7 +56,7 @@ public class SecurityUserFilter extends OncePerRequestFilter {
 				if (user != null) {
 					
 					
-					// ✅ 관리자 동시 로그인 "차단" 로직 (핵심)
+					// 관리자 동시 로그인 "차단" 로직 (핵심)
                     if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                         var existing = sessionRegistry.getAllSessions(user.getId(), false);
                         boolean hasOtherActive = existing.stream()
