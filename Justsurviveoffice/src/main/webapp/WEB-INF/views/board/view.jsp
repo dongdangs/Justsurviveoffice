@@ -568,39 +568,6 @@ textarea:focus {
            form.submit();
        });
        
-       // 영구삭제 버튼 관련 메소드
-       $(document).on('click', 'button.btn-delete', function(e){
-    	   const adminNo = $(this).data('boardNo');
-	//	   alert(adminNo);
-    	   
-    	   if(confirm("영구 삭제 진행하시겠습니까?")) {
-    		   
-    		   $.ajax({
-    			   url:"<%= ctxPath%>/board/adminDelete",
-    			   type:"POST",
-    			   data:{"boardNo":adminNo},
-    			   dataType:"json",
-    			   success:function(json){
-    				   if(json.n == 1) {
-    					   alert("처리 완료");
-    					   window.location.replace("<%= ctxPath %>/admin/reportList");
-    				   }
-    				   else {
-                           alert(json.message);
-                       }
-    			   },
-    			   error: function(request, status, error) {
-                       alert("code:" + request.status + "\nmessage:" + request.responseText);
-                   }
-    		   });
-    		   
-    		   alert("처리완료");
-    	   }
-    	   else {
-    		   alert("취소");
-    	   }
-       });
-       
    }); 
    
    // 글 삭제
@@ -909,7 +876,6 @@ textarea:focus {
    }
    
    
-<<<<<<< HEAD
    <!-- 게시글 신고하기-->
    //  신고 모달 열기
    function openReportModal(boardNo) {
@@ -918,33 +884,6 @@ textarea:focus {
        $("#reportReason").val("");       // 이전 입력값 초기화
        $("#reportModal").modal("show");  // 모달 열기
    }
-=======
-</script>
- <div class="col-md-9 ListHeight" style="flex-grow: 1; padding: 20px; background: white; border-radius: 10px; ">
-   <div name="categoryDiv" style="font-size: 20px; font-weight: bold; color: gray;">
-      <input name="fk_categoryNo" style="display: none;"
-                value="${boardDto.fk_categoryNo}"/>
-      <c:if test="${boardDto.fk_categoryNo eq 1}">
-         <span>MZ들의&nbsp;</span></c:if>
-      <c:if test="${boardDto.fk_categoryNo eq 2}">
-         <span>꼰대들의&nbsp;</span></c:if>
-      <c:if test="${boardDto.fk_categoryNo eq 3}">
-         <span>노예들의&nbsp;</span></c:if>      
-      <c:if test="${boardDto.fk_categoryNo eq 4}">
-         <span>MyWay들의&nbsp;</span></c:if>
-      <c:if test="${boardDto.fk_categoryNo eq 5}">
-         <span>금쪽이들의&nbsp;</span></c:if>
-      <span>생존 게시판</span>
-      
-      <c:if test="${sessionScope.loginUser.id eq 'admin'}">
-	      <button type="button" class="btn btn-outline-danger btn-sm btn-delete" data-board-no="${boardDto.boardNo}">
-	      	영구삭제
-	      </button>
-      </c:if>
-      
-      <br><br><br>
-   </div>
->>>>>>> branch 'rdg7203' of https://github.com/dongdangs/Justsurviveoffice.git
    
    // 신고 전송
    $(document).on("click", "#submitReport", function() {
