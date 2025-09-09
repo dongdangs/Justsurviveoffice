@@ -318,6 +318,13 @@ public class BoardService_imple implements BoardService {
 		int data = boardDao.recoveryBoard(boardNo);
 		return data;
 	}
+	
+	// 관리자용 게시글 영구삭제
+	@Override
+	public int adminDelete(Long boardNo) {
+		int n = boardDao.adminDelete(boardNo);
+		return n;
+	}
 
 
 	

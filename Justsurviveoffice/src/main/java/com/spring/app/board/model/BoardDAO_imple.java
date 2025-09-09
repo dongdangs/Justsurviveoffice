@@ -186,5 +186,12 @@ public class BoardDAO_imple implements BoardDAO {
 		int data = sql.update("board.recoveryBoard", boardNo);
 		return data;
 	}
+	
+	// 관리자용 게시글 영구삭제
+	@Override
+	public int adminDelete(Long boardNo) {
+		int n = sql.delete("board.adminDelete", boardNo);
+		return n;
+	}
 
 }

@@ -472,4 +472,11 @@
   		where boardNo = #{boardNo}
   	</update>
   	
+  	<!-- 관리자용 게시글 영구삭제 -->
+  	<delete id="adminDelete" parameterType="Long">
+  		delete from board
+  		where boardNo = #{boardNo}
+  	</delete>
+  	
+  	
 </mapper>
