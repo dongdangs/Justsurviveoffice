@@ -10,7 +10,7 @@ import lombok.Setter;
 // == 몽고DB 설문 관련 순서1
 @Getter
 @Setter
-@Document(collection = "jso_question")
+@Document(collection = "json_question")
 public class Mongo_QuestionDTO {
 	
 	@Id
